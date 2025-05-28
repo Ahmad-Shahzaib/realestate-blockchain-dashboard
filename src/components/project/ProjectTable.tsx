@@ -11,7 +11,7 @@ const ProjectTable = () => {
                 <li className="flex-1 text-center">Documents</li>
                 <li className="flex-1 text-center">Stats.</li>
                 <li className="flex-1 text-center">Investors</li>
-                <li className="flex-1 text-center">FAQs</li>
+                <li className="flex-1 text-center">FAQs </li>
             </ul>
         </div>
 
