@@ -18,7 +18,7 @@ export const NAV_DATA = [
         items: [
           {
             title: "Portfolio",
-            url: "/",
+            url: "/profile",
           },
           {
             title: "Active Investments",
@@ -29,28 +29,28 @@ export const NAV_DATA = [
             url: "/my-nfts",
           }
         ],
-      },      {
+      }, {
         title: "Projects",
-        url: "/project",
-        icon: Icons.Calendar,
+        url: "/project-pages",
+        icon: Icons.HomeIcon,
         items: [],
       },
       {
         title: "Transactions",
-        url: "/profile",
+        url: "/transactions",
         icon: Icons.User,
         items: [],
-      },      {
+      }, {
         title: "DAO Listing",
         url: "/dao-listing",
         icon: Icons.Alphabet,
         items: [],
-      },      {
+      }, {
         title: "E Report",
         url: "/tables",
         icon: Icons.Table,
         items: [],
-      },      {
+      }, {
         title: "Tools",
         icon: Icons.Alphabet,
         items: [
@@ -69,17 +69,17 @@ export const NAV_DATA = [
   },
   {
     // label: "Tools",
-    items: [      {
-        title: "Rewards Shop",
-        url: "/rewards-shop",
-        icon: Icons.FourCircle,
-        items: [],
-      },      {
-        title: "Settings",
-        url: "/settings",
-        icon: Icons.Authentication,
-        items: [],
-      },
+    items: [{
+      title: "Rewards Shop",
+      url: "/rewards-shop",
+      icon: Icons.FourCircle,
+      items: [],
+    }, {
+      title: "Settings",
+      url: "/settings",
+      icon: Icons.Authentication,
+      items: [],
+    },
     ],
   },
 ];

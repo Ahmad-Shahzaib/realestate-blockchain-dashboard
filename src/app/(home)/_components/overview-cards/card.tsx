@@ -8,7 +8,10 @@ import property1 from "../../../../../public/images/cards/images.jpg"; // Replac
 import property2 from "../../../../../public/images/cards/cards-01.png";
 import property3 from "../../../../../public/images/cards/images.jpg";
 import type { JSX, SVGProps } from "react";
-import Link from "next/link";
+//  use next navigation for the buttons if needed 
+import { useRouter } from "next/navigation";
+import { button } from "@material-tailwind/react";
+
 
 type PropsType = {
   label: string;
@@ -32,10 +35,15 @@ export function OverviewCard() {
     e.preventDefault(); // Prevent Link navigation
     setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
+  const router = useRouter();
+  const handleCardClick = () => {
+    router.push("/project-pages/project_pages"); // Updated path to match the actual route structure
+  };
 
   return (
-    <Link href="/project/globe-residency" className="block">
 
+
+    <button onClick={handleCardClick} className="w-full">
       <div className="w-full bg-white rounded shadow-lg overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-gray-4 border">
         {/* Image Section */}
         <div className="relative h-48 overflow-hidden p-2 ">
@@ -137,6 +145,7 @@ export function OverviewCard() {
           </button>
         </div>
       </div>
-    </Link>
+    </button>
+
   );
 }
