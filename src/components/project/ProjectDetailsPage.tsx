@@ -1,6 +1,7 @@
 import React from 'react'
 import AreaDetailPage from './AreaDetailPage';
 import SelectedAreaPage from './SelectedAreaPage';
+import { useRouter } from 'next/navigation';
 interface ProjectDetailsPageProps {
     projectId?: string;
 
@@ -8,6 +9,9 @@ interface ProjectDetailsPageProps {
 
 
 const ProjectDetailsPage = ({ projectId }: ProjectDetailsPageProps) => {
+    
+     
+
     return (
         <>
             <div className="w-full bg-white border border-gray-200 rounded-lg p-6">

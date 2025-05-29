@@ -29,11 +29,9 @@ export const NAV_DATA = [
             url: "/my-nfts",
           }
         ],
-      },
-
-      {
+      },      {
         title: "Projects",
-        url: "/calendar",
+        url: "/project",
         icon: Icons.Calendar,
         items: [],
       },
@@ -42,35 +40,28 @@ export const NAV_DATA = [
         url: "/profile",
         icon: Icons.User,
         items: [],
-      },
-      {
+      },      {
         title: "DAO Listing",
+        url: "/dao-listing",
         icon: Icons.Alphabet,
-        items: [
-
-        ],
-      },
-      {
-        title: "E Reposrt",
+        items: [],
+      },      {
+        title: "E Report",
         url: "/tables",
         icon: Icons.Table,
-        items: [
-
-        ],
-      },
-      {
+        items: [],
+      },      {
         title: "Tools",
         icon: Icons.Alphabet,
         items: [
           {
             title: "DAO Bot",
-            url: "/pages/settings",
+            url: "/tools/dao-bot",
           },
           {
             title: "Calculators",
-            url: "/pages/settings",
+            url: "/tools/calculators",
           },
-
         ],
       },
 
@@ -78,21 +69,16 @@ export const NAV_DATA = [
   },
   {
     // label: "Tools",
-    items: [
-
-      {
+    items: [      {
         title: "Rewards Shop",
+        url: "/rewards-shop",
         icon: Icons.FourCircle,
-        items: [
-
-        ],
-      },
-      {
+        items: [],
+      },      {
         title: "Settings",
+        url: "/settings",
         icon: Icons.Authentication,
-        items: [
-
-        ],
+        items: [],
       },
     ],
   },
