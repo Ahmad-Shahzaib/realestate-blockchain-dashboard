@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import PersonalDetails from "./PersonalDetails";
+import MyAddresses from "./MyAddresses";
 
 
 const tabs = [
@@ -42,7 +43,7 @@ export default function SettingsPage() {
       <div className="mt-6 p-4 bg-white border border-gray-200 rounded-md shadow-sm">
         {/* Tab Content */}
         {activeTab === 0 && <div><PersonalDetails /></div>}
-        {activeTab === 1 && <div>Address content here.</div>}
+        {activeTab === 1 && <div><MyAddresses /></div>}
         {activeTab === 2 && <div>Bank Details content here.</div>}
         {activeTab === 3 && <div>Legal Information content here.</div>}
         {activeTab === 4 && <div>Change Password form here.</div>}

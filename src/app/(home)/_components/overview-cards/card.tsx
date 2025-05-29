@@ -56,9 +56,9 @@ export function OverviewCard() {
           />
 
           {/* New Listing Badge */}
-          <div className="absolute top-3 left-3 bg-red-500 text-white px-2.5 py-1 rounded-md text-xs font-medium">
+          {/* <div className="absolute top-3 left-3 bg-red-500 text-white px-2.5 py-1 rounded-md text-xs font-medium">
             New Listing
-          </div>
+          </div> */}
 
           {/* Navigation Arrows */}
           <button
