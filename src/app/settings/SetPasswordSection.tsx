@@ -25,7 +25,7 @@ export default function SetPasswordSection() {
 
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                <div className="fixed inset-0 z-50 flex items-center justify-center ">
                     <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg relative">
                         <h3 className="text-xl font-semibold text-gray-800 mb-4">Set New Password</h3>
 
