@@ -21,7 +21,7 @@ const MyAddresses = () => {
 
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
+                <div className="fixed inset-0  flex items-center justify-center z-[9999]">
 
                     <div className="bg-white p-6 rounded-lg w-full max-w-2xl">
                         <h3 className="text-xl font-semibold mb-2">My Address</h3>
