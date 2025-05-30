@@ -6,9 +6,9 @@ import Image from "next/image";
 export default function PersonalDetails() {
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
-        name: "Muhammad Shakeel Ayaz",
-        email: "shakeelayaz954@gmail.com",
-        phone: "301 2345678",
+        name: "Softsuite Technologies",
+        email: "info@softsuitetech.com",
+        phone: "+92315 1012287",
         dob: "",
         gender: "Male",
     });

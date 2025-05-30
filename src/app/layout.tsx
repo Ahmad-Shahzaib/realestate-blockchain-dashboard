@@ -14,8 +14,8 @@ import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: {
-    template: "softsuite",
-    default: "softsuite",
+    template: "Softsuite Technologies",
+    default: "Softsuite Technologies",
 
     // template: "%s | NextAdmin - Next.js Dashboard Kit",
     // default: "NextAdmin - Next.js Dashboard Kit",
