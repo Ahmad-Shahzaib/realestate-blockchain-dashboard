@@ -4,9 +4,9 @@ import { useState } from "react";
 import { ArrowDownIcon, ArrowUpIcon } from "@/assets/icons";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
-import property1 from "../../../../../public/images/cards/images.jpg"; // Replace with actual image paths
-import property2 from "../../../../../public/images/cards/cards-01.png";
-import property3 from "../../../../../public/images/cards/images.jpg";
+import property1 from "../../../../../public/images/cards/image1.jpg"; // Replace with actual image paths
+import property2 from "../../../../../public/images/cards/image2.jpg";
+import property3 from "../../../../../public/images/cards/image3.jpg";
 import type { JSX, SVGProps } from "react";
 //  use next navigation for the buttons if needed 
 import { useRouter } from "next/navigation";
@@ -14,16 +14,17 @@ import { button } from "@material-tailwind/react";
 
 
 type PropsType = {
-  label: string;
-  data: {
+  label?: string;
+  data?: {
     value: number | string;
     growthRate: number;
   };
-  Icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+  Icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+  initialImageIndex?: number;
 };
 
-export function OverviewCard() {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+export function OverviewCard({ initialImageIndex = 0 }: PropsType) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex % 3);
   const images = [property1, property2, property3];
 
   const handlePrevImage = (e: React.MouseEvent) => {
@@ -43,7 +44,7 @@ export function OverviewCard() {
   return (
 
 
-    <button onClick={handleCardClick} className="w-full">
+    <button className="w-full">
       <div className="w-full bg-white rounded shadow-lg overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-gray-4 border">
         {/* Image Section */}
         <div className="relative h-48 overflow-hidden p-2 ">
@@ -56,9 +57,9 @@ export function OverviewCard() {
           />
 
           {/* New Listing Badge */}
-          {/* <div className="absolute top-3 left-3 bg-red-500 text-white px-2.5 py-1 rounded-md text-xs font-medium">
+          <div className="absolute top-3 left-3 bg-red-500 text-white px-2.5 py-1 rounded-md text-xs font-medium">
             New Listing
-          </div> */}
+          </div>
 
           {/* Navigation Arrows */}
           <button
@@ -89,7 +90,7 @@ export function OverviewCard() {
         </div>
 
         {/* Content Section */}
-        <div className="p-6">
+        <div className="p-6" onClick={handleCardClick}>
           {/* Title and Type */}
           <h2 className="text-xl font-bold text-gray-900 mb-1">Globe Residency Apartments</h2>
           <p className="text-gray-500 text-sm mb-4">Residential Apartments</p>
@@ -140,9 +141,9 @@ export function OverviewCard() {
           </div>
 
           {/* Add to Cart Button */}
-          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+          {/* <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors">
             Add to Cart
-          </button>
+          </button> */}
         </div>
       </div>
     </button>

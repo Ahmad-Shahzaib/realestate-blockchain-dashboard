@@ -12,6 +12,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 
 
 
+
 const tabs = [
   {
     id: "all", label: "Home", icon: IoHome
@@ -33,13 +34,21 @@ export function OverviewCardsGroup() {
   const renderCards = () => {
     switch (activeTab) {
       case "residential":
-        return Array(2).fill(<OverviewCard />);
+        return Array(2).fill(null).map((_, index) => (
+          <OverviewCard key={index} initialImageIndex={index} />
+        ));
       case "commercial":
-        return Array(3).fill(<OverviewCard />);
+        return Array(3).fill(null).map((_, index) => (
+          <OverviewCard key={index} initialImageIndex={index} />
+        ));
       case "plots":
-        return Array(1).fill(<OverviewCard />);
+        return Array(1).fill(null).map((_, index) => (
+          <OverviewCard key={index} initialImageIndex={index} />
+        ));
       default:
-        return Array(4).fill(<OverviewCard />);
+        return Array(4).fill(null).map((_, index) => (
+          <OverviewCard key={index} initialImageIndex={index} />
+        ));
     }
   };
 

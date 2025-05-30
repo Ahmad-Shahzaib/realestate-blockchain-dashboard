@@ -3,6 +3,11 @@ import { useState } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import PersonalDetails from "./PersonalDetails";
 import MyAddresses from "./MyAddresses";
+import BankDetails from "./BankDetails";
+import LegalAddress from "./LegalAddress";
+import Notification from "./Notifications";
+import SetPasswordSection from "./SetPasswordSection";
+import QRCodePage from "./QRCodePage";
 
 
 const tabs = [
@@ -44,11 +49,11 @@ export default function SettingsPage() {
         {/* Tab Content */}
         {activeTab === 0 && <div><PersonalDetails /></div>}
         {activeTab === 1 && <div><MyAddresses /></div>}
-        {activeTab === 2 && <div>Bank Details content here.</div>}
-        {activeTab === 3 && <div>Legal Information content here.</div>}
-        {activeTab === 4 && <div>Change Password form here.</div>}
-        {activeTab === 5 && <div>Notification settings here.</div>}
-        {activeTab === 6 && <div>Wallet Info and transactions here.</div>}
+        {activeTab === 2 && <div><BankDetails /></div>}
+        {activeTab === 3 && <div><LegalAddress /></div>}
+        {activeTab === 4 && <div><SetPasswordSection /></div>}
+        {activeTab === 5 && <div><Notification /></div>}
+        {activeTab === 6 && <div><QRCodePage /></div>}
       </div>
     </div>
   );
