@@ -14,11 +14,14 @@ import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | NextAdmin - Next.js Dashboard Kit",
-    default: "NextAdmin - Next.js Dashboard Kit",
+    template: "softsuite",
+    default: "softsuite",
+
+    // template: "%s | NextAdmin - Next.js Dashboard Kit",
+    // default: "NextAdmin - Next.js Dashboard Kit",
   },
-  description:
-    "Next.js admin dashboard toolkit with 200+ templates, UI components, and integrations for fast dashboard development.",
+  // description:
+  //   "Next.js admin dashboard toolkit with 200+ templates, UI components, and integrations for fast dashboard development.",
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {
