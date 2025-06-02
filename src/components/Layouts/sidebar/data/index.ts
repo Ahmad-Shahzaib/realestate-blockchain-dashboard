@@ -29,7 +29,18 @@ export const NAV_DATA = [
             url: "/my-nfts",
           }
         ],
-      }, {
+      },
+      //  My Refrerals
+      {
+        title: "My Referrals",
+        url: "/referals",
+        icon: Icons.User,
+        items: [],
+      },
+
+
+
+      {
         title: "Projects",
         url: "/project-pages",
         icon: Icons.HomeIcon,
