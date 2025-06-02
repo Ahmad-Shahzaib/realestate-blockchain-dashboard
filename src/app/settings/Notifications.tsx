@@ -4,16 +4,16 @@ import React from "react"
 
 export default function Notifications() {
     return (
-        <div className="rounded-lg bg-white p-6 shadow-sm">
-            <h2 className="text-2xl font-bold text-gray-900">Notifications</h2>
-            <p className="mt-1 text-gray-600">
+        <div className="rounded-lg custom-border   p-6 shadow-sm">
+            <h2 className="text-2xl font-bold ">Notifications</h2>
+            <p className="mt-1 ">
                 Your personal information is completely secure and we don’t share it with anyone.
             </p>
 
             <div className="mt-8 space-y-4">
                 {/* Push Notifications */}
-                <div className="flex items-center justify-between rounded-md border border-gray-200 bg-gray-50 px-4 py-3">
-                    <span className="text-gray-900 font-medium">Push Notifications</span>
+                <div className="flex items-center justify-between rounded-md custom-border px-4 py-3">
+                    <span className=" font-medium">Push Notifications</span>
                     <label htmlFor="push-toggle" className="relative inline-flex cursor-pointer items-center">
                         <input
                             type="checkbox"
@@ -28,8 +28,8 @@ export default function Notifications() {
                 </div>
 
                 {/* SMS Notifications */}
-                <div className="flex items-center justify-between rounded-md border border-gray-200 bg-gray-50 px-4 py-3">
-                    <span className="text-gray-900 font-medium">SMS Notifications</span>
+                <div className="flex items-center justify-between rounded-md custom-border px-4 py-3">
+                    <span className=" font-medium">SMS Notifications</span>
                     <label className="relative inline-flex cursor-pointer items-center">
                         <input
                             type="checkbox"

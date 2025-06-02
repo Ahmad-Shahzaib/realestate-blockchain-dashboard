@@ -15,7 +15,7 @@ const ProjectDetailPlot = () => {
     };
     return (
         <div className="w-full rounded-lg p-2 shadow-sm">
-            <div className="w-full bg-white border border-gray-200 rounded-lg p-2 sm:p-3 shadow-sm">
+            <div className="w-full  border custom-border rounded-lg p-2 sm:p-3 shadow-sm">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4">
                     <div className="flex items-center space-x-2">
                         <Image
@@ -23,16 +23,16 @@ const ProjectDetailPlot = () => {
                             alt="Qube Logo"
                             className="h-10 w-10 sm:h-15 sm:w-15"
                         />
-                        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">QUBE | Lahore</h2>
-                        <span className="bg-gray-200 text-gray-700 text-xs sm:text-sm px-2 py-1 rounded-full">Mature</span>
+                        <h2 className="text-xl sm:text-2xl font-bold ">QUBE | Lahore</h2>
+                        <span className="  text-xs sm:text-sm px-2 py-1 rounded-full">Mature</span>
                     </div>
-                    <div className="text-blue-700 font-semibold text-sm sm:text-base">TOTAL AREA 22,000 sq.ft.</div>
+                    <div className=" font-semibold text-sm sm:text-base">TOTAL AREA 22,000 sq.ft.</div>
                     <button onClick={handleCardClick} className="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded">Invest Now</button>
                 </div>
             </div>
 
-            <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-5 pt-3  ">
-                <div className="w-full lg:w-2/3 bg-white shadow-lg rounded-lg p-3 sm:p-4">
+            <div className="flex flex-col lg:flex-row  space-y-4 lg:space-y-0 lg:space-x-5 pt-3  ">
+                <div className="w-full lg:w-2/3 custom-border shadow-lg rounded-lg p-3 sm:p-4">
                     {/* Contractual Occupancy Section */}
                     <div className="flex  mb-4">
                         <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-2">
@@ -51,7 +51,7 @@ const ProjectDetailPlot = () => {
                                 />
                             </svg>
                         </div>
-                        <span className="text-gray-500 text-sm font-semibold">CONTRACTUAL OCCUPANCY</span>
+                        <span className="text-sm font-semibold">CONTRACTUAL OCCUPANCY</span>
                     </div>
 
                     {/* Progress Bar */}
@@ -63,7 +63,7 @@ const ProjectDetailPlot = () => {
                         <div className="text-green-500 font-semibold text-sm">100%</div>
                     </div>
 
-                    <div className="w-full max-w-4xl mx-auto bg-gray-2 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start gap-4">
+                    <div className="w-full max-w-4xl mx-auto custom-border rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start gap-4">
                         {/* Left Section: Location and Office */}
                         <div className="flex-1 w-full sm:w-auto">
                             <div className="flex items-center mb-2">
@@ -87,13 +87,13 @@ const ProjectDetailPlot = () => {
                                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                                     />
                                 </svg>
-                                <span className="text-gray-700 text-sm">
+                                <span className=" text-sm">
                                     Plot 59, Block A Divine Gardens, Lahore, Punjab
                                 </span>
                             </div>
                             <div className="flex items-center">
                                 <div className="w-4 h-4 bg-blue-500 rounded mr-2"></div>
-                                <span className="text-gray-700 text-sm">Corporate Office</span>
+                                <span className=" text-sm">Corporate Office</span>
                             </div>
                         </div>
 
@@ -116,11 +116,11 @@ const ProjectDetailPlot = () => {
                                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2-a2 2 0 00-2-2H3a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v8m-2 0h2m0 0v2m-4-2h2"
                                         />
                                     </svg>
-                                    <span className="text-gray-500 text-xs font-semibold uppercase">
+                                    <span className=" text-xs font-semibold uppercase">
                                         Operational Since
                                     </span>
                                 </div>
-                                <span className="text-gray-700 text-sm block sm:text-right">
+                                <span className=" text-sm block sm:text-right">
                                     12 December, 2022
                                 </span>
                             </div>
@@ -144,42 +144,42 @@ const ProjectDetailPlot = () => {
                     </div>
                 </div>
 
-                <div className="w-full lg:w-1/2 bg-white shadow-lg rounded-lg p-3 sm:p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 border border-gray-200 rounded-lg overflow-hidden bg-white">
+                <div className="w-full lg:w-1/2 custom-border shadow-lg rounded-lg p-3 sm:p-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 rounded-lg overflow-hidden">
                         {/* Price per sq ft */}
                         <div className="p-4 sm:p-6 border-b sm:border-r border-gray-200">
-                            <div className="text-xs sm:text-sm text-gray-500 uppercase tracking-wide mb-2">PRICE / SQ. FT.</div>
+                            <div className="text-xs sm:text-sm  uppercase tracking-wide mb-2">PRICE / SQ. FT.</div>
                             <div className="flex items-center gap-2">
-                                <span className="text-xl sm:text-2xl font-bold text-gray-900">28,000</span>
-                                <span className="text-xs sm:text-sm text-gray-600">PKR / sq. ft.</span>
+                                <span className="text-xl sm:text-2xl font-bold ">28,000</span>
+                                <span className="text-xs sm:text-sm ">PKR / sq. ft.</span>
                                 <ArrowRight className="w-4 h-4 text-blue-600 ml-1" />
                             </div>
                         </div>
 
                         {/* Rental Yield */}
                         <div className="p-4 sm:p-6 border-b border-gray-200">
-                            <div className="text-sm text-gray-500 uppercase tracking-wide mb-2">RENTAL YIELD</div>
+                            <div className="text-sm uppercase tracking-wide mb-2">RENTAL YIELD</div>
                             <div className="flex items-center gap-3">
-                                <span className="text-2xl font-bold text-gray-900">5.1%</span>
-                                <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Average</span>
+                                <span className="text-2xl font-bold ">5.1%</span>
+                                <span className="px-2 py-1 bg-orange-100  text-xs font-medium rounded">Average</span>
                             </div>
                         </div>
 
                         {/* Yearly Rental Returns */}
                         <div className="p-4 sm:p-6 border-b sm:border-b-0 sm:border-r border-gray-200">
-                            <div className="text-sm text-gray-500 uppercase tracking-wide mb-2">YEARLY RENTAL RETURNS</div>
+                            <div className="text-sm 0 uppercase tracking-wide mb-2">YEARLY RENTAL RETURNS</div>
                             <div className="flex items-center gap-2">
-                                <span className="text-2xl font-bold text-gray-900">1,440</span>
-                                <span className="text-sm text-gray-600">PKR / sq. ft.</span>
+                                <span className="text-2xl font-bold ">1,440</span>
+                                <span className="text-sm ">PKR / sq. ft.</span>
                             </div>
                         </div>
 
                         {/* Area Available for Sale */}
                         <div className="p-4 sm:p-6">
-                            <div className="text-sm text-gray-500 uppercase tracking-wide mb-2">AREA AVAILABLE FOR SALE</div>
+                            <div className="text-sm  uppercase tracking-wide mb-2">AREA AVAILABLE FOR SALE</div>
                             <div className="flex items-center gap-2">
-                                <span className="text-2xl font-bold text-gray-900">20,059</span>
-                                <span className="text-sm text-gray-600">sq. ft.</span>
+                                <span className="text-2xl font-bold ">20,059</span>
+                                <span className="text-sm ">sq. ft.</span>
                             </div>
                         </div>
                     </div>

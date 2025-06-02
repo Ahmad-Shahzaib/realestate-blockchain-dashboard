@@ -40,18 +40,19 @@ const FaqAccordion: React.FC = () => {
     };
 
     return (
-        <div className=" mx-auto p-6 bg-white">
-            <h2 className="text-3xl font-bold text-gray-800 mb-2 ">FAQs</h2>
-            <p className="text-gray-600  mb-8">
+        <div className=" mx-auto p-6 custom-border ">
+            <h2 className="text-3xl font-bold  mb-2 ">FAQs</h2>
+            <p className="  mb-8">
                 What people frequently ask! The set-up is designed with a keen focus on empowering neighborhood & more specialists.
             </p>
 
             <div className="space-y-4">
                 {faqData.map((item, index) => (
-                    <div key={index} className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                    <div key={index} className="custom-border rounded-xl overflow-hidden shadow-sm">
                         <button
                             onClick={() => toggle(index)}
-                            className="w-full text-left p-4 font-medium text-gray-800 bg-gray-50 hover:bg-gray-100 transition"
+                            className="w-full text-left p-4 font-medium  
+                                 hover:bg-gray-100 transition"
                         >
                             {item.question}
                         </button>

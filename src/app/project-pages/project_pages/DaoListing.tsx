@@ -6,8 +6,8 @@ export default function DAOListings() {
 
     const tabClass = (tab: string) =>
         `px-4 py-1.5 text-sm font-medium rounded-full border ${activeTab === tab
-            ? 'bg-white text-indigo-600 border-indigo-600'
-            : 'text-gray-500 bg-gray-100 border-transparent'
+            ? '  border-indigo-600'
+            : ' border-transparent'
         }`;
 
     const badge = (text: string, color: string) => (
@@ -17,9 +17,9 @@ export default function DAOListings() {
     );
 
     return (
-        <div className="p-6 h-80 bg-white rounded-xl shadow border border-gray-200  mt-3">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Live Orders on DAO Listings</h2>
-            <div className="flex bg-gray-100 rounded-full p-1 w-fit mb-6">
+        <div className="p-6 h-80  rounded-xl shadow custom-border  mt-3">
+            <h2 className="text-xl font-semibold mb-4">Live Orders on DAO Listings</h2>
+            <div className="flex  rounded-full p-1 w-fit mb-6">
                 <button onClick={() => setActiveTab('listings')} className={tabClass('listings')}>
                     DAO Listings Orders
                 </button>
@@ -30,7 +30,7 @@ export default function DAOListings() {
 
             {activeTab === 'listings' && (
                 <div className="space-y-4">
-                    <div className="grid grid-cols-5 gap-4 text-xs font-semibold text-gray-500">
+                    <div className="grid grid-cols-5 gap-4 text-xs font-semibold ">
                         <span>PRICE / SQ. FT.</span>
                         <span>AREA AVAILABLE</span>
                         <span>AGE</span>
@@ -62,7 +62,7 @@ export default function DAOListings() {
 
             {activeTab === 'transactions' && (
                 <div className="space-y-4">
-                    <div className="grid grid-cols-5 gap-4 text-xs font-semibold text-gray-500">
+                    <div className="grid grid-cols-5 gap-4 text-xs font-semibold ">
                         <span>SELLER</span>
                         <span>PRICE / SQ. FT.</span>
                         <span>DATE LISTED</span>

@@ -6,12 +6,12 @@ export default function SetPasswordSection() {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     return (
-        <div className="mt-5 text-center">
-            <h2 className="text-2xl font-bold text-gray-900">Set up Password</h2>
-            <p className="mt-1 text-gray-600 font-medium ">
+        <div className="mt-5 p-4 custom-border rounded">
+            <h2 className="text-2xl font-bold">Set up Password</h2>
+            <p className="mt-1 font-medium ">
                 Set up a new login password for your account email
                 <br />
-                <span className="text-sm text-gray-500">
+                <span className="text-sm">
                     Note: Besides using login credentials, you will still be able to use "Sign In with Google" after setting up a password.
                 </span>
             </p>

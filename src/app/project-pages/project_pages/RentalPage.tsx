@@ -4,20 +4,20 @@ export default function Rentals() {
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
-        <div className="mt-3 p-6 bg-white rounded-lg shadow-md border border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Rentals</h2>
+        <div className="mt-3 p-6 rounded-lg shadow-md custom-border">
+            <h2 className="text-xl font-semibold  mb-4">Rentals</h2>
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <span className="text-gray-600 text-sm font-medium">BASE RENT</span>
-                    <span className="text-gray-600 text-sm font-medium">120 PKR / sq.ft. / mo</span>
+                    <span className=" text-sm font-medium">BASE RENT</span>
+                    <span className=" text-sm font-medium">120 PKR / sq.ft. / mo</span>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <span className="text-gray-600 text-sm font-medium">AT FULL CAPACITY</span>
+                        <span className=" text-sm font-medium">AT FULL CAPACITY</span>
                         <p className="text-sm">120 PKR / sq.ft. / mo</p>
                     </div>
                     <div>
-                        <span className="text-gray-600 text-sm font-medium">NEXT INCREASE DATE</span>
+                        <span className=" text-sm font-medium">NEXT INCREASE DATE</span>
                         <p className="text-sm">19 Apr, 2026</p>
                     </div>
                 </div>
@@ -44,31 +44,31 @@ export default function Rentals() {
                     <div className="mt-4 space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <span className="text-gray-600 text-sm font-medium">AT FULL CAPACITY</span>
+                                <span className=" text-sm font-medium">AT FULL CAPACITY</span>
                                 <p className="text-sm">120 PKR / sq.ft. / mo</p>
                             </div>
                             <div>
-                                <span className="text-gray-600 text-sm font-medium">NEXT INCREASE DATE</span>
+                                <span className=" text-sm font-medium">NEXT INCREASE DATE</span>
                                 <p className="text-sm">19 Apr, 2026</p>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <span className="text-gray-600 text-sm font-medium">5TH OF MONTH DISBURSEMENT</span>
+                                <span className=" text-sm font-medium">5TH OF MONTH DISBURSEMENT</span>
                                 <p className="text-sm">1st of each Month</p>
                             </div>
                             <div>
-                                <span className="text-gray-600 text-sm font-medium">LOCKING DATE</span>
+                                <span className=" text-sm font-medium">LOCKING DATE</span>
                                 <p className="text-sm">Mon</p>
                             </div>
                         </div>
                         <div className="bg-gray-50 p-2 rounded-md">
-                            <p className="text-xs text-gray-600">
+                            <p className="text-xs ">
                                 <span className="text-indigo-600">●</span> The actual transferring can vary by 2-3 days
                             </p>
                         </div>
                         <div className="text-center">
-                            <span className="text-gray-600 text-sm font-medium">RENTAL GROWTH & TREND</span>
+                            <span className=" text-sm font-medium">RENTAL GROWTH & TREND</span>
                             <p className="text-sm">10% each year</p>
                         </div>
                         <div className="relative">

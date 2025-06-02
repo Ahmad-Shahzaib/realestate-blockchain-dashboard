@@ -2,12 +2,12 @@ import React from 'react';
 
 const LocationSection: React.FC = () => {
     return (
-        <div className="bg-white py-10 px-4 sm:px-6 lg:px-8 rounded-md">
-            <div className="max-w-6xl mx-auto rounded-xl border shadow-md p-6">
-                <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-4">
+        <div className="py-10 px-4 sm:px-6 lg:px-8 rounded-md">
+            <div className="max-w-6xl mx-auto rounded-xl custom-bordershadow-md p-6">
+                <h2 className="text-2xl sm:text-3xl font-semibold mb-4">
                     Located in Plot 59, Block A Divine Gardens, Lahore, Punjab
                 </h2>
-                <p className="text-gray-600 mb-6">
+                <p className=" mb-6">
                     Qube is strategically located at a prime location just 3 minutes’ drive from Allama Iqbal International Airport,
                     making it the most sought-after destination for residents, businesses, and investors. Qube is an establishment
                     envisioned to create a sense of belonging as an idealized addition to the landscape of Lahore.

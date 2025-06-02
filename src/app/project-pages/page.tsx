@@ -51,8 +51,8 @@ export function OverviewCards() {
 
     return (
         <>
-            <div className="w-full  mx-auto px-2 sm:px-6 lg:px-4 mb-6 border-b border-gray-4 pb-2">
-                <h1 className="text-2xl font-bold text-black ">Projects</h1>
+            <div className="w-full  mx-auto px-2 sm:px-6 lg:px-4 mb-6 border-b custom-border pb-2">
+                <h1 className="text-2xl font-bold  ">Projects</h1>
             </div>
             <div className="w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-4">
                 {/* Tabs */}

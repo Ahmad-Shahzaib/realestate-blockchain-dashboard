@@ -20,20 +20,20 @@ const SelectedAreaPage: NextPage = () => {
             <div className=" mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Left Section - Select Area */}
-                    <div className="bg-white rounded-lg p-6 border border-gray-200 h-64 ">
+                    <div className=" rounded-lg p-6 custom-border  h-64 ">
                         <div className="mb-6">
                             <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-2">
-                                    <h2 className="text-xl font-semibold text-gray-900">Select Area</h2>
-                                    <Info className="w-4 h-4 text-gray-400" />
+                                    <h2 className="text-xl font-semibold ">Select Area</h2>
+                                    <Info className="w-4 h-4 " />
                                 </div>
                                 <span className="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-sm font-medium">
                                     16,000 PKR / sq.ft.
                                 </span>
                             </div>
-                            <div className="flex items-center gap-2 text-gray-600 text-sm">
+                            <div className="flex items-center gap-2  text-sm">
                                 <span>Move the slider to pledge remaining area.</span>
-                                <Info className="w-4 h-4 text-gray-400" />
+                                <Info className="w-4 h-4 " />
                             </div>
                         </div>
 
@@ -60,7 +60,7 @@ const SelectedAreaPage: NextPage = () => {
                                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
                                     title="Select area to pledge"
                                 />
-                                <div className="flex justify-between text-sm text-gray-500 mt-2">
+                                <div className="flex justify-between text-sm  mt-2">
                                     <span>1 Sq. ft.</span>
                                     <span>6,000 Sq. ft.</span>
                                 </div>
@@ -69,22 +69,22 @@ const SelectedAreaPage: NextPage = () => {
                     </div>
 
                     {/* Right Section - Area to Pledge */}
-                    <div className="bg-white rounded-lg p-6 border border-gray-200">
+                    <div className=" rounded-lg p-6 border custom-border">
                         {/* Area to Pledge */}
                         <div className="mb-6">
-                            <div className="text-gray-500 text-sm mb-2 uppercase tracking-wide">AREA TO PLEDGE</div>
+                            <div className=" text-sm mb-2 uppercase tracking-wide">AREA TO PLEDGE</div>
                             <div className="flex items-baseline justify-between border-b border-gray-200 pb-4">
-                                <span className="text-3xl font-bold text-gray-900">{pledgeArea.toLocaleString()}</span>
-                                <span className="text-gray-500 text-sm">sq. ft.</span>
+                                <span className="text-3xl font-bold ">{pledgeArea.toLocaleString()}</span>
+                                <span className=" text-sm">sq. ft.</span>
                             </div>
                         </div>
 
                         {/* Selected Area Preview */}
                         <div className="mb-6">
-                            <div className="text-gray-500 text-sm mb-4 uppercase tracking-wide">SELECTED AREA PREVIEW</div>
+                            <div className=" text-sm mb-4 uppercase tracking-wide">SELECTED AREA PREVIEW</div>
 
                             {/* Grid Visualization */}
-                            <div className="mb-4">
+                            <div className="mb-4 custom-border">
                                 <div
                                     className="grid grid-cols-20 gap-[0.5px] bg-gray-100 p-1 rounded"
                                     style={{ width: '100%', height: '150px' }}
@@ -99,7 +99,7 @@ const SelectedAreaPage: NextPage = () => {
                                 </div>
                             </div>
 
-                            <div className="flex justify-between text-sm text-gray-600 border-b border-gray-200 pb-4">
+                            <div className="flex justify-between text-sm  border-b border-gray-200 pb-4">
                                 <span className="font-bold">{pledgeArea.toLocaleString()} sq. ft.</span>
                                 <span>{totalArea.toLocaleString()} sq.ft.</span>
                             </div>
@@ -107,12 +107,12 @@ const SelectedAreaPage: NextPage = () => {
 
                         {/* Total Price */}
                         <div className="mb-6">
-                            <div className="text-gray-500 text-sm mb-2 uppercase tracking-wide">TOTAL PRICE</div>
+                            <div className=" text-sm mb-2 uppercase tracking-wide">TOTAL PRICE</div>
                             <div className="flex items-baseline justify-between mb-2">
-                                <span className="text-3xl font-bold text-gray-900">{totalPrice.toLocaleString()}</span>
-                                <span className="text-gray-500 text-sm">PKR</span>
+                                <span className="text-3xl font-bold ">{totalPrice.toLocaleString()}</span>
+                                <span className=" text-sm">PKR</span>
                             </div>
-                            <div className="text-gray-400 text-sm">
+                            <div className=" text-sm">
                                 {totalPrice === 0 ? "zero (PKR)" : `${totalPrice.toLocaleString()} (PKR)`}
                             </div>
                         </div>

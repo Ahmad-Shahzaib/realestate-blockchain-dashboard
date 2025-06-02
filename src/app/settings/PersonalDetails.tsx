@@ -27,10 +27,10 @@ export default function PersonalDetails() {
     };
 
     return (
-        <div className="bg-white border rounded-xl p-6 shadow-sm">
+        <div className="custom-border rounded-xl p-6 shadow-sm">
             <div className="flex justify-between items-start mb-6">
                 <div>
-                    <h2 className="text-2xl font-semibold text-gray-900">Personal Details</h2>
+                    <h2 className="text-2xl font-semibold">Personal Details</h2>
                     <p className="text-sm text-gray-600 mt-1">
                         Please keep your personal information up-to-date at all times. We do not share your information with any third party.
                     </p>
@@ -54,12 +54,12 @@ export default function PersonalDetails() {
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            className="w-full border rounded-md px-4 py-2"
+                            className="w-full custom-border rounded-md px-4 py-2"
                             placeholder="Enter your full legal name"
                             title="Full Name (Legal)"
                         />
                     ) : (
-                        <div className="bg-gray-50 border border-gray-200 rounded-md px-4 py-2">{formData.name}</div>
+                        <div className=" custom-border rounded-md px-4 py-2">{formData.name}</div>
                     )}
                 </div>
 
@@ -90,17 +90,17 @@ export default function PersonalDetails() {
                             placeholder="Enter your email"
                             value={formData.email}
                             onChange={handleChange}
-                            className="w-full border rounded-md px-4 py-2"
+                            className="w-full custom-border rounded-md px-4 py-2"
                         />
                     ) : (
-                        <div className="bg-gray-50 border border-gray-200 rounded-md px-4 py-2">{formData.email}</div>
+                        <div className="custom-border  rounded-md px-4 py-2">{formData.email}</div>
                     )}
                 </div>
 
                 {/* Phone */}
                 <div>
                     <label className="block text-sm font-semibold mb-1">Phone</label>
-                    <div className="flex items-center border rounded-md px-2 py-2 gap-2">
+                    <div className="flex items-center custom-border rounded-md px-2 py-2 gap-2">
                         <span className="flex items-center gap-1 px-2">
                             🇵🇰 <span className="text-sm">+92</span>
                         </span>
@@ -110,7 +110,7 @@ export default function PersonalDetails() {
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handleChange}
-                                    className="w-full border-none focus:ring-0"
+                                    className="w-full custom-border-none focus:ring-0"
                                     title="Phone Number"
                                     placeholder="Enter your phone number"
                                 />
@@ -132,10 +132,10 @@ export default function PersonalDetails() {
                             placeholder="Select your date of birth"
                             value={formData.dob}
                             onChange={handleChange}
-                            className="w-full border rounded-md px-4 py-2"
+                            className="w-full custom-border rounded-md px-4 py-2"
                         />
                     ) : (
-                        <div className="bg-gray-50 border border-gray-200 rounded-md px-4 py-2 min-h-[42px]">
+                        <div className="custom-border custom-border-gray-200 rounded-md px-4 py-2 min-h-[42px]">
                             {formData.dob || "-"}
                         </div>
                     )}
@@ -168,7 +168,7 @@ export default function PersonalDetails() {
                             </label>
                         </div>
                     ) : (
-                        <div className="bg-gray-50 border border-gray-200 rounded-md px-4 py-2 text-gray-600">
+                        <div className=" custom-border custom-border-gray-200 rounded-md px-4 py-2 text-gray-600">
                             {formData.gender}
                         </div>
                     )}
@@ -176,12 +176,14 @@ export default function PersonalDetails() {
             </div>
 
             {/* Buttons */}
-            {isEditing && (
-                <div className="mt-6 flex justify-end gap-4">
-                    <button onClick={() => setIsEditing(false)} className="text-black font-medium">Cancel</button>
-                    <button onClick={handleSubmit} className="bg-blue-700 text-white px-6 py-2 rounded-md font-semibold">Update</button>
-                </div>
-            )}
-        </div>
+            {
+                isEditing && (
+                    <div className="mt-6 flex justify-end gap-4">
+                        <button onClick={() => setIsEditing(false)} className="text-black font-medium">Cancel</button>
+                        <button onClick={handleSubmit} className="bg-blue-700 text-white px-6 py-2 rounded-md font-semibold">Update</button>
+                    </div>
+                )
+            }
+        </div >
     );
 }

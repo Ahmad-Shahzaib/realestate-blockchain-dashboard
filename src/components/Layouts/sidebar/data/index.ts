@@ -67,6 +67,19 @@ export const NAV_DATA = [
 
     ],
   },
+  // explore & Learn 
+  {
+
+    items: [
+      {
+        title: "Explore & Learn",
+        url: "/explore",
+        icon: Icons.FourCircle,
+        items: [],
+      },
+
+    ],
+  },
   {
     // label: "Tools",
     items: [{

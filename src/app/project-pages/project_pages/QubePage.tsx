@@ -3,9 +3,9 @@ export default function QubeLahore() {
         <div className="">
             <div className="flex space-x-6">
                 {/* Qube Lahore Section */}
-                <div className="w-3/4 p-6 bg-white rounded-lg shadow-md border border-gray-200">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Qube Lahore</h2>
-                    <p className="text-gray-600 text-sm mb-6">
+                <div className="w-3/4 p-6  rounded-lg shadow-md custom-border">
+                    <h2 className="text-xl font-semibold  mb-4">Qube Lahore</h2>
+                    <p className=" text-sm mb-6">
                         Qube harmoniously inculcates a secure environment, equipped with all the principal features that prompt an integrated lifestyle. This project has been well constructed with amenities that offer luxury and comfort. It functions as a multipurpose, state-of-the-art lifestyle complex, enabling people and businesses to grow. The Corporate offices at Qube encompasses dynamic conditions for maximum productivity. Spanning over 22,000 sqft, it features exceptional rentable and saleable commercial spaces.
                     </p>
                     <button className="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-indigo-700">
@@ -14,14 +14,14 @@ export default function QubeLahore() {
                 </div>
 
                 {/* Investment & Rental Returns Section */}
-                <div className="w-1/4 p-6 bg-white rounded-lg shadow-md border border-gray-200">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Investment & Rental Returns</h2>
+                <div className="w-1/4 p-6  rounded-lg shadow-md custom-border">
+                    <h2 className="text-xl font-semibold  mb-4">Investment & Rental Returns</h2>
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                            <label htmlFor="area" className="text-gray-600 text-sm font-medium">
+                            <label htmlFor="area" className=" text-sm font-medium">
                                 Area to Own
                             </label>
-                            <span className="text-gray-600 text-sm font-medium">@ 28,000 PKR / sq.ft.</span>
+                            <span className=" text-sm font-medium">@ 28,000 PKR / sq.ft.</span>
                         </div>
                         <input
                             type="text"

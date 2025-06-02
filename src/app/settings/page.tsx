@@ -26,16 +26,16 @@ export default function SettingsPage() {
   return (
     <div className="p-6 mx-auto">
 
-      <h1 className="text-2xl font-semibold text-gray-800 mb-4">Settings</h1>
+      <h1 className="text-2xl font-semibold  mb-4">Settings</h1>
 
-      <div className="border-b border-gray-200">
+      <div className="border-b border-gray-300">
         <nav className="flex flex-wrap gap-4 text-sm font-medium text-gray-600">
           {tabs.map((tab, index) => (
             <button
               key={index}
               onClick={() => setActiveTab(index)}
               className={`px-4 py-2 rounded-t-md transition ${activeTab === index
-                ? "bg-white text-blue-600 border-b-2 border-blue-600 font-semibold"
+                ? "bg-white  font-semibold"
                 : "hover:text-blue-500"
                 }`}
             >
@@ -45,7 +45,7 @@ export default function SettingsPage() {
         </nav>
       </div>
 
-      <div className="mt-6 p-4 bg-white border border-gray-200 rounded-md shadow-sm">
+      <div className="mt-6 ">
         {/* Tab Content */}
         {activeTab === 0 && <div><PersonalDetails /></div>}
         {activeTab === 1 && <div><MyAddresses /></div>}

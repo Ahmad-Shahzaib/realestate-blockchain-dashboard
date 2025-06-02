@@ -4,7 +4,7 @@ const BankDetails = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
-        <div className="p-6">
+        <div className="p-6 custom-border rounded    ">
             {/* Header */}
             <h2 className="text-2xl font-semibold mb-2">Bank Details</h2>
             <p className="text-gray-600 mb-6">

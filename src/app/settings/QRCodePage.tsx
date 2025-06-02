@@ -54,12 +54,12 @@ export default function WalletInfo() {
     )
 
     return (
-        <div className="mx-auto max-w-7xl p-6">
-            <h1 className="mb-6 text-2xl font-semibold text-gray-900">Wallet Info</h1>
+        <div className="mx-auto max-w-7xl p-6 rounded custom-border ">
+            <h1 className="mb-6 text-2xl font-semibold ">Wallet Info</h1>
 
             <div className="flex gap-6">
                 {wallets.map((wallet) => (
-                    <div key={wallet.id} className="flex-1 rounded-lg border border-gray-200 bg-white p-6">
+                    <div key={wallet.id} className="flex-1 rounded-lg custom-border p-6">
                         {/* Crypto Logos */}
                         <div className="mb-6 flex items-center justify-between">
                             {cryptoLogos.map((crypto, index) => (
@@ -81,7 +81,7 @@ export default function WalletInfo() {
                             <div className="flex-1">
                                 <div className="mb-4">
                                     <div className="flex items-center gap-2">
-                                        <span className="font-mono text-base text-gray-900">{wallet.address}</span>
+                                        <span className="font-mono text-base ">{wallet.address}</span>
                                         <button
                                             onClick={() => copyToClipboard(wallet.address)}
                                             className="rounded p-1 text-blue-600 hover:bg-blue-50"
@@ -92,7 +92,7 @@ export default function WalletInfo() {
                                     </div>
                                 </div>
 
-                                <p className="text-sm text-gray-600 leading-relaxed">
+                                <p className="text-sm  leading-relaxed">
                                     Capture this QR on your phone to copy and share your wallet address directly.
                                 </p>
                             </div>

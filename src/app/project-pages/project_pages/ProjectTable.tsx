@@ -9,7 +9,7 @@ import FaqAccordion from './FaqAccordion'
 const ProjectTable = () => {
     return (
         <div className='space-y-2'>
-            <div className='w-full mx-auto bg-white rounded-lg overflow-hidden shadow-md p-4'>
+            <div className='w-full mx-auto custom-border rounded-lg overflow-hidden shadow-md p-4'>
                 <ul className="flex w-full">
                     <li className="flex-1 text-center">Live Orders</li>
                     <li className="flex-1 text-center">Key Ideal Points</li>

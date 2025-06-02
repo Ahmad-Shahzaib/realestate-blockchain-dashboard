@@ -36,14 +36,14 @@ export default function Component() {
     ]
 
     return (
-        <div className=" mx-auto p-6 bg-white rounded-md">
+        <div className=" mx-auto p-6 custom-border rounded-md">
             {/* Search Bar */}
             <div className="relative mb-6">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2  h-4 w-4" />
                 <input
                     type="text"
                     placeholder="Search Documents"
-                    className="w-full pl-10 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-10 py-3 border custom-border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
             </div>
 
@@ -52,7 +52,7 @@ export default function Component() {
                 {documents.map((document) => (
                     <div
                         key={document.id}
-                        className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                        className="flex items-center justify-between p-4 border  custom-border rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                     >
                         <div className="flex items-center space-x-3">
                             {/* PDF Icon */}
@@ -64,7 +64,7 @@ export default function Component() {
 
                             {/* Document Info */}
                             <div className="flex-1 min-w-0">
-                                <h3 className="text-sm font-medium text-gray-900 truncate">{document.title}</h3>
+                                <h3 className="text-sm font-medium  truncate">{document.title}</h3>
                                 <p className="text-sm text-gray-500">Updated on {document.updatedDate}</p>
                             </div>
                         </div>
