@@ -51,10 +51,24 @@ const FaqAccordion: React.FC = () => {
                     <div key={index} className="custom-border rounded-xl overflow-hidden shadow-sm">
                         <button
                             onClick={() => toggle(index)}
-                            className="w-full text-left p-4 font-medium  
+                            className="w-full text-left p-4 font-medium flex justify-between items-center 
                                  hover:bg-gray-100 transition"
                         >
                             {item.question}
+                            <svg
+                                className={`w-5 h-5 transition-transform duration-200 ${openIndex === index ? 'transform rotate-180' : ''
+                                    }`}
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M19 9l-7 7-7-7"
+                                />
+                            </svg>
                         </button>
                         {openIndex === index && (
                             <div className="p-4 text-gray-600 bg-white border-t border-gray-200">

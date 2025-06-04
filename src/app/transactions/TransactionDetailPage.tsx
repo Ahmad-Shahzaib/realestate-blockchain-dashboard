@@ -13,7 +13,7 @@ interface TransactionDetail {
 }
 
 const TransactionDetailPage = () => {
-    // Mock data - replace with actual data fetching
+    // Mock data - replace with actual data fetching 
     const transaction: TransactionDetail = {
         id: "TX123456",
         propertyName: "Luxury Villa",
