@@ -8,35 +8,35 @@ import ProjectTable from "./ProjectTable";
 export default function ProjectSlider() {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-    // Sample property images and videos
+
     const propertyImages = [
         {
             id: 1,
-            src: "/images/images1.jpg", // Ensure this file exists in public/images/
+            src: "/images/images1.jpg",
             alt: "Property exterior view",
             isVideo: false,
         },
         {
             id: 2,
-            src: "/images/images4.jpg", // Ensure this file exists in public/images/
+            src: "/images/images4.jpg",
             alt: "Property front view",
             isVideo: false,
         },
         {
             id: 3,
-            src: "/videos/property-video.mp4", // Ensure this file exists in public/videos/
+            src: "/videos/property-video.mp4",
             alt: "Property video tour",
             isVideo: true,
         },
         {
             id: 4,
-            src: "/images/images2.jpg", // Ensure this file exists in public/images/
+            src: "/images/images2.jpg",
             alt: "Property side view",
             isVideo: false,
         },
         {
             id: 5,
-            src: "/images/images3.jpg", // Ensure this file exists in public/images/
+            src: "/images/images3.jpg",
             alt: "Property aerial view",
             isVideo: false,
         },
@@ -45,7 +45,7 @@ export default function ProjectSlider() {
     const nextImage = () => {
         setCurrentImageIndex((prev) => {
             const next = prev === propertyImages.length - 1 ? 0 : prev + 1;
-            console.log("Next index:", next, "Src:", propertyImages[next].src); // Debugging
+            console.log("Next index:", next, "Src:", propertyImages[next].src);
             return next;
         });
     };
@@ -53,13 +53,13 @@ export default function ProjectSlider() {
     const prevImage = () => {
         setCurrentImageIndex((prev) => {
             const prevIndex = prev === 0 ? propertyImages.length - 1 : prev - 1;
-            console.log("Previous index:", prevIndex, "Src:", propertyImages[prevIndex].src); // Debugging
+            console.log("Previous index:", prevIndex, "Src:", propertyImages[prevIndex].src);
             return prevIndex;
         });
     };
 
     const goToImage = (index: number) => {
-        console.log("Going to index:", index, "Src:", propertyImages[index].src); // Debugging
+        console.log("Going to index:", index, "Src:", propertyImages[index].src);
         setCurrentImageIndex(index);
     };
 
@@ -67,7 +67,7 @@ export default function ProjectSlider() {
         <>
 
             <div className="w-full mx-auto bg-white rounded-lg overflow-hidden">
-                {/* Main Image/Video Display */}
+
                 <div className="relative aspect-video bg-gray-100">
                     {propertyImages[currentImageIndex].isVideo ? (
                         <video
@@ -75,7 +75,7 @@ export default function ProjectSlider() {
                             className="object-cover w-full h-full"
                             controls
                             aria-label={propertyImages[currentImageIndex].alt}
-                            onError={(e) => console.error("Video loading error:", e)} // Debugging
+                            onError={(e) => console.error("Video loading error:", e)}
                         />
                     ) : (
                         <Image
@@ -83,11 +83,11 @@ export default function ProjectSlider() {
                             alt={propertyImages[currentImageIndex].alt}
                             fill
                             className="object-cover"
-                            onError={(e) => console.error("Image loading error:", propertyImages[currentImageIndex].src)} // Debugging
+                            onError={(e) => console.error("Image loading error:", propertyImages[currentImageIndex].src)}
                         />
                     )}
 
-                    {/* Navigation Arrows */}
+
                     <button
                         aria-label="Previous image"
                         className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white/90 rounded-full w-10 h-10"
@@ -104,13 +104,12 @@ export default function ProjectSlider() {
                         <ChevronRight className="w-5 h-5" />
                     </button>
 
-                    {/* Image/Video Counter */}
+
                     <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
                         {currentImageIndex + 1}/{propertyImages.length}
                     </div>
                 </div>
 
-                {/* Thumbnail Gallery */}
                 <div className="p-4 bg-gray-50">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
@@ -136,7 +135,7 @@ export default function ProjectSlider() {
                                             alt={image.alt}
                                             fill
                                             className="object-cover"
-                                            onError={(e) => console.error("Thumbnail loading error:", image.src)} // Debugging
+                                            onError={(e) => console.error("Thumbnail loading error:", image.src)}
                                         />
                                     )}
                                     {image.isVideo && (
