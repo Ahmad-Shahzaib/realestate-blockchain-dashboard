@@ -109,7 +109,6 @@ export function UserInfo() {
             onClick={() => setIsOpen(false)}
           >
             <LogOutIcon />
-
             <span className="text-base font-medium">Log out</span>
           </button>
         </div>

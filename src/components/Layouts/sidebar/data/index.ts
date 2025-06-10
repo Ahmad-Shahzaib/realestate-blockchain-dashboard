@@ -11,6 +11,12 @@ export const NAV_DATA = [
         icon: Icons.HomeIcon,
         items: [],
       },
+      {
+        title: "Projects",
+        url: "/project-pages",
+        icon: Icons.HomeIcon,
+        items: [],
+      },
 
       {
         title: "My DAO",
@@ -40,12 +46,7 @@ export const NAV_DATA = [
 
 
 
-      {
-        title: "Projects",
-        url: "/project-pages",
-        icon: Icons.HomeIcon,
-        items: [],
-      },
+
       {
         title: "Transactions",
         url: "/transactions",

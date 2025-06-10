@@ -37,7 +37,7 @@ export default function SigninWithPassword() {
       <InputGroup
         type="email"
         label="Email"
-        className="mb-4 [&_input]:py-[15px]"
+        className="mb-4 [&_input]:py-[10px]"
         placeholder="Enter your email"
         name="email"
         handleChange={handleChange}
@@ -48,7 +48,7 @@ export default function SigninWithPassword() {
       <InputGroup
         type="password"
         label="Password"
-        className="mb-5 [&_input]:py-[15px]"
+        className="mb-5 [&_input]:py-[10px]"
         placeholder="Enter your password"
         name="password"
         handleChange={handleChange}

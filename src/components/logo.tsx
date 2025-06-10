@@ -9,17 +9,17 @@ export function Logo() {
         src={logo}
         fill
         className="dark:hidden rounded-md "
-        alt="NextAdmin logo"
+        alt="Dao logo"
         role="presentation"
         quality={100}
 
       />
 
       <Image
-        src={darkLogo}
+        src={logo}
         fill
         className="hidden dark:block"
-        alt="NextAdmin logo"
+        alt="Dao logo"
         role="presentation"
         quality={100}
       />
