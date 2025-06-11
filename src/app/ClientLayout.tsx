@@ -7,12 +7,12 @@ import type { PropsWithChildren } from "react";
 import { Providers } from "./providers";
 import { AuthWrapper } from "@/components/Layouts/auth-wrapper";
 import { metadata } from "./metadata";
+import { isAuthenticated } from "@/redux/auth/handler"
 const ClientLayout = ({ children }: any) => {
-    const isAuthenticated = localStorage.getItem("token");
-
+    const isAuthenticatedUser = isAuthenticated();
     return (
         <>
-            {isAuthenticated ? (
+            {isAuthenticatedUser ? (
                 <Providers>
                     <AuthWrapper>
                         <div className="flex min-h-screen">

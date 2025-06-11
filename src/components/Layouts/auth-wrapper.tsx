@@ -1,19 +1,20 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-
+import { isAuthenticated } from "@/redux/auth/handler"
 export const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     const router = useRouter();
     const pathname = usePathname();
-
+    const isAuthenticatedUser = isAuthenticated();
+    console.log("isAuthenticatedUser", isAuthenticatedUser)
     useEffect(() => {
-        const isAuthenticated = localStorage.getItem("token");
+
         const isAuthPage = pathname?.includes("/auth/");
 
-        if (isAuthenticated && isAuthPage) {
-            // If user is authenticated and on auth page, redirect to home
+        if (isAuthenticatedUser && isAuthPage) {
             router.push("/");
-        } else if (!isAuthenticated && !isAuthPage) {
+        } else if
+            (!isAuthenticated && !isAuthPage) {
             // If user is not authenticated and trying to access protected routes
             router.push("/auth/sign-in");
         }

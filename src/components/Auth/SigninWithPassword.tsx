@@ -4,9 +4,12 @@ import Link from "next/link";
 import React, { useState } from "react";
 import InputGroup from "../FormElements/InputGroup";
 import { Checkbox } from "../FormElements/checkbox";
+import { UseDispatch } from "react-redux";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { handleLogin } from "@/redux/auth/handler"; // Adjust the import path based on your project structure
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/reducers/userInfoSlice";
 
 // Define the validation schema using Yup
 const LoginSchema = Yup.object().shape({
@@ -19,6 +22,7 @@ const LoginSchema = Yup.object().shape({
 });
 
 export default function SigninWithPassword() {
+  const dispatch = useDispatch();
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -57,7 +61,7 @@ export default function SigninWithPassword() {
       // Check if response exists and has success property
       if (user) {
         // On success, redirect to the dashboard
-
+        dispatch(setUser(user))
         router.replace("/");
       } else {
         // Handle case where response is undefined or unsuccessful
