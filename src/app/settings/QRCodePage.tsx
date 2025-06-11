@@ -1,8 +1,6 @@
 "use client"
 
 import { Copy } from "lucide-react"
-import CounterDisplay from "../../../components/CounterDisplay"
-import HomePage from "../../../app/page"
 
 export default function WalletInfo() {
     const wallets = [
@@ -58,8 +56,7 @@ export default function WalletInfo() {
     return (
         <div className="mx-auto max-w-7xl p-6 rounded custom-border ">
             <h1 className="mb-6 text-2xl font-semibold ">Wallet Info</h1>
-            <CounterDisplay />
-            <HomePage />
+
 
             <div className="flex gap-6">
                 {wallets.map((wallet) => (

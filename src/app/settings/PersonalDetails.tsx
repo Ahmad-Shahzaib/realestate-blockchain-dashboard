@@ -1,17 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 export default function PersonalDetails() {
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
-        name: "Softsuite Technologies",
-        email: "info@softsuitetech.com",
-        phone: "+92315 1012287",
+        name: "",
+        email: "",
+        phone: "",
         dob: "",
-        gender: "Male",
+        gender: "",
     });
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const res = await fetch("http://localhost:5000/api/users/profile", {
+                    credentials: "include", // use if cookies are needed (e.g., with tokens)
+                });
+                const result = await res.json();
+                if (result.status === "success") {
+                    const user = result.data.user;
+                    setFormData({
+                        name: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
+                        email: user.email || "",
+                        phone: user.phoneNumber || "",
+                        dob: "",
+                        gender: "",
+                    });
+                }
+            } catch (error) {
+                console.error("Failed to fetch profile:", error);
+            }
+        };
+
+        fetchUserProfile();
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,7 +48,7 @@ export default function PersonalDetails() {
 
     const handleSubmit = () => {
         setIsEditing(false);
-        // Optionally send formData to backend here
+
     };
 
     return (
@@ -59,7 +84,7 @@ export default function PersonalDetails() {
                             title="Full Name (Legal)"
                         />
                     ) : (
-                        <div className=" custom-border rounded-md px-4 py-2">{formData.name}</div>
+                        <div className="custom-border rounded-md px-4 py-2">{formData.name || "-"}</div>
                     )}
                 </div>
 
@@ -93,7 +118,7 @@ export default function PersonalDetails() {
                             className="w-full custom-border rounded-md px-4 py-2"
                         />
                     ) : (
-                        <div className="custom-border  rounded-md px-4 py-2">{formData.email}</div>
+                        <div className="custom-border rounded-md px-4 py-2">{formData.email || "-"}</div>
                     )}
                 </div>
 
@@ -117,7 +142,7 @@ export default function PersonalDetails() {
                                 <button className="bg-blue-700 text-white text-sm px-4 py-1.5 rounded-full">Verify</button>
                             </>
                         ) : (
-                            <span className="text-gray-700 text-sm">{formData.phone}</span>
+                            <span className="text-gray-700 text-sm">{formData.phone || "-"}</span>
                         )}
                     </div>
                 </div>
@@ -168,22 +193,20 @@ export default function PersonalDetails() {
                             </label>
                         </div>
                     ) : (
-                        <div className=" custom-border custom-border-gray-200 rounded-md px-4 py-2 text-gray-600">
-                            {formData.gender}
+                        <div className="custom-border custom-border-gray-200 rounded-md px-4 py-2 text-gray-600">
+                            {formData.gender || "-"}
                         </div>
                     )}
                 </div>
             </div>
 
             {/* Buttons */}
-            {
-                isEditing && (
-                    <div className="mt-6 flex justify-end gap-4">
-                        <button onClick={() => setIsEditing(false)} className="text-black font-medium">Cancel</button>
-                        <button onClick={handleSubmit} className="bg-blue-700 text-white px-6 py-2 rounded-md font-semibold">Update</button>
-                    </div>
-                )
-            }
-        </div >
+            {isEditing && (
+                <div className="mt-6 flex justify-end gap-4">
+                    <button onClick={() => setIsEditing(false)} className="text-black font-medium">Cancel</button>
+                    <button onClick={handleSubmit} className="bg-blue-700 text-white px-6 py-2 rounded-md font-semibold">Update</button>
+                </div>
+            )}
+        </div>
     );
 }

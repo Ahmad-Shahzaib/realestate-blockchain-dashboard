@@ -60,7 +60,6 @@ export const handleLogout = () => {
     deleteCookie("refreshToken");
     window.location.href = "/auth/login";
 };
-
 export const isAuthenticated = () => {
     const token = getCookie("token");
     return !!token;
