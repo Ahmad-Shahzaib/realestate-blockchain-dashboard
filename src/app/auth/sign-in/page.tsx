@@ -11,12 +11,12 @@ export const metadata: Metadata = {
 export default function SignIn() {
   return (
     <>
-      <Breadcrumb pageName="Sign In" />
+      {/* <Breadcrumb pageName="Sign In" /> */}
 
       <div className="rounded-[10px] bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
         <div className="flex min-h-screen items-center justify-center">
           <div className="w-full xl:w-1/2">
-            <div className=" w-full  dark:bg-dark-3 sm:p-12.5 xl:p-15 shadow-lg p-4 rounded-[10px]">
+            <div className=" w-full  dark:bg-dark-3 sm:p-12.5 xl:p-15 shadow-lg rounded-[10px]">
               <Signin />
             </div>
           </div>

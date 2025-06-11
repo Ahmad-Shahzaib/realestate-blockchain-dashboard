@@ -54,6 +54,7 @@ export default function SettingsPage() {
         {activeTab === 4 && <div><SetPasswordSection /></div>}
         {activeTab === 5 && <div><Notification /></div>}
         {activeTab === 6 && <div><QRCodePage /></div>}
+
       </div>
     </div>
   );

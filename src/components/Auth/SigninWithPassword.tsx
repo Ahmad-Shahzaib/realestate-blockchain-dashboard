@@ -4,32 +4,77 @@ import Link from "next/link";
 import React, { useState } from "react";
 import InputGroup from "../FormElements/InputGroup";
 import { Checkbox } from "../FormElements/checkbox";
+import * as Yup from "yup";
+import { useRouter } from "next/navigation";
+import { handleLogin } from "@/redux/auth/handler"; // Adjust the import path based on your project structure
+
+// Define the validation schema using Yup
+const LoginSchema = Yup.object().shape({
+  email: Yup.string()
+    .required("Email is required")
+    .email("Please enter a valid email"),
+  password: Yup.string()
+    .required("Password is required")
+    .min(6, "Password must be at least 6 characters"),
+});
 
 export default function SigninWithPassword() {
   const [data, setData] = useState({
-    email: process.env.NEXT_PUBLIC_DEMO_USER_MAIL || "",
-    password: process.env.NEXT_PUBLIC_DEMO_USER_PASS || "",
+    email: "",
+    password: "",
     remember: false,
   });
-
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({
       ...data,
       [e.target.name]: e.target.value,
     });
+    setError(""); // Clear error on input change
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // You can remove this code block
-    setLoading(true);
+    try {
+      // Validate form data using Yup
+      await LoginSchema.validate(data, { abortEarly: false });
 
-    setTimeout(() => {
+      setLoading(true);
+      setError("");
+
+      // Call the handleLogin API
+      const user = await handleLogin({
+        email: data.email,
+        password: data.password,
+      });
+
+      console.log("Login response:", user);
+
+      // Check if response exists and has success property
+      if (user) {
+        // On success, redirect to the dashboard
+
+        router.replace("/");
+      } else {
+        // Handle case where response is undefined or unsuccessful
+        const errorMessage = "Authentication failed. Please try again.";
+        setError(errorMessage);
+      }
+    } catch (err: any) {
+      if (err instanceof Yup.ValidationError) {
+        // Handle validation errors
+        setError(err.errors[0] || "Please check your input");
+      } else {
+        // Handle other errors
+        setError(err?.message || "An error occurred during sign in");
+      }
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -55,6 +100,10 @@ export default function SigninWithPassword() {
         value={data.password}
         icon={<PasswordIcon />}
       />
+
+      {error && (
+        <p className="mb-4 text-center text-red-500 text-sm">{error}</p>
+      )}
 
       <div className="mb-6 flex items-center justify-between gap-2 py-2 font-medium">
         <Checkbox
@@ -82,7 +131,9 @@ export default function SigninWithPassword() {
       <div className="mb-4.5">
         <button
           type="submit"
-          className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary p-4 font-medium text-white transition hover:bg-opacity-90"
+          disabled={loading}
+          className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary p-4 font-medium text-white transition hover:bg-opacity-90 ${loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
         >
           Sign In
           {loading && (
