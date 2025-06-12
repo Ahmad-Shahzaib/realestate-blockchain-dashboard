@@ -1,5 +1,5 @@
 "use client";
-import { compactFormat } from "@/lib/format-number";
+// import { compactFormat } from "@/lib/format-number";
 import { OverviewCard } from "../../app/(home)/_components/overview-cards/card";
 import { useState } from "react";
 import { IoHome } from "react-icons/io5";
