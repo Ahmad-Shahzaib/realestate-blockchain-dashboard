@@ -45,33 +45,36 @@ export function OverviewCard({ initialImageIndex = 0, projectId }: PropsType) {
 
           // Create an array of images for the carousel
           const project = response.data[0];
+          
+          // Create default array from local images
+          const defaultImageUrls = defaultImages.map(img => img.src);
+          
           if (project.mainImageUrl) {
-            // Start with the main image
-            const images = [project.mainImageUrl];
-
-            // Add fallback images if needed to have at least 3 images
-            if (images.length < 3) {
-              // Add default images to fill the remaining slots
-              images.push(...defaultImages.slice(0, 3 - images.length).map(img => img.src));
-            }
-
-            setProjectImages(images);
+            console.log("API image URL:", project.mainImageUrl);
+            
+            // Create an array with the API image and fallback images
+            const imageArray = [
+              project.mainImageUrl,
+              defaultImageUrls[0],
+              defaultImageUrls[1]
+            ];
+            
+            console.log("Project images array:", imageArray);
+            setProjectImages(imageArray);
           } else {
-            // Use default images if no API images available
-            setProjectImages(defaultImages.map(img => img.src));
+            console.warn("No mainImageUrl found in project data");
+            setProjectImages(defaultImageUrls);
           }
 
           setError(null);
         } else {
           console.warn("No projects found in the API response");
           setError("No projects available. Please check back later.");
-          // Set default images
           setProjectImages(defaultImages.map(img => img.src));
         }
       } catch (err: any) {
         console.error("Failed to fetch projects:", err);
         setError(err.message || "Failed to load projects. Please try again later.");
-        // Set default images
         setProjectImages(defaultImages.map(img => img.src));
       } finally {
         setLoading(false);
@@ -116,15 +119,21 @@ export function OverviewCard({ initialImageIndex = 0, projectId }: PropsType) {
 
   return (
     <button className="w-full" onClick={handleCardClick}>
-      <div className="w-full rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer custom-border">
-        {/* Image Section */}
+      <div className="w-full rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer custom-border">        {/* Image Section */}
         <div className="relative h-48 overflow-hidden p-2 ">
+          {/* Using key to force re-render when image source changes */}
           <img
+            key={projectImages[currentImageIndex]}
             src={projectImages[currentImageIndex]}
             alt={`${project?.name || "Property"} aerial view ${currentImageIndex + 1}`}
             width={600}
             height={192}
             className="w-full h-full object-cover rounded-2xl transition-opacity duration-500"
+            onError={(e) => {
+              console.error("Image failed to load:", e);
+              // Fallback to default image on error
+              e.currentTarget.src = defaultImages[0].src;
+            }}
           />
 
           {/* New Listing Badge */}
