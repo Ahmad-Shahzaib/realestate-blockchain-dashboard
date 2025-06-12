@@ -1,5 +1,5 @@
 "use client";
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 
 import { Sidebar } from "@/components/Layouts/sidebar";
 import { Header } from "@/components/Layouts/header";
@@ -9,7 +9,28 @@ import { AuthWrapper } from "@/components/Layouts/auth-wrapper";
 import { metadata } from "./metadata";
 import { isAuthenticated } from "@/redux/auth/handler"
 const ClientLayout = ({ children }: any) => {
-    const isAuthenticatedUser = isAuthenticated();
+    const [isAuthenticatedUser, setIsAuthenticatedUser] = useState(false);
+    
+    useEffect(() => {
+        // Check authentication status on component mount and whenever focus returns to the window
+        const checkAuth = () => {
+            const authStatus = isAuthenticated();
+            setIsAuthenticatedUser(authStatus);
+        };
+        
+        checkAuth(); // Initial check
+        
+        // Add event listeners for focus and storage changes
+        window.addEventListener('focus', checkAuth);
+        window.addEventListener('storage', checkAuth);
+        
+        // Cleanup event listeners
+        return () => {
+            window.removeEventListener('focus', checkAuth);
+            window.removeEventListener('storage', checkAuth);
+        };
+    }, []);
+    
     return (
         <>
             {isAuthenticatedUser ? (

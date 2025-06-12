@@ -12,7 +12,7 @@ export const handleLogin = async (credentials: {
     try {
         const response = await getAxiosInstance('/api/auth').post("/api/auth/login", credentials);
         const { user, accessToken, refreshToken } = response.data.data;
-        console.log("response from backend", response.data)
+        console.log("response from backend", response.data);
         console.log("Login response:", user);
 
         // Set cookies using cookies-next
@@ -30,6 +30,9 @@ export const handleLogin = async (credentials: {
             sameSite: "lax",
         });
 
+        // Dispatch a custom event to notify components about login
+        window.dispatchEvent(new Event('storage'));
+        
         return user;
     } catch (error) {
         throw error;
@@ -58,6 +61,8 @@ export const handleRegister = async (credentials: {
 export const handleLogout = () => {
     deleteCookie("token");
     deleteCookie("refreshToken");
+    // Dispatch a custom event before redirecting
+    window.dispatchEvent(new Event('storage'));
     window.location.href = "/auth/sign-in";
 };
 export const isAuthenticated = () => {
