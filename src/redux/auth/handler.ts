@@ -58,7 +58,7 @@ export const handleRegister = async (credentials: {
 export const handleLogout = () => {
     deleteCookie("token");
     deleteCookie("refreshToken");
-    window.location.href = "/auth/login";
+    window.location.href = "/auth/sign-in";
 };
 export const isAuthenticated = () => {
     const token = getCookie("token");
