@@ -22,9 +22,10 @@ type PropsType = {
   Icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
   initialImageIndex?: number;
   projectId?: string;
+  item?: Project;
 };
 
-export function OverviewCard({ initialImageIndex = 0, projectId }: PropsType) {
+export function OverviewCard({item, initialImageIndex = 0, projectId }: PropsType) {
   const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex % 3);
   const defaultImages = [property1, property2, property3];
   const [projects, setProjects] = useState<Project[]>([]);
@@ -33,8 +34,27 @@ export function OverviewCard({ initialImageIndex = 0, projectId }: PropsType) {
 
   // Create project images array for carousel
   const [projectImages, setProjectImages] = useState<string[]>([]);
-
   useEffect(() => {
+    
+    if (item) {
+      const defaultImageUrls = defaultImages.map(img => img.src);
+      if (item.mainImageUrl) {
+        const imageArray = [
+          item.mainImageUrl,
+          defaultImageUrls[0],
+          defaultImageUrls[1]
+        ];
+        
+        setProjectImages(imageArray);
+      } else {
+        setProjectImages(defaultImageUrls);
+      }
+      
+      setLoading(false);
+      return;
+    }
+    
+ 
     const fetchProjects = async () => {
       try {
         setLoading(true);
@@ -50,8 +70,6 @@ export function OverviewCard({ initialImageIndex = 0, projectId }: PropsType) {
           const defaultImageUrls = defaultImages.map(img => img.src);
           
           if (project.mainImageUrl) {
-            console.log("API image URL:", project.mainImageUrl);
-            
             // Create an array with the API image and fallback images
             const imageArray = [
               project.mainImageUrl,
@@ -59,7 +77,6 @@ export function OverviewCard({ initialImageIndex = 0, projectId }: PropsType) {
               defaultImageUrls[1]
             ];
             
-            console.log("Project images array:", imageArray);
             setProjectImages(imageArray);
           } else {
             console.warn("No mainImageUrl found in project data");
@@ -82,10 +99,9 @@ export function OverviewCard({ initialImageIndex = 0, projectId }: PropsType) {
     };
 
     fetchProjects();
-  }, []);
-
-  // Use the first project from the API if available, otherwise show placeholder data
-  const project = projects.length > 0 ? projects[0] : null;
+  }, [item]);
+  // Use the project from props if available, otherwise use the first project from the API response
+  const project = item || (projects.length > 0 ? projects[0] : null);
 
   const handlePrevImage = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent Link navigation
@@ -98,11 +114,14 @@ export function OverviewCard({ initialImageIndex = 0, projectId }: PropsType) {
     e.stopPropagation(); // Prevent triggering card click
     setCurrentImageIndex((prev) => (prev === projectImages.length - 1 ? 0 : prev + 1));
   };
-
   const router = useRouter();
   const handleCardClick = () => {
-    // If we have a project, navigate to its specific page
-    if (project) {
+    // If we have a projectId from props, use that
+    if (projectId) {
+      router.push(`/project-pages/project_pages?id=${projectId}`);
+    }
+    // Otherwise, if we have a project, navigate to its specific page
+    else if (project) {
       router.push(`/project-pages/project_pages?id=${project._id}`);
     } else {
       router.push("/project-pages/project_pages");
