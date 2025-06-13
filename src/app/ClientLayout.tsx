@@ -10,27 +10,27 @@ import { metadata } from "./metadata";
 import { isAuthenticated } from "@/redux/auth/handler"
 const ClientLayout = ({ children }: any) => {
     const [isAuthenticatedUser, setIsAuthenticatedUser] = useState(false);
-    
+
     useEffect(() => {
-        // Check authentication status on component mount and whenever focus returns to the window
+
         const checkAuth = () => {
             const authStatus = isAuthenticated();
             setIsAuthenticatedUser(authStatus);
         };
-        
-        checkAuth(); // Initial check
-        
-        // Add event listeners for focus and storage changes
+
+        checkAuth();
+
+
         window.addEventListener('focus', checkAuth);
         window.addEventListener('storage', checkAuth);
-        
-        // Cleanup event listeners
+
+
         return () => {
             window.removeEventListener('focus', checkAuth);
             window.removeEventListener('storage', checkAuth);
         };
     }, []);
-    
+
     return (
         <>
             {isAuthenticatedUser ? (

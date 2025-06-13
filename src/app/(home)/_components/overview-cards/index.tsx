@@ -34,11 +34,11 @@ export function OverviewCardsGroup() {
   const renderCards = () => {
     switch (activeTab) {
       case "residential":
-        return Array(2).fill(null).map((_, index) => (
+        return Array(1).fill(null).map((_, index) => (
           <OverviewCard key={index} initialImageIndex={index} />
         ));
       case "commercial":
-        return Array(3).fill(null).map((_, index) => (
+        return Array(1).fill(null).map((_, index) => (
           <OverviewCard key={index} initialImageIndex={index} />
         ));
       case "plots":
@@ -46,7 +46,7 @@ export function OverviewCardsGroup() {
           <OverviewCard key={index} initialImageIndex={index} />
         ));
       default:
-        return Array(4).fill(null).map((_, index) => (
+        return Array(1).fill(null).map((_, index) => (
           <OverviewCard key={index} initialImageIndex={index} />
         ));
     }
