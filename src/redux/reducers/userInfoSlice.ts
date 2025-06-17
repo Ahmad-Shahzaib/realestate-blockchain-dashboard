@@ -7,6 +7,7 @@ interface UserState {
         lastName?: string;
         email?: string;
         password?: string;
+        role?: 'user' | 'admin' | 'superadmin';
     } | null;
 }
 

@@ -7,9 +7,15 @@ import type { PropsWithChildren } from "react";
 import { Providers } from "./providers";
 import { AuthWrapper } from "@/components/Layouts/auth-wrapper";
 import { metadata } from "./metadata";
-import { isAuthenticated } from "@/redux/auth/handler"
+import { isAuthenticated } from "@/redux/auth/handler";
+import dynamic from 'next/dynamic';
+
+// Dynamically import the RoleSwitcher component
+
+
 const ClientLayout = ({ children }: any) => {
     const [isAuthenticatedUser, setIsAuthenticatedUser] = useState(false);
+    const isDev = process.env.NODE_ENV === 'development';
 
     useEffect(() => {
 
@@ -45,6 +51,7 @@ const ClientLayout = ({ children }: any) => {
                                 </main>
                             </div>
                         </div>
+                     
                     </AuthWrapper>
                 </Providers>
             ) : (<>
@@ -57,6 +64,7 @@ const ClientLayout = ({ children }: any) => {
                                 </main>
                             </div>
                         </div>
+                        
                     </AuthWrapper>
                 </Providers>
             </>)}

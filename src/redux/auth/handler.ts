@@ -29,6 +29,14 @@ export const handleLogin = async (credentials: {
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
         });
+        
+        // Store user data including role in cookie
+        setCookie("user", JSON.stringify(user), {
+            maxAge: 7 * 24 * 60 * 60, // 7 days
+            path: "/",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+        });
 
         // Dispatch a custom event to notify components about login
         window.dispatchEvent(new Event('storage'));
@@ -61,6 +69,7 @@ export const handleRegister = async (credentials: {
 export const handleLogout = () => {
     deleteCookie("token");
     deleteCookie("refreshToken");
+    deleteCookie("user");
     // Dispatch a custom event before redirecting
     window.dispatchEvent(new Event('storage'));
     window.location.href = "/auth/sign-in";
@@ -68,4 +77,35 @@ export const handleLogout = () => {
 export const isAuthenticated = () => {
     const token = getCookie("token");
     return !!token;
+};
+
+export const getUserRole = (): 'user' | 'admin' | 'superadmin' | null => {
+    const user = getUserFromCookie();
+    return user?.role || null;
+};
+
+export const isUser = (): boolean => {
+    const role = getUserRole();
+    return role === 'user';
+};
+
+export const isAdmin = (): boolean => {
+    const role = getUserRole();
+    return role === 'admin';
+};
+
+export const isSuperAdmin = (): boolean => {
+    const role = getUserRole();
+    return role === 'superadmin';
+};
+
+export const getUserFromCookie = () => {
+    try {
+        const userJson = getCookie("user");
+        if (!userJson) return null;
+        return JSON.parse(String(userJson));
+    } catch (error) {
+        console.error("Error parsing user from cookie:", error);
+        return null;
+    }
 };
