@@ -1,5 +1,5 @@
 "use client";
-import { compactFormat } from "@/lib/format-number";
+// import { compactFormat } from "@/lib/format-number";
 import { getOverviewData } from "../../fetch";
 import { OverviewCard } from "./card";
 import * as icons from "./icons";
@@ -46,7 +46,7 @@ export function OverviewCardsGroup() {
           <OverviewCard key={index} initialImageIndex={index} />
         ));
       default:
-        return Array(1).fill(null).map((_, index) => (
+        return Array(2).fill(null).map((_, index) => (
           <OverviewCard key={index} initialImageIndex={index} />
         ));
     }

@@ -5,6 +5,7 @@ import userInfoReducer from './userInfoSlice';
 const rootReducer = combineReducers({
     counter: counterReducer,
     userInfo: userInfoReducer,
+
     // Add more reducers here
 });
 

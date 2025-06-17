@@ -1,4 +1,6 @@
+"use client"
 import { OverviewCardsGroup } from './(home)/_components/overview-cards';
+import Home from './(home)/page';
 import CounterDisplay from './components/CounterDisplay';
 
 export default function HomePage() {
@@ -6,8 +8,9 @@ export default function HomePage() {
         <main>
             {/*
              <CounterDisplay />
+             <OverviewCardsGroup />
             */}
-            <OverviewCardsGroup />
+            <Home />
         </main>
     );
 }

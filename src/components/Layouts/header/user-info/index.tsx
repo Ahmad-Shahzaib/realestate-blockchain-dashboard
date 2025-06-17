@@ -73,9 +73,8 @@ export function UserInfo() {
 
             <ChevronUpIcon
               aria-hidden
-              className={`transition-transform ${
-                isOpen ? "rotate-0" : "rotate-180"
-              }`}
+              className={`transition-transform ${isOpen ? "rotate-0" : "rotate-180"
+                }`}
               strokeWidth={1.5}
             />
           </figcaption>
