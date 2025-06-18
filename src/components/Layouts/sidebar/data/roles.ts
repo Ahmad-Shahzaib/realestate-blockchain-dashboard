@@ -14,7 +14,12 @@ export const USER_NAV_DATA = [
         icon: Icons.HomeIcon,
         items: [],
       },
-      
+      {
+        title: "Projects",
+        url: "/project-pages",
+        icon: Icons.HomeIcon,
+        items: [],
+      },
 
       {
         title: "My DAO",
@@ -226,7 +231,7 @@ export const ADMIN_NAV_DATA = [
           },
         ],
       },
-      
+
     ],
   },
   ...USER_NAV_DATA.slice(1),
@@ -241,7 +246,7 @@ export const getNavDataByRole = () => {
   } else if (isUser()) {
     return USER_NAV_DATA;
   }
-  
+
   // Default to user navigation if role cannot be determined
   return USER_NAV_DATA;
 };
