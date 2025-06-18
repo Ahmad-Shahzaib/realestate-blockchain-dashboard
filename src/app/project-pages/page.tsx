@@ -1,14 +1,12 @@
 "use client";
 // import { compactFormat } from "@/lib/format-number";
 import { OverviewCard } from "../../app/(home)/_components/overview-cards/card";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoHome } from "react-icons/io5";
 import { FaConnectdevelop } from "react-icons/fa";
 import { MdOutlineSignalCellularAlt2Bar } from "react-icons/md";
-
 import { FaCalendarAlt } from "react-icons/fa";
-
-
+import ProjectService, { Project } from "@/services/project.service";
 
 const tabs = [
     {
@@ -27,26 +25,42 @@ const tabs = [
 
 export function OverviewCards() {
     const [activeTab, setActiveTab] = useState("all");
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                setLoading(true);
+                const response = await ProjectService.getAllProjects();
+                if (response && response.data && response.data.length > 0) {
+                    setProjects(response.data);
+                    setError(null);
+                } else {
+                    setError("No projects available. Please check back later.");
+                }
+            } catch (err: any) {
+                setError(err.message || "Failed to load projects. Please try again later.");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProjects();
+    }, []);
 
     const renderCards = () => {
-        switch (activeTab) {
-            case "residential":
-                return Array(2).fill(null).map((_, index) => (
-                    <OverviewCard key={index} initialImageIndex={index} />
-                ));
-            case "commercial":
-                return Array(3).fill(null).map((_, index) => (
-                    <OverviewCard key={index} initialImageIndex={index} />
-                ));
-            case "plots":
-                return Array(1).fill(null).map((_, index) => (
-                    <OverviewCard key={index} initialImageIndex={index} />
-                ));
-            default:
-                return Array(4).fill(null).map((_, index) => (
-                    <OverviewCard key={index} initialImageIndex={index} />
-                ));
+        let filteredProjects = projects;
+        if (activeTab === "residential") {
+            filteredProjects = projects.filter(p => p.category === "residential");
+        } else if (activeTab === "commercial") {
+            filteredProjects = projects.filter(p => p.category === "commercial");
+        } else if (activeTab === "plots") {
+            filteredProjects = projects.filter(p => p.category === "plots");
         }
+        return filteredProjects.map((project, index) => (
+            <OverviewCard key={project._id || index} initialImageIndex={index} item={project} />
+        ));
     };
 
     return (
@@ -56,7 +70,6 @@ export function OverviewCards() {
             </div>
             <div className="w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-4">
                 {/* Tabs */}
-
                 <div className="flex space-x-4 mb-6 overflow-x-auto ">
                     {tabs.map((tab) => (
                         <button
@@ -75,7 +88,7 @@ export function OverviewCards() {
 
                 {/* Cards Grid */}
                 <div className="grid gap-2 sm:gap-6 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                    {renderCards()}
+                    {loading ? <div>Loading...</div> : error ? <div>{error}</div> : renderCards()}
                 </div>
             </div>
         </>

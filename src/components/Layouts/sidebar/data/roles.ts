@@ -87,102 +87,102 @@ export const SUPER_ADMIN_NAV_DATA = [
         icon: Icons.HomeIcon,
         items: [],
       },
-      {
-        title: "My DAO",
-        icon: Icons.HomeIcon,
-        items: [
-          {
-            title: "Portfolio",
-            url: "/profile",
-          },
-          {
-            title: "Active Investments",
-            url: "/my-assets",
-          },
-          {
-            title: "Income Stream",
-            url: "/my-nfts",
-          }
-        ],
-      },
-      {
-        title: "My Referrals",
-        url: "/referals",
-        icon: Icons.User,
-        items: [],
-      },
-      {
-        title: "Transactions",
-        url: "/transactions",
-        icon: Icons.User,
-        items: [],
-      },
-      {
-        title: "DAO Listing",
-        url: "/dao-listing",
-        icon: Icons.Alphabet,
-        items: [],
-      },
-      {
-        title: "E Report",
-        url: "/tables",
-        icon: Icons.Table,
-        items: [],
-      },
-      {
-        title: "Tools",
-        icon: Icons.Alphabet,
-        items: [
-          {
-            title: "DAO Bot",
-            url: "/tools/dao-bot",
-          },
-          {
-            title: "Calculators",
-            url: "/tools/calculators",
-          },
-        ],
-      },
-      {
-        title: "User Management",
-        url: "/super-admin/user-management",
-        icon: Icons.User,
-        items: [],
-      },
-      {
-        title: "System Settings",
-        url: "/super-admin/system-settings",
-        icon: Icons.Authentication,
-        items: [],
-      },
+      // {
+      //   title: "My DAO",
+      //   icon: Icons.HomeIcon,
+      //   items: [
+      //     {
+      //       title: "Portfolio",
+      //       url: "/profile",
+      //     },
+      //     {
+      //       title: "Active Investments",
+      //       url: "/my-assets",
+      //     },
+      //     {
+      //       title: "Income Stream",
+      //       url: "/my-nfts",
+      //     }
+      //   ],
+      // },
+      // {
+      //   title: "My Referrals",
+      //   url: "/referals",
+      //   icon: Icons.User,
+      //   items: [],
+      // },
+      // {
+      //   title: "Transactions",
+      //   url: "/transactions",
+      //   icon: Icons.User,
+      //   items: [],
+      // },
+      // {
+      //   title: "DAO Listing",
+      //   url: "/dao-listing",
+      //   icon: Icons.Alphabet,
+      //   items: [],
+      // },
+      // {
+      //   title: "E Report",
+      //   url: "/tables",
+      //   icon: Icons.Table,
+      //   items: [],
+      // },
+      // {
+      //   title: "Tools",
+      //   icon: Icons.Alphabet,
+      //   items: [
+      //     {
+      //       title: "DAO Bot",
+      //       url: "/tools/dao-bot",
+      //     },
+      //     {
+      //       title: "Calculators",
+      //       url: "/tools/calculators",
+      //     },
+      //   ],
+      // },
+      // {
+      //   title: "User Management",
+      //   url: "/super-admin/user-management",
+      //   icon: Icons.User,
+      //   items: [],
+      // },
+      // {
+      //   title: "System Settings",
+      //   url: "/super-admin/system-settings",
+      //   icon: Icons.Authentication,
+      //   items: [],
+      // },
     ],
   },
-  {
-    items: [
-      {
-        title: "Explore & Learn",
-        url: "/explore",
-        icon: Icons.FourCircle,
-        items: [],
-      },
-    ],
-  },
-  {
-    items: [
-      {
-        title: "Rewards Shop",
-        url: "/rewards-shop",
-        icon: Icons.FourCircle,
-        items: [],
-      }, 
-      {
-        title: "Settings",
-        url: "/settings",
-        icon: Icons.Authentication,
-        items: [],
-      },
-    ],
-  },
+  // {
+  //   items: [
+  //     {
+  //       title: "Explore & Learn",
+  //       url: "/explore",
+  //       icon: Icons.FourCircle,
+  //       items: [],
+  //     },
+  //   ],
+  // },
+  // {
+  //   items: [
+  //     {
+  //       title: "Rewards Shop",
+  //       url: "/rewards-shop",
+  //       icon: Icons.FourCircle,
+  //       items: [],
+  //     }, 
+  //     {
+  //       title: "Settings",
+  //       url: "/settings",
+  //       icon: Icons.Authentication,
+  //       items: [],
+  //     },
+  //   ],
+  // },
 ];
 
 // Common navigation items (kept for backward compatibility)
