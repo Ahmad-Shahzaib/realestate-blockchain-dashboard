@@ -31,6 +31,7 @@ export interface Project {
   location: ProjectLocation;
   priceRange: PriceRange;
   stats: ProjectStats;
+  totalArea?: number; // Added to match usage in card.tsx
 }
 
 export interface ApiResponse {

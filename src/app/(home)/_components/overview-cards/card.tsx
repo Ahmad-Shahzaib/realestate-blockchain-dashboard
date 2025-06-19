@@ -9,7 +9,6 @@ import property2 from "../../../../../public/images/cards/image2.jpg";
 import property3 from "../../../../../public/images/cards/image3.jpg";
 import type { JSX, SVGProps } from "react";
 import { useRouter } from "next/navigation";
-import { button } from "@material-tailwind/react";
 import ProjectService, { Project } from "@/services/project.service";
 import Image from "next/image";
 
@@ -27,7 +26,8 @@ type PropsType = {
 
 export function OverviewCard({item, initialImageIndex = 0, projectId }: PropsType) {
   const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex % 3);
-  const defaultImages = [property1, property2, property3];
+  // Ensure defaultImages is always an array of string URLs
+  const defaultImages = [property1.src, property2.src, property3.src];
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,69 +35,49 @@ export function OverviewCard({item, initialImageIndex = 0, projectId }: PropsTyp
   // Create project images array for carousel
   const [projectImages, setProjectImages] = useState<string[]>([]);
   useEffect(() => {
-    
     if (item) {
-      const defaultImageUrls = defaultImages.map(img => img.src);
       if (item.mainImageUrl) {
         const imageArray = [
           item.mainImageUrl,
-          defaultImageUrls[0],
-          defaultImageUrls[1]
+          defaultImages[0],
+          defaultImages[1]
         ];
-        
         setProjectImages(imageArray);
       } else {
-        setProjectImages(defaultImageUrls);
+        setProjectImages(defaultImages);
       }
-      
       setLoading(false);
       return;
     }
-    
- 
     const fetchProjects = async () => {
       try {
         setLoading(true);
         const response = await ProjectService.getAllProjects();
-
         if (response && response.data && response.data.length > 0) {
           setProjects(response.data);
-
-          // Create an array of images for the carousel
           const project = response.data[0];
-          
-          // Create default array from local images
-          const defaultImageUrls = defaultImages.map(img => img.src);
-          
           if (project.mainImageUrl) {
-            // Create an array with the API image and fallback images
             const imageArray = [
               project.mainImageUrl,
-              defaultImageUrls[0],
-              defaultImageUrls[1]
+              defaultImages[0],
+              defaultImages[1]
             ];
-            
             setProjectImages(imageArray);
           } else {
-            console.warn("No mainImageUrl found in project data");
-            setProjectImages(defaultImageUrls);
+            setProjectImages(defaultImages);
           }
-
           setError(null);
         } else {
-          console.warn("No projects found in the API response");
           setError("No projects available. Please check back later.");
-          setProjectImages(defaultImages.map(img => img.src));
+          setProjectImages(defaultImages);
         }
       } catch (err: any) {
-        console.error("Failed to fetch projects:", err);
         setError(err.message || "Failed to load projects. Please try again later.");
-        setProjectImages(defaultImages.map(img => img.src));
+        setProjectImages(defaultImages);
       } finally {
         setLoading(false);
       }
     };
-
     fetchProjects();
   }, [item]);
   // Use the project from props if available, otherwise use the first project from the API response
@@ -141,7 +121,7 @@ export function OverviewCard({item, initialImageIndex = 0, projectId }: PropsTyp
       <div className="w-full rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer custom-border">        {/* Image Section */}
         <div className="relative h-48 overflow-hidden p-2 ">
           {/* Using key to force re-render when image source changes */}
-          <img
+          <Image
             key={projectImages[currentImageIndex]}
             src={projectImages[currentImageIndex]}
             alt={`${project?.name || "Property"} aerial view ${currentImageIndex + 1}`}
@@ -149,10 +129,13 @@ export function OverviewCard({item, initialImageIndex = 0, projectId }: PropsTyp
             height={192}
             className="w-full h-full object-cover rounded-2xl transition-opacity duration-500"
             onError={(e) => {
-              console.error("Image failed to load:", e);
-              // Fallback to default image on error
-              e.currentTarget.src = defaultImages[0].src;
+              // Only fallback if not already using the default image
+              if (e.currentTarget.src !== defaultImages[0]) {
+                e.currentTarget.src = defaultImages[0];
+              }
             }}
+            unoptimized={projectImages[currentImageIndex].startsWith('http')}
+            priority
           />
 
           {/* New Listing Badge */}
@@ -219,7 +202,8 @@ export function OverviewCard({item, initialImageIndex = 0, projectId }: PropsTyp
               <div className="text-sm text-gray-500">{project?.featured ? "Status" : "Floors"}</div>
             </div>
             <div className="text-center">
-              <div className="text-md font-bold">12,490</div>
+              {/* bind area api  */}
+              <div className="text-md font-bold">{project?.totalArea ? `${project.totalArea.toLocaleString()} sq ft` : ""}</div>
               <div className="text-sm text-gray-500">Area</div>
             </div>
           </div>
