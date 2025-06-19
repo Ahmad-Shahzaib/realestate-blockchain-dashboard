@@ -189,35 +189,37 @@ export function OverviewCard({item, initialImageIndex = 0, projectId }: PropsTyp
         </div>
 
         {/* Content Section */}
-        <div className="px-6 py-3">
+        <div className="px-4 py-3">
           {/* Title and Type */}
-          <h2 className="text-xl font-medium mb-1 text-left">{project?.name || "Globe Residency Apartments"}</h2>
-          <p className="text-gray-500 text-sm mb-4">{project?.category ? project.category.charAt(0).toUpperCase() + project.category.slice(1) : "Residential"} Apartments</p>
+          <div className="flex justify-between ">
+            <h2 className="text-md font-medium mb-1 text-left">{project?.name || "Globe Residency Apartments"}</h2>
+          <p className="text-gray-500 text-sm mb-2">{project?.category ? project.category.charAt(0).toUpperCase() + project.category.slice(1) : "Residential"} Apartments</p>
 
+          </div>
           {/* Price and Location */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="text-left mb-4 mt-2">
             <div>
               <span className="text-sm">Retail Price </span>
-              <span className="font-semibold ">{project?.priceRange ? `$${project.priceRange.min.toLocaleString()} - $${project.priceRange.max.toLocaleString()}` : "13,250"}</span>
+              <span className="font-medium">{project?.priceRange ? `$${project.priceRange.min.toLocaleString()} - $${project.priceRange.max.toLocaleString()}` : "13,250"}</span>
             </div>
-            <div className="flex items-center text-sm">
+            <div className="flex items-center text-sm mt-2">
               <MapPin className="w-6 h-6 mr-1" />
               <span>{project?.location ? `${project.location.city}, ${project.location.state}` : "Naya Nazimabad, Karachi"}</span>
             </div>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-3 gap-4 mb-3">
             <div className="text-center">
-              <div className="text-xl font-bold ">{project?.stats?.availableUnits || 156}</div>
+              <div className="text-md font-bold ">{project?.stats?.availableUnits || 156}</div>
               <div className="text-sm ">Available Units</div>
             </div>
             <div className="text-center">
-              <div className="text-xl font-bold">{project?.featured ? "Featured" : "14"}</div>
+              <div className="text-md font-bold">{project?.featured ? "Featured" : "14"}</div>
               <div className="text-sm text-gray-500">{project?.featured ? "Status" : "Floors"}</div>
             </div>
             <div className="text-center">
-              <div className="text-xl font-bold">12,490</div>
+              <div className="text-md font-bold">12,490</div>
               <div className="text-sm text-gray-500">Area</div>
             </div>
           </div>
