@@ -96,7 +96,7 @@ export function Sidebar() {
                 <nav role="navigation" aria-label={section.label}>
                   <ul className="space-y-2">
                     {section.items.map((item) => (
-                      <li key={item.title}>
+                      <li key={`${section.label || 'section'}-${item.title}`}> {/* Make key unique by combining section label and item title */}
                         {item.items.length ? (
                           <div>
                             <MenuItem
@@ -128,7 +128,7 @@ export function Sidebar() {
                                 role="menu"
                               >
                                 {item.items.map((subItem) => (
-                                  <li key={subItem.title} role="none">
+                                  <li key={`${item.title}-${subItem.title}`} role="none"> {/* Make subItem key unique */}
                                     <MenuItem
                                       as="link"
                                       href={subItem.url}
