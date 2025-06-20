@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react";
 import {
     FaBuilding,
@@ -141,7 +142,7 @@ export default function GlobeResidencyForm() {
                     website: form.developerWebsite
                 },
                 status: form.projectStatus || "planning",
-                category: form.category || "residential"||"mixeduse" || "commercial",
+                category: form.category || "residential" || "mixeduse" || "commercial",
                 subcategory: form.subcategory,
                 featured: !!form.featured,
                 startDate: form.startDate,
@@ -740,7 +741,15 @@ export default function GlobeResidencyForm() {
                                 <div key={idx} className="border p-4 rounded-lg mb-4 bg-gray-50">
                                     <div className="flex justify-between items-center mb-2">
                                         <span className="font-semibold">Floor {idx + 1}</span>
-                                        <button type="button" onClick={() => removeFloor(idx)} className="text-red-500 hover:text-red-700" disabled={floors.length === 1}><FaMinus /></button>
+                                        <button
+                                            type="button"
+                                            title="Remove Floor"
+                                            onClick={() => removeFloor(idx)}
+                                            className="text-red-500 hover:text-red-700"
+                                            disabled={floors.length === 1}
+                                        >
+                                            <FaMinus />
+                                        </button>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <input id="name" placeholder="Name" className="p-2 border rounded" value={floor.name} onChange={e => handleFloorChange(idx, e)} />
@@ -841,13 +850,13 @@ export default function GlobeResidencyForm() {
                     <div className="flex justify-end pt-6">
                         <button
                             type="submit"
-                            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-12 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
                             disabled={loading}
                         >
-                            {loading ? "Creating..." : "Create Property Listing"}
+                            {loading ? "Creating..." : "Submit"}
                         </button>
                     </div>
-                    
+
                 </form>
             </div>
         </div>

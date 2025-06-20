@@ -1,7 +1,10 @@
 "use client";
 
+import { title } from "process";
 import * as Icons from "../icons";
 import { isAdmin, isUser, isSuperAdmin } from "@/redux/auth/handler";
+import { url } from "inspector";
+import { icons } from "lucide-react";
 
 // User specific navigation items (limited to 6 items)
 export const USER_NAV_DATA = [
@@ -89,9 +92,43 @@ export const SUPER_ADMIN_NAV_DATA = [
       {
         title: "Projects",
         url: "/project-pages",
-        icon: Icons.HomeIcon,
+        icon: Icons.PieChart,
         items: [],
       },
+      {
+        title: "Add Projects ",
+        url: "/Add-project",
+        icon: Icons.Authentication,
+        items: [],
+      },
+      {
+        title: "Manage Admin",
+        url: "/manage-admin",
+        icon: Icons.Table,
+        items: [],
+      },
+      {
+        title: "User Detail",
+        icon: Icons.User,
+        items: [
+          {
+            title: "Manage Users",
+            url: "/manage-users",
+          },
+          {
+            title: "Users List ",
+            url: "/users-list",
+          },
+
+        ],
+      },
+
+
+
+
+
+
+
       // {
       //   title: "My DAO",
       //   icon: Icons.HomeIcon,
@@ -211,11 +248,21 @@ export const ADMIN_NAV_DATA = [
         icon: Icons.Alphabet,
         items: [],
       },
+
       {
-        title: "E Report",
-        url: "/tables",
-        icon: Icons.Table,
-        items: [],
+        title: "User Detail",
+        icon: Icons.User,
+        items: [
+          {
+            title: "Manage Users",
+            url: "/manage-users",
+          },
+          {
+            title: "Users List ",
+            url: "/users-lisr",
+          },
+
+        ],
       },
       {
         title: "Tools",
@@ -247,6 +294,5 @@ export const getNavDataByRole = () => {
     return USER_NAV_DATA;
   }
 
-  // Default to user navigation if role cannot be determined
   return USER_NAV_DATA;
 };

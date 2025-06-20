@@ -44,24 +44,24 @@ const dashboardMetrics = [
 ;
 
 export function ProjectCards() {
-  const router = useRouter();
+  // const router = useRouter();
 
-  const handleNavigateToGlobeResidency = () => {
-    router.push('/globe-residency');
-  };
+  // const handleNavigateToGlobeResidency = () => {
+  //   router.push('/globe-residency');
+  // };
 
   return (
     <div className="space-y-6 shadow-md p-4 rounded-md">
       {/* Header with Add Project Button */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Project Dashboard</h2>
-        <button
+        {/* <h2 className="text-2xl font-bold">Project Dashboard</h2> */}
+        {/* <button
           onClick={handleNavigateToGlobeResidency}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center"
         >
           <span className="mr-2">+</span>
           Add Project
-        </button>
+        </button> */}
       </div>
 
       {/* Dashboard Metric Cards */}

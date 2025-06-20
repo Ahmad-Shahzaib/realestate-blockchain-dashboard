@@ -1,15 +1,12 @@
 "use client"; // Mark as client component for Next.js
 
 import { useEffect, useState } from "react";
-import { ArrowDownIcon, ArrowUpIcon } from "@/assets/icons";
-import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import property1 from "../../../../../public/images/cards/image1.jpg";
 import property2 from "../../../../../public/images/cards/image2.jpg";
 import property3 from "../../../../../public/images/cards/image3.jpg";
 import type { JSX, SVGProps } from "react";
 import { useRouter } from "next/navigation";
-import ProjectService, { Project } from "@/services/project.service";
 import Image from "next/image";
 
 type PropsType = {
@@ -24,16 +21,26 @@ type PropsType = {
   item?: Project;
 };
 
-export function OverviewCard({item, initialImageIndex = 0, projectId }: PropsType) {
+export interface Project {
+  _id: string;
+  name: string;
+  category: string;
+  status: string;
+  mainImageUrl?: string;
+  priceRange?: { min: number; max: number };
+  location?: { city: string; state: string };
+  stats?: { availableUnits: number };
+  featured?: boolean;
+  totalArea?: number;
+}
+
+export function OverviewCard({ item, initialImageIndex = 0, projectId }: PropsType) {
   const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex % 3);
-  // Ensure defaultImages is always an array of string URLs
   const defaultImages = [property1.src, property2.src, property3.src];
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projectImages, setProjectImages] = useState<string[]>(defaultImages);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Create project images array for carousel
-  const [projectImages, setProjectImages] = useState<string[]>([]);
   useEffect(() => {
     if (item) {
       if (item.mainImageUrl) {
@@ -47,66 +54,33 @@ export function OverviewCard({item, initialImageIndex = 0, projectId }: PropsTyp
         setProjectImages(defaultImages);
       }
       setLoading(false);
-      return;
+    } else {
+      setError("No project data provided.");
+      setProjectImages(defaultImages);
+      setLoading(false);
     }
-    const fetchProjects = async () => {
-      try {
-        setLoading(true);
-        const response = await ProjectService.getAllProjects();
-        if (response && response.data && response.data.length > 0) {
-          setProjects(response.data);
-          const project = response.data[0];
-          if (project.mainImageUrl) {
-            const imageArray = [
-              project.mainImageUrl,
-              defaultImages[0],
-              defaultImages[1]
-            ];
-            setProjectImages(imageArray);
-          } else {
-            setProjectImages(defaultImages);
-          }
-          setError(null);
-        } else {
-          setError("No projects available. Please check back later.");
-          setProjectImages(defaultImages);
-        }
-      } catch (err: any) {
-        setError(err.message || "Failed to load projects. Please try again later.");
-        setProjectImages(defaultImages);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProjects();
   }, [item]);
-  // Use the project from props if available, otherwise use the first project from the API response
-  const project = item || (projects.length > 0 ? projects[0] : null);
+
+  const project = item;
 
   const handlePrevImage = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent Link navigation
-    e.stopPropagation(); // Prevent triggering card click
+    e.preventDefault();
+    e.stopPropagation();
     setCurrentImageIndex((prev) => (prev === 0 ? projectImages.length - 1 : prev - 1));
   };
 
   const handleNextImage = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent Link navigation
-    e.stopPropagation(); // Prevent triggering card click
+    e.preventDefault();
+    e.stopPropagation();
     setCurrentImageIndex((prev) => (prev === projectImages.length - 1 ? 0 : prev + 1));
   };
+
   const router = useRouter();
   const handleCardClick = () => {
-    // If we have a projectId from props, use that
-    if (projectId) {
-      router.push(`/project-pages/project_pages?id=${projectId}`);
+    if (project && project._id) {
+      router.push(`/project-pages/project_pages/${project._id}`);
     }
-    // Otherwise, if we have a project, navigate to its specific page
-    else if (project) {
-      router.push(`/project-pages/project_pages?id=${project._id}`);
-    } else {
-      router.push("/project-pages/project_pages");
-    }
-  };
+  }
 
   if (loading) {
     return <div className="w-full rounded-2xl shadow-lg p-6 text-center">Loading project data...</div>;
@@ -118,9 +92,9 @@ export function OverviewCard({item, initialImageIndex = 0, projectId }: PropsTyp
 
   return (
     <button className="w-full" onClick={handleCardClick}>
-      <div className="w-full rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer custom-border">        {/* Image Section */}
-        <div className="relative h-48 overflow-hidden p-2 ">
-          {/* Using key to force re-render when image source changes */}
+      <div className="w-full rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer custom-border">
+        {/* Image Section */}
+        <div className="relative h-48 overflow-hidden p-2">
           <Image
             key={projectImages[currentImageIndex]}
             src={projectImages[currentImageIndex]}
@@ -129,7 +103,6 @@ export function OverviewCard({item, initialImageIndex = 0, projectId }: PropsTyp
             height={192}
             className="w-full h-full object-cover rounded-2xl transition-opacity duration-500"
             onError={(e) => {
-              // Only fallback if not already using the default image
               if (e.currentTarget.src !== defaultImages[0]) {
                 e.currentTarget.src = defaultImages[0];
               }
@@ -164,8 +137,7 @@ export function OverviewCard({item, initialImageIndex = 0, projectId }: PropsTyp
             {projectImages.map((_, index) => (
               <div
                 key={index}
-                className={`w-1.5 h-1.5 rounded-full ${index === currentImageIndex ? "bg-white" : "bg-white/60"
-                  } transition-opacity`}
+                className={`w-1.5 h-1.5 rounded-full ${index === currentImageIndex ? "bg-white" : "bg-white/60"} transition-opacity`}
               ></div>
             ))}
           </div>
@@ -174,11 +146,11 @@ export function OverviewCard({item, initialImageIndex = 0, projectId }: PropsTyp
         {/* Content Section */}
         <div className="px-4 py-3">
           {/* Title and Type */}
-          <div className="flex justify-between ">
+          <div className="flex justify-between">
             <h2 className="text-md font-medium mb-1 text-left">{project?.name || "Globe Residency Apartments"}</h2>
-          <p className="text-gray-500 text-sm mb-2">{project?.category ? project.category.charAt(0).toUpperCase() + project.category.slice(1) : "Residential"} Apartments</p>
-
+            <p className="text-gray-500 text-sm mb-2">{project?.category ? project.category.charAt(0).toUpperCase() + project.category.slice(1) : "Residential"} Apartments</p>
           </div>
+
           {/* Price and Location */}
           <div className="text-left mb-4 mt-2">
             <div>
@@ -194,15 +166,14 @@ export function OverviewCard({item, initialImageIndex = 0, projectId }: PropsTyp
           {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-4 mb-3">
             <div className="text-center">
-              <div className="text-md font-bold ">{project?.stats?.availableUnits || 156}</div>
-              <div className="text-sm ">Available Units</div>
+              <div className="text-md font-bold">{project?.stats?.availableUnits || 156}</div>
+              <div className="text-sm">Available Units</div>
             </div>
             <div className="text-center">
               <div className="text-md font-bold">{project?.featured ? "Featured" : "14"}</div>
               <div className="text-sm text-gray-500">{project?.featured ? "Status" : "Floors"}</div>
             </div>
             <div className="text-center">
-              {/* bind area api  */}
               <div className="text-md font-bold">{project?.totalArea ? `${project.totalArea.toLocaleString()} sq ft` : ""}</div>
               <div className="text-sm text-gray-500">Area</div>
             </div>
