@@ -11,6 +11,7 @@ export interface UserProfile {
     [key: string]: any;
 }
 
+
 export async function getUserProfile(): Promise<{
     status: string;
     data: { user: UserProfile };
@@ -31,6 +32,27 @@ export async function updateUserProfile(userData: UserProfile): Promise<{
         return await putRequest(getAxiosInstance('/api'), "/api/users/profile", userData);
     } catch (error) {
         console.error("Error updating user profile:", error);
+        throw error;
+    }
+}
+//  get all user detai http://localhost:5000/api/admin/users'
+
+export interface UserDetails {
+    id?: number;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    [key: string]: any;
+}
+
+export async function getUsersInfo(): Promise<{
+    status: string;
+    data: { user: UserDetails };
+}> {
+    try {
+        return await getRequest(getAxiosInstance('/api'), "/api/admin/users");
+    } catch (error) {
+        console.error("Error fetching user profile:", error);
         throw error;
     }
 }
