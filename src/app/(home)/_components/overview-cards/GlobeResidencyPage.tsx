@@ -93,27 +93,8 @@ export default function GlobeResidencyForm() {
         setFloors(floors => floors.map((floor, i) => i === idx ? { ...floor, [field]: value } : floor));
     }
 
-    function addFloor() {
-        setFloors(floors => [
-            ...floors,
-            {
-                name: "",
-                description: "",
-                floorNumber: "",
-                floorPlanUrl: "",
-                totalUnits: "",
-                pricePerSqFt: "",
-                minPrice: "",
-                maxPrice: "",
-                totalSquareFootage: "", // Added totalSquareFootage
-                specifications: "",
-                features: ""
-            }
-        ]);
-    }
-    function removeFloor(idx: number) {
-        setFloors(floors => floors.length > 1 ? floors.filter((_, i) => i !== idx) : floors);
-    }
+
+
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -246,7 +227,7 @@ export default function GlobeResidencyForm() {
                     {success && <div className="text-green-600 mt-4">Project created successfully!</div>}
                     {error && <div className="text-red-600 mt-4">{error}</div>}
                     {/* Basic Information */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border-0">
+                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaBuilding className="w-5 h-5" />
@@ -299,7 +280,7 @@ export default function GlobeResidencyForm() {
                     </div>
 
                     {/* Location Details */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border-0">
+                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaMapMarkerAlt className="w-5 h-5" />
@@ -387,7 +368,7 @@ export default function GlobeResidencyForm() {
                     </div>
 
                     {/* Developer Information */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border-0">
+                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaUser className="w-5 h-5" />
@@ -450,7 +431,7 @@ export default function GlobeResidencyForm() {
                     </div>
 
                     {/* Project Timeline */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border-0">
+                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaCalendarAlt className="w-5 h-5" />
@@ -537,7 +518,7 @@ export default function GlobeResidencyForm() {
                     </div>
 
                     {/* Pricing & Area */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border-0">
+                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaDollarSign className="w-5 h-5" />
@@ -601,7 +582,7 @@ export default function GlobeResidencyForm() {
                     </div>
 
                     {/* Statistics */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border-0">
+                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaChartBar className="w-5 h-5" />
@@ -691,7 +672,7 @@ export default function GlobeResidencyForm() {
                     </div>
 
                     {/* Images & Media */}
-                    <div className="backdrop-blur-sm rounded-lg shadow-lg border-0">
+                    <div className="backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaCamera className="w-5 h-5" />
@@ -729,7 +710,7 @@ export default function GlobeResidencyForm() {
                     </div>
 
                     {/* Floors Section */}
-                    <div className="backdrop-blur-sm rounded-lg shadow-lg border-0">
+                    <div className="backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaBuilding className="w-5 h-5" />
@@ -738,19 +719,8 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 space-y-6">
                             {floors.map((floor, idx) => (
-                                <div key={idx} className="border p-4 rounded-lg mb-4 bg-gray-50">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <span className="font-semibold">Floor {idx + 1}</span>
-                                        <button
-                                            type="button"
-                                            title="Remove Floor"
-                                            onClick={() => removeFloor(idx)}
-                                            className="text-red-500 hover:text-red-700"
-                                            disabled={floors.length === 1}
-                                        >
-                                            <FaMinus />
-                                        </button>
-                                    </div>
+                                <div key={idx} className="border p-4 rounded-lg mb-4 ">
+
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <input id="name" placeholder="Name" className="p-2 border rounded" value={floor.name} onChange={e => handleFloorChange(idx, e)} />
                                         <input id="floorNumber" type="number" placeholder="Floor Number" className="p-2 border rounded" value={floor.floorNumber} onChange={e => handleFloorChange(idx, e)} />
@@ -768,12 +738,12 @@ export default function GlobeResidencyForm() {
                                     </div>
                                 </div>
                             ))}
-                            <button type="button" onClick={addFloor} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"><FaPlus /> Add Floor</button>
+
                         </div>
                     </div>
 
                     {/* Token Information */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border-0">
+                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaCoins className="w-5 h-5" />
