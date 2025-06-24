@@ -28,29 +28,46 @@ export function OverviewCards() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [visibleCount, setVisibleCount] = useState(9); // Show 9 projects initially
+    const [page, setPage] = useState(1); // Track current page
+    const [totalPages, setTotalPages] = useState(1); // Track total pages
+    const [loadingMore, setLoadingMore] = useState(false); // Track loading state for pagination
+
+    // Fetch projects for a given page
+    const fetchProjects = async (pageNum = 1, reset = false) => {
+        try {
+            if (pageNum === 1) setLoading(true);
+            else setLoadingMore(true);
+            // Update API to support pagination: /projects?page=pageNum
+            const response = await ProjectService.getAllProjects(pageNum);
+            if (response && response.data && response.data.length > 0) {
+                setProjects(prev => reset ? response.data : [...prev, ...response.data]);
+                setTotalPages(response.pagination.pages || 1);
+                setError(null);
+            } else if (pageNum === 1) {
+                setProjects([]);
+                setError("No projects available. Please check back later.");
+            }
+        } catch (err: any) {
+            setError(err.message || "Failed to load projects. Please try again later.");
+        } finally {
+            if (pageNum === 1) setLoading(false);
+            else setLoadingMore(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                setLoading(true);
-                const response = await ProjectService.getAllProjects();
-                if (response && response.data && response.data.length > 0) {
-                    setProjects(response.data);
-                    setError(null);
-                } else {
-                    setError("No projects available. Please check back later.");
-                }
-            } catch (err: any) {
-                setError(err.message || "Failed to load projects. Please try again later.");
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProjects();
-    }, []);
+        setPage(1);
+        fetchProjects(1, true);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab]);
 
-    console.log("Projects details page:", projects);
+    const handleLoadMore = () => {
+        if (page < totalPages && !loadingMore) {
+            const nextPage = page + 1;
+            setPage(nextPage);
+            fetchProjects(nextPage);
+        }
+    };
 
     const renderCards = () => {
         let filteredProjects = projects;
@@ -61,7 +78,7 @@ export function OverviewCards() {
         } else if (activeTab === "plots") {
             filteredProjects = projects.filter(p => p.category === "plots");
         }
-        return filteredProjects.slice(0, visibleCount).map((project, index) => (
+        return filteredProjects.map((project, index) => (
             <OverviewCard key={project._id || index} initialImageIndex={index} item={project} />
         ));
     };
@@ -75,7 +92,7 @@ export function OverviewCards() {
     } else if (activeTab === "plots") {
         filteredProjects = projects.filter(p => p.category === "plots");
     }
-    const hasMore = visibleCount < filteredProjects.length;
+    const hasMore = page < totalPages;
 
     return (
         <>
@@ -88,7 +105,7 @@ export function OverviewCards() {
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
-                            onClick={() => { setActiveTab(tab.id); setVisibleCount(9); }}
+                            onClick={() => { setActiveTab(tab.id); setPage(1); }}
                             className={`flex items-center px-4 py-2 text-lg font-medium rounded-lg whitespace-nowrap ${activeTab === tab.id
                                 ? "bg-black text-white"
                                 : "bg-gray-100 text-black hover:bg-gray-200"
@@ -107,10 +124,10 @@ export function OverviewCards() {
                 <div className="w-full flex justify-end mt-6">
                     <button
                         className={`bg-blue-500 text-white py-2 px-4 rounded-lg transition-colors ${!hasMore ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
-                        onClick={() => hasMore && setVisibleCount((prev) => prev + 6)}
-                        disabled={!hasMore}
+                        onClick={handleLoadMore}
+                        disabled={!hasMore || loadingMore}
                     >
-                        {hasMore ? 'Load More Projects' : 'No More Projects'}
+                        {loadingMore ? 'Loading...' : hasMore ? 'Load More Projects' : 'No More Projects'}
                     </button>
                 </div>
             </div>

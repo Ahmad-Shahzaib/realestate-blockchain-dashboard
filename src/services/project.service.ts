@@ -155,12 +155,14 @@ api.interceptors.response.use(
  */
 export const ProjectService = {
   /**
-   * Fetch all projects
+   * Fetch all projects (with optional pagination)
+   * @param page Optional page number for pagination
    * @returns Promise with the API response
    */
-  getAllProjects: async (): Promise<ApiResponse> => {
+  getAllProjects: async (page?: number): Promise<ApiResponse> => {
     try {
-      const response = await api.get('/projects');
+      const params = page ? { params: { page } } : {};
+      const response = await api.get('/projects', params);
       return response.data;
     } catch (error: any) {
       throw error; // Error already handled by interceptor
