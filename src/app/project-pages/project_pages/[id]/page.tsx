@@ -89,7 +89,10 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
                         <span className="  text-xs sm:text-sm px-2 py-1 rounded-full">Mature</span>
                     </div>
                     <div className=" font-semibold text-sm sm:text-base">
-                        1200 sq ft
+                        {project?.totalArea !== undefined
+                  ? `${Number(project.totalArea).toLocaleString()} sq ft`
+                  : ""}
+
                     </div>
                     <button onClick={handleCardClick} className="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded">Invest Now</button>
                 </div>

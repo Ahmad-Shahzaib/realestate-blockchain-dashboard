@@ -2,18 +2,20 @@
 import * as React from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { getUsersInfo } from '@/services/user.services';
+import EditUserModal from '@/components/EditUserModal';
 
 const Page = () => {
     const [users, setUsers] = React.useState<any[]>([]);
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
+    const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
+    const [selectedUser, setSelectedUser] = React.useState<any>(null);
 
     React.useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const res = await getUsersInfo();
-                let usersData = res.data.users; // <-- fix here
-                // Always ensure usersData is an array
+                let usersData = res.data.users;
                 if (!Array.isArray(usersData)) {
                     usersData = usersData ? [usersData] : [];
                 }
@@ -50,7 +52,7 @@ const Page = () => {
                         </thead>
                         <tbody>
                             {users.map((user, idx) => (
-                                <tr key={user.id || user._id || idx} className="border-b hover:bg-gray-50">
+                                <tr key={user.id || user._id} className="border-b hover:bg-gray-50">
                                     <td className="py-2 px-4 text-sm ">{user.id || user._id || ''}</td>
                                     <td className="py-2 px-4 text-sm ">{user.firstName || user.name || ''} {user.lastName || ''}</td>
                                     <td className="py-2 px-4 text-sm ">{user.email || ''}</td>
@@ -58,6 +60,10 @@ const Page = () => {
                                         <button
                                             className="text-blue-500 hover:text-blue-700"
                                             aria-label={`Edit user ${user.firstName || user.name || ''}`}
+                                            onClick={() => {
+                                                setSelectedUser(user);
+                                                setIsEditModalOpen(true);
+                                            }}
                                         >
                                             <Pencil className="w-5 h-5" />
                                         </button>
@@ -74,6 +80,11 @@ const Page = () => {
                     </table>
                 </div>
             )}
+            <EditUserModal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                user={selectedUser}
+            />
         </div>
     );
 };
