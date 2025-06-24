@@ -109,7 +109,7 @@ const ProjectDetailPlot = () => {
                         <h2 className="text-xl sm:text-2xl font-bold ">{project?.name} | {project?.location.city}</h2>
                         <span className="  text-xs sm:text-sm px-2 py-1 rounded-full">Mature</span>
                     </div>
-                    <div className=" font-semibold text-sm sm:text-base">{project?.totalArea ? `${project.totalArea.toLocaleString()} sq. ft.` : "1,200 sq. ft."}</div>
+                    <div className=" font-semibold text-sm sm:text-base">{project?.totalArea ? `${project.totalArea.toLocaleString()} sq. ft.` : ""}</div>
                     <button onClick={handleCardClick} className="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded">Invest Now</button>
                 </div>
             </div>
@@ -171,7 +171,7 @@ const ProjectDetailPlot = () => {
                                     />
                                 </svg>
                                 <span className=" text-sm">
-                                    Plot 59, Block A Divine Gardens, Lahore, Punjab
+                                    {project?.location ? `${project.location.city}, ${project.location.state}` : ""}
                                 </span>
                             </div>
                             <div className="flex items-center">

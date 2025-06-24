@@ -37,7 +37,7 @@ export default function GlobeResidencyForm() {
         completionDate: "",
         featured: false,
         totalArea: "",
-        sellableArea: "", // Added sellableArea
+        sellableArea: "", 
         priceMin: "",
         priceMax: "",
         totalUnits: "",

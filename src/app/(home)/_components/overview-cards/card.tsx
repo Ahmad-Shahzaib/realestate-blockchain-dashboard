@@ -91,6 +91,9 @@ export function OverviewCard({ item, initialImageIndex = 0, projectId }: PropsTy
   }
 
   return (
+
+    <>
+    
     <button className="w-full" onClick={handleCardClick}>
       <div className="w-full rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer custom-border">
         {/* Image Section */}
@@ -148,38 +151,45 @@ export function OverviewCard({ item, initialImageIndex = 0, projectId }: PropsTy
           {/* Title and Type */}
           <div className="flex justify-between">
             <h2 className="text-md font-medium mb-1 text-left">{project?.name || "Globe Residency Apartments"}</h2>
-            <p className="text-gray-500 text-sm mb-2">{project?.category ? project.category.charAt(0).toUpperCase() + project.category.slice(1) : "Residential"} Apartments</p>
+            <p className="text-gray-500 text-sm mb-2">{project?.category ? project.category.charAt(0).toUpperCase() + project.category.slice(1) : ""} Apartments</p>
           </div>
 
           {/* Price and Location */}
           <div className="text-left mb-4 mt-2">
             <div>
               <span className="text-sm">Retail Price </span>
-              <span className="font-medium">{project?.priceRange ? `$${project.priceRange.min.toLocaleString()} - $${project.priceRange.max.toLocaleString()}` : "13,250"}</span>
+              <span className="font-medium">{project?.priceRange ? `$${project.priceRange.min.toLocaleString()} - $${project.priceRange.max.toLocaleString()}` : ""}</span>
             </div>
             <div className="flex items-center text-sm mt-2">
               <MapPin className="w-6 h-6 mr-1" />
-              <span>{project?.location ? `${project.location.city}, ${project.location.state}` : "Naya Nazimabad, Karachi"}</span>
+              <span>{project?.location ? `${project.location.city}, ${project.location.state}` : ""}</span>
             </div>
           </div>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-4 mb-3">
             <div className="text-center">
-              <div className="text-md font-bold">{project?.stats?.availableUnits || 156}</div>
+              <div className="text-md font-bold">{project?.stats?.availableUnits}</div>
               <div className="text-sm">Available Units</div>
             </div>
             <div className="text-center">
-              <div className="text-md font-bold">{project?.featured ? "Featured" : "14"}</div>
-              <div className="text-sm text-gray-500">{project?.featured ? "Status" : "Floors"}</div>
+              <div className="text-md font-bold">Featured</div>
+              <div className="text-sm text-gray-500">{project?.featured ? "Yes" : "No"}</div>
             </div>
             <div className="text-center">
-              <div className="text-md font-bold">{project?.totalArea ? `${project.totalArea.toLocaleString()} sq ft` : ""}</div>
+             <div className="text-md font-bold"> 
+                {project?.totalArea !== undefined
+                  ? `${Number(project.totalArea).toLocaleString()} sq ft`
+                  : ""}
+              </div>
               <div className="text-sm text-gray-500">Area</div>
             </div>
           </div>
         </div>
       </div>
+      
     </button>
+    
+    </>
   );
 }

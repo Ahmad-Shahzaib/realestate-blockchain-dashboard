@@ -128,7 +128,19 @@ export function OverviewCardsGroup() {
         <div className="grid gap-2 sm:gap-6 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {renderCards()}
         </div>
+
       </div>
+      {/* load more page  button */}
+      <div className="w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-4 mt-6">
+        <button
+          onClick={() => console.log("Load more projects")}
+          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Load More Projects
+        </button>
+      </div>
+      
+      
     </>
   );
 }

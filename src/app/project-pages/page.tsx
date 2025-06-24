@@ -28,6 +28,7 @@ export function OverviewCards() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [visibleCount, setVisibleCount] = useState(9); // Show 9 projects initially
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -49,6 +50,8 @@ export function OverviewCards() {
         fetchProjects();
     }, []);
 
+    console.log("Projects details page:", projects);
+
     const renderCards = () => {
         let filteredProjects = projects;
         if (activeTab === "residential") {
@@ -58,10 +61,21 @@ export function OverviewCards() {
         } else if (activeTab === "plots") {
             filteredProjects = projects.filter(p => p.category === "plots");
         }
-        return filteredProjects.map((project, index) => (
+        return filteredProjects.slice(0, visibleCount).map((project, index) => (
             <OverviewCard key={project._id || index} initialImageIndex={index} item={project} />
         ));
     };
+
+    // Determine if there are more projects to load
+    let filteredProjects = projects;
+    if (activeTab === "residential") {
+        filteredProjects = projects.filter(p => p.category === "residential");
+    } else if (activeTab === "commercial") {
+        filteredProjects = projects.filter(p => p.category === "commercial");
+    } else if (activeTab === "plots") {
+        filteredProjects = projects.filter(p => p.category === "plots");
+    }
+    const hasMore = visibleCount < filteredProjects.length;
 
     return (
         <>
@@ -74,7 +88,7 @@ export function OverviewCards() {
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
+                            onClick={() => { setActiveTab(tab.id); setVisibleCount(9); }}
                             className={`flex items-center px-4 py-2 text-lg font-medium rounded-lg whitespace-nowrap ${activeTab === tab.id
                                 ? "bg-black text-white"
                                 : "bg-gray-100 text-black hover:bg-gray-200"
@@ -89,6 +103,15 @@ export function OverviewCards() {
                 {/* Cards Grid */}
                 <div className="grid gap-2 sm:gap-6 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                     {loading ? <div>Loading...</div> : error ? <div>{error}</div> : renderCards()}
+                </div>
+                <div className="w-full flex justify-end mt-6">
+                    <button
+                        className={`bg-blue-500 text-white py-2 px-4 rounded-lg transition-colors ${!hasMore ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
+                        onClick={() => hasMore && setVisibleCount((prev) => prev + 6)}
+                        disabled={!hasMore}
+                    >
+                        {hasMore ? 'Load More Projects' : 'No More Projects'}
+                    </button>
                 </div>
             </div>
         </>
