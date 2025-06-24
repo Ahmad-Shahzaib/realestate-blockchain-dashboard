@@ -47,7 +47,7 @@ export interface UserDetails {
 
 export async function getUsersInfo(): Promise<{
     status: string;
-    data: { user: UserDetails };
+    data: { users: UserDetails[] };
 }> {
     try {
         return await getRequest(getAxiosInstance('/api'), "/api/admin/users");
