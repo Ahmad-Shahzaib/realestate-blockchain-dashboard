@@ -4,6 +4,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+   experimental: {
+    appDir: true
+  },
   // Disable ESLint
   eslint: {
     ignoreDuringBuilds: true,
