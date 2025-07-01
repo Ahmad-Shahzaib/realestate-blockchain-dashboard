@@ -1,12 +1,8 @@
 "use client";
 
-import { title } from "process";
 import * as Icons from "../icons";
-import { isAdmin, isUser, isSuperAdmin } from "@/redux/auth/handler";
-import { url } from "inspector";
-import { icons } from "lucide-react";
+import { isAdmin, isUser, isSuperAdmin, isCustomer } from "@/redux/auth/handler";
 
-// User specific navigation items (limited to 6 items)
 export const USER_NAV_DATA = [
   {
     label: "USER MENU",
@@ -15,6 +11,18 @@ export const USER_NAV_DATA = [
         title: "Dashboard",
         url: "/",
         icon: Icons.HomeIcon,
+        items: [],
+      },
+      {
+        title:'My Investments',
+        url: "/my-investments",
+        icon: Icons.PieChart,
+        items: [],
+      },
+      {
+        title:"Profit-History",
+        url: "/profit-history",
+        icon: Icons.PieChart,
         items: [],
       },
       {
@@ -101,6 +109,21 @@ export const SUPER_ADMIN_NAV_DATA = [
         icon: Icons.Authentication,
         items: [],
       },
+       {
+        title: "Customers",
+        icon: Icons.User,
+        items: [
+          {
+            title: "Manage Customers",
+            url: "/manage-customers",
+          },
+          {
+            title: "Customers List ",
+            url: "/customer",
+          },
+
+        ],
+      },
       {
         title: "Manage Admin",
         url: "/manage-admin",
@@ -122,109 +145,8 @@ export const SUPER_ADMIN_NAV_DATA = [
 
         ],
       },
-
-
-
-
-
-
-
-      // {
-      //   title: "My DAO",
-      //   icon: Icons.HomeIcon,
-      //   items: [
-      //     {
-      //       title: "Portfolio",
-      //       url: "/profile",
-      //     },
-      //     {
-      //       title: "Active Investments",
-      //       url: "/my-assets",
-      //     },
-      //     {
-      //       title: "Income Stream",
-      //       url: "/my-nfts",
-      //     }
-      //   ],
-      // },
-      // {
-      //   title: "My Referrals",
-      //   url: "/referals",
-      //   icon: Icons.User,
-      //   items: [],
-      // },
-      // {
-      //   title: "Transactions",
-      //   url: "/transactions",
-      //   icon: Icons.User,
-      //   items: [],
-      // },
-      // {
-      //   title: "DAO Listing",
-      //   url: "/dao-listing",
-      //   icon: Icons.Alphabet,
-      //   items: [],
-      // },
-      // {
-      //   title: "E Report",
-      //   url: "/tables",
-      //   icon: Icons.Table,
-      //   items: [],
-      // },
-      // {
-      //   title: "Tools",
-      //   icon: Icons.Alphabet,
-      //   items: [
-      //     {
-      //       title: "DAO Bot",
-      //       url: "/tools/dao-bot",
-      //     },
-      //     {
-      //       title: "Calculators",
-      //       url: "/tools/calculators",
-      //     },
-      //   ],
-      // },
-      // {
-      //   title: "User Management",
-      //   url: "/super-admin/user-management",
-      //   icon: Icons.User,
-      //   items: [],
-      // },
-      // {
-      //   title: "System Settings",
-      //   url: "/super-admin/system-settings",
-      //   icon: Icons.Authentication,
-      //   items: [],
-      // },
     ],
   },
-  // {
-  //   items: [
-  //     {
-  //       title: "Explore & Learn",
-  //       url: "/explore",
-  //       icon: Icons.FourCircle,
-  //       items: [],
-  //     },
-  //   ],
-  // },
-  // {
-  //   items: [
-  //     {
-  //       title: "Rewards Shop",
-  //       url: "/rewards-shop",
-  //       icon: Icons.FourCircle,
-  //       items: [],
-  //     }, 
-  //     {
-  //       title: "Settings",
-  //       url: "/settings",
-  //       icon: Icons.Authentication,
-  //       items: [],
-  //     },
-  //   ],
-  // },
 ];
 
 // Common navigation items (kept for backward compatibility)
@@ -278,11 +200,65 @@ export const ADMIN_NAV_DATA = [
           },
         ],
       },
+      
 
     ],
   },
   ...USER_NAV_DATA.slice(1),
 ];
+
+export const ADMIN_NAV_DATA_WITH_CUSTOMERS = [
+  {
+    label: "Customer MENU",
+    items: [
+      {
+        title: "Dashboard",
+        url: "/customer/customer-dashboard",
+        icon: Icons.HomeIcon,
+        items: [],
+      },
+      {
+        title: "Properties",
+        url: "/customer/project-pages",
+        icon: Icons.PieChart,
+        items: [],
+      },
+      {
+        title: "Investments",
+        url: "/customer/investments",
+        icon: Icons.PieChart,
+        items: [],
+      },
+      {
+        title: "Users",
+        url: "/customer/users",
+        icon: Icons.User,
+        items: [],
+      },
+      // {
+      //   title: "Projects",
+      //   url: "/project-pages",
+      //   icon: Icons.HomeIcon,
+      //   items: [],
+      // },
+      // {
+      //   title: "User Detail",
+      //   icon: Icons.User,
+      //   items: [
+      //     {
+      //       title: "Manage Users",
+      //       url: "/manage-users",
+      //     },
+      //     {
+      //       title: "Users List ",
+      //       url: "/users-lisr",
+      //     },
+
+      //   ],
+      // },
+    ],
+  },
+]
 
 // Get the appropriate navigation data based on user role
 export const getNavDataByRole = () => {
@@ -292,6 +268,9 @@ export const getNavDataByRole = () => {
     return ADMIN_NAV_DATA;
   } else if (isUser()) {
     return USER_NAV_DATA;
+  }
+  else if (isCustomer()) {
+    return ADMIN_NAV_DATA_WITH_CUSTOMERS;
   }
 
   return USER_NAV_DATA;

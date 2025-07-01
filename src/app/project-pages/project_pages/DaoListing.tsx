@@ -1,58 +1,70 @@
 import { useState } from 'react';
-import { FaArrowUpRightFromSquare } from 'react-icons/fa6'; // Icon as per image
+import { ExternalLink, User } from 'lucide-react';
 
 export default function DAOListings() {
     const [activeTab, setActiveTab] = useState('listings');
 
-    const tabClass = (tab: string) =>
-        `px-4 py-1.5 text-sm font-medium rounded-full border ${activeTab === tab
-            ? '  border-indigo-600'
-            : ' border-transparent'
-        }`;
+    const listings = [
+        { price: '27,500 PKR', area: '3.8 sq.ft.', date: 'Apr 18, 2025', seller: 'Aliraza' },
+        { price: '26,500 PKR', area: '6 sq.ft.', date: 'Apr 18, 2025', seller: 'Gul54481' }
+    ];
 
-    const badge = (text: string, color: string) => (
-        <span className={`text-xs font-semibold rounded-full px-3 py-1 ${color}`}>
-            {text}
-        </span>
-    );
+    const transactions = [
+        { seller: 'Hf27', price: '27,999 sq.ft.', date: 'Feb 23, 2025', status: 'completed' },
+        { seller: 'Hf27', price: '38,000 sq.ft.', date: 'Oct 11, 2024', status: 'completed' }
+    ];
 
     return (
-        <div className="p-6 h-80  rounded-xl shadow custom-border  mt-3">
-            <h2 className="text-xl font-semibold mb-4">Live Orders on DAO Listings</h2>
-            <div className="flex  rounded-full p-1 w-fit mb-6">
-                <button onClick={() => setActiveTab('listings')} className={tabClass('listings')}>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
+            <h3 className="text-lg lg:text-xl font-bold text-gray-800 mb-6">Live Orders on DAO Listings</h3>
+            
+            {/* Tabs */}
+            <div className="flex bg-gray-100 rounded-lg p-1 mb-6 w-fit">
+                <button 
+                    onClick={() => setActiveTab('listings')}
+                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                        activeTab === 'listings' 
+                            ? 'bg-white text-blue-600 shadow-sm' 
+                            : 'text-gray-600 hover:text-gray-800'
+                    }`}
+                >
                     DAO Listings Orders
                 </button>
-                <button onClick={() => setActiveTab('transactions')} className={tabClass('transactions')}>
+                <button 
+                    onClick={() => setActiveTab('transactions')}
+                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                        activeTab === 'transactions' 
+                            ? 'bg-white text-blue-600 shadow-sm' 
+                            : 'text-gray-600 hover:text-gray-800'
+                    }`}
+                >
                     Recent Transactions
                 </button>
             </div>
 
             {activeTab === 'listings' && (
                 <div className="space-y-4">
-                    <div className="grid grid-cols-5 gap-4 text-xs font-semibold ">
-                        <span>PRICE / SQ. FT.</span>
-                        <span>AREA AVAILABLE</span>
-                        <span>AGE</span>
-                        <span>SELLER</span>
-                        <span>ACTION</span>
+                    <div className="grid grid-cols-5 gap-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                        <span>Price / sq. ft.</span>
+                        <span>Area Available</span>
+                        <span>Age</span>
+                        <span>Seller</span>
+                        <span>Action</span>
                     </div>
 
-                    {/* Listings */}
-                    {[
-                        { price: '27,500 PKR', area: '3.8 sq.ft.', date: 'Apr 18, 2025', seller: 'Aliraza' },
-                        { price: '26,500 PKR', area: '6 sq.ft.', date: 'Apr 18, 2025', seller: 'Gul54481' }
-                    ].map((item, idx) => (
-                        <div key={idx} className="grid grid-cols-5 gap-4 items-center border-t border-gray-200 pt-3 text-sm">
-                            {badge(item.price, 'bg-green-100 text-green-600')}
-                            {badge(item.area, 'bg-orange-100 text-orange-600')}
-                            <span>{item.date}</span>
-                            <span className="flex items-center">
-                                <img src="https://via.placeholder.com/20" alt="Seller Icon" className="mr-2 rounded-full" />
-                                {item.seller}
-                            </span>
-                            <button className="flex items-center gap-2 text-sm border border-indigo-600 text-indigo-600 px-3 py-1.5 rounded-md hover:bg-indigo-50">
-                                <FaArrowUpRightFromSquare className="w-3 h-3" />
+                    {listings.map((item, idx) => (
+                        <div key={idx} className="grid grid-cols-5 gap-4 items-center p-4 border border-gray-200 rounded-lg">
+                            <span className="text-sm font-medium text-gray-800">{item.price}</span>
+                            <span className="text-sm text-gray-600">{item.area}</span>
+                            <span className="text-sm text-gray-600">{item.date}</span>
+                            <div className="flex items-center gap-2">
+                                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <User className="w-3 h-3 text-blue-600" />
+                                </div>
+                                <span className="text-sm text-gray-800">{item.seller}</span>
+                            </div>
+                            <button className="flex items-center gap-2 text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                <ExternalLink className="w-3 h-3" />
                                 Buy Now
                             </button>
                         </div>
@@ -62,29 +74,29 @@ export default function DAOListings() {
 
             {activeTab === 'transactions' && (
                 <div className="space-y-4">
-                    <div className="grid grid-cols-5 gap-4 text-xs font-semibold ">
-                        <span>SELLER</span>
-                        <span>PRICE / SQ. FT.</span>
-                        <span>DATE LISTED</span>
-                        <span>STATUS</span>
-                        <span>SOLD IN</span>
+                    <div className="grid grid-cols-5 gap-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                        <span>Seller</span>
+                        <span>Price / sq. ft.</span>
+                        <span>Date Listed</span>
+                        <span>Status</span>
+                        <span>Action</span>
                     </div>
 
-                    {/* Transactions */}
-                    {[
-                        { seller: 'Hf27', price: '27,999 sq.ft.', date: 'Feb 23, 2025', status: 'completed' },
-                        { seller: 'Hf27', price: '38,000 sq.ft.', date: 'Oct 11, 2024', status: 'completed' }
-                    ].map((item, idx) => (
-                        <div key={idx} className="grid grid-cols-5 gap-4 items-center border-t border-gray-200 pt-3 text-sm">
-                            <span className="flex items-center">
-                                <img src="https://via.placeholder.com/20" alt="Seller Icon" className="mr-2 rounded-full" />
-                                {item.seller}
+                    {transactions.map((item, idx) => (
+                        <div key={idx} className="grid grid-cols-5 gap-4 items-center p-4 border border-gray-200 rounded-lg">
+                            <div className="flex items-center gap-2">
+                                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <User className="w-3 h-3 text-blue-600" />
+                                </div>
+                                <span className="text-sm text-gray-800">{item.seller}</span>
+                            </div>
+                            <span className="text-sm text-gray-600">{item.price}</span>
+                            <span className="text-sm text-gray-600">{item.date}</span>
+                            <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                                {item.status}
                             </span>
-                            <span>{item.price}</span>
-                            <span>{item.date}</span>
-                            {badge(item.status, 'bg-green-100 text-green-600')}
-                            <button className="flex items-center gap-2 text-sm border border-indigo-600 text-indigo-600 px-3 py-1.5 rounded-md hover:bg-indigo-50">
-                                <FaArrowUpRightFromSquare className="w-3 h-3" />
+                            <button className="flex items-center gap-2 text-sm border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors">
+                                <ExternalLink className="w-3 h-3" />
                                 View Details
                             </button>
                         </div>

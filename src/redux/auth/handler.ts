@@ -79,7 +79,7 @@ export const isAuthenticated = () => {
     return !!token;
 };
 
-export const getUserRole = (): 'user' | 'admin' | 'superadmin' | null => {
+export const getUserRole = (): 'user' | 'admin' | 'superadmin' | "customer" | null => {
     const user = getUserFromCookie();
     return user?.role || null;
 };
@@ -97,6 +97,11 @@ export const isAdmin = (): boolean => {
 export const isSuperAdmin = (): boolean => {
     const role = getUserRole();
     return role === 'superadmin';
+};
+
+export const isCustomer = (): boolean => {
+    const role = getUserRole();
+    return role === 'customer';
 };
 
 export const getUserFromCookie = () => {

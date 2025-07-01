@@ -3,35 +3,24 @@
 import Image from "next/image";
 import dao from "@/assets/logos/dao.svg";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaGlobe } from 'react-icons/fa';
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, MapPin, Calendar, CheckCircle } from "lucide-react"
 import ProjectSlider from "@/app/project-pages/project_pages/ProjectSlider";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ProjectService, { Project } from "@/services/project.service";
 import axios from "axios";
 
-const defaultImages: { src: string }[] = [
-    { src: "/images/images1.jpg" },
-    { src: "/images/images2.jpg" },
-    { src: "/images/images3.jpg" }
-];
-
 const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
     const projectId = params.id;
-    console.log("project Id ", projectId)
     const [project, setProject] = useState<Project | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [projects, setProjects] = useState<Project[]>([]);
-    const [projectImages, setProjectImages] = useState<string[]>([]);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
 
     useEffect(() => {
         const fetchProjects = async () => {
             try {
                 setLoading(true);
-                // Direct Axios GET request
                 const response = await axios.get("http://localhost:5000/api/projects");
                 if (response.data && response.data.data && response.data.data.length > 0) {
                     setProjects(response.data.data);
@@ -60,200 +49,204 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
         fetchProjectDetails();
     }, [projectId]);
 
-    if (loading) {
-        return <div>Loading project details...</div>;
-    }
-
-    if (error) {
-        return <div className="text-red-500">Error: {error}</div>;
-    }
-
-
-
-
     const router = useRouter();
     const handleCardClick = () => {
         router.push("/project-pages/project-plot-detail");
     };
-    return (
-        <div className="w-full rounded-lg p-2 shadow-sm" >
-            <div className="w-full  border custom-border rounded-lg p-2 sm:p-3 shadow-sm" >
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4">
-                    <div className="flex items-center space-x-2">
-                        <Image
-                            src={dao}
-                            alt="Qube Logo"
-                            className="h-10 w-10 sm:h-15 sm:w-15"
-                        />
-                        <h2 className="text-xl sm:text-2xl font-bold ">{project?.name} | {project?.location.city}</h2>
-                        <span className="  text-xs sm:text-sm px-2 py-1 rounded-full">Mature</span>
-                    </div>
-                    <div className=" font-semibold text-sm sm:text-base">
-                        {project?.totalArea !== undefined
-                  ? `${Number(project.totalArea).toLocaleString()} sq ft`
-                  : ""}
 
-                    </div>
-                    <button onClick={handleCardClick} className="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded">Invest Now</button>
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="bg-white rounded-lg p-8 shadow-sm">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="text-gray-600 mt-4">Loading project details...</p>
                 </div>
             </div>
+        );
+    }
 
-            <div className="flex flex-col lg:flex-row  space-y-4 lg:space-y-0 lg:space-x-5 pt-3  ">
-                <div className="w-full lg:w-2/3 custom-border shadow-lg rounded-lg p-3 sm:p-4">
-                    {/* Contractual Occupancy Section */}
-                    <div className="flex  mb-4">
-                        <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-2">
-                            <svg
-                                className="w-4 h-4 text-white"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M5 13l4 4L19 7"
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="bg-white rounded-lg p-8 shadow-sm border border-red-200">
+                    <div className="text-red-500 text-center">Error: {error}</div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-gray-50">
+            <div className="max-w-7xl mx-auto p-4 lg:p-8 space-y-6">
+                {/* Project Header */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
+                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+                                <Image
+                                    src={dao}
+                                    alt="Qube Logo"
+                                    className="h-8 w-8"
                                 />
-                            </svg>
-                        </div>
-                        <span className="text-sm font-semibold">CONTRACTUAL OCCUPANCY</span>
-                    </div>
-
-                    {/* Progress Bar */}
-                    <div className="w-1/4  rounded-full h-2.5 mb-4 flex items-center space-x-2">
-                        <div
-                            className="bg-green-500 h-2.5 rounded-full"
-                            style={{ width: "100%" }}
-                        ></div>
-                        <div className="text-green-500 font-semibold text-sm">100%</div>
-                    </div>
-
-                    <div className="w-full max-w-4xl mx-auto custom-border rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start gap-4">
-                        {/* Left Section: Location and Office */}
-                        <div className="flex-1 w-full sm:w-auto">
-                            <div className="flex items-center mb-2">
-                                <svg
-                                    className="w-5 h-5 text-teal-500 mr-2"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"
-                                    />
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                                    />
-                                </svg>
-                                <span className=" text-sm">
-                                    Plot 59, Block A Divine Gardens, Lahore, Punjab
+                            </div>
+                            <div>
+                                <h1 className="text-xl lg:text-2xl font-bold text-gray-800">
+                                    {project?.name} | {project?.location.city}
+                                </h1>
+                                <span className="inline-block bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium">
+                                    Mature
                                 </span>
                             </div>
-                            <div className="flex items-center">
-                                <div className="w-4 h-4 bg-blue-500 rounded mr-2"></div>
-                                <span className=" text-sm">Corporate Office</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <div className="text-right">
+                                <div className="text-lg font-bold text-gray-800">
+                                    {project?.totalArea !== undefined
+                                        ? `${Number(project.totalArea).toLocaleString()} sq ft`
+                                        : ""}
+                                </div>
+                                <div className="text-sm text-gray-500">Total Area</div>
+                            </div>
+                            <button 
+                                onClick={handleCardClick} 
+                                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                            >
+                                Invest Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Main Content Grid */}
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                    {/* Left Section - Project Details */}
+                    <div className="xl:col-span-2 space-y-6">
+                        {/* Contractual Occupancy */}
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
+                            <div className="flex items-center gap-2 mb-4">
+                                <CheckCircle className="w-5 h-5 text-green-500" />
+                                <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                                    Contractual Occupancy
+                                </span>
+                            </div>
+
+                            {/* Progress Bar */}
+                            <div className="mb-6">
+                                <div className="w-full bg-gray-200 rounded-full h-3">
+                                    <div className="bg-green-500 h-3 rounded-full" style={{ width: "100%" }}></div>
+                                </div>
+                                <div className="flex justify-between items-center mt-2">
+                                    <span className="text-sm text-gray-500">Progress</span>
+                                    <span className="text-sm font-semibold text-green-600">100%</span>
+                                </div>
+                            </div>
+
+                            {/* Location and Details */}
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div className="space-y-4">
+                                    <div className="flex items-start gap-3">
+                                        <MapPin className="w-5 h-5 text-blue-500 mt-0.5" />
+                                        <div>
+                                            <p className="text-sm text-gray-600">Location</p>
+                                            <p className="font-medium text-gray-800">
+                                                Plot 59, Block A Divine Gardens, Lahore, Punjab
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start gap-3">
+                                        <div className="w-5 h-5 bg-blue-500 rounded mt-0.5"></div>
+                                        <div>
+                                            <p className="text-sm text-gray-600">Type</p>
+                                            <p className="font-medium text-gray-800">Corporate Office</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div className="flex items-start gap-3">
+                                        <Calendar className="w-5 h-5 text-gray-500 mt-0.5" />
+                                        <div>
+                                            <p className="text-sm text-gray-600">Operational Since</p>
+                                            <p className="font-medium text-gray-800">12 December, 2022</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-sm text-gray-600">Social:</span>
+                                        <div className="flex gap-2">
+                                            <a href="#" className="text-blue-600 hover:text-blue-700">
+                                                <FaFacebookF size={16} />
+                                            </a>
+                                            <a href="#" className="text-pink-500 hover:text-pink-600">
+                                                <FaInstagram size={16} />
+                                            </a>
+                                            <a href="#" className="text-blue-700 hover:text-blue-800">
+                                                <FaLinkedinIn size={16} />
+                                            </a>
+                                            <a href="#" className="text-gray-600 hover:text-gray-700">
+                                                <FaGlobe size={16} />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                    </div>
 
-                        {/* Right Section: Operational Since and Social Media Icons */}
-                        <div className="flex items-center justify-between w-full sm:w-auto sm:space-x-4">
-                            {/* Operational Since */}
-                            <div className="text-left sm:text-right border-l-2 pl-2 border-gray-5 border-r-2 pr-2">
-                                <div className="flex items-center justify-start sm:justify-end mb-1">
-                                    <svg
-                                        className="w-5 h-5 text-gray-500 mr-1"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2-a2 2 0 00-2-2H3a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v8m-2 0h2m0 0v2m-4-2h2"
-                                        />
-                                    </svg>
-                                    <span className=" text-xs font-semibold uppercase">
-                                        Operational Since
+                    {/* Right Section - Stats */}
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
+                        <h3 className="text-lg font-bold text-gray-800 mb-6">Investment Overview</h3>
+                        
+                        <div className="space-y-6">
+                            {/* Price per sq ft */}
+                            <div className="p-4 bg-blue-50 rounded-lg">
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-sm font-medium text-gray-600 uppercase tracking-wide">
+                                        Price / sq. ft.
+                                    </span>
+                                    <ArrowRight className="w-4 h-4 text-blue-600" />
+                                </div>
+                                <div className="text-2xl font-bold text-gray-800">28,000</div>
+                                <div className="text-sm text-gray-500">PKR / sq. ft.</div>
+                            </div>
+
+                            {/* Rental Yield */}
+                            <div className="p-4 bg-green-50 rounded-lg">
+                                <div className="text-sm font-medium text-gray-600 uppercase tracking-wide mb-2">
+                                    Rental Yield
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-2xl font-bold text-gray-800">5.1%</span>
+                                    <span className="bg-orange-100 text-orange-700 text-xs font-medium px-2 py-1 rounded">
+                                        Average
                                     </span>
                                 </div>
-                                <span className=" text-sm block sm:text-right">
-                                    12 December, 2022
-                                </span>
                             </div>
 
-                            {/* Social Media Icons */}
-                            <div className="flex space-x-3 ">
-                                <a href="#" className="text-blue-600">
-                                    <FaFacebookF size={20} />
-                                </a>
-                                <a href="#" className="text-pink-500">
-                                    <FaInstagram size={20} />
-                                </a>
-                                <a href="#" className="text-blue-700">
-                                    <FaLinkedinIn size={20} />
-                                </a>
-                                <a href="#" className="text-gray-600">
-                                    <FaGlobe size={20} />
-                                </a>
+                            {/* Yearly Rental Returns */}
+                            <div className="p-4 bg-purple-50 rounded-lg">
+                                <div className="text-sm font-medium text-gray-600 uppercase tracking-wide mb-2">
+                                    Yearly Rental Returns
+                                </div>
+                                <div className="text-2xl font-bold text-gray-800">1,440</div>
+                                <div className="text-sm text-gray-500">PKR / sq. ft.</div>
+                            </div>
+
+                            {/* Area Available */}
+                            <div className="p-4 bg-amber-50 rounded-lg">
+                                <div className="text-sm font-medium text-gray-600 uppercase tracking-wide mb-2">
+                                    Area Available for Sale
+                                </div>
+                                <div className="text-2xl font-bold text-gray-800">20,059</div>
+                                <div className="text-sm text-gray-500">sq. ft.</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="w-full lg:w-1/2 custom-border shadow-lg rounded-lg p-3 sm:p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 rounded-lg overflow-hidden">
-                        {/* Price per sq ft */}
-                        <div className="p-4 sm:p-6 border-b sm:border-r border-gray-200">
-                            <div className="text-xs sm:text-sm  uppercase tracking-wide mb-2">PRICE / SQ. FT.</div>
-                            <div className="flex items-center gap-2">
-                                <span className="text-xl sm:text-2xl font-bold ">28,000</span>
-                                <span className="text-xs sm:text-sm ">PKR / sq. ft.</span>
-                                <ArrowRight className="w-4 h-4 text-blue-600 ml-1" />
-                            </div>
-                        </div>
-
-                        {/* Rental Yield */}
-                        <div className="p-4 sm:p-6 border-b border-gray-200">
-                            <div className="text-sm uppercase tracking-wide mb-2">RENTAL YIELD</div>
-                            <div className="flex items-center gap-3">
-                                <span className="text-2xl font-bold ">5.1%</span>
-                                <span className="px-2 py-1 bg-orange-100  text-xs font-medium rounded">Average</span>
-                            </div>
-                        </div>
-
-                        {/* Yearly Rental Returns */}
-                        <div className="p-4 sm:p-6 border-b sm:border-b-0 sm:border-r border-gray-200">
-                            <div className="text-sm 0 uppercase tracking-wide mb-2">YEARLY RENTAL RETURNS</div>
-                            <div className="flex items-center gap-2">
-                                <span className="text-2xl font-bold ">1,440</span>
-                                <span className="text-sm ">PKR / sq. ft.</span>
-                            </div>
-                        </div>
-
-                        {/* Area Available for Sale */}
-                        <div className="p-4 sm:p-6">
-                            <div className="text-sm  uppercase tracking-wide mb-2">AREA AVAILABLE FOR SALE</div>
-                            <div className="flex items-center gap-2">
-                                <span className="text-2xl font-bold ">20,059</span>
-                                <span className="text-sm ">sq. ft.</span>
-                            </div>
-                        </div>
-                    </div>
+                {/* Project Slider and Table */}
+                <div>
+                    <ProjectSlider />
                 </div>
-            </div>
-            <div className="pt-4">
-                <ProjectSlider />
             </div>
         </div>
     )

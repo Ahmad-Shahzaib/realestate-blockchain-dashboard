@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
     FaBuilding,
     FaMapMarkerAlt,
@@ -9,100 +9,203 @@ import {
     FaChartBar,
     FaCamera,
     FaStar,
-    FaCoins,
-    FaHome,
-    FaPlus,
-    FaMinus
+    FaCoins
 } from "react-icons/fa";
-import createProject from "@/services/project.service";
+import { useDispatch } from 'react-redux';
+import { createProject } from '@/redux/reducers/projectSlice';
 
-export default function GlobeResidencyForm() {
-    const [form, setForm] = useState({
-        propertyName: "",
-        category: "",
-        subcategory: "",
-        description: "",
-        address: "",
-        city: "",
-        state: "",
-        country: "",
-        latitude: "",
-        longitude: "",
-        developerName: "",
-        developerWebsite: "",
-        developerDescription: "",
-        developerLogo: "",
-        projectStatus: "",
-        startDate: "",
-        completionDate: "",
-        featured: false,
-        totalArea: "",
-        sellableArea: "", 
-        priceMin: "",
-        priceMax: "",
-        totalUnits: "",
-        soldUnits: "",
-        reservedUnits: "",
-        availableUnits: "",
-        views: "",
-        inquiries: "",
-        mainImageUrl: "",
-        galleryImages: "",
-        amenities: "",
-        tokenName: "",
-        tokenSymbol: "",
-        tokenSupply: "",
-        pricePerToken: "",
-        walletAddress: ""
-    });
-    const [floors, setFloors] = useState([
-        {
-            name: "",
-            description: "",
-            floorNumber: "",
-            floorPlanUrl: "",
-            totalUnits: "",
-            pricePerSqFt: "",
-            minPrice: "",
-            maxPrice: "",
-            totalSquareFootage: "", // Added totalSquareFootage
-            specifications: "",
-            features: ""
-        }
-    ]);
+// Types for form and floor
+interface Floor {
+    name: string;
+    description: string;
+    floorNumber: string;
+    floorPlanUrl: string;
+    totalUnits: string;
+    pricePerSqFt: string;
+    minPrice: string;
+    maxPrice: string;
+    totalSquareFootage: string;
+    specifications: string;
+    features: string;
+    minSqftBuy?: string;
+    maxSqftBuy?: string;
+}
+
+interface FormState {
+    propertyName: string;
+    category: string;
+    subcategory: string;
+    description: string;
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+    latitude: string;
+    longitude: string;
+    developerName: string;
+    developerWebsite: string;
+    developerDescription: string;
+    developerLogo: string;
+    projectStatus: string;
+    startDate: string;
+    completionDate: string;
+    featured: boolean;
+    totalArea: string;
+    sellableArea: string;
+    priceMin: string;
+    priceMax: string;
+    totalUnits: string;
+    soldUnits: string;
+    reservedUnits: string;
+    availableUnits: string;
+    views: string;
+    inquiries: string;
+    mainImageUrl: string;
+    galleryImages: string;
+    amenities: string;
+    tokenName: string;
+    tokenSymbol: string;
+    tokenSupply: string;
+    pricePerToken: string;
+    walletAddress: string;
+    customer?: string;
+}
+
+const initialFormState: FormState = {
+    propertyName: "",
+    category: "",
+    subcategory: "",
+    description: "",
+    address: "",
+    city: "",
+    state: "",
+    country: "",
+    latitude: "",
+    longitude: "",
+    developerName: "",
+    developerWebsite: "",
+    developerDescription: "",
+    developerLogo: "",
+    projectStatus: "",
+    startDate: "",
+    completionDate: "",
+    featured: false,
+    totalArea: "",
+    sellableArea: "",
+    priceMin: "",
+    priceMax: "",
+    totalUnits: "",
+    soldUnits: "",
+    reservedUnits: "",
+    availableUnits: "",
+    views: "",
+    inquiries: "",
+    mainImageUrl: "",
+    galleryImages: "",
+    amenities: "",
+    tokenName: "",
+    tokenSymbol: "",
+    tokenSupply: "",
+    pricePerToken: "",
+    walletAddress: "",
+    customer: ""
+};
+
+const initialFloor: Floor = {
+    name: "",
+    description: "",
+    floorNumber: "",
+    floorPlanUrl: "",
+    totalUnits: "",
+    pricePerSqFt: "",
+    minPrice: "",
+    maxPrice: "",
+    totalSquareFootage: "",
+    specifications: "",
+    features: "",
+    minSqftBuy: "",
+    maxSqftBuy: ""
+};
+
+function useGlobeResidencyForm() {
+    const [form, setForm] = useState<FormState>(initialFormState);
+    const [floors, setFloors] = useState<Floor[]>([initialFloor]);
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>(
+        [{ question: "", answer: "" }]
+    );
+    const [documents, setDocuments] = useState<string[]>([""]);
+    const dispatch = useDispatch();
 
-    function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+    // Memoized validation
+    const isValid = useMemo(() => {
+        // Add more validation as needed
+        return !!form.propertyName && !!form.category && !!form.address && !!form.city && !!form.country;
+    }, [form]);
+
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { id, value, type } = e.target;
         setForm(f => ({
             ...f,
-            [id]: type === "checkbox"
-                ? (e.target as HTMLInputElement).checked
-                : value
+            [id]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value
         }));
-    }
+    }, []);
 
-    function handleFloorChange(idx: number, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    const handleFloorChange = useCallback((idx: number, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
         setFloors(floors => floors.map((floor, i) => i === idx ? { ...floor, [id]: value } : floor));
-    }
+    }, []);
 
-    function handleFloorSpecChange(idx: number, field: "specifications" | "features", value: string) {
+    const handleFloorSpecChange = useCallback((idx: number, field: "specifications" | "features", value: string) => {
         setFloors(floors => floors.map((floor, i) => i === idx ? { ...floor, [field]: value } : floor));
-    }
+    }, []);
 
+    // Add Floor function
+    const addFloor = useCallback(() => {
+        setFloors(floors => [...floors, { ...initialFloor }]);
+    }, []);
 
+    // FAQ handlers
+    const handleFaqChange = useCallback((idx: number, field: "question" | "answer", value: string) => {
+        setFaqs(faqs => faqs.map((faq, i) => i === idx ? { ...faq, [field]: value } : faq));
+    }, []);
+    const addFaq = useCallback(() => {
+        setFaqs(faqs => [...faqs, { question: "", answer: "" }]);
+    }, []);
+    const removeFaq = useCallback((idx: number) => {
+        setFaqs(faqs => faqs.filter((_, i) => i !== idx));
+    }, []);
 
+    // Document handlers
+    const handleDocumentChange = useCallback((idx: number, value: string) => {
+        setDocuments(docs => docs.map((doc, i) => i === idx ? value : doc));
+    }, []);
+    const handleDocumentFileChange = useCallback((idx: number, file: File) => {
+        // For demo, just use file name as value. In real app, upload to server and use the URL.
+        setDocuments(docs => docs.map((doc, i) => i === idx ? file.name : doc));
+        // TODO: Implement actual upload logic and setDocuments with the uploaded file URL
+    }, []);
+    const addDocument = useCallback(() => {
+        setDocuments(docs => [...docs, ""]);
+    }, []);
+    const removeDocument = useCallback((idx: number) => {
+        setDocuments(docs => docs.filter((_, i) => i !== idx));
+    }, []);
 
-    async function handleSubmit(e: React.FormEvent) {
+    const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
+        if (loading) return; // Prevent double submit
         setLoading(true);
         setError(null);
         setSuccess(false);
+        if (!isValid) {
+            setError("Please fill all required fields.");
+            setLoading(false);
+            return;
+        }
         try {
-            // Map form state to API payload
             const payload = {
                 name: form.propertyName,
                 description: form.description,
@@ -123,12 +226,12 @@ export default function GlobeResidencyForm() {
                     website: form.developerWebsite
                 },
                 status: form.projectStatus || "planning",
-                category: form.category || "residential" || "mixeduse" || "commercial",
+                category: form.category || "residential",
                 subcategory: form.subcategory,
                 featured: !!form.featured,
-                startDate: form.startDate,
-                completionDate: form.completionDate,
-                sellableArea: Number(form.sellableArea) || 0, // Added sellableArea
+                startDate: form.startDate ? new Date(form.startDate).toISOString() : "",
+                completionDate: form.completionDate ? new Date(form.completionDate).toISOString() : "",
+                sellableArea: Number(form.sellableArea) || 0,
                 floors: floors.map(floor => ({
                     name: floor.name,
                     description: floor.description,
@@ -138,7 +241,7 @@ export default function GlobeResidencyForm() {
                     pricePerSqFt: Number(floor.pricePerSqFt) || 0,
                     minPrice: Number(floor.minPrice) || 0,
                     maxPrice: Number(floor.maxPrice) || 0,
-                    totalSquareFootage: Number(floor.totalSquareFootage) || 0, // Added totalSquareFootage
+                    totalSquareFootage: Number(floor.totalSquareFootage) || 0,
                     specifications: floor.specifications ? floor.specifications.split(",").map(s => s.trim()) : [],
                     features: floor.features ? floor.features.split(",").map(s => s.trim()) : []
                 })),
@@ -148,72 +251,109 @@ export default function GlobeResidencyForm() {
                 priceRange: {
                     min: Number(form.priceMin) || 0,
                     max: Number(form.priceMax) || 0
-                }
+                },
+                totalUnits: Number(form.totalUnits) || 0,
+                soldUnits: Number(form.soldUnits) || 0,
+                reservedUnits: Number(form.reservedUnits) || 0,
+                availableUnits: Number(form.availableUnits) || 0,
+                views: Number(form.views) || 0,
+                inquiries: Number(form.inquiries) || 0,
+                amenities: form.amenities ? form.amenities.split(",").map(s => s.trim()) : [],
+                token: {
+                    name: form.tokenName,
+                    symbol: form.tokenSymbol,
+                    supply: Number(form.tokenSupply) || 0,
+                    pricePerToken: Number(form.pricePerToken) || 0,
+                    walletAddress: form.walletAddress
+                },
+                faqs: faqs.filter(f => f.question && f.answer),
+                documents: documents.filter(d => d),
+                customer: form.customer || undefined
             };
-            await createProject.createProject(payload);
+            await dispatch(createProject(payload)).unwrap();
             setSuccess(true);
-            setForm({
-                propertyName: "",
-                category: "",
-                subcategory: "",
-                description: "",
-                address: "",
-                city: "",
-                state: "",
-                country: "",
-                latitude: "",
-                longitude: "",
-                developerName: "",
-                developerWebsite: "",
-                developerDescription: "",
-                developerLogo: "",
-                projectStatus: "",
-                startDate: "",
-                completionDate: "",
-                featured: false,
-                totalArea: "",
-                sellableArea: "",
-                priceMin: "",
-                priceMax: "",
-                totalUnits: "",
-                soldUnits: "",
-                reservedUnits: "",
-                availableUnits: "",
-                views: "",
-                inquiries: "",
-                mainImageUrl: "",
-                galleryImages: "",
-                amenities: "",
-                tokenName: "",
-                tokenSymbol: "",
-                tokenSupply: "",
-                pricePerToken: "",
-                walletAddress: ""
-            });
-            setFloors([
-                {
-                    name: "",
-                    description: "",
-                    floorNumber: "",
-                    floorPlanUrl: "",
-                    totalUnits: "",
-                    pricePerSqFt: "",
-                    minPrice: "",
-                    maxPrice: "",
-                    totalSquareFootage: "",
-                    specifications: "",
-                    features: ""
-                }
-            ]);
+            setForm(initialFormState);
+            setFloors([initialFloor]);
+            setFaqs([{ question: "", answer: "" }]);
+            setDocuments([""]);
         } catch (err: any) {
-            setError(err.message || "Submission failed");
+            if (typeof window !== 'undefined' && window.console) {
+                console.error('Project creation failed:', err);
+            }
+            setError(err.message || (typeof err === 'string' ? err : "Submission failed"));
         }
         setLoading(false);
-    }
+    }, [form, floors, isValid, faqs, documents, loading, dispatch]);
+
+    return {
+        form,
+        floors,
+        loading,
+        success,
+        error,
+        handleChange,
+        handleFloorChange,
+        handleFloorSpecChange,
+        handleSubmit,
+        addFloor,
+        faqs,
+        handleFaqChange,
+        addFaq,
+        removeFaq,
+        documents,
+        handleDocumentChange,
+        handleDocumentFileChange,
+        addDocument,
+        removeDocument
+    };
+}
+
+export default function GlobeResidencyForm() {
+    const {
+        form,
+        floors,
+        loading,
+        success,
+        error,
+        handleChange,
+        handleFloorChange,
+        handleFloorSpecChange,
+        handleSubmit,
+        addFloor,
+        faqs,
+        handleFaqChange,
+        addFaq,
+        removeFaq,
+        documents,
+        handleDocumentChange,
+        handleDocumentFileChange,
+        addDocument,
+        removeDocument
+    } = useGlobeResidencyForm();
+
+    // Select customers from redux store
+    const customers = useSelector((state: any) => state.customer?.customers || []);
 
     return (
         <div className="min-h-screen shadow-lg rounded-md py-8 px-4">
             <div className="max-w-6xl mx-auto">
+                {/* Customer Dropdown */}
+                <div className="mb-8">
+                    <label htmlFor="customer" className="block text-sm font-semibold mb-2">Customer</label>
+                    <select
+                        id="customer"
+                        className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
+                        value={form.customer || ''}
+                        onChange={handleChange}
+                    >
+                        <option value="">Select customer</option>
+                        {customers.map((customer: any) => (
+                            <option key={customer.id || customer._id} value={customer.id || customer._id}>
+                                {customer.name || customer.fullName || customer.email}
+                            </option>
+                        ))}
+                    </select>
+                </div>
                 {/* Header */}
                 <div className="text-left mb-8">
                     <div className=" gap-3 mb-4">
@@ -222,8 +362,7 @@ export default function GlobeResidencyForm() {
                         </h1>
                     </div>
                 </div>
-
-                <form className="space-y-8" onSubmit={handleSubmit}>
+                <form className="space-y-8" onSubmit={handleSubmit} autoComplete="off" noValidate>
                     {success && <div className="text-green-600 mt-4">Project created successfully!</div>}
                     {error && <div className="text-red-600 mt-4">{error}</div>}
                     {/* Basic Information */}
@@ -720,7 +859,6 @@ export default function GlobeResidencyForm() {
                         <div className="p-6 space-y-6">
                             {floors.map((floor, idx) => (
                                 <div key={idx} className="border p-4 rounded-lg mb-4 ">
-
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <input id="name" placeholder="Name" className="p-2 border rounded" value={floor.name} onChange={e => handleFloorChange(idx, e)} />
                                         <input id="floorNumber" type="number" placeholder="Floor Number" className="p-2 border rounded" value={floor.floorNumber} onChange={e => handleFloorChange(idx, e)} />
@@ -730,6 +868,9 @@ export default function GlobeResidencyForm() {
                                         <input id="minPrice" type="number" placeholder="Min Price" className="p-2 border rounded" value={floor.minPrice} onChange={e => handleFloorChange(idx, e)} />
                                         <input id="maxPrice" type="number" placeholder="Max Price" className="p-2 border rounded" value={floor.maxPrice} onChange={e => handleFloorChange(idx, e)} />
                                         <input id="totalSquareFootage" type="number" placeholder="Total Square Footage" className="p-2 border rounded" value={floor.totalSquareFootage} onChange={e => handleFloorChange(idx, e)} />
+                                        {/* New fields for min/max sqft buy */}
+                                        <input id="minSqftBuy" type="number" placeholder="Minimum Sqft Buy" className="p-2 border rounded" value={floor.minSqftBuy || ''} onChange={e => handleFloorChange(idx, e)} />
+                                        <input id="maxSqftBuy" type="number" placeholder="Maximum Sqft Buy" className="p-2 border rounded" value={floor.maxSqftBuy || ''} onChange={e => handleFloorChange(idx, e)} />
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                                         <textarea id="description" placeholder="Description" className="p-2 border rounded" value={floor.description} onChange={e => handleFloorChange(idx, e)} />
@@ -738,7 +879,13 @@ export default function GlobeResidencyForm() {
                                     </div>
                                 </div>
                             ))}
-
+                            <button
+                                type="button"
+                                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                onClick={addFloor}
+                            >
+                                Add Floor
+                            </button>
                         </div>
                     </div>
 
@@ -813,6 +960,106 @@ export default function GlobeResidencyForm() {
                                     onChange={handleChange}
                                 />
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Add FAQs Section */}
+                    <div className="backdrop-blur-sm rounded-lg shadow-lg border mt-8">
+                        <div className="bg-black text-white rounded-t-lg p-4">
+                            <h2 className="flex items-center gap-2 text-lg font-semibold">
+                                FAQs
+                            </h2>
+                        </div>
+                        <div className="p-6 space-y-6">
+                            {faqs.map((faq, idx) => (
+                                <div key={idx} className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+                                    <div className="flex-1 space-y-2">
+                                        <label className="text-sm font-semibold">Question</label>
+                                        <input
+                                            placeholder="Enter FAQ question"
+                                            className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
+                                            value={faq.question}
+                                            onChange={e => handleFaqChange(idx, "question", e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="flex-1 space-y-2">
+                                        <label className="text-sm font-semibold">Answer</label>
+                                        <textarea
+                                            placeholder="Enter FAQ answer"
+                                            rows={2}
+                                            className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
+                                            value={faq.answer}
+                                            onChange={e => handleFaqChange(idx, "answer", e.target.value)}
+                                        />
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className="mt-6 md:mt-0 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                                        onClick={() => removeFaq(idx)}
+                                        disabled={faqs.length === 1}
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            ))}
+                            <button
+                                type="button"
+                                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                onClick={addFaq}
+                            >
+                                Add FAQ
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Documents Section */}
+                    <div className="backdrop-blur-sm rounded-lg shadow-lg border mt-8">
+                        <div className="bg-black text-white rounded-t-lg p-4">
+                            <h2 className="flex items-center gap-2 text-lg font-semibold">
+                                Documents
+                            </h2>
+                        </div>
+                        <div className="p-6 space-y-6">
+                            {documents.map((doc, idx) => (
+                                <div key={idx} className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+                                    <div className="flex-1 space-y-2">
+                                        <label className="text-sm font-semibold">Document URL or Upload</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Enter document URL"
+                                            className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
+                                            value={doc}
+                                            onChange={e => handleDocumentChange(idx, e.target.value)}
+                                        />
+                                        <div className="mt-2">
+                                            <input
+                                                type="file"
+                                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                                onChange={e => {
+                                                    if (e.target.files && e.target.files[0]) {
+                                                        handleDocumentFileChange(idx, e.target.files[0]);
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className="mt-6 md:mt-0 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                                        onClick={() => removeDocument(idx)}
+                                        disabled={documents.length === 1}
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            ))}
+                            <button
+                                type="button"
+                                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                onClick={addDocument}
+                            >
+                                Add Document
+                            </button>
                         </div>
                     </div>
 
