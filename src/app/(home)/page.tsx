@@ -1,3 +1,4 @@
+"use client";
 import React from 'react'
 import { ProjectCards } from './_components/ProjectCards'
 

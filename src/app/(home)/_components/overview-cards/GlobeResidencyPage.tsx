@@ -270,7 +270,7 @@ function useGlobeResidencyForm() {
                 documents: documents.filter(d => d),
                 customer: form.customer || undefined
             };
-            await dispatch(createProject(payload)).unwrap();
+            // await dispatch(createProject(payload)).unwrap();
             setSuccess(true);
             setForm(initialFormState);
             setFloors([initialFloor]);
