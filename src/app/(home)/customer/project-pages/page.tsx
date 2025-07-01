@@ -8,7 +8,6 @@ export const metadata: Metadata = {
 const page = () => {
   return (
     <div>
-      <h1 className="text-2xl font-bold">Customer Project Page</h1>
               <OverviewCardsGroup/>
 
     </div>

@@ -91,7 +91,7 @@ export interface ProjectPayload {
   };
 }
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://proptechapi.softsuitetech.com/api';
 
 // Create Axios instance
 const api: AxiosInstance = axios.create({
