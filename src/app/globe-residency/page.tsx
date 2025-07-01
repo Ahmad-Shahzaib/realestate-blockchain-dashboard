@@ -1,5 +1,5 @@
 "use client";
-import GlobeResidencyFormUI from "../(home)/_components/overview-cards/GlobeResidencyPage";
+import GlobeResidencyFormUI from "../home2/_components/overview-cards/GlobeResidencyPage";
 
 export default function GlobeResidencyPage() {
   return (
