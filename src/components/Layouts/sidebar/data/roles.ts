@@ -105,7 +105,7 @@ export const SUPER_ADMIN_NAV_DATA = [
       },
       {
         title: "Add Projects ",
-        url: "/Add-project",
+        url: "/admin/Add-project",
         icon: Icons.Authentication,
         items: [],
       },
@@ -115,18 +115,18 @@ export const SUPER_ADMIN_NAV_DATA = [
         items: [
           {
             title: "Manage Customers",
-            url: "/manage-customers",
+            url: "/admin/manage-customers",
           },
           {
             title: "Customers List ",
-            url: "/customer",
+            url: "/admin/customers-list",
           },
 
         ],
       },
       {
         title: "Manage Admin",
-        url: "/manage-admin",
+        url: "/admin/manage-admin",
         icon: Icons.Table,
         items: [],
       },
@@ -136,11 +136,11 @@ export const SUPER_ADMIN_NAV_DATA = [
         items: [
           {
             title: "Manage Users",
-            url: "/manage-users",
+            url: "/admin/manage-users",
           },
           {
             title: "Users List ",
-            url: "/users-list",
+            url: "/admin/users-list",
           },
 
         ],
