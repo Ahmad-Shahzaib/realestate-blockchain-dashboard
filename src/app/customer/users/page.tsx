@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react'
-import { Users, Building2, Mail, TrendingUp, Search, Filter, Eye, MoreVertical, MapPin, DollarSign } from 'lucide-react'
+import { Users, Building2, Mail, TrendingUp, Search, Filter, MoreVertical, MapPin, DollarSign } from 'lucide-react'
 
 // Enhanced mock data for users and their property investments
 const users = [
@@ -79,7 +79,6 @@ type User = typeof users[number];
 const UsersInvestmentDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('All')
-  const [view, setView] = useState('cards')
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   const totalUsers = users.length
@@ -110,22 +109,13 @@ const UsersInvestmentDashboard = () => {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <button
-                onClick={() => setView(view === 'cards' ? 'table' : 'cards')}
-                className="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors flex items-center space-x-2"
-              >
-                <Eye className="h-4 w-4" />
-                <span>{view === 'cards' ? 'Table View' : 'Card View'}</span>
-              </button>
+              {/* View toggle button removed */}
             </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Summary Cards */}
-
-
         {/* Search and Filter */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -167,156 +157,74 @@ const UsersInvestmentDashboard = () => {
             <h2 className="text-xl font-semibold text-gray-900">Investment Users ({filteredUsers.length})</h2>
           </div>
 
-          {view === 'cards' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredUsers.map((user) => (
-                <div key={user.id} className="bg-gradient-to-br from-white to-gray-50 rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
-                        {user.avatar}
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">User</th>
+                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Investment</th>
+                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Returns</th>
+                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Status</th>
+                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Projects</th>
+                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {filteredUsers.map((user) => (
+                  <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="py-4 px-2">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                          {user.avatar}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-900">{user.name}</p>
+                          <p className="text-sm text-gray-500">{user.email}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{user.name}</h3>
-                        <p className="text-sm text-gray-500 flex items-center">
-                          <Mail className="h-3 w-3 mr-1" />
-                          {user.email}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="relative">
-                      <button className="p-2 hover:bg-gray-100 rounded-full">
-                        <MoreVertical className="h-4 w-4 text-gray-400" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wide">Total Investment</p>
-                      <p className="text-lg font-bold text-gray-900">${user.totalInvestment.toLocaleString()}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wide">Returns</p>
-                      <p className="text-lg font-bold text-green-600">{user.returns}</p>
-                    </div>
-                  </div>
-
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-xs text-gray-500 uppercase tracking-wide">Status</p>
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${user.status === 'Premium'
-                        ? 'bg-purple-100 text-purple-800 border border-purple-200'
+                    </td>
+                    <td className="py-4 px-2 font-semibold text-gray-900">${user.totalInvestment.toLocaleString()}</td>
+                    <td className="py-4 px-2 font-semibold text-green-600">{user.returns}</td>
+                    <td className="py-4 px-2">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${user.status === 'Premium'
+                        ? 'bg-purple-100 text-purple-800'
                         : user.status === 'Active'
-                          ? 'bg-green-100 text-green-800 border border-green-200'
-                          : 'bg-gray-100 text-gray-800 border border-gray-200'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-gray-100 text-gray-800'
                         }`}>
                         {user.status}
                       </span>
-                    </div>
-                  </div>
-
-                  <div className="mb-4">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Projects ({user.projects.length})</p>
-                    <div className="space-y-1">
-                      {user.projects.slice(0, 2).map((project) => (
-                        <div key={project.id} className="flex items-center justify-between text-sm">
-                          <span className="text-gray-700 truncate">{project.name}</span>
-                          <span className="text-green-600 font-medium">{project.returns}</span>
-                        </div>
-                      ))}
-                      {user.projects.length > 2 && (
-                        <p className="text-xs text-blue-600 cursor-pointer hover:underline">
-                          +{user.projects.length - 2} more projects
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-gray-500">
-                      Joined: {new Date(user.joinDate).toLocaleDateString()}
-                    </p>
-                    <button
-                      onClick={() => setSelectedUser(user)}
-                      className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-600 hover:to-indigo-700 transition-colors"
-                    >
-                      View Details
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">User</th>
-                    <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Investment</th>
-                    <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Returns</th>
-                    <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Status</th>
-                    <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Projects</th>
-                    <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Actions</th>
+                    </td>
+                    <td className="py-4 px-2">
+                      <div className="space-y-1">
+                        {user.projects.slice(0, 2).map((project) => (
+                          <div key={project.id} className="text-sm text-gray-700">
+                            {project.name}
+                          </div>
+                        ))}
+                        {user.projects.length > 2 && (
+                          <p className="text-xs text-blue-600">+{user.projects.length - 2} more</p>
+                        )}
+                      </div>
+                    </td>
+                    <td className="py-4 px-2">
+                      <button
+                        onClick={() => setSelectedUser(user)}
+                        className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-sm hover:bg-blue-100 transition-colors"
+                      >
+                        View Details
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {filteredUsers.map((user) => (
-                    <tr key={user.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="py-4 px-2">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                            {user.avatar}
-                          </div>
-                          <div>
-                            <p className="font-semibold text-gray-900">{user.name}</p>
-                            <p className="text-sm text-gray-500">{user.email}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-4 px-2 font-semibold text-gray-900">${user.totalInvestment.toLocaleString()}</td>
-                      <td className="py-4 px-2 font-semibold text-green-600">{user.returns}</td>
-                      <td className="py-4 px-2">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${user.status === 'Premium'
-                          ? 'bg-purple-100 text-purple-800'
-                          : user.status === 'Active'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-100 text-gray-800'
-                          }`}>
-                          {user.status}
-                        </span>
-                      </td>
-                      <td className="py-4 px-2">
-                        <div className="space-y-1">
-                          {user.projects.slice(0, 2).map((project) => (
-                            <div key={project.id} className="text-sm text-gray-700">
-                              {project.name}
-                            </div>
-                          ))}
-                          {user.projects.length > 2 && (
-                            <p className="text-xs text-blue-600">+{user.projects.length - 2} more</p>
-                          )}
-                        </div>
-                      </td>
-                      <td className="py-4 px-2">
-                        <button
-                          onClick={() => setSelectedUser(user)}
-                          className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-sm hover:bg-blue-100 transition-colors"
-                        >
-                          View Details
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* User Detail Modal */}
         {selectedUser && (
-          <div className="fixed inset-0  flex items-center justify-center p-4 ">
+          <div className="fixed inset-0 flex items-center justify-center p-4">
             <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6 bg-gray-100 rounded-t-2xl">
                 <div className="flex items-center justify-between mb-6">
