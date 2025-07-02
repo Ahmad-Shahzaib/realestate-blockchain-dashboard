@@ -1,12 +1,13 @@
+
 "use client"
 import React, { useState } from 'react'
-import { Building2, TrendingUp, DollarSign, MapPin, Calendar, Eye, Filter } from 'lucide-react'
+import { Building2, MapPin, Calendar, Filter, Search } from 'lucide-react'
 
 const investments = [
   {
     id: 1,
     name: 'Green Valley Estate',
-    amount: '$10,000',
+    amount: 10000,
     returns: '8.2%',
     status: 'Active',
     location: 'California, USA',
@@ -17,7 +18,7 @@ const investments = [
   {
     id: 2,
     name: 'Sunrise Apartments',
-    amount: '$5,000',
+    amount: 5000,
     returns: '6.5%',
     status: 'Completed',
     location: 'Texas, USA',
@@ -28,7 +29,7 @@ const investments = [
   {
     id: 3,
     name: 'Oceanview Villas',
-    amount: '$7,500',
+    amount: 7500,
     returns: '7.8%',
     status: 'Active',
     location: 'Florida, USA',
@@ -39,7 +40,7 @@ const investments = [
   {
     id: 4,
     name: 'Downtown Plaza',
-    amount: '$12,000',
+    amount: 12000,
     returns: '9.1%',
     status: 'Active',
     location: 'New York, USA',
@@ -49,115 +50,63 @@ const investments = [
   }
 ]
 
-const PropertyInvestmentDashboard = () => {
-  const [filter, setFilter] = useState('All')
-  const [view, setView] = useState('grid')
+type Investment = typeof investments[number];
 
-  const totalInvested = investments.reduce((sum, inv) => sum + parseFloat(inv.amount.replace('$', '').replace(',', '')), 0)
-  const avgReturns = (investments.reduce((sum, inv) => sum + parseFloat(inv.returns.replace('%', '')), 0) / investments.length).toFixed(1)
-  const activeInvestments = investments.filter(inv => inv.status === 'Active').length
+const InvestmentDashboardTable = () => {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState('All')
+  const [selectedInvestment, setSelectedInvestment] = useState<Investment | null>(null)
 
-  const filteredInvestments = filter === 'All' ? investments : investments.filter(inv => inv.status === filter)
+  const filteredInvestments = investments.filter(inv => {
+    const matchesSearch = inv.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      inv.location.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesStatus = statusFilter === 'All' || inv.status === statusFilter
+    return matchesSearch && matchesStatus
+  })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
-        <div className=" mx-auto px-10 py-6">
+        <div className="mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-2 rounded-lg">
                 <Building2 className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">My Investment Portfolio</h1>
-                <p className="text-gray-600 mt-1">Overview of your property investment details and performance</p>
+                <h1 className="text-3xl font-bold text-gray-900">My Investments</h1>
+                <p className="text-gray-600 mt-1">Manage and monitor all your property investments and performance</p>
               </div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={() => setView(view === 'grid' ? 'list' : 'grid')}
-                className="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors flex items-center space-x-2"
-              >
-                <Eye className="h-4 w-4" />
-                <span>{view === 'grid' ? 'List View' : 'Grid View'}</span>
-              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className=" mx-auto px-10 py-8">
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">My Total Investment</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">${totalInvested.toLocaleString()}</p>
-                <p className="text-green-600 text-sm mt-1 flex items-center">
-                  <TrendingUp className="h-4 w-4 mr-1" />
-                  +12.3% from last month
-                </p>
-              </div>
-              <div className="bg-gradient-to-r from-green-400 to-emerald-500 p-3 rounded-xl">
-                <DollarSign className="h-8 w-8 text-white" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">My Avg Returns</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{avgReturns}%</p>
-                <p className="text-blue-600 text-sm mt-1">Exceeding expectations</p>
-              </div>
-              <div className="bg-gradient-to-r from-blue-400 to-indigo-500 p-3 rounded-xl">
-                <TrendingUp className="h-8 w-8 text-white" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">My Active Properties</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{activeInvestments}</p>
-                <p className="text-purple-600 text-sm mt-1">Generating income for you</p>
-              </div>
-              <div className="bg-gradient-to-r from-purple-400 to-pink-500 p-3 rounded-xl">
-                <Building2 className="h-8 w-8 text-white" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">My Properties</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{investments.length}</p>
-                <p className="text-orange-600 text-sm mt-1">Your diversified portfolio</p>
-              </div>
-              <div className="bg-gradient-to-r from-orange-400 to-red-500 p-3 rounded-xl">
-                <MapPin className="h-8 w-8 text-white" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Filter Tabs */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Search and Filter */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Your Investment Details</h2>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex-1 max-w-md">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search investments by name or location..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
             <div className="flex items-center space-x-4">
               <Filter className="h-5 w-5 text-gray-400" />
               <div className="flex bg-gray-100 rounded-lg p-1">
                 {['All', 'Active', 'Completed'].map((status) => (
                   <button
                     key={status}
-                    onClick={() => setFilter(status)}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${filter === status
+                    onClick={() => setStatusFilter(status)}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${statusFilter === status
                       ? 'bg-white text-blue-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
                       }`}
@@ -168,128 +117,141 @@ const PropertyInvestmentDashboard = () => {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Properties Grid/List */}
-          {view === 'grid' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredInvestments.map((investment) => (
-                <div key={investment.id} className="bg-gradient-to-br from-white to-gray-50 rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                  <div className="h-48 bg-gradient-to-r from-blue-400 to-purple-500 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-                    <div className="absolute top-4 right-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${investment.status === 'Active'
-                        ? 'bg-green-100 text-green-800 border border-green-200'
-                        : 'bg-gray-100 text-gray-800 border border-gray-200'
+        {/* Investments Table */}
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">My Investments ({filteredInvestments.length})</h2>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Property</th>
+                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Location</th>
+                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Investment</th>
+                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Returns</th>
+                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Status</th>
+                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Duration</th>
+                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {filteredInvestments.map((inv) => (
+                  <tr key={inv.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="py-4 px-2">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
+                          {inv.name[0]}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-900">{inv.name}</p>
+                          <p className="text-sm text-gray-500">{inv.type}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-4 px-2 text-gray-600">{inv.location}</td>
+                    <td className="py-4 px-2 font-semibold text-gray-900">${inv.amount.toLocaleString()}</td>
+                    <td className="py-4 px-2 font-semibold text-green-600">{inv.returns}</td>
+                    <td className="py-4 px-2">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${inv.status === 'Active'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-gray-100 text-gray-800'
                         }`}>
-                        {investment.status}
+                        {inv.status}
                       </span>
+                    </td>
+                    <td className="py-4 px-2 text-gray-600">{inv.duration}</td>
+                    <td className="py-4 px-2">
+                      <button
+                        onClick={() => setSelectedInvestment(inv)}
+                        className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-sm hover:bg-blue-100 transition-colors"
+                      >
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Investment Detail Modal */}
+        {selectedInvestment && (
+          <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 bg-gray-100 rounded-t-2xl">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                      {selectedInvestment.name[0]}
                     </div>
-                    <div className="absolute bottom-4 left-4 text-white">
-                      <p className="text-sm font-medium opacity-90">{investment.type}</p>
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900">{selectedInvestment.name}</h2>
+                      <p className="text-gray-600">{selectedInvestment.type}</p>
                     </div>
                   </div>
+                  <button
+                    onClick={() => setSelectedInvestment(null)}
+                    className="text-gray-400 hover:text-gray-600 text-xl"
+                  >
+                    ×
+                  </button>
+                </div>
 
-                  <div className="p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{investment.name}</h3>
-                    <div className="flex items-center text-gray-600 mb-3">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      <span className="text-sm">{investment.location}</span>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wide">Investment</p>
-                        <p className="text-lg font-bold text-gray-900">{investment.amount}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wide">Returns</p>
-                        <p className="text-lg font-bold text-green-600">{investment.returns}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center text-gray-500">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        <span className="text-sm">{investment.duration}</span>
-                      </div>
-                      <button className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-600 hover:to-indigo-700 transition-colors">
-                        My Details
-                      </button>
-                    </div>
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <p className="text-sm text-gray-500 mb-1">Investment Amount</p>
+                    <p className="text-2xl font-bold text-gray-900">${selectedInvestment.amount.toLocaleString()}</p>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <p className="text-sm text-gray-500 mb-1">Returns</p>
+                    <p className="text-2xl font-bold text-green-600">{selectedInvestment.returns}</p>
                   </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Property</th>
-                    <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Location</th>
-                    <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Investment</th>
-                    <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Returns</th>
-                    <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Status</th>
-                    <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Duration</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {filteredInvestments.map((investment) => (
-                    <tr key={investment.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="py-4 px-2">
-                        <div className="flex items-center">
-                          <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg mr-3"></div>
-                          <div>
-                            <p className="font-semibold text-gray-900">{investment.name}</p>
-                            <p className="text-sm text-gray-500">{investment.type}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-4 px-2 text-gray-600">{investment.location}</td>
-                      <td className="py-4 px-2 font-semibold text-gray-900">{investment.amount}</td>
-                      <td className="py-4 px-2 font-semibold text-green-600">{investment.returns}</td>
-                      <td className="py-4 px-2">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${investment.status === 'Active'
+
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Investment Details</h3>
+                  <div className="space-y-3">
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-semibold text-gray-900">{selectedInvestment.name}</h4>
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${selectedInvestment.status === 'Active'
                           ? 'bg-green-100 text-green-800'
                           : 'bg-gray-100 text-gray-800'
                           }`}>
-                          {investment.status}
+                          {selectedInvestment.status}
                         </span>
-                      </td>
-                      <td className="py-4 px-2 text-gray-600">{investment.duration}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-gray-600">Location: <span className="font-semibold">{selectedInvestment.location}</span></p>
+                        <p className="text-gray-600">Duration: <span className="font-semibold">{selectedInvestment.duration}</span></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-        {/* Performance Chart Section */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">My Investment Performance</h2>
-            <div className="flex space-x-2">
-              <button className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium">6M</button>
-              <button className="px-4 py-2 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50">1Y</button>
-              <button className="px-4 py-2 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50">All</button>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-500">
+                    {/* You can add more details here if needed */}
+                  </p>
+                  <button
+                    onClick={() => setSelectedInvestment(null)}
+                    className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-
-          <div className="h-64 flex items-center justify-center bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
-            <div className="text-center">
-              <TrendingUp className="h-12 w-12 text-blue-400 mx-auto mb-4" />
-              <p className="text-lg font-semibold text-gray-700 mb-2">Your Investment Growth Chart</p>
-              <p className="text-gray-500">Track your personal investment performance and returns over time</p>
-              <button className="mt-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 transition-colors">
-                View My Analytics
-              </button>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   )
 }
 
-export default PropertyInvestmentDashboard
+export default InvestmentDashboardTable

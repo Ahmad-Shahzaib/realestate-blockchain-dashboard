@@ -349,6 +349,7 @@ export default function SignUp() {
                                 </p>
                             </div>
                         </div>
+                        
 
                         {/* Security Notice */}
                         <div className="mt-6 text-center">
