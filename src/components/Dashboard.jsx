@@ -136,42 +136,42 @@ const Dashboard = () => {
   };
 
   const recentActivities = [
-    { 
-      activity: 'Smart Contract Executed - NYC Property', 
-      timestamp: '2025-06-20', 
-      icon: 'fa-shield-alt', 
+    {
+      activity: 'Smart Contract Executed - NYC Property',
+      timestamp: '2025-06-20',
+      icon: 'fa-shield-alt',
       amount: '$1,250,000',
       type: 'purchase',
       hash: '0x1a2b3c...'
     },
-    { 
-      activity: 'Token Sale Completed - LA Commercial', 
-      timestamp: '2025-06-18', 
-      icon: 'fa-coins', 
+    {
+      activity: 'Token Sale Completed - LA Commercial',
+      timestamp: '2025-06-18',
+      icon: 'fa-coins',
       amount: '$850,000',
       type: 'sale',
       hash: '0x4d5e6f...'
     },
-    { 
-      activity: 'Rental Income Distributed', 
-      timestamp: '2025-06-15', 
-      icon: 'fa-money-bill-wave', 
+    {
+      activity: 'Rental Income Distributed',
+      timestamp: '2025-06-15',
+      icon: 'fa-money-bill-wave',
       amount: '$25,600',
       type: 'income',
       hash: '0x7g8h9i...'
     },
-    { 
-      activity: 'Portfolio Rebalanced', 
-      timestamp: '2025-06-10', 
-      icon: 'fa-chart-line', 
+    {
+      activity: 'Portfolio Rebalanced',
+      timestamp: '2025-06-10',
+      icon: 'fa-chart-line',
       amount: '',
       type: 'update',
       hash: '0xjklmno...'
     },
-    { 
-      activity: 'New Asset Tokenized - Miami Villa', 
-      timestamp: '2025-06-05', 
-      icon: 'fa-plus-circle', 
+    {
+      activity: 'New Asset Tokenized - Miami Villa',
+      timestamp: '2025-06-05',
+      icon: 'fa-plus-circle',
       amount: '$950,000',
       type: 'tokenize',
       hash: '0xpqrstu...'
@@ -210,19 +210,19 @@ const Dashboard = () => {
       <div className="absolute  z-0">
         <div className="w-full h-full  opacity-90"></div>
         {/* Extra glowing shapes for depth */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 right-1/3 w-48 h-48 bg-cyan-400/20 rounded-full blur-2xl animate-pulse delay-500"></div>
-        <div className="absolute bottom-10 left-1/3 w-72 h-40 bg-pink-500/10 rounded-full blur-2xl animate-pulse delay-700"></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96  rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64  rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 right-1/3 w-48 h-48  rounded-full blur-2xl animate-pulse delay-500"></div>
+        <div className="absolute bottom-10 left-1/3 w-72 h-40  rounded-full blur-2xl animate-pulse delay-700"></div>
       </div>
 
       {/* Enhanced Grid Pattern Overlay */}
       <div className="absolute  z-10 pointer-events-none">
-        <div className="w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDYwIDAgTCAwIDAgMCA2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBkNGZmIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30"></div>
+        <div className="w-full h-full opacity-30"></div>
       </div>
 
       <div className="relative z-20 p-4 md:p-6 lg:p-8">
-        <div className="max-w-7xl mx-auto">
+        <div className="mx-auto">
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
             <div className="mb-4 md:mb-0">
@@ -231,12 +231,12 @@ const Dashboard = () => {
                   <i className="fas fa-building"></i>
                 </div> */}
               </div>
-                <h1 className="text-3xl   md:text-4xl lg:text-5xl font-extrabold">
-                  BlockEstate Dashboard
-                </h1>
+              <h1 className="text-3xl   md:text-4xl lg:text-5xl font-extrabold">
+                BlockEstate Dashboard
+              </h1>
               <p className="mt-2 text-lg">Manage your tokenized real estate investments</p>
             </div>
-            
+
             <div className="flex items-center space-x-4 mt-4 md:mt-0">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -363,11 +363,10 @@ const Dashboard = () => {
                     <button
                       key={period}
                       onClick={() => setActiveTimeframe(period)}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                        activeTimeframe === period
-                          ? 'bg-blue-100 '
-                          : ' '
-                      }`}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTimeframe === period
+                        ? 'bg-blue-100 '
+                        : ' '
+                        }`}
                     >
                       {period}
                     </button>
@@ -378,7 +377,7 @@ const Dashboard = () => {
                 <Line data={portfolioData} options={chartOptions} />
               </div>
             </div>
-            
+
             {/* Property Distribution */}
             <div className=" border border-slate-700/50 rounded-2xl p-6">
               <h2 className="text-xl font-bold  mb-6">Asset Distribution</h2>
@@ -499,20 +498,18 @@ const Dashboard = () => {
               {recentActivities.map((activity, index) => (
                 <div key={index} className="flex items-center justify-between p-4  backdrop-blur-sm border border-slate-700/30 rounded-xl hover:border-blue-500/30 transition-all duration-300 group">
                   <div className="flex items-center gap-4">
-                    <div className={`p-3 rounded-xl ${
-                      activity.type === 'purchase' ? 'bg-green-500/20 border border-green-500/30' :
+                    <div className={`p-3 rounded-xl ${activity.type === 'purchase' ? 'bg-green-500/20 border border-green-500/30' :
                       activity.type === 'sale' ? 'bg-blue-500/20 border border-blue-500/30' :
-                      activity.type === 'income' ? 'bg-purple-500/20 border border-purple-500/30' :
-                      activity.type === 'tokenize' ? 'bg-yellow-500/20 border border-yellow-500/30' :
-                      'bg-slate-500/20 border border-slate-500/30'
-                    }`}>
-                      <i className={`fas ${activity.icon} ${
-                        activity.type === 'purchase' ? 'text-green-400' :
+                        activity.type === 'income' ? 'bg-purple-500/20 border border-purple-500/30' :
+                          activity.type === 'tokenize' ? 'bg-yellow-500/20 border border-yellow-500/30' :
+                            'bg-slate-500/20 border border-slate-500/30'
+                      }`}>
+                      <i className={`fas ${activity.icon} ${activity.type === 'purchase' ? 'text-green-400' :
                         activity.type === 'sale' ? '' :
-                        activity.type === 'income' ? 'text-purple-400' :
-                        activity.type === 'tokenize' ? 'text-yellow-400' :
-                        ''
-                      }`}></i>
+                          activity.type === 'income' ? 'text-purple-400' :
+                            activity.type === 'tokenize' ? 'text-yellow-400' :
+                              ''
+                        }`}></i>
                     </div>
                     <div>
                       <p className=" font-medium">{activity.activity}</p>
@@ -526,7 +523,7 @@ const Dashboard = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="text-right">
                     {activity.amount && (
                       <p className=" font-semibold text-lg">{activity.amount}</p>

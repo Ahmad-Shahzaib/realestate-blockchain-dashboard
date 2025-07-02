@@ -14,17 +14,12 @@ export const USER_NAV_DATA = [
         items: [],
       },
       {
-        title:'My Investments',
-        url: "/my-investments",
+        title: 'My Investments',
+        url: "/user/investments",
         icon: Icons.PieChart,
         items: [],
       },
-      {
-        title:"Profit-History",
-        url: "/profit-history",
-        icon: Icons.PieChart,
-        items: [],
-      },
+
       {
         title: "Projects",
         url: "/project-pages",
@@ -109,7 +104,7 @@ export const SUPER_ADMIN_NAV_DATA = [
         icon: Icons.Authentication,
         items: [],
       },
-       {
+      {
         title: "Customers",
         icon: Icons.User,
         items: [
@@ -200,7 +195,7 @@ export const ADMIN_NAV_DATA = [
           },
         ],
       },
-      
+
 
     ],
   },

@@ -63,7 +63,7 @@ const PropertyInvestmentDashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
-        <div className=" mx-auto px-6 py-6">
+        <div className=" mx-auto px-10 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-2 rounded-lg">

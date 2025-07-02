@@ -97,7 +97,7 @@ export default function SignIn() {
             </div>
 
             {/* Login Card */}
-            <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl border border-white/20">
+            <div className="m-4 bg-white/10 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl border border-white/20">
               <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
                 <p className="text-blue-200">Sign in to your investment dashboard</p>

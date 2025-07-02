@@ -96,10 +96,10 @@ export function OverviewCards() {
 
     return (
         <>
-            <div className="w-full  mx-auto px-2 sm:px-6 lg:px-4 mb-6 border-b custom-border pb-2">
-                <h1 className="text-2xl font-bold  ">Projects</h1>
+            <div className="w-full px-10 mb-6 mt-3 border-b  pb-2">
+                <h1 className="text-2xl font-bold  "> All Projects</h1>
             </div>
-            <div className="w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-4">
+            <div className="w-full  px-10">
                 {/* Tabs */}
                 <div className="flex space-x-4 mb-6 overflow-x-auto ">
                     {tabs.map((tab) => (

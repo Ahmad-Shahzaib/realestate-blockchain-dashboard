@@ -3,44 +3,44 @@ import React, { useState } from 'react'
 import { Building2, TrendingUp, DollarSign, MapPin, Calendar, Eye, Filter } from 'lucide-react'
 
 const investments = [
-  { 
-    id: 1, 
-    name: 'Green Valley Estate', 
-    amount: '$10,000', 
-    returns: '8.2%', 
+  {
+    id: 1,
+    name: 'Green Valley Estate',
+    amount: '$10,000',
+    returns: '8.2%',
     status: 'Active',
     location: 'California, USA',
     type: 'Residential',
     duration: '18 months',
     image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=300&h=200&fit=crop'
   },
-  { 
-    id: 2, 
-    name: 'Sunrise Apartments', 
-    amount: '$5,000', 
-    returns: '6.5%', 
+  {
+    id: 2,
+    name: 'Sunrise Apartments',
+    amount: '$5,000',
+    returns: '6.5%',
     status: 'Completed',
     location: 'Texas, USA',
     type: 'Commercial',
     duration: '12 months',
     image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=300&h=200&fit=crop'
   },
-  { 
-    id: 3, 
-    name: 'Oceanview Villas', 
-    amount: '$7,500', 
-    returns: '7.8%', 
+  {
+    id: 3,
+    name: 'Oceanview Villas',
+    amount: '$7,500',
+    returns: '7.8%',
     status: 'Active',
     location: 'Florida, USA',
     type: 'Luxury',
     duration: '24 months',
     image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=300&h=200&fit=crop'
   },
-  { 
-    id: 4, 
-    name: 'Downtown Plaza', 
-    amount: '$12,000', 
-    returns: '9.1%', 
+  {
+    id: 4,
+    name: 'Downtown Plaza',
+    amount: '$12,000',
+    returns: '9.1%',
     status: 'Active',
     location: 'New York, USA',
     type: 'Commercial',
@@ -63,7 +63,7 @@ const PropertyInvestmentDashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-6">
+        <div className=" mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-2 rounded-lg">
@@ -75,7 +75,7 @@ const PropertyInvestmentDashboard = () => {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <button 
+              <button
                 onClick={() => setView(view === 'grid' ? 'list' : 'grid')}
                 className="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors flex items-center space-x-2"
               >
@@ -157,11 +157,10 @@ const PropertyInvestmentDashboard = () => {
                   <button
                     key={status}
                     onClick={() => setFilter(status)}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      filter === status
-                        ? 'bg-white text-blue-600 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${filter === status
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                      }`}
                   >
                     {status}
                   </button>
@@ -178,11 +177,10 @@ const PropertyInvestmentDashboard = () => {
                   <div className="h-48 bg-gradient-to-r from-blue-400 to-purple-500 relative overflow-hidden">
                     <div className="absolute inset-0 bg-black bg-opacity-20"></div>
                     <div className="absolute top-4 right-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        investment.status === 'Active' 
-                          ? 'bg-green-100 text-green-800 border border-green-200' 
-                          : 'bg-gray-100 text-gray-800 border border-gray-200'
-                      }`}>
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${investment.status === 'Active'
+                        ? 'bg-green-100 text-green-800 border border-green-200'
+                        : 'bg-gray-100 text-gray-800 border border-gray-200'
+                        }`}>
                         {investment.status}
                       </span>
                     </div>
@@ -190,14 +188,14 @@ const PropertyInvestmentDashboard = () => {
                       <p className="text-sm font-medium opacity-90">{investment.type}</p>
                     </div>
                   </div>
-                  
+
                   <div className="p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">{investment.name}</h3>
                     <div className="flex items-center text-gray-600 mb-3">
                       <MapPin className="h-4 w-4 mr-1" />
                       <span className="text-sm">{investment.location}</span>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div>
                         <p className="text-xs text-gray-500 uppercase tracking-wide">Investment</p>
@@ -208,7 +206,7 @@ const PropertyInvestmentDashboard = () => {
                         <p className="text-lg font-bold text-green-600">{investment.returns}</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <div className="flex items-center text-gray-500">
                         <Calendar className="h-4 w-4 mr-1" />
@@ -251,11 +249,10 @@ const PropertyInvestmentDashboard = () => {
                       <td className="py-4 px-2 font-semibold text-gray-900">{investment.amount}</td>
                       <td className="py-4 px-2 font-semibold text-green-600">{investment.returns}</td>
                       <td className="py-4 px-2">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          investment.status === 'Active' 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-gray-100 text-gray-800'
-                        }`}>
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${investment.status === 'Active'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-gray-100 text-gray-800'
+                          }`}>
                           {investment.status}
                         </span>
                       </td>
@@ -278,7 +275,7 @@ const PropertyInvestmentDashboard = () => {
               <button className="px-4 py-2 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50">All</button>
             </div>
           </div>
-          
+
           <div className="h-64 flex items-center justify-center bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
             <div className="text-center">
               <TrendingUp className="h-12 w-12 text-blue-400 mx-auto mb-4" />

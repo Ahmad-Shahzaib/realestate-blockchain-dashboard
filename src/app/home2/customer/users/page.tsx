@@ -88,8 +88,8 @@ const UsersInvestmentDashboard = () => {
   const activeUsers = users.filter(user => user.status === 'Active' || user.status === 'Premium').length
 
   const filteredUsers = users.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === 'All' || user.status === statusFilter
     return matchesSearch && matchesStatus
   })
@@ -98,7 +98,7 @@ const UsersInvestmentDashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-6">
+        <div className=" mx-auto px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="bg-gradient-to-r from-purple-500 to-pink-600 p-2 rounded-lg">
@@ -110,7 +110,7 @@ const UsersInvestmentDashboard = () => {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <button 
+              <button
                 onClick={() => setView(view === 'cards' ? 'table' : 'cards')}
                 className="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors flex items-center space-x-2"
               >
@@ -124,7 +124,7 @@ const UsersInvestmentDashboard = () => {
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Summary Cards */}
-      
+
 
         {/* Search and Filter */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
@@ -148,11 +148,10 @@ const UsersInvestmentDashboard = () => {
                   <button
                     key={status}
                     onClick={() => setStatusFilter(status)}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      statusFilter === status
-                        ? 'bg-white text-blue-600 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${statusFilter === status
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                      }`}
                   >
                     {status}
                   </button>
@@ -206,13 +205,12 @@ const UsersInvestmentDashboard = () => {
                   <div className="mb-4">
                     <div className="flex items-center justify-between mb-2">
                       <p className="text-xs text-gray-500 uppercase tracking-wide">Status</p>
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        user.status === 'Premium' 
-                          ? 'bg-purple-100 text-purple-800 border border-purple-200'
-                          : user.status === 'Active'
-                          ? 'bg-green-100 text-green-800 border border-green-200' 
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${user.status === 'Premium'
+                        ? 'bg-purple-100 text-purple-800 border border-purple-200'
+                        : user.status === 'Active'
+                          ? 'bg-green-100 text-green-800 border border-green-200'
                           : 'bg-gray-100 text-gray-800 border border-gray-200'
-                      }`}>
+                        }`}>
                         {user.status}
                       </span>
                     </div>
@@ -239,7 +237,7 @@ const UsersInvestmentDashboard = () => {
                     <p className="text-xs text-gray-500">
                       Joined: {new Date(user.joinDate).toLocaleDateString()}
                     </p>
-                    <button 
+                    <button
                       onClick={() => setSelectedUser(user)}
                       className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-600 hover:to-indigo-700 transition-colors"
                     >
@@ -279,13 +277,12 @@ const UsersInvestmentDashboard = () => {
                       <td className="py-4 px-2 font-semibold text-gray-900">${user.totalInvestment.toLocaleString()}</td>
                       <td className="py-4 px-2 font-semibold text-green-600">{user.returns}</td>
                       <td className="py-4 px-2">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          user.status === 'Premium' 
-                            ? 'bg-purple-100 text-purple-800'
-                            : user.status === 'Active'
-                            ? 'bg-green-100 text-green-800' 
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${user.status === 'Premium'
+                          ? 'bg-purple-100 text-purple-800'
+                          : user.status === 'Active'
+                            ? 'bg-green-100 text-green-800'
                             : 'bg-gray-100 text-gray-800'
-                        }`}>
+                          }`}>
                           {user.status}
                         </span>
                       </td>
@@ -302,7 +299,7 @@ const UsersInvestmentDashboard = () => {
                         </div>
                       </td>
                       <td className="py-4 px-2">
-                        <button 
+                        <button
                           onClick={() => setSelectedUser(user)}
                           className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-sm hover:bg-blue-100 transition-colors"
                         >
@@ -332,7 +329,7 @@ const UsersInvestmentDashboard = () => {
                       <p className="text-gray-600">{selectedUser.email}</p>
                     </div>
                   </div>
-                  <button 
+                  <button
                     onClick={() => setSelectedUser(null)}
                     className="text-gray-400 hover:text-gray-600 text-xl"
                   >
@@ -358,11 +355,10 @@ const UsersInvestmentDashboard = () => {
                       <div key={project.id} className="bg-gray-50 rounded-lg p-4">
                         <div className="flex items-center justify-between mb-2">
                           <h4 className="font-semibold text-gray-900">{project.name}</h4>
-                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                            project.status === 'Active' 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-gray-100 text-gray-800'
-                          }`}>
+                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${project.status === 'Active'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-100 text-gray-800'
+                            }`}>
                             {project.status}
                           </span>
                         </div>
@@ -379,7 +375,7 @@ const UsersInvestmentDashboard = () => {
                   <p className="text-sm text-gray-500">
                     Member since: {new Date(selectedUser.joinDate).toLocaleDateString()}
                   </p>
-                  <button 
+                  <button
                     onClick={() => setSelectedUser(null)}
                     className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 transition-colors"
                   >
