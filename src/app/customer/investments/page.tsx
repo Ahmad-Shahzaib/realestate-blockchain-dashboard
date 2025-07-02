@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react'
-import { Building2, TrendingUp, DollarSign, MapPin, Calendar, Filter } from 'lucide-react'
+import { Building2, TrendingUp, DollarSign, MapPin, Calendar, Filter, Search } from 'lucide-react'
 
 const investments = [
   {
@@ -49,20 +49,30 @@ const investments = [
   }
 ]
 
+type Investment = typeof investments[number];
+
 const PropertyInvestmentDashboard = () => {
   const [filter, setFilter] = useState('All')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedInvestment, setSelectedInvestment] = useState<Investment | null>(null)
 
   const totalInvested = investments.reduce((sum, inv) => sum + parseFloat(inv.amount.replace('$', '').replace(',', '')), 0)
   const avgReturns = (investments.reduce((sum, inv) => sum + parseFloat(inv.returns.replace('%', '')), 0) / investments.length).toFixed(1)
   const activeInvestments = investments.filter(inv => inv.status === 'Active').length
 
-  const filteredInvestments = filter === 'All' ? investments : investments.filter(inv => inv.status === filter)
+  const filteredInvestments = investments.filter(inv => {
+    const matchesSearch = inv.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      inv.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      inv.type.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesStatus = filter === 'All' || inv.status === filter
+    return matchesSearch && matchesStatus
+  })
 
   return (
-    <div className=" bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
-        <div className=" mx-auto px-6 py-6">
+        <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-2 rounded-lg">
@@ -74,13 +84,15 @@ const PropertyInvestmentDashboard = () => {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              {/* View toggle button removed */}
+              {/* View toggle button placeholder */}
             </div>
           </div>
         </div>
       </div>
 
-      <div className=" mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-8">
+
+
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow">
@@ -138,11 +150,21 @@ const PropertyInvestmentDashboard = () => {
             </div>
           </div>
         </div>
-
-        {/* Filter Tabs */}
+        {/* Search and Filter */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Your Investment Details</h2>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex-1 max-w-md">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search investments by name, location, or type..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
             <div className="flex items-center space-x-4">
               <Filter className="h-5 w-5 text-gray-400" />
               <div className="flex bg-gray-100 rounded-lg p-1">
@@ -161,8 +183,14 @@ const PropertyInvestmentDashboard = () => {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Table View */}
+        {/* Investment Details Table */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">Your Investment Details ({filteredInvestments.length})</h2>
+          </div>
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -173,6 +201,7 @@ const PropertyInvestmentDashboard = () => {
                   <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Returns</th>
                   <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Status</th>
                   <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Duration</th>
+                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -180,7 +209,11 @@ const PropertyInvestmentDashboard = () => {
                   <tr key={investment.id} className="hover:bg-gray-50 transition-colors">
                     <td className="py-4 px-2">
                       <div className="flex items-center">
-                        <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg mr-3"></div>
+                        <img
+                          src={investment.image}
+                          alt={investment.name}
+                          className="w-12 h-12 rounded-lg mr-3 object-cover"
+                        />
                         <div>
                           <p className="font-semibold text-gray-900">{investment.name}</p>
                           <p className="text-sm text-gray-500">{investment.type}</p>
@@ -199,6 +232,14 @@ const PropertyInvestmentDashboard = () => {
                       </span>
                     </td>
                     <td className="py-4 px-2 text-gray-600">{investment.duration}</td>
+                    <td className="py-4 px-2">
+                      <button
+                        onClick={() => setSelectedInvestment(investment)}
+                        className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-sm hover:bg-blue-100 transition-colors"
+                      >
+                        View Details
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -228,6 +269,72 @@ const PropertyInvestmentDashboard = () => {
             </div>
           </div>
         </div>
+
+        {/* Investment Detail Modal */}
+        {selectedInvestment && (
+          <div className="fixed inset-0 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 bg-gray-100 rounded-t-2xl">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src={selectedInvestment.image}
+                      alt={selectedInvestment.name}
+                      className="w-16 h-16 rounded-full object-cover"
+                    />
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900">{selectedInvestment.name}</h2>
+                      <p className="text-gray-600">{selectedInvestment.type}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setSelectedInvestment(null)}
+                    className="text-gray-400 hover:text-gray-600 text-xl"
+                  >
+                    ×
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <p className="text-sm text-gray-500 mb-1">Investment Amount</p>
+                    <p className="text-2xl font-bold text-gray-900">{selectedInvestment.amount}</p>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <p className="text-sm text-gray-500 mb-1">Returns</p>
+                    <p className="text-2xl font-bold text-green-600">{selectedInvestment.returns}</p>
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Investment Details</h3>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-gray-600">Location: <span className="font-semibold">{selectedInvestment.location}</span></p>
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${selectedInvestment.status === 'Active'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-gray-100 text-gray-800'
+                        }`}>
+                        {selectedInvestment.status}
+                      </span>
+                    </div>
+                    <p className="text-gray-600">Duration: <span className="font-semibold">{selectedInvestment.duration}</span></p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-500">Investment Type: {selectedInvestment.type}</p>
+                  <button
+                    onClick={() => setSelectedInvestment(null)}
+                    className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
