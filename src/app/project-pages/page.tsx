@@ -96,19 +96,19 @@ export function OverviewCards() {
 
     return (
         <>
-            <div className="w-full px-10 mb-6 mt-3 border-b  pb-2">
-                <h1 className="text-2xl font-bold  "> All Projects</h1>
+            <div className="w-full px-10 mb-6 mt-3 border-b pb-2">
+                <h1 className="text-2xl font-bold"> All Projects</h1>
             </div>
-            <div className="w-full  px-10">
+            <div className="w-full px-10">
                 {/* Tabs */}
-                <div className="flex space-x-4 mb-6 overflow-x-auto ">
+                <div className="flex space-x-4 mb-6 overflow-x-auto">
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
                             onClick={() => { setActiveTab(tab.id); setPage(1); }}
                             className={`flex items-center px-4 py-2 text-lg font-medium rounded-lg whitespace-nowrap ${activeTab === tab.id
-                                ? "bg-black text-white"
-                                : "bg-gray-100 text-black hover:bg-gray-200"
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-secondary text-secondary-foreground hover:bg-secondary-hover"
                                 }`}
                         >
                             <tab.icon className="w-6 h-6 mr-2" />
@@ -123,7 +123,7 @@ export function OverviewCards() {
                 </div>
                 <div className="w-full flex justify-end mt-6">
                     <button
-                        className={`bg-blue-500 text-white py-2 px-4 rounded-lg transition-colors ${!hasMore ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
+                        className={`bg-accent text-accent-foreground py-2 px-4 rounded-lg transition-colors ${!hasMore ? 'opacity-50 cursor-not-allowed' : 'hover:bg-accent-hover'}`}
                         onClick={handleLoadMore}
                         disabled={!hasMore || loadingMore}
                     >

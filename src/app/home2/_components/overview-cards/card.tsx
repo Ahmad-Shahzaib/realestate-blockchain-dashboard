@@ -82,14 +82,14 @@ export function OverviewCard({ item, initialImageIndex = 0, projectId }: PropsTy
     }
   }
 
+  // Use theme-based status badge colors (define these in your Tailwind config or global CSS)
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      pending_approval: { label: "Pending", color: "bg-orange-100 text-orange-600" },
-      active: { label: "Active", color: "bg-green-100 text-green-600" },
-      mature: { label: "Mature", color: "bg-blue-100 text-blue-600" },
-      development: { label: "Development", color: "bg-purple-100 text-purple-600" },
+      pending_approval: { label: "Pending", color: "bg-status-pending text-status-pending-foreground" },
+      active: { label: "Active", color: "bg-status-active text-status-active-foreground" },
+      mature: { label: "Mature", color: "bg-status-mature text-status-mature-foreground" },
+      development: { label: "Development", color: "bg-status-development text-status-development-foreground" },
     };
-
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.active;
     return config;
   };
@@ -132,7 +132,7 @@ export function OverviewCard({ item, initialImageIndex = 0, projectId }: PropsTy
   return (
     <div
       onClick={handleCardClick}
-      className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer max-w-sm"
+      className="group bg-background border border-border text-text rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer max-w-sm"
     >
       {/* Compact Image Section */}
       <div className="relative h-48 overflow-hidden">
@@ -153,7 +153,7 @@ export function OverviewCard({ item, initialImageIndex = 0, projectId }: PropsTy
         />
 
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background-gradientFrom via-background-gradientVia to-background-gradientTo" />
 
         {/* Status Badge */}
         <div className="absolute top-2 left-2">
@@ -165,7 +165,7 @@ export function OverviewCard({ item, initialImageIndex = 0, projectId }: PropsTy
         {/* Featured Badge */}
         {project?.featured && (
           <div className="absolute top-2 right-2">
-            <div className="bg-orange-100 text-orange-600 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+            <div className="bg-status-featured text-status-featured-foreground px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
               <Star className="w-3 h-3" />
               Featured
             </div>
@@ -176,15 +176,15 @@ export function OverviewCard({ item, initialImageIndex = 0, projectId }: PropsTy
         <div className="absolute bottom-9 right-3 flex gap-1">
           <button
             onClick={handlePrevImage}
-            className="w-6 h-6 bg-white/80 rounded-full flex items-center justify-center transition-all hover:bg-white"
+            className="w-6 h-6 bg-transparent rounded-full flex items-center justify-center transition-all hover:bg-transparent"
           >
-            <ChevronLeft className="w-3 h-3 text-gray-600" />
+            <ChevronLeft className="w-3 h-3 text-text" />
           </button>
           <button
             onClick={handleNextImage}
-            className="w-6 h-6 bg-white/80 rounded-full flex items-center justify-center transition-all hover:bg-white"
+            className="w-6 h-6 bg-transparent rounded-full flex items-center justify-center transition-all hover:bg-transparent"
           >
-            <ChevronRight className="w-3 h-3 text-gray-600" />
+            <ChevronRight className="w-3 h-3 text-text" />
           </button>
         </div>
 
@@ -193,8 +193,7 @@ export function OverviewCard({ item, initialImageIndex = 0, projectId }: PropsTy
           {projectImages.map((_, index) => (
             <div
               key={index}
-              className={`w-1.5 h-1.5 rounded-full transition-all ${index === currentImageIndex ? 'bg-white' : 'bg-white/50'
-                }`}
+              className={`w-1.5 h-1.5 rounded-full transition-all ${index === currentImageIndex ? 'bg-text' : 'bg-border'}`}
             />
           ))}
         </div>
@@ -205,23 +204,23 @@ export function OverviewCard({ item, initialImageIndex = 0, projectId }: PropsTy
         {/* Header */}
         <div className="mb-2">
           <div className="flex justify-between items-start mb-1">
-            <h3 className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">
+            <h3 className="text-sm font-semibold text-text group-hover:text-text transition-colors line-clamp-1">
               {project?.name || "Globe Residency Apartments"}
             </h3>
-            <div className="text-xs text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded">
+            <div className="text-xs text-text bg-background px-1.5 py-0.5 rounded">
               {project?.category ? project.category.charAt(0).toUpperCase() + project.category.slice(1) : "Commercial"}
             </div>
           </div>
 
-          <div className="flex items-center gap-1 text-gray-500 text-xs mb-1.5">
+          <div className="flex items-center gap-1 text-text text-xs mb-1.5">
             <MapPin className="w-3 h-3" />
             <span className="truncate">{project?.location ? `${project.location.city}, ${project.location.state}` : "Location TBD"}</span>
           </div>
 
           {/* Compact Price */}
-          <div className="bg-gray-50 rounded-lg p-1.5 mb-2">
-            <div className="text-gray-500 text-xs mb-0.5">RETAIL PRICE RANGE</div>
-            <div className="text-gray-900 font-semibold text-xs">
+          <div className="bg-background rounded-lg p-1.5 mb-2">
+            <div className="text-text text-xs mb-0.5">RETAIL PRICE RANGE</div>
+            <div className="text-text font-semibold text-xs">
               {project?.priceRange ? `${project.priceRange.min.toLocaleString()} - ${project.priceRange.max.toLocaleString()}` : "Price on Request"}
             </div>
           </div>
@@ -229,30 +228,27 @@ export function OverviewCard({ item, initialImageIndex = 0, projectId }: PropsTy
 
         {/* Compact Stats Grid */}
         <div className="grid grid-cols-2 gap-1.5 mb-2">
-          <div className="bg-gray-50 rounded-lg p-1.5">
-            <div className="text-gray-500 text-xs mb-0.5">AVAILABLE</div>
-            <div className="text-gray-900 font-semibold text-xs">{mockAvailableUnits} Units</div>
+          <div className="bg-background rounded-lg p-1.5">
+            <div className="text-text text-xs mb-0.5">AVAILABLE</div>
+            <div className="text-text font-semibold text-xs">{mockAvailableUnits} Units</div>
           </div>
-          <div className="bg-gray-50 rounded-lg p-1.5">
-            <div className="text-gray-500 text-xs mb-0.5">TOTAL AREA</div>
-            <div className="text-gray-900 font-semibold text-xs">
+          <div className="bg-background rounded-lg p-1.5">
+            <div className="text-text text-xs mb-0.5">TOTAL AREA</div>
+            <div className="text-text font-semibold text-xs">
               {project?.totalArea !== undefined
                 ? `${Number(project.totalArea).toLocaleString()} sq ft`
                 : "TBD"}
             </div>
           </div>
-          <div className="bg-gray-50 rounded-lg p-1.5">
-            <div className="text-gray-500 text-xs mb-0.5">EXPECTED ROI</div>
-            <div className="text-green-600 font-semibold text-xs">{mockROI}%</div>
+          <div className="bg-background rounded-lg p-1.5">
+            <div className="text-text text-xs mb-0.5">EXPECTED ROI</div>
+            <div className="text-text font-semibold text-xs">{mockROI}%</div>
           </div>
-          <div className="bg-gray-50 rounded-lg p-1.5">
-            <div className="text-gray-500 text-xs mb-0.5">INVESTMENT</div>
-            <div className="text-blue-600 font-semibold text-xs">{mockInvestmentAmount}</div>
+          <div className="bg-background rounded-lg p-1.5">
+            <div className="text-text text-xs mb-0.5">INVESTMENT</div>
+            <div className="text-text font-semibold text-xs">{mockInvestmentAmount}</div>
           </div>
         </div>
-
-
-
 
       </div>
     </div>

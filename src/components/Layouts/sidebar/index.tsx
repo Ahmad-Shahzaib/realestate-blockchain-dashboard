@@ -43,24 +43,25 @@ export function Sidebar() {
       {/* Mobile Overlay */}
       {isMobile && isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 transition-opacity duration-300"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
           onClick={() => setIsOpen(false)}
           aria-hidden="true"
         />
       )}
 
+      {/* Sidebar */}
       <aside
         className={cn(
-          "max-w-[250px] overflow-hidden border-r border-gray-200 bg-white transition-[width] duration-200 ease-linear dark:border-gray-800 dark:bg-gray-dark",
-          isMobile ? "fixed bottom-0 top-0 z-50" : "sticky top-0 h-screen",
-          isOpen ? "w-full" : "w-0",
+          "max-w-[250px] overflow-hidden border-r border-border/20 bg-background/60 backdrop-blur-md transition-[width] duration-200 ease-linear",
+          isOpen ? "w-full" : "w-0 lg:w-auto"
         )}
         aria-label="Main navigation"
         aria-hidden={!isOpen}
         inert={!isOpen}
       >
-        <div className="flex h-full flex-col py-10 pl-[25px] pr-[7px]">
-          <div className="relative pr-4.5">
+        <div className="flex h-full flex-col overflow-y-auto">
+          {/* Logo */}
+          <div className="flex h-18 items-center justify-between border-b border-border/20 px-5 py-[18px]">
             <Link
               href={"/"}
               onClick={() => isMobile && toggleSidebar()}

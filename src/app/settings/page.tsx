@@ -24,19 +24,19 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <div className="p-6 mx-auto">
+    <div className="p-6 mx-auto bg-background border border-border text-text">
 
-      <h1 className="text-2xl font-semibold  mb-4">Settings</h1>
+      <h1 className="text-2xl font-semibold mb-4 text-text">Settings</h1>
 
-      <div className="border-b border-gray-300">
-        <nav className="flex flex-wrap gap-4 text-sm font-medium text-gray-600">
+      <div className="border-b border-border">
+        <nav className="flex flex-wrap gap-4 text-sm font-medium text-text">
           {tabs.map((tab, index) => (
             <button
               key={index}
               onClick={() => setActiveTab(index)}
               className={`px-4 py-2 rounded-t-md transition ${activeTab === index
-                ? "bg-white  font-semibold"
-                : "hover:text-blue-500"
+                ? "bg-background font-semibold border-b-2 border-border"
+                : "hover:text-text"
                 }`}
             >
               {tab}
@@ -45,7 +45,7 @@ export default function SettingsPage() {
         </nav>
       </div>
 
-      <div className="mt-6 ">
+      <div className="mt-6">
         {/* Tab Content */}
         {activeTab === 0 && <div><PersonalDetails /></div>}
         {activeTab === 1 && <div><MyAddresses /></div>}

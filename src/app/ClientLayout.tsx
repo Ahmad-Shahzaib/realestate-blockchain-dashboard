@@ -44,30 +44,28 @@ const ClientLayout = ({ children }: any) => {
                     <AuthWrapper>
                         <div className="flex min-h-screen">
                             <Sidebar />
-                            <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
+                            <div className="w-full">
                                 <Header />
-                                <main className="isolate mx-auto w-full  overflow-hidden ">
+                                <div className="min-h-screen bg-gradient-to-br from-[theme('colors.background.gradientFrom')] via-[theme('colors.background.gradientVia')] to-[theme('colors.background.gradientTo')] relative overflow-hidden">
                                     {children}
-                                </main>
+                                </div>
                             </div>
                         </div>
-
                     </AuthWrapper>
                 </Providers>
-            ) : (<>
+            ) : (
                 <Providers>
                     <AuthWrapper>
                         <div className="flex min-h-screen">
-                            <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
-                                <main className="isolate mx-auto w-full  overflow-hidden ">
+                            <div className="w-full bg-[theme('colors.background.secondary')] dark:bg-[theme('colors.background.dark')]">
+                                <div className="min-h-screen bg-gradient-to-br from-[theme('colors.background.gradientFrom')] via-[theme('colors.background.gradientVia')] to-[theme('colors.background.gradientTo')] relative overflow-hidden">
                                     {children}
-                                </main>
+                                </div>
                             </div>
                         </div>
-
                     </AuthWrapper>
                 </Providers>
-            </>)}
+            )}
         </>
     )
 }

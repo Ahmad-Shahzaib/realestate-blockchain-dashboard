@@ -7,7 +7,7 @@ export default function LegalInformation() {
     const [isEditing, setIsEditing] = useState(false)
 
     return (
-        <div className="rounded-lg custom-border  p-6 shadow-sm">
+        <div className="rounded-lg custom-border bg-background text-text p-6 shadow-sm">
             <div className="flex items-start justify-between">
                 <div>
                     <h2 className="text-2xl font-bold ">Legal Information</h2>
@@ -18,7 +18,7 @@ export default function LegalInformation() {
                 {!isEditing && (
                     <button
                         onClick={() => setIsEditing(true)}
-                        className=" font-medium hover:underline"
+                        className="font-medium hover:underline text-text"
                     >
                         Edit
                     </button>
@@ -28,39 +28,37 @@ export default function LegalInformation() {
             <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2">
                 <div>
                     <h3 className="text-lg font-medium ">CNIC</h3>
-
                     <input
                         type="text"
                         placeholder="00000-0000000-0"
-                        className="mt-2 w-full rounded-md  px-4 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="mt-2 w-full rounded-md px-4 py-2 text-text bg-background border border-border focus:outline-none focus:ring-2 focus:ring-border"
                     />
-
                 </div>
 
                 <div>
-                    <h3 className="text-lg font-medium  pt-2">FBR Tax Filer</h3>
+                    <h3 className="text-lg font-medium pt-2">FBR Tax Filer</h3>
                     {isEditing ? (
                         <div className="mt-2 flex space-x-6">
                             {["Filer", "Non Filer", "Not Provided"].map((label) => (
-                                <label key={label} className="flex items-center">
-                                    <input type="radio" name="tax-status" className="h-4 w-4 text-blue-600" />
+                                <label key={label} className="flex items-center text-text">
+                                    <input type="radio" name="tax-status" className="h-4 w-4 text-border" />
                                     <span className="ml-2 ">{label}</span>
                                 </label>
                             ))}
                         </div>
                     ) : (
-                        <p className="mt-1 ">Not Provided</p>
+                        <p className="mt-1 text-text">Not Provided</p>
                     )}
                 </div>
             </div>
 
             <div className="mt-8">
                 <h3 className="text-lg font-medium ">
-                    CNIC Front & Back <span className="text-sm font-normal ">(PNG, JPG, PDF - less than 5 mb)</span>
+                    CNIC Front & Back <span className="text-sm font-normal">(PNG, JPG, PDF - less than 5 mb)</span>
                 </h3>
                 <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                     {["Front", "Back"].map((side, idx) => (
-                        <div key={side} className="rounded-md custom-border ">
+                        <div key={side} className="rounded-md custom-border bg-background border border-border">
                             <input
                                 type="file"
                                 id={`cnic-${side.toLowerCase()}`}
@@ -68,15 +66,15 @@ export default function LegalInformation() {
                             />
                             <label
                                 htmlFor={`cnic-${side.toLowerCase()}`}
-                                className="flex cursor-pointer flex-col items-center justify-center p-6"
+                                className="flex cursor-pointer flex-col items-center justify-center p-6 text-text"
                             >
-                                <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full ">
-                                    <Upload className="h-5 w-5 " />
+                                <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-background border border-border">
+                                    <Upload className="h-5 w-5 text-text" />
                                 </div>
                                 <p className="mb-1 text-sm font-medium ">
                                     {isEditing ? `Upload new CNIC ${side.toLowerCase()}` : `Uploaded CNIC ${side.toLowerCase()}`}
                                 </p>
-                                <p className="text-xs text-gray-500">Click to browse files</p>
+                                <p className="text-xs text-text/70">Click to browse files</p>
                             </label>
                         </div>
                     ))}
@@ -87,13 +85,13 @@ export default function LegalInformation() {
                 <div className="mt-6 flex justify-end gap-4">
                     <button
                         onClick={() => setIsEditing(false)}
-                        className="custom-button"
+                        className="custom-button bg-background text-text border border-border"
                     >
                         Update
                     </button>
                     <button
                         onClick={() => setIsEditing(false)}
-                        className="rounded-md bg-gray-200 px-4 py-2  hover:bg-gray-300"
+                        className="rounded-md bg-background text-text border border-border px-4 py-2 hover:bg-background/80"
                     >
                         Cancel
                     </button>

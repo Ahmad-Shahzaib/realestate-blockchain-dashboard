@@ -10,7 +10,7 @@ import {
 
 export function TopProductsSkeleton() {
   return (
-    <div className="rounded-[10px] bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
+    <div className="rounded-[10px] bg-background shadow-1 dark:bg-gray-dark dark:shadow-card text-white">
       <h2 className="px-4 py-6 text-2xl font-bold text-dark dark:text-white md:px-6 xl:px-9">
         Top Products
       </h2>

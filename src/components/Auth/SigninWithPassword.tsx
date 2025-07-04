@@ -94,7 +94,7 @@ export default function SigninWithPassword() {
             name="email"
             value={data.email}
             onChange={handleChange}
-            className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
+            className="w-full pl-12 pr-4 py-4 bg-background/10 backdrop-blur-sm border border-border rounded-2xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
             placeholder="Enter your email"
             required
           />

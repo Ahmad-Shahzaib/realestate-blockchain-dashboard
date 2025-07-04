@@ -9,17 +9,17 @@ import { Notification } from "./notification";
 import { ThemeToggleSwitch } from "./theme-toggle";
 import { UserInfo } from "./user-info";
 
-export function Header() {
+export function   Header() {
   const { toggleSidebar, isMobile } = useSidebarContext();
 
   return (
-    <header className="h-18 sticky top-0 z-9999 flex items-center justify-between border-b border-stroke/20 bg-white/80 backdrop-blur-md px-4 py-5 shadow-sm dark:border-stroke-dark/20 dark:bg-gray-dark/80 md:px-5 2xl:px-10 transition-all duration-300">
+    <header className="h-18 sticky top-0 z-9999 flex items-center justify-between border-b border-border/20 backdrop-blur-md px-4 py-5 shadow-sm bg-background/60 md:px-5 2xl:px-10 transition-all duration-300">
       <button
         onClick={toggleSidebar}
-        className="group relative overflow-hidden rounded-xl border border-stroke/40 bg-gradient-to-br from-white to-gray-50 px-2.5 py-2.5 shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 dark:border-stroke-dark/40 dark:from-[#020D1A] dark:to-[#0A1628] hover:dark:from-[#0A1628] hover:dark:to-[#1A2B3D] lg:hidden"
+        className="group relative overflow-hidden rounded-xl border border-border/40 bg-background px-2.5 py-2.5 shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 hover:bg-background/80"
       >
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <MenuIcon className="relative z-10 transition-transform duration-300 group-hover:rotate-180" />
+        <MenuIcon className="relative z-10 transition-transform duration-300 group-hover:rotate-180 text-white" />
         <span className="sr-only">Toggle Sidebar</span>
       </button>
 
@@ -41,9 +41,9 @@ export function Header() {
         </Link>
       )}
 
-      <div className="max-xl:hidden">
+      <div className="max-xl:hidden ml-4">
         <div className="relative">
-          <h1 className="mb-0.5 text-heading-5 font-bold bg-gradient-to-r from-dark to-dark/80 bg-clip-text text-transparent dark:from-white dark:to-white/80 transition-all duration-300">
+          <h1 className="mb-0.5 text-heading-5 font-bold text-white transition-all duration-300">
             Dashboard
           </h1>
           <div className="absolute -bottom-1 left-0 h-0.5 w-8 bg-gradient-to-r from-primary to-primary/60 rounded-full" />
@@ -58,7 +58,6 @@ export function Header() {
           </div>
         </div>
       </div>
-
     </header>
   );
 }

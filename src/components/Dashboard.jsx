@@ -414,7 +414,7 @@ const Dashboard = () => {
 
           {/* Regional Analysis */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
-            <div className="xl:col-span-2 border border-slate-700/50 rounded-2xl p-6">
+            <div className="xl:col-span-2 border border-border rounded-2xl p-6 bg-background/60 text-white">
               <h2 className="text-xl font-bold  mb-6">Regional Investment Distribution</h2>
               <div className="h-80">
                 <Bar
@@ -452,7 +452,7 @@ const Dashboard = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className=" backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6">
+            <div className="backdrop-blur-xl border border-border rounded-2xl p-6 bg-background/60 text-white">
               <h2 className="text-xl font-bold  mb-6">Quick Actions</h2>
               <div className="space-y-4">
                 <button className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl hover:bg-opacity-20 transition-all group">
@@ -486,7 +486,7 @@ const Dashboard = () => {
           </div>
 
           {/* Recent Activity */}
-          <div className=" backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6">
+          <div className="backdrop-blur-xl border border-border rounded-2xl p-6 bg-background/60 text-white">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold ">Recent Blockchain Activity</h2>
               <button className=" hover:text-blue-300 text-sm font-medium flex items-center gap-1">
@@ -496,14 +496,9 @@ const Dashboard = () => {
             </div>
             <div className="space-y-4">
               {recentActivities.map((activity, index) => (
-                <div key={index} className="flex items-center justify-between p-4  backdrop-blur-sm border border-slate-700/30 rounded-xl hover:border-blue-500/30 transition-all duration-300 group">
+                <div key={index} className="flex items-center justify-between p-4  backdrop-blur-sm border border-border rounded-xl hover:border-blue-500/30 transition-all duration-300 group bg-background/40 text-white">
                   <div className="flex items-center gap-4">
-                    <div className={`p-3 rounded-xl ${activity.type === 'purchase' ? 'bg-green-500/20 border border-green-500/30' :
-                      activity.type === 'sale' ? 'bg-blue-500/20 border border-blue-500/30' :
-                        activity.type === 'income' ? 'bg-purple-500/20 border border-purple-500/30' :
-                          activity.type === 'tokenize' ? 'bg-yellow-500/20 border border-yellow-500/30' :
-                            'bg-slate-500/20 border border-slate-500/30'
-                      }`}>
+                    <div className={`p-3 rounded-xl bg-background/30 border border-border`}>
                       <i className={`fas ${activity.icon} ${activity.type === 'purchase' ? 'text-green-400' :
                         activity.type === 'sale' ? '' :
                           activity.type === 'income' ? 'text-purple-400' :
@@ -516,7 +511,7 @@ const Dashboard = () => {
                       <div className="flex items-center gap-2 mt-1">
                         <p className=" text-sm">{activity.timestamp}</p>
                         {activity.hash && (
-                          <span className="text-xs bg-slate-800  px-2 py-1 rounded-md font-mono">
+                          <span className="text-xs bg-background px-2 py-1 rounded-md font-mono text-white">
                             {activity.hash}
                           </span>
                         )}
@@ -528,7 +523,7 @@ const Dashboard = () => {
                     {activity.amount && (
                       <p className=" font-semibold text-lg">{activity.amount}</p>
                     )}
-                    <button className="text-xs bg-blue-500/20 hover:bg-blue-500/30  px-3 py-1 rounded-md border border-blue-500/30 transition-colors">
+                    <button className="text-xs bg-background/20 hover:bg-background/30 px-3 py-1 rounded-md border border-border transition-colors text-white">
                       View Details
                     </button>
                   </div>
