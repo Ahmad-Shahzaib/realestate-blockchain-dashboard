@@ -43,8 +43,9 @@ const ClientLayout = ({ children }: any) => {
                 <Providers>
                     <AuthWrapper>
                         <div className="flex min-h-screen">
+                            {/* Sidebar: fixed, so main content needs left margin */}
                             <Sidebar />
-                            <div className="w-full">
+                            <div className="flex-1 ml-0 lg:ml-64">
                                 <Header />
                                 <div className="min-h-screen bg-gradient-to-br from-[theme('colors.background.gradientFrom')] via-[theme('colors.background.gradientVia')] to-[theme('colors.background.gradientTo')] relative overflow-hidden">
                                     {children}

@@ -52,125 +52,126 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "max-w-[250px] overflow-hidden border-r border-border/20 bg-background/60 backdrop-blur-md transition-[width] duration-200 ease-linear",
-          isOpen ? "w-full" : "w-0 lg:w-auto"
+          // Fixed sidebar for desktop, overlay for mobile
+          "fixed left-0 top-0 z-40 h-screen w-64 max-w-[250px] border-r border-border/20 bg-background/80 backdrop-blur-md transition-transform duration-200 ease-linear lg:static lg:translate-x-0 lg:w-64 lg:max-w-[250px] lg:h-screen flex flex-col",
+          isOpen
+            ? "translate-x-0"
+            : "-translate-x-full lg:translate-x-0"
         )}
+        style={{ position: 'fixed', top: 0, left: 0, height: '100vh' }}
         aria-label="Main navigation"
-        aria-hidden={!isOpen}
-        inert={!isOpen}
+        aria-hidden={!isOpen && isMobile}
+        inert={!isOpen && isMobile}
       >
-        <div className="flex h-full flex-col overflow-y-auto">
-          {/* Logo */}
-          <div className="flex h-18 items-center justify-between border-b border-border/20 px-5 py-[18px]">
-            <Link
-              href={"/"}
-              onClick={() => isMobile && toggleSidebar()}
-              className="px-0 py-2.5 min-[850px]:py-0"
+        {/* Logo */}
+        <div className="flex h-18 items-center justify-between border-b border-border/20 px-5 py-[18px] relative shrink-0">
+          <Link
+            href={"/"}
+            onClick={() => isMobile && toggleSidebar()}
+            className="px-0 py-2.5 min-[850px]:py-0"
+          >
+            <Logo />
+          </Link>
+
+          {isMobile && (
+            <button
+              onClick={toggleSidebar}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-right"
             >
-              <Logo />
-            </Link>
+              <span className="sr-only">Close Menu</span>
+              <ArrowLeftIcon className="ml-auto size-7" />
+            </button>
+          )}
+        </div>
 
-            {isMobile && (
-              <button
-                onClick={toggleSidebar}
-                className="absolute left-3/4 right-4.5 top-1/2 -translate-y-1/2 text-right"
-              >
-                <span className="sr-only">Close Menu</span>
+        {/* Navigation */}
+        <div className="custom-scrollbar mt-6 flex-1 overflow-y-auto pr-3 min-[850px]:mt-10">
+          {NAV_DATA.map((section) => (
+            <div key={section.label} className="mb-6">
+              <h2 className="mb-5 text-sm font-medium text-dark-4 dark:text-dark-6">
+                {section.label}
+              </h2>
 
-                <ArrowLeftIcon className="ml-auto size-7" />
-              </button>
-            )}
-          </div>
+              <nav role="navigation" aria-label={section.label}>
+                <ul className="space-y-2">
+                  {section.items.map((item) => (
+                    <li key={`${section.label || 'section'}-${item.title}`}>
+                      {item.items && item.items.length ? (
+                        <div>
+                          <MenuItem
+                            isActive={item.items.some(
+                              ({ url }) => url === pathname,
+                            )}
+                            onClick={() => toggleExpanded(item.title)}
+                          >
+                            {item.icon && (
+                              <item.icon
+                                className="size-6 shrink-0"
+                                aria-hidden="true"
+                              />
+                            )}
 
-          {/* Navigation */}
-          <div className="custom-scrollbar mt-6 flex-1 overflow-y-auto pr-3 min-[850px]:mt-10">
-            {NAV_DATA.map((section) => (
-              <div key={section.label} className="mb-6">
-                <h2 className="mb-5 text-sm font-medium text-dark-4 dark:text-dark-6">
-                  {section.label}
-                </h2>
+                            <span>{item.title}</span>
 
-                <nav role="navigation" aria-label={section.label}>
-                  <ul className="space-y-2">
-                    {section.items.map((item) => (
-                      <li key={`${section.label || 'section'}-${item.title}`}>
-                        {item.items && item.items.length ? (
-                          <div>
-                            <MenuItem
-                              isActive={item.items.some(
-                                ({ url }) => url === pathname,
+                            <ChevronUp
+                              className={cn(
+                                "ml-auto rotate-180 transition-transform duration-200",
+                                expandedItems.includes(item.title) &&
+                                "rotate-0",
                               )}
-                              onClick={() => toggleExpanded(item.title)}
+                              aria-hidden="true"
+                            />
+                          </MenuItem>
+
+                          {expandedItems.includes(item.title) && (
+                            <ul
+                              className="ml-9 mr-0 space-y-1.5 pb-[15px] pr-0 pt-2"
+                              role="menu"
+                            >
+                              {item.items.map((subItem) => (
+                                <li key={`${item.title}-${subItem.title}`} role="none">
+                                  <MenuItem
+                                    as="link"
+                                    href={subItem.url}
+                                    isActive={pathname === subItem.url}
+                                  >
+                                    <span>{subItem.title}</span>
+                                  </MenuItem>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ) : (
+                        (() => {
+                          const href =
+                            "url" in item
+                              ? item.url + ""
+                              : "/" +
+                              item.title.toLowerCase().split(" ").join("-");
+
+                          return (
+                            <MenuItem
+                              className="flex items-center gap-3 py-3"
+                              as="link"
+                              href={href}
+                              isActive={pathname === href}
                             >
                               {item.icon && (
-                                <item.icon
-                                  className="size-6 shrink-0"
-                                  aria-hidden="true"
-                                />
+                                <item.icon className="size-6 shrink-0" aria-hidden="true" />
                               )}
 
                               <span>{item.title}</span>
-
-                              <ChevronUp
-                                className={cn(
-                                  "ml-auto rotate-180 transition-transform duration-200",
-                                  expandedItems.includes(item.title) &&
-                                  "rotate-0",
-                                )}
-                                aria-hidden="true"
-                              />
                             </MenuItem>
-
-                            {expandedItems.includes(item.title) && (
-                              <ul
-                                className="ml-9 mr-0 space-y-1.5 pb-[15px] pr-0 pt-2"
-                                role="menu"
-                              >
-                                {item.items.map((subItem) => (
-                                  <li key={`${item.title}-${subItem.title}`} role="none">
-                                    <MenuItem
-                                      as="link"
-                                      href={subItem.url}
-                                      isActive={pathname === subItem.url}
-                                    >
-                                      <span>{subItem.title}</span>
-                                    </MenuItem>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                        ) : (
-                          (() => {
-                            const href =
-                              "url" in item
-                                ? item.url + ""
-                                : "/" +
-                                item.title.toLowerCase().split(" ").join("-");
-
-                            return (
-                              <MenuItem
-                                className="flex items-center gap-3 py-3"
-                                as="link"
-                                href={href}
-                                isActive={pathname === href}
-                              >
-                                {item.icon && (
-                                  <item.icon className="size-6 shrink-0" aria-hidden="true" />
-                                )}
-
-                                <span>{item.title}</span>
-                              </MenuItem>
-                            );
-                          })()
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              </div>
-            ))}
-          </div>
+                          );
+                        })()
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          ))}
         </div>
       </aside>
     </>
