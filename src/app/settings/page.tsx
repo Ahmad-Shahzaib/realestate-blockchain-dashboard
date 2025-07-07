@@ -34,10 +34,10 @@ export default function SettingsPage() {
   return (
     <div className="p-6 mx-auto bg-background border border-border text-text">
       <h1 className="text-2xl font-semibold mb-4 text-text">Settings</h1>
-      <div className="flex flex-row gap-8">
+      <div className="flex lg:flex-row flex-col gap-8">
         {/* Tabs column */}
         <div className="border-l border-border max-w-xs min-w-[200px]">
-          <nav className="flex flex-col gap-2 text-sm font-medium text-text">
+          <nav className="flex lg:flex-col flex-row overflow-x-auto gap-2 text-sm font-medium text-text">
             {tabs.map((tab, index) => (
               <button
                 key={index}
