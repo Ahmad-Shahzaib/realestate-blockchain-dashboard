@@ -47,7 +47,7 @@ const ClientLayout = ({ children }: any) => {
                             <Sidebar />
                             <div className="flex-1 ml-0 lg:ml-64">
                                 <Header />
-                                <div className="min-h-screen bg-gradient-to-br from-[theme('colors.background.gradientFrom')] via-[theme('colors.background.gradientVia')] to-[theme('colors.background.gradientTo')] relative overflow-hidden">
+                                <div className="min-h-screen bg-[#222831] relative overflow-hidden">
                                     {children}
                                 </div>
                             </div>

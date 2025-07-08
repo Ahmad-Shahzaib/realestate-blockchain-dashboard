@@ -13,10 +13,10 @@ export function   Header() {
   const { toggleSidebar, isMobile } = useSidebarContext();
 
   return (
-    <header className="h-18 sticky top-0 z-9999 flex items-center justify-between border-b border-border/20 backdrop-blur-md px-4 py-5 shadow-sm bg-background/60 md:px-5 2xl:px-10 transition-all duration-300">
+    <header className="h-18 sticky top-0 z-9999 flex items-center justify-between border-b border-border/20 backdrop-blur-md px-4 py-5 shadow-sm bg-[#1a1a2e] md:px-5 2xl:px-10 transition-all duration-300">
       <button
         onClick={toggleSidebar}
-        className="group relative overflow-hidden rounded-xl border border-border/40 bg-background px-2.5 py-2.5 shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 hover:bg-background/80"
+        className="group relative overflow-hidden rounded-xl border border-border/40 bg-[#1a1a2e] px-2.5 py-2.5 shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 hover:bg-background/80"
       >
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <MenuIcon className="relative z-10 transition-transform duration-300 group-hover:rotate-180 text-white" />

@@ -32,10 +32,10 @@ const config: Config = {
 		  8: "#E5E7EB",
 		},
 		background: {
-		  DEFAULT: "#0f172a", // slate-950
-		  gradientFrom: "#0f172a", // slate-950
-		  gradientVia: "#172554", // blue-950
-		  gradientTo: "#1e293b", // slate-900
+		  DEFAULT: "#024b3a", // slate-950
+		  gradientFrom: "#1e8a67", // slate-950
+		  gradientVia: "#2c6281", // blue-950
+		  gradientTo: "#1e8a67", // slate-900
 		},
 		text: {
 		  DEFAULT: "#ffffff",

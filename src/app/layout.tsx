@@ -10,7 +10,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-gradient-to-br from-[theme('colors.background.gradientFrom')] via-[theme('colors.background.gradientVia')] to-[theme('colors.background.gradientTo')] text-white border-gray-500">
+      <body className="bg-[#1a1a2e] text-white border-gray-500">
         <ClientLayout children={children} />
       </body>
     </html>

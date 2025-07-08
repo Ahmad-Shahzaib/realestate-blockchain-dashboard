@@ -67,7 +67,7 @@ export default function SignUp() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 relative overflow-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-background-gradientFrom via-background-gradientVia to-background-gradientTo relative overflow-hidden flex items-center justify-center">
             {/* Animated Background Elements */}
             <div className="absolute inset-0">
                 <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -78,9 +78,9 @@ export default function SignUp() {
             {/* Grid Pattern Overlay */}
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
 
-            <div className="relative z-10 min-h-screen flex">
+            <div className="relative z-10 min-h-screen flex flex-col lg:flex-row w-full items-center justify-center">
                 {/* Left Side - Branding & Info */}
-                <div className="hidden lg:flex lg:w-1/2 flex-col justify-center px-12 xl:px-16">
+                <div className="hidden lg:flex lg:w-1/2 flex-col justify-center px-8 xl:px-16 max-lg:pt-16 max-lg:pb-8">
                     <div className="max-w-lg">
                         {/* Logo */}
                         <div className="flex items-center gap-4 mb-12">
@@ -138,8 +138,8 @@ export default function SignUp() {
                 </div>
 
                 {/* Right Side - Sign Up Form */}
-                <div className="w-full lg:w-1/2 flex items-center justify-center px-6 lg:px-12 py-8">
-                    <div className="w-full max-w-md">
+                <div className="w-full max-w-xl flex items-center justify-center px-4 sm:px-8 md:px-12 py-8 lg:w-1/2">
+                    <div className="w-full max-w-md mx-auto">
                         {/* Mobile Logo */}
                         <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
                             <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-600 rounded-xl flex items-center justify-center">
@@ -151,7 +151,7 @@ export default function SignUp() {
                         </div>
 
                         {/* Sign Up Card */}
-                        <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl border border-white/20">
+                        <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl border border-white/20">
                             <div className="text-center mb-8">
                                 <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                     <UserPlus className="w-8 h-8 text-white" />
@@ -181,9 +181,9 @@ export default function SignUp() {
                             </div>
 
                             {/* Sign Up Form */}
-                            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+                            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                                 {/* Name Fields */}
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <label className="text-white text-sm font-medium">First Name</label>
                                         <div className="relative">
@@ -198,7 +198,7 @@ export default function SignUp() {
                                                         type="text"
                                                         value={value}
                                                         onChange={onChange}
-                                                        className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
+                                                        className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 text-base"
                                                         placeholder="John"
                                                     />
                                                 )}
@@ -223,7 +223,7 @@ export default function SignUp() {
                                                         type="text"
                                                         value={value}
                                                         onChange={onChange}
-                                                        className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
+                                                        className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 text-base"
                                                         placeholder="Doe"
                                                     />
                                                 )}
@@ -250,7 +250,7 @@ export default function SignUp() {
                                                     type="email"
                                                     value={value}
                                                     onChange={onChange}
-                                                    className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
+                                                    className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 text-base"
                                                     placeholder="john.doe@example.com"
                                                 />
                                             )}
@@ -276,7 +276,7 @@ export default function SignUp() {
                                                     type={showPassword ? "text" : "password"}
                                                     value={value}
                                                     onChange={onChange}
-                                                    className="w-full pl-12 pr-12 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
+                                                    className="w-full pl-12 pr-12 py-3 sm:py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 text-base"
                                                     placeholder="Create a strong password"
                                                 />
                                             )}
@@ -319,7 +319,7 @@ export default function SignUp() {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                                    className="w-full bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-semibold py-3 sm:py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-3 text-base sm:text-lg"
                                 >
                                     {loading ? (
                                         <>

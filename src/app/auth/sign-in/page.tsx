@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function SignIn() {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 relative overflow-hidden flex items-center justify-center">
+    <div className="min-h-screen w-full bg-gradient-to-br from-background-gradientFrom via-background-gradientVia to-background-gradientTo relative overflow-hidden flex items-center justify-center">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-40 h-40 sm:w-64 sm:h-64 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -21,8 +21,8 @@ export default function SignIn() {
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30 pointer-events-none"></div>
 
       <div className="relative z-10 w-full flex flex-col items-center justify-center min-h-screen">
-        <div className="flex flex-col-reverse lg:flex-row w-full max-w-6xl items-center justify-center mx-auto px-4 sm:px-8 py-8 gap-8">
-          {/* Right Side - Login Form */}
+        <div className="flex flex-col-reverse lg:flex-row-reverse w-full max-w-6xl items-center justify-center mx-auto px-4 sm:px-8 py-8 gap-8">
+          {/* Left Side - Login Form (now on right for desktop) */}
           <div className="w-full max-w-md flex flex-col items-center justify-center mx-auto">
             {/* Mobile Logo */}
             <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
@@ -53,7 +53,7 @@ export default function SignIn() {
             </div>
           </div>
 
-          {/* Left Side - Branding & Info */}
+          {/* Right Side - Branding & Info (now on left for desktop) */}
           <div className="w-full max-w-lg flex flex-col justify-center items-center px-2 sm:px-8 xl:px-16 mb-8 lg:mb-0">
             {/* Logo */}
             <div className="hidden lg:flex items-center gap-4 mb-12">

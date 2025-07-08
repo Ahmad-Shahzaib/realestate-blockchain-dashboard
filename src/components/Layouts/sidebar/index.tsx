@@ -53,7 +53,7 @@ export function Sidebar() {
       <aside
         className={cn(
           // Fixed sidebar for desktop, overlay for mobile
-          "fixed left-0 top-0 z-40 h-screen w-64 max-w-[250px] border-r border-border/20 bg-background/80 backdrop-blur-md transition-transform duration-200 ease-linear lg:static lg:translate-x-0 lg:w-64 lg:max-w-[250px] lg:h-screen flex flex-col",
+          "fixed left-0 top-0 z-40 h-screen w-64 max-w-[250px] border-r border-border/20 bg-[#1a1a2e] backdrop-blur-md transition-transform duration-200 ease-linear lg:static lg:translate-x-0 lg:w-64 lg:max-w-[250px] lg:h-screen flex flex-col",
           isOpen
             ? "translate-x-0"
             : "-translate-x-full lg:translate-x-0"

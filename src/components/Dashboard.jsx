@@ -414,7 +414,7 @@ const Dashboard = () => {
 
           {/* Regional Analysis */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
-            <div className="xl:col-span-2 border border-border rounded-2xl p-6 bg-background/60 text-white">
+            <div className="xl:col-span-2 border border-border rounded-2xl p-6   text-white">
               <h2 className="text-xl font-bold  mb-6">Regional Investment Distribution</h2>
               <div className="h-80">
                 <Bar
@@ -452,7 +452,7 @@ const Dashboard = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className="backdrop-blur-xl border border-border rounded-2xl p-6 bg-background/60 text-white">
+            <div className="backdrop-blur-xl border border-border rounded-2xl p-6   text-white">
               <h2 className="text-xl font-bold  mb-6">Quick Actions</h2>
               <div className="space-y-4">
                 <button className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl hover:bg-opacity-20 transition-all group">
@@ -486,7 +486,7 @@ const Dashboard = () => {
           </div>
 
           {/* Recent Activity */}
-          <div className="backdrop-blur-xl border border-border rounded-2xl p-6 bg-background/60 text-white">
+          <div className="backdrop-blur-xl border border-border rounded-2xl p-6   text-white">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold ">Recent Blockchain Activity</h2>
               <button className=" hover:text-blue-300 text-sm font-medium flex items-center gap-1">
