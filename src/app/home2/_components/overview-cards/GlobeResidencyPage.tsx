@@ -1,5 +1,26 @@
 "use client"
 import React, { useState, useCallback, useMemo } from "react";
+// ShadeCDN upload helper (replace with your actual ShadeCDN endpoint and API key)
+async function uploadToShadeCDN(file: File): Promise<string> {
+    const apiKey = process.env.NEXT_PUBLIC_SHADECDN_API_KEY || ""; // Set in .env
+    const endpoint = "https://api.shadecdn.com/v1/upload";
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+        const res = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${apiKey}`
+            },
+            body: formData
+        });
+        if (!res.ok) throw new Error("Upload failed");
+        const data = await res.json();
+        return data.url; // Adjust if ShadeCDN returns a different field
+    } catch (err) {
+        throw new Error("ShadeCDN upload error: " + ((err && typeof err === 'object' && 'message' in err) ? (err as any).message : String(err)));
+    }
+}
 import {
     FaBuilding,
     FaMapMarkerAlt,
@@ -11,8 +32,12 @@ import {
     FaStar,
     FaCoins
 } from "react-icons/fa";
+import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from 'react-redux';
 import { createProject } from '@/redux/reducers/projectSlice';
+import { Select } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 // Types for form and floor
 interface Floor {
@@ -133,17 +158,36 @@ function useGlobeResidencyForm() {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>(
-        [{ question: "", answer: "" }]
-    );
+    const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>([{ question: "", answer: "" }]);
     const [documents, setDocuments] = useState<string[]>([""]);
+    const [uploading, setUploading] = useState(false);
     const dispatch = useDispatch();
 
     // Memoized validation
     const isValid = useMemo(() => {
-        // Add more validation as needed
-        return !!form.propertyName && !!form.category && !!form.address && !!form.city && !!form.country;
-    }, [form]);
+        // Required fields
+        if (!form.propertyName || !form.category || !form.address || !form.city || !form.country) return false;
+        // Validate URLs
+        if (form.developerWebsite && !/^https?:\/\/.+/.test(form.developerWebsite)) return false;
+        if (form.developerLogo && !/^https?:\/\/.+/.test(form.developerLogo)) return false;
+        if (form.mainImageUrl && !/^https?:\/\/.+/.test(form.mainImageUrl)) return false;
+        // Validate numbers
+        if (form.latitude && isNaN(Number(form.latitude))) return false;
+        if (form.longitude && isNaN(Number(form.longitude))) return false;
+        // Validate token fields
+        if (form.tokenSupply && isNaN(Number(form.tokenSupply))) return false;
+        if (form.pricePerToken && isNaN(Number(form.pricePerToken))) return false;
+        // Validate floors
+        for (const floor of floors) {
+            if (!floor.name || !floor.floorNumber) return false;
+            if (floor.floorPlanUrl && !/^https?:\/\/.+/.test(floor.floorPlanUrl)) return false;
+        }
+        // Validate documents (if not empty, must be valid URL)
+        for (const doc of documents) {
+            if (doc && !/^https?:\/\/.+/.test(doc)) return false;
+        }
+        return true;
+    }, [form, floors, documents]);
 
     const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { id, value, type } = e.target;
@@ -182,10 +226,49 @@ function useGlobeResidencyForm() {
     const handleDocumentChange = useCallback((idx: number, value: string) => {
         setDocuments(docs => docs.map((doc, i) => i === idx ? value : doc));
     }, []);
-    const handleDocumentFileChange = useCallback((idx: number, file: File) => {
-        // For demo, just use file name as value. In real app, upload to server and use the URL.
-        setDocuments(docs => docs.map((doc, i) => i === idx ? file.name : doc));
-        // TODO: Implement actual upload logic and setDocuments with the uploaded file URL
+    const handleDocumentFileChange = useCallback(async (idx: number, file: File) => {
+        setUploading(true);
+        setError(null);
+        try {
+            // Validate file type/size (example: max 10MB, pdf/jpg/png)
+            if (file.size > 10 * 1024 * 1024) throw new Error("File too large (max 10MB)");
+            if (!/(pdf|jpg|jpeg|png)$/i.test(file.name)) throw new Error("Invalid file type");
+            const url = await uploadToShadeCDN(file);
+            setDocuments(docs => docs.map((doc, i) => i === idx ? url : doc));
+        } catch (err: any) {
+            setError(err.message || "Document upload failed");
+        }
+        setUploading(false);
+    }, []);
+
+    // For developer logo upload (optional, if you want to allow file upload instead of URL)
+    const handleDeveloperLogoFileChange = useCallback(async (file: File) => {
+        setUploading(true);
+        setError(null);
+        try {
+            if (file.size > 5 * 1024 * 1024) throw new Error("Logo too large (max 5MB)");
+            if (!/(jpg|jpeg|png)$/i.test(file.name)) throw new Error("Invalid logo type");
+            const url = await uploadToShadeCDN(file);
+            setForm(f => ({ ...f, developerLogo: url }));
+        } catch (err: any) {
+            setError(err.message || "Logo upload failed");
+        }
+        setUploading(false);
+    }, []);
+
+    // For main image upload
+    const handleMainImageFileChange = useCallback(async (file: File) => {
+        setUploading(true);
+        setError(null);
+        try {
+            if (file.size > 10 * 1024 * 1024) throw new Error("Image too large (max 10MB)");
+            if (!/(jpg|jpeg|png)$/i.test(file.name)) throw new Error("Invalid image type");
+            const url = await uploadToShadeCDN(file);
+            setForm(f => ({ ...f, mainImageUrl: url }));
+        } catch (err: any) {
+            setError(err.message || "Image upload failed");
+        }
+        setUploading(false);
     }, []);
     const addDocument = useCallback(() => {
         setDocuments(docs => [...docs, ""]);
@@ -196,12 +279,12 @@ function useGlobeResidencyForm() {
 
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
-        if (loading) return; // Prevent double submit
+        if (loading || uploading) return; // Prevent double submit
         setLoading(true);
         setError(null);
         setSuccess(false);
         if (!isValid) {
-            setError("Please fill all required fields.");
+            setError("Please fill all required fields and ensure all fields are valid.");
             setLoading(false);
             return;
         }
@@ -283,12 +366,13 @@ function useGlobeResidencyForm() {
             setError(err.message || (typeof err === 'string' ? err : "Submission failed"));
         }
         setLoading(false);
-    }, [form, floors, isValid, faqs, documents, loading, dispatch]);
+    }, [form, floors, isValid, faqs, documents, loading, uploading, dispatch]);
 
     return {
         form,
         floors,
         loading,
+        uploading,
         success,
         error,
         handleChange,
@@ -304,15 +388,35 @@ function useGlobeResidencyForm() {
         handleDocumentChange,
         handleDocumentFileChange,
         addDocument,
-        removeDocument
+        removeDocument,
+        handleDeveloperLogoFileChange,
+        handleMainImageFileChange
     };
 }
 
 export default function GlobeResidencyForm() {
+    // Dropdown state for project status and subcategory
+    const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
+    const [subcategoryDropdownOpen, setSubcategoryDropdownOpen] = useState(false);
+    const projectStatusOptions = [
+        { value: "under_construction", label: "Under Construction" },
+        { value: "completed", label: "Completed" },
+        { value: "planning", label: "Planning" },
+    ];
+    const subcategoryOptions = [
+        { value: "apartment", label: "Apartment" },
+        { value: "villa", label: "Villa" },
+        { value: "office", label: "Office" },
+        { value: "retail", label: "Retail" },
+        { value: "plot", label: "Plot" },
+        { value: "penthouse", label: "Penthouse" },
+        { value: "townhouse", label: "Townhouse" },
+    ];
     const {
         form,
         floors,
         loading,
+        uploading,
         success,
         error,
         handleChange,
@@ -328,46 +432,40 @@ export default function GlobeResidencyForm() {
         handleDocumentChange,
         handleDocumentFileChange,
         addDocument,
-        removeDocument
+        removeDocument,
+        handleDeveloperLogoFileChange,
+        handleMainImageFileChange
     } = useGlobeResidencyForm();
 
     // Select customers from redux store
     const customers = useSelector((state: any) => state.customer?.customers || []);
 
+    // Dropdown state for category
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const categoryOptions = [
+        { value: "residential", label: "Residential" },
+        { value: "commercial", label: "Commercial" },
+        { value: "mixed", label: "Mixed Use" },
+    ];
+
     return (
-        <div className="min-h-screen shadow-lg rounded-md py-8 px-4">
-            <div className="max-w-6xl mx-auto">
-                {/* Customer Dropdown */}
-                <div className="mb-8">
-                    <label htmlFor="customer" className="block text-sm font-semibold mb-2">Customer</label>
-                    <select
-                        id="customer"
-                        className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
-                        value={form.customer || ''}
-                        onChange={handleChange}
-                    >
-                        <option value="">Select customer</option>
-                        {customers.map((customer: any) => (
-                            <option key={customer.id || customer._id} value={customer.id || customer._id}>
-                                {customer.name || customer.fullName || customer.email}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+        <div className="min-h-screen flex flex-col px-4">
+            <div className="max-w-6xl mx-auto flex flex-col">
+
                 {/* Header */}
                 <div className="text-left mb-8">
-                    <div className=" gap-3 mb-4">
-                        <h1 className="text-4xl font-bold text-left">
+                    <div className=" gap-3">
+                        <h1 className="text-4xl text-center font-bold">
                             Add Project
                         </h1>
                     </div>
                 </div>
                 <form className="space-y-8" onSubmit={handleSubmit} autoComplete="off" noValidate>
-                    {success && <div className="text-green-600 mt-4">Project created successfully!</div>}
-                    {error && <div className="text-red-600 mt-4">{error}</div>}
+                    {success && <div className="text-green-600 mt-4 text-center">Project created successfully!</div>}
+                    {error && <div className="text-red-600 mt-4 text-center">{error}</div>}
                     {/* Basic Information */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                    <div className="backdrop-blur-sm rounded-lg shadow-lg border">
+                        <div className="bg-[#0FB9A8] text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaBuilding className="w-5 h-5" />
                                 Basic Information
@@ -378,41 +476,65 @@ export default function GlobeResidencyForm() {
                                 <label htmlFor="propertyName" className="text-sm font-semibold ">
                                     Property Name
                                 </label>
-                                <input
+                                <Input
                                     id="propertyName"
                                     placeholder="Luxury Towers"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
                                     value={form.propertyName}
                                     onChange={handleChange}
+                                    className="w-full"
                                 />
                             </div>
                             <div className="space-y-2">
                                 <label htmlFor="category" className="text-sm font-semibold ">
                                     Category
                                 </label>
-                                <select
-                                    id="category"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
-                                    value={form.category}
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Select category</option>
-                                    <option value="residential">residential</option>
-                                    <option value="commercial">commercial</option>
-                                    <option value="mixed">Mixed Use</option>
-                                </select>
+                                <div className="relative">
+                                    <Button
+                                        type="button"
+                                        className="w-full px-4 py-3.5 border rounded-lg bg-white text-left focus:outline-none focus:ring-2 focus:ring-[#0FB9A8] transition"
+                                        onClick={() => setDropdownOpen(open => !open)}
+                                        variant="default"
+                                    >
+                                        <span className="w-full text-left">
+                                            {form.category
+                                                ? categoryOptions.find(opt => opt.value === form.category)?.label
+                                                : "Select category"}
+                                        </span>
+                                        <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                            ▼
+                                        </span>
+                                    </Button>
+                                    {dropdownOpen && (
+                                        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded shadow-lg animate-fade-in">
+                                            {categoryOptions.map(option => (
+                                                <div
+                                                    key={option.value}
+                                                    className={`px-4 py-2 cursor-pointer hover:bg-[#0FB9A8]/10 ${form.category === option.value ? 'bg-[#0FB9A8]/20 font-semibold text-[#0FB9A8]' : ''}`}
+                                                    onClick={() => {
+                                                        handleChange({
+                                                            target: { id: 'category', value: option.value, name: 'category' }
+                                                        } as any);
+                                                        setDropdownOpen(false);
+                                                    }}
+                                                >
+                                                    {option.label}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                             <div className="md:col-span-2 space-y-2">
                                 <label htmlFor="description" className="text-sm font-semibold ">
                                     Description
                                 </label>
-                                <textarea
+                                <Textarea
                                     id="description"
                                     placeholder="Premium residential towers with world-class amenities..."
                                     rows={3}
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
                                     value={form.description}
                                     onChange={handleChange}
+                                    className="w-full"
                                 />
                             </div>
                         </div>
@@ -420,95 +542,106 @@ export default function GlobeResidencyForm() {
 
                     {/* Location Details */}
                     <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="bg-[#0FB9A8] text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaMapMarkerAlt className="w-5 h-5" />
                                 Location Details
                             </h2>
                         </div>
-                        <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <div className="space-y-2">
-                                <label htmlFor="address" className="text-sm font-semibold ">
-                                    Address
-                                </label>
-                                <input
-                                    id="address"
-                                    placeholder="123 Main Street"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-green-500 focus:ring-2 focus:ring-green-500 outline-none"
-                                    value={form.address}
-                                    onChange={handleChange}
-                                />
+                        <div className="p-6 space-y-6">
+                            {/* Row 1: Address & City */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label htmlFor="address" className="text-sm font-semibold ">
+                                        Address
+                                    </label>
+                                    <Input
+                                        id="address"
+                                        placeholder="123 Main Street"
+                                        value={form.address}
+                                        onChange={handleChange}
+                                        className="w-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="city" className="text-sm font-semibold ">
+                                        City
+                                    </label>
+                                    <Input
+                                        id="city"
+                                        placeholder="New York"
+                                        value={form.city}
+                                        onChange={handleChange}
+                                        className="w-full"
+                                    />
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <label htmlFor="city" className="text-sm font-semibold ">
-                                    City
-                                </label>
-                                <input
-                                    id="city"
-                                    placeholder="New York"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-green-500 focus:ring-2 focus:ring-green-500 outline-none"
-                                    value={form.city}
-                                    onChange={handleChange}
-                                />
+
+                            {/* Row 2: State & Country */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label htmlFor="state" className="text-sm font-semibold ">
+                                        State
+                                    </label>
+                                    <Input
+                                        id="state"
+                                        placeholder="NY"
+                                        value={form.state}
+                                        onChange={handleChange}
+                                        className="w-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="country" className="text-sm font-semibold ">
+                                        Country
+                                    </label>
+                                    <Input
+                                        id="country"
+                                        placeholder="USA"
+                                        value={form.country}
+                                        onChange={handleChange}
+                                        className="w-full"
+                                    />
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <label htmlFor="state" className="text-sm font-semibold ">
-                                    State
-                                </label>
-                                <input
-                                    id="state"
-                                    placeholder="NY"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-green-500 focus:ring-2 focus:ring-green-500 outline-none"
-                                    value={form.state}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="country" className="text-sm font-semibold ">
-                                    Country
-                                </label>
-                                <input
-                                    id="country"
-                                    placeholder="USA"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-green-500 focus:ring-2 focus:ring-green-500 outline-none"
-                                    value={form.country}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="latitude" className="text-sm font-semibold ">
-                                    Latitude
-                                </label>
-                                <input
-                                    id="latitude"
-                                    type="number"
-                                    step="any"
-                                    placeholder="40.7128"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-green-500 focus:ring-2 focus:ring-green-500 outline-none"
-                                    value={form.latitude}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="longitude" className="text-sm font-semibold ">
-                                    Longitude
-                                </label>
-                                <input
-                                    id="longitude"
-                                    type="number"
-                                    step="any"
-                                    placeholder="-74.0060"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-green-500 focus:ring-2 focus:ring-green-500 outline-none"
-                                    value={form.longitude}
-                                    onChange={handleChange}
-                                />
+
+                            {/* Row 3: Latitude & Longitude */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label htmlFor="latitude" className="text-sm font-semibold ">
+                                        Latitude
+                                    </label>
+                                    <Input
+                                        id="latitude"
+                                        type="number"
+                                        step="any"
+                                        placeholder="40.7128"
+                                        value={form.latitude}
+                                        onChange={handleChange}
+                                        className="w-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="longitude" className="text-sm font-semibold ">
+                                        Longitude
+                                    </label>
+                                    <Input
+                                        id="longitude"
+                                        type="number"
+                                        step="any"
+                                        placeholder="-74.0060"
+                                        value={form.longitude}
+                                        onChange={handleChange}
+                                        className="w-full"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Developer Information */}
                     <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="bg-[#0FB9A8] text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaUser className="w-5 h-5" />
                                 Developer Information
@@ -519,126 +652,179 @@ export default function GlobeResidencyForm() {
                                 <label htmlFor="developerName" className="text-sm font-semibold ">
                                     Developer Name
                                 </label>
-                                <input
+                                <Input
                                     id="developerName"
                                     placeholder="Prestige Developers"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-purple-500 focus:ring-2 focus:ring-purple-500 outline-none"
                                     value={form.developerName}
                                     onChange={handleChange}
+                                    className="w-full"
                                 />
                             </div>
                             <div className="space-y-2">
                                 <label htmlFor="developerWebsite" className="text-sm font-semibold ">
                                     Website
                                 </label>
-                                <input
+                                <Input
                                     id="developerWebsite"
                                     type="url"
                                     placeholder="https://prestigedevelopers.com"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-purple-500 focus:ring-2 focus:ring-purple-500 outline-none"
                                     value={form.developerWebsite}
                                     onChange={handleChange}
+                                    className="w-full"
                                 />
                             </div>
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-2">
                                 <label htmlFor="developerDescription" className="text-sm font-semibold ">
                                     Description
                                 </label>
-                                <textarea
+                                <Textarea
                                     id="developerDescription"
                                     placeholder="Leading luxury real estate developer..."
                                     rows={3}
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-purple-500 focus:ring-2 focus:ring-purple-500 outline-none"
                                     value={form.developerDescription}
                                     onChange={handleChange}
+                                    className="w-full"
                                 />
                             </div>
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-2">
                                 <label htmlFor="developerLogo" className="text-sm font-semibold ">
-                                    Logo URL
+                                    Logo URL or Upload
                                 </label>
-                                <input
+                                <Input
                                     id="developerLogo"
                                     type="url"
                                     placeholder="https://example.com/logo.png"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-purple-500 focus:ring-2 focus:ring-purple-500 outline-none"
                                     value={form.developerLogo}
                                     onChange={handleChange}
+                                    className="w-full"
                                 />
+                                <div className="mt-2">
+                                    <input
+                                        type="file"
+                                        accept="image/png,image/jpeg,image/jpg"
+                                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+                                        onChange={e => {
+                                            if (e.target.files && e.target.files[0]) {
+                                                handleDeveloperLogoFileChange(e.target.files[0]);
+                                            }
+                                        }}
+                                        disabled={uploading}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Project Timeline */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border overflow-visible">
+                        <div className="bg-[#0FB9A8] text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaCalendarAlt className="w-5 h-5" />
                                 Project Timeline & Status
                             </h2>
                         </div>
-                        <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <div className="space-y-2">
-                                <label htmlFor="projectStatus" className="text-sm font-semibold ">
-                                    Project Status
-                                </label>
-                                <select
-                                    id="projectStatus"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-orange-500 focus:ring-2 focus:ring-orange-500 outline-none"
-                                    value={form.projectStatus}
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Select status</option>
-                                    <option value="under_construction">Under Construction</option>
-                                    <option value="completed">Completed</option>
-                                    <option value="planning">Planning</option>
-                                </select>
+                        <div className="p-6 overflow-visible">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div className="space-y-2">
+                                    <label htmlFor="projectStatus" className="text-sm font-semibold ">Project Status</label>
+                                    <div className="relative">
+                                        <Button
+                                            type="button"
+                                            className="w-full px-4 pr-12 pl-4 py-3.5 border rounded-lg bg-white text-left focus:outline-none focus:ring-2 focus:ring-[#0FB9A8] transition"
+                                            onClick={() => setStatusDropdownOpen(open => !open)}
+                                            variant="default"
+                                        >
+                                            <span className="w-full text-left">
+                                                {form.projectStatus
+                                                    ? projectStatusOptions.find(opt => opt.value === form.projectStatus)?.label
+                                                    : "Select status"}
+                                            </span>
+                                            <span className={`absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 transition-transform ${statusDropdownOpen ? 'rotate-180' : ''}`}>▼</span>
+                                        </Button>
+                                        {statusDropdownOpen && (
+                                            <div className="absolute z-[9999] mt-1 w-full bg-white border border-gray-200 rounded shadow-lg animate-fade-in max-h-48 overflow-y-auto">
+                                                {projectStatusOptions.map(option => (
+                                                    <div
+                                                        key={option.value}
+                                                        className={`px-4 py-2 cursor-pointer hover:bg-[#0FB9A8]/10 ${form.projectStatus === option.value ? 'bg-[#0FB9A8]/20 font-semibold text-[#0FB9A8]' : ''}`}
+                                                        onClick={() => {
+                                                            handleChange({
+                                                                target: { id: 'projectStatus', value: option.value, name: 'projectStatus' }
+                                                            } as any);
+                                                            setStatusDropdownOpen(false);
+                                                        }}
+                                                    >
+                                                        {option.label}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="subcategory" className="text-sm font-semibold ">Subcategory</label>
+                                    <div className="relative">
+                                        <Button
+                                            type="button"
+                                            className="w-full px-4 pr-12 pl-4 py-3.5 border rounded-lg bg-white text-left focus:outline-none focus:ring-2 focus:ring-[#0FB9A8] transition"
+                                            onClick={() => setSubcategoryDropdownOpen(open => !open)}
+                                            variant="default"
+                                        >
+                                            <span className="w-full text-left">
+                                                {form.subcategory
+                                                    ? subcategoryOptions.find(opt => opt.value === form.subcategory)?.label
+                                                    : "Select subcategory"}
+                                            </span>
+                                            <span className={`absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 transition-transform ${subcategoryDropdownOpen ? 'rotate-180' : ''}`}>▼</span>
+                                        </Button>
+                                        {subcategoryDropdownOpen && (
+                                            <div className="absolute z-[9999] mt-1 w-full bg-white border border-gray-200 rounded shadow-lg animate-fade-in max-h-48 overflow-y-auto">
+                                                {subcategoryOptions.map(option => (
+                                                    <div
+                                                        key={option.value}
+                                                        className={`px-4 py-2 cursor-pointer hover:bg-[#0FB9A8]/10 ${form.subcategory === option.value ? 'bg-[#0FB9A8]/20 font-semibold text-[#0FB9A8]' : ''}`}
+                                                        onClick={() => {
+                                                            handleChange({
+                                                                target: { id: 'subcategory', value: option.value, name: 'subcategory' }
+                                                            } as any);
+                                                            setSubcategoryDropdownOpen(false);
+                                                        }}
+                                                    >
+                                                        {option.label}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <label htmlFor="subcategory" className="text-sm font-semibold ">
-                                    Subcategory
-                                </label>
-                                <select
-                                    id="subcategory"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-orange-500 focus:ring-2 focus:ring-orange-500 outline-none"
-                                    value={form.subcategory}
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Select subcategory</option>
-                                    <option value="apartment">Apartment</option>
-                                    <option value="villa">Villa</option>
-                                    <option value="office">Office</option>
-                                    <option value="retail">Retail</option>
-                                    <option value="plot">Plot</option>
-                                    <option value="penthouse">Penthouse</option>
-                                    <option value="townhouse">Townhouse</option>
-                                </select>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label htmlFor="startDate" className="text-sm font-semibold ">
+                                        Start Date
+                                    </label>
+                                    <Input
+                                        id="startDate"
+                                        type="date"
+                                        value={form.startDate}
+                                        onChange={handleChange}
+                                        className="w-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="completionDate" className="text-sm font-semibold ">
+                                        Completion Date
+                                    </label>
+                                    <Input
+                                        id="completionDate"
+                                        type="date"
+                                        value={form.completionDate}
+                                        onChange={handleChange}
+                                        className="w-full"
+                                    />
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <label htmlFor="startDate" className="text-sm font-semibold ">
-                                    Start Date
-                                </label>
-                                <input
-                                    id="startDate"
-                                    type="date"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-orange-500 focus:ring-2 focus:ring-orange-500 outline-none"
-                                    value={form.startDate}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="completionDate" className="text-sm font-semibold ">
-                                    Completion Date
-                                </label>
-                                <input
-                                    id="completionDate"
-                                    type="date"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-orange-500 focus:ring-2 focus:ring-orange-500 outline-none"
-                                    value={form.completionDate}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="space-y-2">
+                            <div className="space-y-2 mt-6">
                                 <label className="text-sm font-semibold ">Featured Property</label>
                                 <div className="flex items-center gap-2">
                                     <input
@@ -655,164 +841,180 @@ export default function GlobeResidencyForm() {
                             </div>
                         </div>
                     </div>
-
                     {/* Pricing & Area */}
                     <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="bg-[#0FB9A8] text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaDollarSign className="w-5 h-5" />
                                 Pricing & Area Details
                             </h2>
                         </div>
-                        <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <div className="space-y-2">
-                                <label htmlFor="totalArea" className="text-sm font-semibold ">
-                                    Total Area (sq.ft)
-                                </label>
-                                <input
-                                    id="totalArea"
-                                    type="number"
-                                    placeholder="100,000"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 outline-none"
-                                    value={form.totalArea}
-                                    onChange={handleChange}
-                                />
+                        <div className="p-6 space-y-6">
+                            {/* Area inputs row */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label htmlFor="totalArea" className="text-sm font-semibold ">
+                                        Total Area (sq.ft)
+                                    </label>
+                                    <Input
+                                        id="totalArea"
+                                        type="number"
+                                        placeholder="100,000"
+                                        value={form.totalArea}
+                                        onChange={handleChange}
+                                        className="w-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="sellableArea" className="text-sm font-semibold ">
+                                        Sellable Area (sq.ft)
+                                    </label>
+                                    <Input
+                                        id="sellableArea"
+                                        type="number"
+                                        placeholder="80,000"
+                                        value={form.sellableArea}
+                                        onChange={handleChange}
+                                        className="w-full"
+                                    />
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <label htmlFor="sellableArea" className="text-sm font-semibold ">
-                                    Sellable Area (sq.ft)
-                                </label>
-                                <input
-                                    id="sellableArea"
-                                    type="number"
-                                    placeholder="80,000"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 outline-none"
-                                    value={form.sellableArea}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="priceMin" className="text-sm font-semibold ">
-                                    Min Price
-                                </label>
-                                <input
-                                    id="priceMin"
-                                    type="number"
-                                    placeholder="800,000"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 outline-none"
-                                    value={form.priceMin}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="priceMax" className="text-sm font-semibold ">
-                                    Max Price
-                                </label>
-                                <input
-                                    id="priceMax"
-                                    type="number"
-                                    placeholder="2,500,000"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 outline-none"
-                                    value={form.priceMax}
-                                    onChange={handleChange}
-                                />
+
+                            {/* Price inputs row */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label htmlFor="priceMin" className="text-sm font-semibold ">
+                                        Min Price
+                                    </label>
+                                    <Input
+                                        id="priceMin"
+                                        type="number"
+                                        placeholder="800,000"
+                                        value={form.priceMin}
+                                        onChange={handleChange}
+                                        className="w-full"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="priceMax" className="text-sm font-semibold ">
+                                        Max Price
+                                    </label>
+                                    <Input
+                                        id="priceMax"
+                                        type="number"
+                                        placeholder="2,500,000"
+                                        value={form.priceMax}
+                                        onChange={handleChange}
+                                        className="w-full"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
-
                     {/* Statistics */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                    <div className="backdrop-blur-sm rounded-lg shadow-lg border border-gray-200">
+                        <div className="bg-gradient-to-r from-[#0FB9A8] to-[#0DA695] text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaChartBar className="w-5 h-5" />
                                 Project Statistics
                             </h2>
                         </div>
-                        <div className="p-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-                            <div className="space-y-2">
-                                <label htmlFor="totalUnits" className="text-sm font-semibold ">
-                                    Total Units
-                                </label>
-                                <input
-                                    id="totalUnits"
-                                    type="number"
-                                    placeholder="50"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500 outline-none"
-                                    value={form.totalUnits}
-                                    onChange={handleChange}
-                                />
+                        <div className="p-6 bg-white/50 space-y-6">
+                            {/* Row 1: Total Units & Sold Units */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label htmlFor="totalUnits" className="text-sm font-semibold text-gray-700">
+                                        Total Units
+                                    </label>
+                                    <Input
+                                        id="totalUnits"
+                                        type="number"
+                                        placeholder="50"
+                                        value={form.totalUnits}
+                                        onChange={handleChange}
+                                        className="w-full border-gray-300 focus:border-[#0FB9A8] focus:ring-[#0FB9A8] transition-colors"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="soldUnits" className="text-sm font-semibold text-gray-700">
+                                        Sold Units
+                                    </label>
+                                    <Input
+                                        id="soldUnits"
+                                        type="number"
+                                        placeholder="30"
+                                        value={form.soldUnits}
+                                        onChange={handleChange}
+                                        className="w-full border-gray-300 focus:border-[#0FB9A8] focus:ring-[#0FB9A8] transition-colors"
+                                    />
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <label htmlFor="soldUnits" className="text-sm font-semibold ">
-                                    Sold Units
-                                </label>
-                                <input
-                                    id="soldUnits"
-                                    type="number"
-                                    placeholder="30"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500 outline-none"
-                                    value={form.soldUnits}
-                                    onChange={handleChange}
-                                />
+
+                            {/* Row 2: Reserved & Available */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label htmlFor="reservedUnits" className="text-sm font-semibold text-gray-700">
+                                        Reserved
+                                    </label>
+                                    <Input
+                                        id="reservedUnits"
+                                        type="number"
+                                        placeholder="5"
+                                        value={form.reservedUnits}
+                                        onChange={handleChange}
+                                        className="w-full border-gray-300 focus:border-[#0FB9A8] focus:ring-[#0FB9A8] transition-colors"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="availableUnits" className="text-sm font-semibold text-gray-700">
+                                        Available
+                                    </label>
+                                    <Input
+                                        id="availableUnits"
+                                        type="number"
+                                        placeholder="15"
+                                        value={form.availableUnits}
+                                        onChange={handleChange}
+                                        className="w-full border-gray-300 focus:border-[#0FB9A8] focus:ring-[#0FB9A8] transition-colors"
+                                    />
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <label htmlFor="reservedUnits" className="text-sm font-semibold ">
-                                    Reserved
-                                </label>
-                                <input
-                                    id="reservedUnits"
-                                    type="number"
-                                    placeholder="5"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500 outline-none"
-                                    value={form.reservedUnits}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="availableUnits" className="text-sm font-semibold ">
-                                    Available
-                                </label>
-                                <input
-                                    id="availableUnits"
-                                    type="number"
-                                    placeholder="15"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500 outline-none"
-                                    value={form.availableUnits}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="views" className="text-sm font-semibold ">
-                                    Views
-                                </label>
-                                <input
-                                    id="views"
-                                    type="number"
-                                    placeholder="1,200"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500 outline-none"
-                                    value={form.views}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="inquiries" className="text-sm font-semibold ">
-                                    Inquiries
-                                </label>
-                                <input
-                                    id="inquiries"
-                                    type="number"
-                                    placeholder="85"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500 outline-none"
-                                    value={form.inquiries}
-                                    onChange={handleChange}
-                                />
+
+                            {/* Row 3: Views & Inquiries */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label htmlFor="views" className="text-sm font-semibold text-gray-700">
+                                        Views
+                                    </label>
+                                    <Input
+                                        id="views"
+                                        type="number"
+                                        placeholder="1,200"
+                                        value={form.views}
+                                        onChange={handleChange}
+                                        className="w-full border-gray-300 focus:border-[#0FB9A8] focus:ring-[#0FB9A8] transition-colors"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="inquiries" className="text-sm font-semibold text-gray-700">
+                                        Inquiries
+                                    </label>
+                                    <Input
+                                        id="inquiries"
+                                        type="number"
+                                        placeholder="85"
+                                        value={form.inquiries}
+                                        onChange={handleChange}
+                                        className="w-full border-gray-300 focus:border-[#0FB9A8] focus:ring-[#0FB9A8] transition-colors"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Images & Media */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="bg-[#0FB9A8] text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaCamera className="w-5 h-5" />
                                 Images & Media
@@ -821,28 +1023,41 @@ export default function GlobeResidencyForm() {
                         <div className="p-6 space-y-6">
                             <div className="space-y-2">
                                 <label htmlFor="mainImageUrl" className="text-sm font-semibold ">
-                                    Main Image URL
+                                    Main Image URL or Upload
                                 </label>
-                                <input
+                                <Input
                                     id="mainImageUrl"
                                     type="url"
                                     placeholder="https://example.com/main-image.jpg"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-pink-500 focus:ring-2 focus:ring-pink-500 outline-none"
                                     value={form.mainImageUrl}
                                     onChange={handleChange}
+                                    className="w-full"
                                 />
+                                <div className="mt-2">
+                                    <input
+                                        type="file"
+                                        accept="image/png,image/jpeg,image/jpg"
+                                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100"
+                                        onChange={e => {
+                                            if (e.target.files && e.target.files[0]) {
+                                                handleMainImageFileChange(e.target.files[0]);
+                                            }
+                                        }}
+                                        disabled={uploading}
+                                    />
+                                </div>
                             </div>
                             <div className="space-y-2">
                                 <label htmlFor="galleryImages" className="text-sm font-semibold ">
                                     Gallery Images (comma separated URLs)
                                 </label>
-                                <textarea
+                                <Textarea
                                     id="galleryImages"
                                     placeholder="https://example.com/img1.jpg, https://example.com/img2.jpg, https://example.com/img3.jpg"
                                     rows={3}
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-pink-500 focus:ring-2 focus:ring-pink-500 outline-none"
                                     value={form.galleryImages}
                                     onChange={handleChange}
+                                    className="w-full"
                                 />
                             </div>
                         </div>
@@ -850,7 +1065,7 @@ export default function GlobeResidencyForm() {
 
                     {/* Floors Section */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="bg-[#0FB9A8] text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaBuilding className="w-5 h-5" />
                                 Floor Details
@@ -860,38 +1075,49 @@ export default function GlobeResidencyForm() {
                             {floors.map((floor, idx) => (
                                 <div key={idx} className="border p-4 rounded-lg mb-4 ">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <input id="name" placeholder="Name" className="p-2 border rounded" value={floor.name} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="floorNumber" type="number" placeholder="Floor Number" className="p-2 border rounded" value={floor.floorNumber} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="floorPlanUrl" placeholder="Floor Plan URL" className="p-2 border rounded" value={floor.floorPlanUrl} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="totalUnits" type="number" placeholder="Total Units" className="p-2 border rounded" value={floor.totalUnits} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="pricePerSqFt" type="number" placeholder="Price Per SqFt" className="p-2 border rounded" value={floor.pricePerSqFt} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="minPrice" type="number" placeholder="Min Price" className="p-2 border rounded" value={floor.minPrice} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="maxPrice" type="number" placeholder="Max Price" className="p-2 border rounded" value={floor.maxPrice} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="totalSquareFootage" type="number" placeholder="Total Square Footage" className="p-2 border rounded" value={floor.totalSquareFootage} onChange={e => handleFloorChange(idx, e)} />
+                                        <Input id="name" placeholder="Name" value={floor.name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFloorChange(idx, e)} className="w-full" />
+                                        <Input id="floorNumber" type="number" placeholder="Floor Number" value={floor.floorNumber} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFloorChange(idx, e)} className="w-full" />
+                                        <Input id="floorPlanUrl" placeholder="Floor Plan URL" value={floor.floorPlanUrl} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFloorChange(idx, e)} className="w-full" />
+                                        <Input id="totalUnits" type="number" placeholder="Total Units" value={floor.totalUnits} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFloorChange(idx, e)} className="w-full" />
+                                        <Input id="pricePerSqFt" type="number" placeholder="Price Per SqFt" value={floor.pricePerSqFt} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFloorChange(idx, e)} className="w-full" />
+                                        <Input id="minPrice" type="number" placeholder="Min Price" value={floor.minPrice} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFloorChange(idx, e)} className="w-full" />
+                                        <Input id="maxPrice" type="number" placeholder="Max Price" value={floor.maxPrice} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFloorChange(idx, e)} className="w-full" />
+                                        <Input id="totalSquareFootage" type="number" placeholder="Total Square Footage" value={floor.totalSquareFootage} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFloorChange(idx, e)} className="w-full" />
                                         {/* New fields for min/max sqft buy */}
-                                        <input id="minSqftBuy" type="number" placeholder="Minimum Sqft Buy" className="p-2 border rounded" value={floor.minSqftBuy || ''} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="maxSqftBuy" type="number" placeholder="Maximum Sqft Buy" className="p-2 border rounded" value={floor.maxSqftBuy || ''} onChange={e => handleFloorChange(idx, e)} />
+                                        <Input id="minSqftBuy" type="number" placeholder="Minimum Sqft Buy" value={floor.minSqftBuy || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFloorChange(idx, e)} className="w-full" />
+                                        <Input id="maxSqftBuy" type="number" placeholder="Maximum Sqft Buy" value={floor.maxSqftBuy || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFloorChange(idx, e)} className="w-full" />
                                     </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                                        <textarea id="description" placeholder="Description" className="p-2 border rounded" value={floor.description} onChange={e => handleFloorChange(idx, e)} />
-                                        <textarea id="specifications" placeholder="Specifications (comma separated)" className="p-2 border rounded" value={floor.specifications} onChange={e => handleFloorSpecChange(idx, "specifications", e.target.value)} />
-                                        <textarea id="features" placeholder="Features (comma separated)" className="p-2 border rounded" value={floor.features} onChange={e => handleFloorSpecChange(idx, "features", e.target.value)} />
+
+                                    {/* Description row */}
+                                    <div className="mt-4">
+                                        <Textarea id="description" placeholder="Description" value={floor.description} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleFloorChange(idx, e)} className="w-full" />
+                                    </div>
+
+                                    {/* Specifications row */}
+                                    <div className="mt-4">
+                                        <Textarea id="specifications" placeholder="Specifications (comma separated)" value={floor.specifications} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleFloorSpecChange(idx, "specifications", e.target.value)} className="w-full" />
+                                    </div>
+
+                                    {/* Features row */}
+                                    <div className="mt-4">
+                                        <Textarea id="features" placeholder="Features (comma separated)" value={floor.features} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleFloorSpecChange(idx, "features", e.target.value)} className="w-full" />
                                     </div>
                                 </div>
                             ))}
-                            <button
+                            <Button
                                 type="button"
-                                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                className="mt-2 flex items-center justify-center"
                                 onClick={addFloor}
+                                variant="default"
                             >
-                                Add Floor
-                            </button>
+                                <span className="w-full text-center">Add Floor</span>
+                            </Button>
                         </div>
                     </div>
 
                     {/* Token Information */}
                     <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="bg-[#0FB9A8] text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaCoins className="w-5 h-5" />
                                 Token Information
@@ -902,62 +1128,62 @@ export default function GlobeResidencyForm() {
                                 <label htmlFor="tokenName" className="text-sm font-semibold ">
                                     Token Name
                                 </label>
-                                <input
+                                <Input
                                     id="tokenName"
                                     placeholder="GlobeHouseToken"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 outline-none"
                                     value={form.tokenName}
                                     onChange={handleChange}
+                                    className="w-full"
                                 />
                             </div>
                             <div className="space-y-2">
                                 <label htmlFor="tokenSymbol" className="text-sm font-semibold ">
                                     Token Symbol
                                 </label>
-                                <input
+                                <Input
                                     id="tokenSymbol"
                                     placeholder="GHT"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 outline-none"
                                     value={form.tokenSymbol}
                                     onChange={handleChange}
+                                    className="w-full"
                                 />
                             </div>
                             <div className="space-y-2">
                                 <label htmlFor="tokenSupply" className="text-sm font-semibold ">
                                     Token Supply
                                 </label>
-                                <input
+                                <Input
                                     id="tokenSupply"
                                     type="number"
                                     placeholder="1"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 outline-none"
                                     value={form.tokenSupply}
                                     onChange={handleChange}
+                                    className="w-full"
                                 />
                             </div>
                             <div className="space-y-2">
                                 <label htmlFor="pricePerToken" className="text-sm font-semibold ">
                                     Price Per Token (PKR)
                                 </label>
-                                <input
+                                <Input
                                     id="pricePerToken"
                                     type="number"
                                     placeholder="120,000,000"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 outline-none"
                                     value={form.pricePerToken}
                                     onChange={handleChange}
+                                    className="w-full"
                                 />
                             </div>
                             <div className="md:col-span-2 space-y-2">
                                 <label htmlFor="walletAddress" className="text-sm font-semibold ">
                                     Wallet Address
                                 </label>
-                                <input
+                                <Input
                                     id="walletAddress"
                                     placeholder="User's Phantom Wallet Address"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 outline-none"
                                     value={form.walletAddress}
                                     onChange={handleChange}
+                                    className="w-full"
                                 />
                             </div>
                         </div>
@@ -965,56 +1191,66 @@ export default function GlobeResidencyForm() {
 
                     {/* Add FAQs Section */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border mt-8">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="bg-[#0FB9A8] text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 FAQs
                             </h2>
                         </div>
                         <div className="p-6 space-y-6">
                             {faqs.map((faq, idx) => (
-                                <div key={idx} className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-                                    <div className="flex-1 space-y-2">
-                                        <label className="text-sm font-semibold">Question</label>
-                                        <input
-                                            placeholder="Enter FAQ question"
-                                            className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
-                                            value={faq.question}
-                                            onChange={e => handleFaqChange(idx, "question", e.target.value)}
-                                        />
+                                <div key={idx} className="border p-4 rounded-lg mb-4">
+                                    {/* Question row */}
+                                    <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+                                        <div className="flex-1 space-y-2">
+                                            <label className="text-sm font-semibold">Question</label>
+                                            <Input
+                                                placeholder="Enter FAQ question"
+                                                value={faq.question}
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFaqChange(idx, "question", e.target.value)}
+                                                className="w-full"
+                                            />
+                                        </div>
+                                        {faqs.length > 1 && (
+                                            <div className="w-full flex justify-center md:w-auto md:block">
+                                            <Button
+                                                type="button"
+                                                className="mt-6 md:mt-0 flex items-center justify-center"
+                                                onClick={() => removeFaq(idx)}
+                                                variant="default"
+                                            >
+                                                Remove
+                                            </Button>
+                                            </div>
+                                        )}
                                     </div>
-                                    <div className="flex-1 space-y-2">
+
+                                    {/* Answer row */}
+                                    <div className="space-y-2">
                                         <label className="text-sm font-semibold">Answer</label>
-                                        <textarea
+                                        <Textarea
                                             placeholder="Enter FAQ answer"
                                             rows={2}
-                                            className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
                                             value={faq.answer}
-                                            onChange={e => handleFaqChange(idx, "answer", e.target.value)}
+                                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleFaqChange(idx, "answer", e.target.value)}
+                                            className="w-full"
                                         />
                                     </div>
-                                    <button
-                                        type="button"
-                                        className="mt-6 md:mt-0 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                                        onClick={() => removeFaq(idx)}
-                                        disabled={faqs.length === 1}
-                                    >
-                                        Remove
-                                    </button>
                                 </div>
                             ))}
-                            <button
+                            <Button
                                 type="button"
-                                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                className="mt-2 flex items-center justify-center"
                                 onClick={addFaq}
+                                variant="default"
                             >
-                                Add FAQ
-                            </button>
+                                <span className="w-full text-center">Add FAQ</span>
+                            </Button>
                         </div>
                     </div>
 
                     {/* Documents Section */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border mt-8">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="bg-[#0FB9A8] text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 Documents
                             </h2>
@@ -1024,54 +1260,62 @@ export default function GlobeResidencyForm() {
                                 <div key={idx} className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
                                     <div className="flex-1 space-y-2">
                                         <label className="text-sm font-semibold">Document URL or Upload</label>
-                                        <input
+                                        <Input
                                             type="text"
                                             placeholder="Enter document URL"
-                                            className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
                                             value={doc}
-                                            onChange={e => handleDocumentChange(idx, e.target.value)}
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleDocumentChange(idx, e.target.value)}
+                                            className="w-full"
                                         />
                                         <div className="mt-2">
                                             <input
                                                 type="file"
+                                                accept="application/pdf,image/png,image/jpeg,image/jpg"
                                                 className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                                                 onChange={e => {
                                                     if (e.target.files && e.target.files[0]) {
                                                         handleDocumentFileChange(idx, e.target.files[0]);
                                                     }
                                                 }}
+                                                disabled={uploading}
                                             />
                                         </div>
                                     </div>
-                                    <button
-                                        type="button"
-                                        className="mt-6 md:mt-0 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                                        onClick={() => removeDocument(idx)}
-                                        disabled={documents.length === 1}
-                                    >
-                                        Remove
-                                    </button>
+                                    {documents.length > 1 && (
+                                        <div className="w-full flex justify-center md:w-auto md:block">
+                                            <Button
+                                                type="button"
+                                                className="mt-6 md:mt-0 flex items-center justify-center"
+                                                onClick={() => removeDocument(idx)}
+                                                variant="default"
+                                            >
+                                                Remove
+                                            </Button>
+                                        </div>
+                                    )}
                                 </div>
                             ))}
-                            <button
+                            <Button
                                 type="button"
-                                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                                className="mt-2 flex items-center justify-center"
                                 onClick={addDocument}
+                                variant="default"
                             >
-                                Add Document
-                            </button>
+                                <span className="w-full text-center">Add Document</span>
+                            </Button>
                         </div>
                     </div>
 
                     {/* Submit Button */}
                     <div className="flex justify-end pt-6">
-                        <button
+                        <Button
                             type="submit"
-                            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-                            disabled={loading}
+                            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center"
+                            disabled={loading || uploading}
+                            variant="default"
                         >
-                            {loading ? "Creating..." : "Submit"}
-                        </button>
+                            <span className="w-full text-center">{loading || uploading ? "Processing..." : "Submit"}</span>
+                        </Button>
                     </div>
 
                 </form>

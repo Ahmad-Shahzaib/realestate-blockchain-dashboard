@@ -15,34 +15,30 @@ const config: Config = {
 				"3xl": "2000px",
 			},
 			colors: {
-		current: "currentColor",
-		transparent: "transparent",
-		white: "#FFFFFF",
-		primary: "#5750F1",
-		stroke: "#E6EBF1",
-		"stroke-dark": "#27303E",
-		dark: {
-		  DEFAULT: "#111928",
-		  2: "#1F2A37",
-		  3: "#374151",
-		  4: "#4B5563",
-		  5: "#6B7280",
-		  6: "#9CA3AF",
-		  7: "#D1D5DB",
-		  8: "#E5E7EB",
-		},
-		background: {
-		  DEFAULT: "#024b3a", // slate-950
-		  gradientFrom: "#1e8a67", // slate-950
-		  gradientVia: "#2c6281", // blue-950
-		  gradientTo: "#1e8a67", // slate-900
-		},
-		text: {
-		  DEFAULT: "#ffffff",
-		},
-		border: {
-		  DEFAULT: "#6b7280", // gray-500
-		},
+				current: "currentColor",
+				transparent: "transparent",
+				white: "#FFFFFF",
+				primary: "#5750F1",
+				stroke: "#E6EBF1",
+				"stroke-dark": "#27303E",
+				dark: {
+					DEFAULT: "#111928",
+					2: "#1F2A37",
+					3: "#374151",
+					4: "#4B5563",
+					5: "#6B7280",
+					6: "#9CA3AF",
+					7: "#D1D5DB",
+					8: "#E5E7EB",
+				},
+				sidebarbg: '#FFFFFF',
+				selectedsidebarcolor: 'rgba(0,84,109,0.08)',
+				background: "#F3F2F7",
+				text: "black",
+				themebgColor:"#0FB9A8",
+				border: {
+					DEFAULT: "#6b7280", // gray-500
+				},
 				gray: {
 					DEFAULT: "#EFF4FB",
 					dark: "#122031",

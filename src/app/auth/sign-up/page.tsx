@@ -2,28 +2,40 @@
 
 import type React from "react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { handleRegister } from "@/redux/auth/handler";
 import { Building2, Shield, Zap, Globe, User, Mail, Lock, Eye, EyeOff, ArrowRight, UserPlus, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
 
-// Define the validation schema using Yup
+// Define the validation schema using Yup (stronger validation)
 const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string().required("First name is required"),
-    lastName: Yup.string().required("Last name is required"),
+    firstName: Yup.string()
+        .required("First name is required")
+        .matches(/^[a-zA-Z\s'-]+$/, "First name can only contain letters, spaces, apostrophes, and hyphens"),
+    lastName: Yup.string()
+        .required("Last name is required")
+        .matches(/^[a-zA-Z\s'-]+$/, "Last name can only contain letters, spaces, apostrophes, and hyphens"),
     email: Yup.string()
         .required("Email is required")
         .email("Please enter a valid email"),
     password: Yup.string()
         .required("Password is required")
-        .min(6, "Password must be at least 6 characters"),
+        .min(8, "Password must be at least 8 characters")
+        .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+        .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+        .matches(/[0-9]/, "Password must contain at least one number")
+        .matches(/[@$!%*?&#]/, "Password must contain at least one special character"),
 });
+
 
 export default function SignUp() {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
 
@@ -31,6 +43,7 @@ export default function SignUp() {
         control,
         handleSubmit,
         formState: { errors },
+        reset,
     } = useForm({
         resolver: yupResolver(RegisterSchema),
         mode: "onSubmit",
@@ -48,35 +61,31 @@ export default function SignUp() {
         email: string;
         password: string;
     }) => {
+        setLoading(true);
         try {
-            setLoading(true);
-            setError("");
             await handleRegister({
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
+                firstName: data.firstName.trim(),
+                lastName: data.lastName.trim(),
+                email: data.email.trim().toLowerCase(),
                 password: data.password,
             });
-            // On success, redirect to login
+            toast.success("Account created successfully! Please sign in.");
+            reset();
             router.push("/auth/sign-in");
         } catch (err: any) {
-            setError(err.message || "Failed to create account");
+            const errorMsg =
+                err?.response?.data?.message ||
+                err?.message ||
+                "Failed to create account. Please try again.";
+            toast.error(errorMsg);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-background-gradientFrom via-background-gradientVia to-background-gradientTo relative overflow-hidden flex items-center justify-center">
-            {/* Animated Background Elements */}
-            <div className="absolute inset-0">
-                <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-                <div className="absolute top-1/2 left-1/2 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-500"></div>
-            </div>
-
-            {/* Grid Pattern Overlay */}
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
+        <div className="min-h-screen bg-background relative overflow-hidden flex items-center justify-center">
+            {/* Removed animated background and grid overlay */}
 
             <div className="relative z-10 min-h-screen flex flex-col lg:flex-row w-full items-center justify-center">
                 {/* Left Side - Branding & Info */}
@@ -88,20 +97,20 @@ export default function SignUp() {
                                 <Building2 className="w-8 h-8 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-3xl font-bold text-white">BlockEstate</h1>
-                                <p className="text-blue-300 text-sm">Future of Real Estate Investment</p>
+                                <h1 className="text-3xl font-bold text-black">BlockEstate</h1>
+                                <p className="text-sm text-black">Future of Real Estate Investment</p>
                             </div>
                         </div>
 
                         {/* Hero Content */}
                         <div className="space-y-8">
                             <div>
-                                <h2 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-6">
+                                <h2 className="text-4xl xl:text-5xl font-bold text-black leading-tight mb-6">
                                     Join the
-                                    <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"> Revolution </span>
+                                    <span className="text-black"> Revolution </span>
                                     in Real Estate
                                 </h2>
-                                <p className="text-xl text-blue-200 leading-relaxed">
+                                <p className="text-xl text-black leading-relaxed">
                                     Start your journey with secure, transparent blockchain-powered property investments today.
                                 </p>
                             </div>
@@ -114,23 +123,23 @@ export default function SignUp() {
                                     { icon: Globe, text: "Worldwide Access" }
                                 ].map((feature, index) => (
                                     <div key={index} className="flex items-center gap-4 group">
-                                        <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:bg-white/20 transition-all duration-300">
-                                            <feature.icon className="w-6 h-6 text-blue-300" />
+                                        <div className="w-12 h-12 bg-background rounded-xl flex items-center justify-center">
+                                            <feature.icon className="w-6 h-6 text-black" />
                                         </div>
-                                        <span className="text-white font-medium">{feature.text}</span>
+                                        <span className="text-black font-medium">{feature.text}</span>
                                     </div>
                                 ))}
                             </div>
 
                             {/* Benefits */}
                             <div className="grid grid-cols-1 gap-4 pt-8 border-t border-white/10">
-                                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4">
-                                    <div className="text-lg font-bold text-white mb-1">Zero Setup Fees</div>
-                                    <div className="text-blue-300 text-sm">Start investing with no upfront costs</div>
+                                <div className="bg-background rounded-xl p-4">
+                                    <div className="text-lg font-bold text-black mb-1">Zero Setup Fees</div>
+                                    <div className="text-sm text-black">Start investing with no upfront costs</div>
                                 </div>
-                                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4">
-                                    <div className="text-lg font-bold text-white mb-1">24/7 Support</div>
-                                    <div className="text-blue-300 text-sm">Expert help whenever you need it</div>
+                                <div className="bg-background rounded-xl p-4">
+                                    <div className="text-lg font-bold text-black mb-1">24/7 Support</div>
+                                    <div className="text-sm text-black">Expert help whenever you need it</div>
                                 </div>
                             </div>
                         </div>
@@ -142,142 +151,123 @@ export default function SignUp() {
                     <div className="w-full max-w-md mx-auto">
                         {/* Mobile Logo */}
                         <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-                            <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-600 rounded-xl flex items-center justify-center">
-                                <Building2 className="w-6 h-6 text-white" />
+                            <div className="w-12 h-12 bg-background rounded-xl flex items-center justify-center">
+                                <Building2 className="w-6 h-6 text-black" />
                             </div>
                             <div>
-                                <h1 className="text-2xl font-bold text-white">BlockEstate</h1>
+                                <h1 className="text-2xl font-bold text-black">BlockEstate</h1>
                             </div>
                         </div>
 
                         {/* Sign Up Card */}
-                        <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl border border-white/20">
-                            <div className="text-center mb-8">
-                                <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                    <UserPlus className="w-8 h-8 text-white" />
-                                </div>
-                                <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
-                                <p className="text-blue-200">Join thousands of successful investors</p>
-                            </div>
-
-                            {/* Google Sign Up */}
-                            <button className="w-full flex items-center justify-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-2xl p-4 mb-6 transition-all duration-300 border border-white/20 group">
-                                <svg className="w-5 h-5" viewBox="0 0 24 24">
-                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                                </svg>
-                                <span className="text-white font-medium group-hover:text-blue-100 transition-colors">
-                                    Sign up with Google
-                                </span>
-                            </button>
-
-                            {/* Divider */}
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="flex-1 h-px bg-white/20"></div>
-                                <span className="text-blue-200 text-sm">or create with email</span>
-                                <div className="flex-1 h-px bg-white/20"></div>
+                        <div className="bg-background rounded-3xl p-4">
+                            <div className="text-left mb-8">
+                                <h2 className="text-3xl font-bold text-black mb-2">Create Account</h2>
+                                <p className="text-black">Join thousands of successful investors</p>
                             </div>
 
                             {/* Sign Up Form */}
-                            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+                            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)} autoComplete="off" noValidate>
                                 {/* Name Fields */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-white text-sm font-medium">First Name</label>
+                                        <label className="text-black text-sm font-medium">First Name</label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                                <User className="w-5 h-5 text-blue-300" />
+                                                <User className="w-5 h-5 text-black" />
                                             </div>
                                             <Controller
                                                 name="firstName"
                                                 control={control}
                                                 render={({ field: { onChange, value } }) => (
-                                                    <input
+                                                    <Input
                                                         type="text"
                                                         value={value}
                                                         onChange={onChange}
-                                                        className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 text-base"
+                                                        className={`pl-12 pr-4 ${errors.firstName ? "border-red-400" : ""}`}
                                                         placeholder="John"
+                                                        autoComplete="given-name"
                                                     />
                                                 )}
                                             />
                                         </div>
                                         {errors.firstName && (
-                                            <p className="text-red-300 text-sm">{errors.firstName.message}</p>
+                                            <p className="text-red-400 text-sm">{errors.firstName.message}</p>
                                         )}
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-white text-sm font-medium">Last Name</label>
+                                        <label className="text-black text-sm font-medium">Last Name</label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                                <User className="w-5 h-5 text-blue-300" />
+                                                <User className="w-5 h-5 text-black" />
                                             </div>
                                             <Controller
                                                 name="lastName"
                                                 control={control}
                                                 render={({ field: { onChange, value } }) => (
-                                                    <input
+                                                    <Input
                                                         type="text"
                                                         value={value}
                                                         onChange={onChange}
-                                                        className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 text-base"
+                                                        className={`pl-12 pr-4 ${errors.lastName ? "border-red-400" : ""}`}
                                                         placeholder="Doe"
+                                                        autoComplete="family-name"
                                                     />
                                                 )}
                                             />
                                         </div>
                                         {errors.lastName && (
-                                            <p className="text-red-300 text-sm">{errors.lastName.message}</p>
+                                            <p className="text-red-400 text-sm">{errors.lastName.message}</p>
                                         )}
                                     </div>
                                 </div>
 
                                 {/* Email Input */}
                                 <div className="space-y-2">
-                                    <label className="text-white text-sm font-medium">Email Address</label>
+                                    <label className="text-black text-sm font-medium">Email Address</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                            <Mail className="w-5 h-5 text-blue-300" />
+                                            <Mail className="w-5 h-5 text-black" />
                                         </div>
                                         <Controller
                                             name="email"
                                             control={control}
                                             render={({ field: { onChange, value } }) => (
-                                                <input
+                                                <Input
                                                     type="email"
                                                     value={value}
                                                     onChange={onChange}
-                                                    className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 text-base"
+                                                    className={`pl-12 pr-4 ${errors.email ? "border-red-400" : ""}`}
                                                     placeholder="john.doe@example.com"
+                                                    autoComplete="email"
                                                 />
                                             )}
                                         />
                                     </div>
                                     {errors.email && (
-                                        <p className="text-red-300 text-sm">{errors.email.message}</p>
+                                        <p className="text-red-400 text-sm">{errors.email.message}</p>
                                     )}
                                 </div>
 
                                 {/* Password Input */}
                                 <div className="space-y-2">
-                                    <label className="text-white text-sm font-medium">Password</label>
+                                    <label className="text-black text-sm font-medium">Password</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                            <Lock className="w-5 h-5 text-blue-300" />
+                                            <Lock className="w-5 h-5 text-black" />
                                         </div>
                                         <Controller
                                             name="password"
                                             control={control}
                                             render={({ field: { onChange, value } }) => (
-                                                <input
+                                                <Input
                                                     type={showPassword ? "text" : "password"}
                                                     value={value}
                                                     onChange={onChange}
-                                                    className="w-full pl-12 pr-12 py-3 sm:py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 text-base"
+                                                    className={`pl-12 pr-12 ${errors.password ? "border-red-400" : ""}`}
                                                     placeholder="Create a strong password"
+                                                    autoComplete="new-password"
                                                 />
                                             )}
                                         />
@@ -285,41 +275,38 @@ export default function SignUp() {
                                             type="button"
                                             onClick={() => setShowPassword(!showPassword)}
                                             className="absolute inset-y-0 right-0 pr-4 flex items-center"
+                                            tabIndex={-1}
                                         >
                                             {showPassword ? (
-                                                <EyeOff className="w-5 h-5 text-blue-300 hover:text-white transition-colors" />
+                                                <EyeOff className="w-5 h-5 text-black hover:text-black transition-colors" />
                                             ) : (
-                                                <Eye className="w-5 h-5 text-blue-300 hover:text-white transition-colors" />
+                                                <Eye className="w-5 h-5 text-black hover:text-black transition-colors" />
                                             )}
                                         </button>
                                     </div>
                                     {errors.password && (
-                                        <p className="text-red-300 text-sm">{errors.password.message}</p>
+                                        <p className="text-red-400 text-sm">{errors.password.message}</p>
                                     )}
                                 </div>
 
-                                {/* Error Message */}
-                                {error && (
-                                    <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
-                                        <p className="text-red-300 text-sm text-center">{error}</p>
-                                    </div>
-                                )}
+                                {/* Error Message handled by toast, no inline error block needed */}
 
                                 {/* Terms Notice */}
                                 <div className="text-center">
-                                    <p className="text-blue-200 text-sm">
+                                    <p className="text-black text-sm">
                                         By creating an account, you agree to our{' '}
-                                        <a href="/terms" className="text-white hover:text-blue-300 underline">Terms of Service</a>{' '}
+                                        <a href="/terms" className="text-black hover:text-black underline">Terms of Service</a>{' '}
                                         and{' '}
-                                        <a href="/privacy" className="text-white hover:text-blue-300 underline">Privacy Policy</a>
+                                        <a href="/privacy" className="text-black hover:text-black underline">Privacy Policy</a>
                                     </p>
                                 </div>
 
                                 {/* Create Account Button */}
-                                <button
+                                <Button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-semibold py-3 sm:py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-3 text-base sm:text-lg"
+                                    variant="default"
+                                    className="w-full"
                                 >
                                     {loading ? (
                                         <>
@@ -332,19 +319,18 @@ export default function SignUp() {
                                             <ArrowRight className="w-5 h-5" />
                                         </>
                                     )}
-                                </button>
+                                </Button>
                             </form>
 
                             {/* Sign In Link */}
-                            <div className="text-center mt-8 pt-6 border-t border-white/10">
-                                <p className="text-blue-200">
+                            <div className="text-center mt-8 pt-6 border-t border-black/10">
+                                <p className="text-black">
                                     Already have an account?{' '}
                                     <a
                                         href="/auth/sign-in"
-                                        className="text-white hover:text-blue-300 font-semibold transition-colors inline-flex items-center gap-1"
+                                        className="text-themebgColor hover:text-black font-semibold transition-colors inline-flex items-center gap-1"
                                     >
                                         Sign In
-                                        <ChevronRight className="w-4 h-4" />
                                     </a>
                                 </p>
                             </div>
@@ -353,8 +339,8 @@ export default function SignUp() {
 
                         {/* Security Notice */}
                         <div className="mt-6 text-center">
-                            <p className="text-blue-300 text-xs flex items-center justify-center gap-2">
-                                <Shield className="w-4 h-4" />
+                            <p className="text-black text-xs flex items-center justify-center gap-2">
+                                <Shield className="w-4 h-4 text-black" />
                                 Your information is encrypted and secure
                             </p>
                         </div>

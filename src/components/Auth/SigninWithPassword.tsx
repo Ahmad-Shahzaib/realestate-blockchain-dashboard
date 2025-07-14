@@ -1,12 +1,17 @@
 "use client";
+
 import Link from "next/link";
 import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { handleLogin } from "@/redux/auth/handler";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/reducers/userInfoSlice";
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { toast } from "sonner";
 
 // Define the validation schema using Yup
 const LoginSchema = Yup.object().shape({
@@ -55,25 +60,27 @@ export default function SigninWithPassword() {
         password: data.password,
       });
 
-      console.log("Login response:", user);
-
       // Check if response exists and has success property
       if (user) {
-        // On success, redirect to the dashboard
         dispatch(setUser(user));
+        toast.success("Successfully signed in!");
         router.replace("/");
       } else {
         // Handle case where response is undefined or unsuccessful
-        const errorMessage = "Authentication failed. Please try again.";
+        const errorMessage = "Authentication failed. Please check your credentials and try again.";
         setError(errorMessage);
+        toast.error(errorMessage);
       }
     } catch (err: any) {
       if (err instanceof Yup.ValidationError) {
         // Handle validation errors
         setError(err.errors[0] || "Please check your input");
+        toast.error(err.errors[0] || "Please check your input");
       } else {
         // Handle other errors
-        setError(err?.message || "An error occurred during sign in");
+        const msg = err?.message || "An error occurred during sign in. Please try again later.";
+        setError(msg);
+        toast.error(msg);
       }
     } finally {
       setLoading(false);
@@ -82,19 +89,21 @@ export default function SigninWithPassword() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Email Input */}
       <div className="space-y-2">
-        <label className="text-white text-sm font-medium">Email Address</label>
+        <label htmlFor="email" className="text-sm font-semibold ">
+          Email Address
+        </label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <Mail className="w-5 h-5 text-blue-300" />
+            <Mail className="w-5 h-5" />
           </div>
-          <input
+          <Input
+            id="email"
             type="email"
             name="email"
             value={data.email}
             onChange={handleChange}
-            className="w-full pl-12 pr-4 py-4 bg-background/10 backdrop-blur-sm border border-border rounded-2xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
+            className="w-full pl-12" // Add left padding to prevent overlap
             placeholder="Enter your email"
             required
           />
@@ -103,17 +112,20 @@ export default function SigninWithPassword() {
 
       {/* Password Input */}
       <div className="space-y-2">
-        <label className="text-white text-sm font-medium">Password</label>
+        <label htmlFor="password" className="text-sm font-semibold ">
+          Password
+        </label>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <Lock className="w-5 h-5 text-blue-300" />
+            <Lock className="w-5 h-5" />
           </div>
-          <input
+          <Input
+            id="password"
             type={showPassword ? "text" : "password"}
             name="password"
             value={data.password}
             onChange={handleChange}
-            className="w-full pl-12 pr-12 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
+            className="w-full pl-12" // Add left padding to prevent overlap
             placeholder="Enter your password"
             required
           />
@@ -131,38 +143,38 @@ export default function SigninWithPassword() {
         </div>
       </div>
 
-      {/* Error Message */}
+      {/* Error Message (hidden visually, for accessibility only) */}
       {error && (
-        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
-          <p className="text-red-300 text-sm text-center">{error}</p>
-        </div>
+        <div className="sr-only" aria-live="polite">{error}</div>
       )}
 
       {/* Remember Me & Forgot Password */}
       <div className="flex items-center justify-between">
-        <label className="flex items-center gap-3 cursor-pointer">
-          <input
+        <label htmlFor="remember" className="flex items-center gap-3 cursor-pointer text-sm font-semibold">
+          <Input
+            id="remember"
             type="checkbox"
             name="remember"
             checked={data.remember}
             onChange={handleChange}
-            className="w-4 h-4 rounded border border-white/20 bg-white/10 text-blue-500 focus:ring-blue-400 focus:ring-offset-0"
+            className="w-4 h-4 rounded border-white/20 bg-white/10 text-blue-500 focus:ring-blue-400 focus:ring-offset-0"
           />
-          <span className="text-blue-200 text-sm">Remember me</span>
+          <span className="text-black text-sm">Remember me</span>
         </label>
         <Link
           href="/auth/forgot-password"
-          className="text-blue-300 hover:text-white text-sm transition-colors"
+          className="text-black hover:text-white text-sm transition-colors"
         >
           Forgot Password?
         </Link>
       </div>
 
       {/* Sign In Button */}
-      <button
+      <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+        variant="default"
+        className="w-full"
       >
         {loading ? (
           <>
@@ -175,7 +187,7 @@ export default function SigninWithPassword() {
             <ArrowRight className="w-5 h-5" />
           </>
         )}
-      </button>
+      </Button>
     </form>
   );
 }

@@ -10,7 +10,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-[#1a1a2e] text-white border-gray-500">
+      <body className="bg-background">
         <ClientLayout children={children} />
       </body>
     </html>

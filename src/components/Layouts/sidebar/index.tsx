@@ -43,17 +43,17 @@ export function Sidebar() {
       {/* Mobile Overlay */}
       {isMobile && isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
+          className="fixed inset-0 z-40 bg-sidebarbg backdrop-blur-sm transition-opacity duration-300"
           onClick={() => setIsOpen(false)}
           aria-hidden="true"
         />
-      )}
+      )}  
 
       {/* Sidebar */}
       <aside
         className={cn(
           // Fixed sidebar for desktop, overlay for mobile
-          "fixed left-0 top-0 z-40 h-screen w-64 max-w-[250px] border-r border-border/20 bg-[#1a1a2e] backdrop-blur-md transition-transform duration-200 ease-linear lg:static lg:translate-x-0 lg:w-64 lg:max-w-[250px] lg:h-screen flex flex-col",
+          "fixed left-0 top-0 z-40 h-screen w-[18rem]  border-r border-border/20 bg-sidebarbg backdrop-blur-md transition-transform duration-200 ease-linear lg:static lg:translate-x-0   lg:h-screen flex flex-col px-5 pt-6 pb-6",
           isOpen
             ? "translate-x-0"
             : "-translate-x-full lg:translate-x-0"
@@ -64,7 +64,7 @@ export function Sidebar() {
         inert={!isOpen && isMobile}
       >
         {/* Logo */}
-        <div className="flex h-18 items-center justify-between border-b border-border/20 px-5 py-[18px] relative shrink-0">
+        <div className="flex h-18 items-center justify-between px-0 py-0 relative shrink-0 mb-6">
           <Link
             href={"/"}
             onClick={() => isMobile && toggleSidebar()}
@@ -85,15 +85,15 @@ export function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <div className="custom-scrollbar mt-6 flex-1 overflow-y-auto pr-3 min-[850px]:mt-10">
+        <div className="custom-scrollbar flex-1 overflow-y-auto pr-1">
           {NAV_DATA.map((section) => (
-            <div key={section.label} className="mb-6">
-              <h2 className="mb-5 text-sm font-medium text-dark-4 dark:text-dark-6">
+            <div key={section.label} className="mb-7">
+              {/* <h2 className="mb-4 text-sm font-medium text-dark-4 dark:text-dark-6 pl-1">
                 {section.label}
-              </h2>
+              </h2> */}
 
               <nav role="navigation" aria-label={section.label}>
-                <ul className="space-y-2">
+                <ul className="space-y-3">
                   {section.items.map((item) => (
                     <li key={`${section.label || 'section'}-${item.title}`}>
                       {item.items && item.items.length ? (
@@ -103,6 +103,7 @@ export function Sidebar() {
                               ({ url }) => url === pathname,
                             )}
                             onClick={() => toggleExpanded(item.title)}
+                            className="flex items-center justify-center gap-3  h-[45px] pl-1 text-[18px] font-barlow font-medium text-[#464255]" // height and text style
                           >
                             {item.icon && (
                               <item.icon
@@ -125,7 +126,7 @@ export function Sidebar() {
 
                           {expandedItems.includes(item.title) && (
                             <ul
-                              className="ml-9 mr-0 space-y-1.5 pb-[15px] pr-0 pt-2"
+                              className="ml-8 mr-0 space-y-2 pb-2 pr-0 pt-1"
                               role="menu"
                             >
                               {item.items.map((subItem) => (
@@ -134,6 +135,7 @@ export function Sidebar() {
                                     as="link"
                                     href={subItem.url}
                                     isActive={pathname === subItem.url}
+                                    className="pl-2  h-[45px] text-[18px] font-barlow font-medium text-[#464255]"
                                   >
                                     <span>{subItem.title}</span>
                                   </MenuItem>
@@ -152,7 +154,7 @@ export function Sidebar() {
 
                           return (
                             <MenuItem
-                              className="flex items-center gap-3 py-3"
+                              className="flex items-center gap-3  h-[45px] pl-1 text-[18px] font-barlow font-medium text-[#464255]"
                               as="link"
                               href={href}
                               isActive={pathname === href}
