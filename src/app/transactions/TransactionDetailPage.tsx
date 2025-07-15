@@ -1,5 +1,6 @@
 import React from 'react'
-import Image from 'next/image'
+import { Input } from '../../components/ui/input'
+import { Button } from '../../components/ui/button'
 
 interface TransactionDetail {
     id: string;
@@ -26,66 +27,71 @@ const TransactionDetailPage = () => {
     }
 
     return (
-        <div className="p-6 bg-background text-text border-border">
-            <div className="mx-auto rounded-lg shadow-md border border-border bg-gradient-to-br from-background-gradientFrom via-background-gradientVia to-background-gradientTo">
+        <div className="p-6 bg-background text-black border-themebgColor">
+            <div className="mx-auto rounded-lg shadow-md border border-themebgColor bg-background">
                 {/* Header */}
                 <div className="p-6">
-                    <h1 className="text-2xl font-bold text-text">Transaction Details</h1>
-                    <p className="text-text">Transaction ID: {transaction.id}</p>
+                    <h1 className="text-2xl font-bold text-black">Transaction Details</h1>
+                    <p className="text-black">Transaction ID: {transaction.id}</p>
                 </div>
 
                 {/* Property Details */}
                 <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
-                        <h2 className="text-xl font-semibold text-text">Property Information</h2>
+                        <h2 className="text-xl font-semibold text-black">Property Information</h2>
                         <div className="space-y-2">
-                            <p className="text-text"><span className="font-medium">Property:</span> {transaction.propertyName}</p>
-                            <p className="text-text"><span className="font-medium">Address:</span> {transaction.address}</p>
+                            <p className="text-black"><span className="font-medium">Property:</span> {transaction.propertyName}</p>
+                            <p className="text-black"><span className="font-medium">Address:</span> {transaction.address}</p>
                         </div>
+                        {/* Example Input usage */}
+                        <Input placeholder="Property Name" value={transaction.propertyName} readOnly />
+                        <Input placeholder="Address" value={transaction.address} readOnly />
                     </div>
 
                     {/* Transaction Status */}
                     <div className="space-y-4">
-                        <h2 className="text-xl font-semibold text-text">Transaction Status</h2>
+                        <h2 className="text-xl font-semibold text-black">Transaction Status</h2>
                         <div className="space-y-2">
                             <div
-                                className={`inline-flex items-center px-3 py-1 rounded-full text-sm border border-border
-                                    ${transaction.status === 'completed' ? 'bg-background-gradientVia text-text' :
-                                        transaction.status === 'pending' ? 'bg-background-gradientTo text-text' :
-                                            'bg-background-gradientFrom text-text'}`}
+                                className={`inline-flex items-center px-3 py-1 rounded-full text-sm border border-themebgColor bg-background text-black`}
                             >
                                 {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
                             </div>
-                            <p className="text-text"><span className="font-medium">Date:</span> {transaction.date}</p>
+                            <p className="text-black"><span className="font-medium">Date:</span> {transaction.date}</p>
                         </div>
+                        <Input placeholder="Status" value={transaction.status} readOnly />
+                        <Input placeholder="Date" value={transaction.date} readOnly />
                     </div>
 
                     {/* Price Information */}
                     <div className="space-y-4">
-                        <h2 className="text-xl font-semibold text-text">Price Details</h2>
-                        <div className="text-2xl font-bold text-text">
+                        <h2 className="text-xl font-semibold text-black">Price Details</h2>
+                        <div className="text-2xl font-bold text-black">
                             ${transaction.price.toLocaleString()}
                         </div>
+                        <Input placeholder="Price" value={transaction.price.toLocaleString()} readOnly />
                     </div>
 
                     {/* Parties Involved */}
                     <div className="space-y-4">
-                        <h2 className="text-xl font-semibold text-text">Parties Involved</h2>
+                        <h2 className="text-xl font-semibold text-black">Parties Involved</h2>
                         <div className="space-y-2">
-                            <p className="text-text"><span className="font-medium">Buyer:</span> {transaction.buyer}</p>
-                            <p className="text-text"><span className="font-medium">Seller:</span> {transaction.seller}</p>
+                            <p className="text-black"><span className="font-medium">Buyer:</span> {transaction.buyer}</p>
+                            <p className="text-black"><span className="font-medium">Seller:</span> {transaction.seller}</p>
                         </div>
+                        <Input placeholder="Buyer" value={transaction.buyer} readOnly />
+                        <Input placeholder="Seller" value={transaction.seller} readOnly />
                     </div>
                 </div>
 
                 {/* Actions */}
                 <div className="p-6 flex justify-end space-x-4">
-                    <button className="px-4 py-2 rounded border border-border shadow-xl text-text bg-background hover:bg-background-gradientVia">
+                    <Button variant="outline" className="border-themebgColor text-black bg-background">
                         Download Details
-                    </button>
-                    <button className="px-4 py-2 rounded text-text bg-background-gradientFrom hover:bg-background-gradientVia border border-border">
+                    </Button>
+                    <Button className="border-themebgColor text-black bg-background">
                         Contact Support
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
