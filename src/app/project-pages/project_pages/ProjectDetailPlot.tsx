@@ -146,7 +146,7 @@ const ProjectDetailPlot = () => {
                         <div className="text-green-500 font-semibold text-sm">100%</div>
                     </div>
 
-                    <div className="w-full max-w-4xl mx-auto custom-border rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start gap-4">
+                    <div className="w-full max-w-4xl mx-auto  rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start gap-4">
                         {/* Left Section: Location and Office */}
                         <div className="flex-1 w-full sm:w-auto">
                             <div className="flex items-center mb-2">

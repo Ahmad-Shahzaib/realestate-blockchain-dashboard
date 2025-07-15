@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight, MapPin, Star } from "lucide-react";
 import type { JSX, SVGProps } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 type PropsType = {
   item?: Project;
@@ -23,6 +24,7 @@ export interface Project {
 }
 
 export function OverviewCard({ item }: PropsType) {
+  const router = useRouter();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = [
     "/images/cards/image1.jpg",
@@ -64,7 +66,11 @@ export function OverviewCard({ item }: PropsType) {
   };
 
   return (
-    <div className="w-[352px] h-[371px] flex flex-col overflow-hidden rounded-xl shadow-md border border-gray-200 bg-white">
+    <div className="w-[352px] h-[371px] flex flex-col overflow-hidden rounded-xl shadow-md border border-gray-200 bg-white" 
+    onClick={()=>{
+      router.push(`/project-pages/project_pages/${project._id}`);
+    }}
+    >
       {/* Image Section */}
       <div className="relative h-[140px]">
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent z-10" />

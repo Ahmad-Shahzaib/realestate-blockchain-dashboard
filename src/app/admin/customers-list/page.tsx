@@ -99,8 +99,6 @@ const CustomerList = () => {
     }
   };
 
-  // Use DynamicTable for reusable table rendering
-
   return (
     <div className="min-h-screen bg-background text-black">
       {/* Header */}

@@ -126,9 +126,9 @@ export function UserInfo() {
             <SettingsIcon />
             <span className="mr-auto text-base font-medium">Account Settings</span>
           </Link>
-          <div className=" w-full  text-base text-gray-700 dark:text-dark-6">
+          <div className=" w-full cursor-pointer text-base text-gray-700 dark:text-dark-6">
             <button
-              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 hover:bg-gray-100 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
+              className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2 hover:bg-gray-100 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
               onClick={() => { handleLogout() }}
             >
               <LogOutIcon />

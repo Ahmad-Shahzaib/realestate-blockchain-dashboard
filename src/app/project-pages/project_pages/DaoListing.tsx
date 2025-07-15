@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ExternalLink, User } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function DAOListings() {
     const [activeTab, setActiveTab] = useState('listings');
@@ -15,36 +16,30 @@ export default function DAOListings() {
     ];
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
-            <h3 className="text-lg lg:text-xl font-bold text-gray-800 mb-6">Live Orders on DAO Listings</h3>
-            
+        <div className="bg-background rounded-xl shadow-sm  p-4 lg:p-6">
+            <h3 className="text-lg lg:text-xl font-bold text-black mb-6">Live Orders on DAO Listings</h3>
+
             {/* Tabs */}
-            <div className="flex bg-gray-100 rounded-lg p-1 mb-6 w-fit">
-                <button 
+            <div className="flex bg-background rounded-lg p-1 gap-2 mb-6 w-fit">
+                <Button
+                    variant={activeTab === 'listings' ? 'default' : 'outline'}
                     onClick={() => setActiveTab('listings')}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                        activeTab === 'listings' 
-                            ? 'bg-white text-blue-600 shadow-sm' 
-                            : 'text-gray-600 hover:text-gray-800'
-                    }`}
+                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === 'listings' ? '' : ''}`}
                 >
                     DAO Listings Orders
-                </button>
-                <button 
+                </Button>
+                <Button
+                    variant={activeTab === 'transactions' ? 'default' : 'outline'}
                     onClick={() => setActiveTab('transactions')}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                        activeTab === 'transactions' 
-                            ? 'bg-white text-blue-600 shadow-sm' 
-                            : 'text-gray-600 hover:text-gray-800'
-                    }`}
+                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === 'transactions' ? '' : ''}`}
                 >
                     Recent Transactions
-                </button>
+                </Button>
             </div>
 
             {activeTab === 'listings' && (
                 <div className="space-y-4">
-                    <div className="grid grid-cols-5 gap-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    <div className="grid grid-cols-5 gap-4 text-xs font-semibold text-black uppercase tracking-wide">
                         <span>Price / sq. ft.</span>
                         <span>Area Available</span>
                         <span>Age</span>
@@ -53,20 +48,20 @@ export default function DAOListings() {
                     </div>
 
                     {listings.map((item, idx) => (
-                        <div key={idx} className="grid grid-cols-5 gap-4 items-center p-4 border border-gray-200 rounded-lg">
-                            <span className="text-sm font-medium text-gray-800">{item.price}</span>
-                            <span className="text-sm text-gray-600">{item.area}</span>
-                            <span className="text-sm text-gray-600">{item.date}</span>
+                        <div key={idx} className="grid grid-cols-5 gap-4 items-center p-2 border border-themebgColor rounded-lg">
+                            <span className="text-sm font-medium text-black">{item.price}</span>
+                            <span className="text-sm text-black">{item.area}</span>
+                            <span className="text-sm text-black">{item.date}</span>
                             <div className="flex items-center gap-2">
-                                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <User className="w-3 h-3 text-blue-600" />
+                                <div className="w-6 h-6 bg-background rounded-full flex items-center justify-center border border-themebgColor">
+                                    <User className="w-3 h-3 text-black" />
                                 </div>
-                                <span className="text-sm text-gray-800">{item.seller}</span>
+                                <span className="text-sm text-black">{item.seller}</span>
                             </div>
-                            <button className="flex items-center gap-2 text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <Button className="flex items-center gap-1 text-sm px-8 py-2 rounded-lg">
                                 <ExternalLink className="w-3 h-3" />
                                 Buy Now
-                            </button>
+                            </Button>
                         </div>
                     ))}
                 </div>
@@ -74,7 +69,7 @@ export default function DAOListings() {
 
             {activeTab === 'transactions' && (
                 <div className="space-y-4">
-                    <div className="grid grid-cols-5 gap-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    <div className="grid grid-cols-5 gap-4 text-xs font-semibold text-black uppercase tracking-wide">
                         <span>Seller</span>
                         <span>Price / sq. ft.</span>
                         <span>Date Listed</span>
@@ -83,22 +78,22 @@ export default function DAOListings() {
                     </div>
 
                     {transactions.map((item, idx) => (
-                        <div key={idx} className="grid grid-cols-5 gap-4 items-center p-4 border border-gray-200 rounded-lg">
+                        <div key={idx} className="grid grid-cols-5 gap-4 items-center p-4 border border-themebgColor rounded-lg">
                             <div className="flex items-center gap-2">
-                                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <User className="w-3 h-3 text-blue-600" />
+                                <div className="w-6 h-6 bg-background rounded-full flex items-center justify-center border border-themebgColor">
+                                    <User className="w-3 h-3 text-black" />
                                 </div>
-                                <span className="text-sm text-gray-800">{item.seller}</span>
+                                <span className="text-sm text-black">{item.seller}</span>
                             </div>
-                            <span className="text-sm text-gray-600">{item.price}</span>
-                            <span className="text-sm text-gray-600">{item.date}</span>
-                            <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                            <span className="text-sm text-black">{item.price}</span>
+                            <span className="text-sm text-black">{item.date}</span>
+                            <span className="text-xs px-2 py-1 rounded-full font-medium text-black border border-themebgColor bg-background">
                                 {item.status}
                             </span>
-                            <button className="flex items-center gap-2 text-sm border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors">
+                            <Button variant="outline" className="flex items-center gap-2 text-sm px-4 py-2 rounded-lg">
                                 <ExternalLink className="w-3 h-3" />
                                 View Details
-                            </button>
+                            </Button>
                         </div>
                     ))}
                 </div>
