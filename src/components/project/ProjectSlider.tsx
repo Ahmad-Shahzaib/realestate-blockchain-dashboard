@@ -4,6 +4,9 @@ import { useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Play, Eye } from "lucide-react";
 import ProjectTable from "./ProjectTable";
+import DAOListings from "./DaoListing";
+import Rentals from "./RentalsPage";
+import QubeLahore from "./QubeLahore";
 
 export default function ProjectSlider() {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -155,8 +158,16 @@ export default function ProjectSlider() {
                     </div>
                 </div>
             </div>
-            <div className="pt-3">
+            <div className="space-y-2">
                 <ProjectTable />
+
+            </div>
+            <div className="space-y-3 flex space-x-4 ">
+                <DAOListings />
+                <Rentals />
+            </div>
+            <div className="pt-3">
+                <QubeLahore />
             </div>
         </>
     );
