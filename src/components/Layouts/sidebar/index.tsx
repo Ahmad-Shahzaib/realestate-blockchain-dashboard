@@ -83,16 +83,16 @@ export function Sidebar() {
 
           {/* Navigation */}
           <div className="custom-scrollbar mt-6 flex-1 overflow-y-auto pr-3 min-[850px]:mt-10">
-            {NAV_DATA.map((section) => (
-              <div key={section.label} className="mb-6">
+            {NAV_DATA.map((section, sectionIdx) => (
+              <div key={section.label || `section-${sectionIdx}`} className="mb-6">
                 <h2 className="mb-5 text-sm font-medium text-dark-4 dark:text-dark-6">
                   {section.label}
                 </h2>
 
                 <nav role="navigation" aria-label={section.label}>
                   <ul className="space-y-2">
-                    {section.items.map((item) => (
-                      <li key={`${section.label || 'section'}-${item.title}`}>
+                    {section.items.map((item, itemIdx) => (
+                      <li key={`${section.label || 'section'}-${item.title}-${itemIdx}`}>
                         {item.items && item.items.length ? (
                           <div>
                             <MenuItem
@@ -125,8 +125,8 @@ export function Sidebar() {
                                 className="ml-9 mr-0 space-y-1.5 pb-[15px] pr-0 pt-2"
                                 role="menu"
                               >
-                                {item.items.map((subItem) => (
-                                  <li key={`${item.title}-${subItem.title}`} role="none">
+                                {item.items.map((subItem, subIdx) => (
+                                  <li key={`${item.title}-${subItem.title}-${subItem.url || subIdx}`} role="none">
                                     <MenuItem
                                       as="link"
                                       href={subItem.url}

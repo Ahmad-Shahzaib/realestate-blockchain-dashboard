@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Line, Doughnut, Bar } from 'react-chartjs-2';
+import { CiSearch } from "react-icons/ci";
+
 import 'chart.js/auto';
 
 const Dashboard = () => {
@@ -240,7 +242,7 @@ const Dashboard = () => {
             <div className="flex items-center space-x-4 mt-4 md:mt-0">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <i className="fas fa-search"></i>
+                  <CiSearch />
                 </div>
                 <input
                   type="text"
@@ -248,13 +250,7 @@ const Dashboard = () => {
                   className="rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
                 />
               </div>
-              <button className="p-3 backdrop-blur-sm border rounded-xl hover:border-blue-500/50 transition-all relative">
-                <i className="fas fa-bell"></i>
-                <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full"></span>
-              </button>
-              <button className="p-3 backdrop-blur-sm border rounded-xl hover:border-blue-500/50 transition-all">
-                <i className="fas fa-cog"></i>
-              </button>
+
             </div>
           </div>
 
