@@ -1,23 +1,12 @@
-"use client"; // Mark as client component for Next.js
+"use client";
 
-import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, MapPin, Star, Eye, ArrowRight, TrendingUp, Users, Building2 } from "lucide-react";
-import property1 from "../../../../../public/images/cards/image1.jpg";
-import property2 from "../../../../../public/images/cards/image2.jpg";
-import property3 from "../../../../../public/images/cards/image3.jpg";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight, MapPin, Star } from "lucide-react";
 import type { JSX, SVGProps } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 type PropsType = {
-  label?: string;
-  data?: {
-    value: number | string;
-    growthRate: number;
-  };
-  Icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
-  initialImageIndex?: number;
-  projectId?: string;
   item?: Project;
 };
 
@@ -34,226 +23,158 @@ export interface Project {
   totalArea?: number;
 }
 
-export function OverviewCard({ item, initialImageIndex = 0, projectId }: PropsType) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex % 3);
-  const defaultImages = [property1.src, property2.src, property3.src];
-  const [projectImages, setProjectImages] = useState<string[]>(defaultImages);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (item) {
-      if (item.mainImageUrl) {
-        const imageArray = [
-          item.mainImageUrl,
-          defaultImages[0],
-          defaultImages[1]
-        ];
-        setProjectImages(imageArray);
-      } else {
-        setProjectImages(defaultImages);
-      }
-      setLoading(false);
-    } else {
-      setError("No project data provided.");
-      setProjectImages(defaultImages);
-      setLoading(false);
-    }
-  }, [item]);
-
-  const project = item;
+export function OverviewCard({ item }: PropsType) {
+  const router = useRouter();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const images = [
+    "/images/cards/image1.jpg",
+    "/images/cards/image2.jpg",
+    "/images/cards/image3.jpg",
+  ];
 
   const handlePrevImage = (e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev === 0 ? projectImages.length - 1 : prev - 1));
+    setCurrentImageIndex(prev => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
   const handleNextImage = (e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev === projectImages.length - 1 ? 0 : prev + 1));
+    setCurrentImageIndex(prev => (prev === images.length - 1 ? 0 : prev + 1));
   };
-
-  const router = useRouter();
-  const handleCardClick = () => {
-    if (project && project._id) {
-      router.push(`/project-pages/project_pages/${project._id}`);
-    }
-  }
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      pending_approval: { label: "Pending", color: "bg-orange-100 text-orange-600" },
-      active: { label: "Active", color: "bg-green-100 text-green-600" },
-      mature: { label: "Mature", color: "bg-blue-100 text-blue-600" },
-      development: { label: "Development", color: "bg-purple-100 text-purple-600" },
+      pending_approval: { label: "Pending", color: "bg-yellow-100 text-yellow-800" },
+      active: { label: "Active", color: "bg-green-100 text-green-800" },
+      mature: { label: "Mature", color: "bg-blue-100 text-blue-800" },
+      development: { label: "Development", color: "bg-purple-100 text-purple-800" },
     };
-
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.active;
-    return config;
+    return statusConfig[status as keyof typeof statusConfig] || statusConfig.active;
   };
 
-  const statusConfig = getStatusBadge(project?.status || "active");
-
-  if (loading) {
-    return (
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
-        <div className="h-32 bg-gray-200"></div>
-        <div className="p-4">
-          <div className="h-4 bg-gray-200 rounded mb-2"></div>
-          <div className="h-3 bg-gray-200 rounded w-3/4 mb-3"></div>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="h-12 bg-gray-200 rounded"></div>
-            <div className="h-12 bg-gray-200 rounded"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-white rounded-2xl shadow-sm border border-red-200 p-4 text-center">
-        <div className="text-red-500 text-sm">{error}</div>
-      </div>
-    );
-  }
-
-  // Calculate mock data for enhanced display
-  const mockAvailableUnits = project?.stats?.availableUnits || Math.floor(Math.random() * 50) + 10;
-  const mockTotalUnits = mockAvailableUnits + Math.floor(Math.random() * 100) + 50;
-  const occupancyRate = Math.round(((mockTotalUnits - mockAvailableUnits) / mockTotalUnits) * 100);
-  const mockROI = (Math.random() * 10 + 8).toFixed(1);
-  const mockInvestmentAmount = `$${(Math.random() * 5 + 1).toFixed(1)}M`;
-  const mockInvestors = mockTotalUnits - mockAvailableUnits;
-  const mockGrowth = `+${(Math.random() * 5 + 2).toFixed(1)}%`;
+  const statusConfig = getStatusBadge(item?.status || "active");
+  const project = item || {
+    _id: "1",
+    name: "Hadassah Boyle",
+    category: "Commercial",
+    status: "active",
+    featured: true,
+    priceRange: { min: 0, max: 0 },
+    location: { city: "Inventore voluptatem", state: "Assumenda fugiat si" },
+    stats: { availableUnits: 32 },
+    totalArea: 40
+  };
 
   return (
-    <div
-      onClick={handleCardClick}
-      className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer max-w-sm"
+    <div className="w-[352px] h-[371px] flex flex-col overflow-hidden rounded-xl shadow-md border border-gray-200 bg-white" 
+    onClick={()=>{
+      router.push(`/project-pages/project_pages/${project._id}`);
+    }}
     >
-      {/* Compact Image Section */}
-      <div className="relative h-48 overflow-hidden">
+      {/* Image Section */}
+      <div className="relative h-[140px]">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent z-10" />
         <Image
-          key={projectImages[currentImageIndex]}
-          src={projectImages[currentImageIndex]}
-          alt={`${project?.name || "Property"} view ${currentImageIndex + 1}`}
-          width={400}
-          height={128}
-          className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
-          onError={(e) => {
-            if (e.currentTarget.src !== defaultImages[0]) {
-              e.currentTarget.src = defaultImages[0];
-            }
-          }}
-          unoptimized={projectImages[currentImageIndex].startsWith('http')}
-          priority
+          src={images[currentImageIndex]}
+          alt={`${project.name} view`}
+          fill
+          className="object-cover"
         />
-
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-
+        
         {/* Status Badge */}
-        <div className="absolute top-2 left-2">
+        <div className="absolute top-3 left-3 z-20">
           <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusConfig.color}`}>
             {statusConfig.label}
           </span>
         </div>
 
         {/* Featured Badge */}
-        {project?.featured && (
-          <div className="absolute top-2 right-2">
-            <div className="bg-orange-100 text-orange-600 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-              <Star className="w-3 h-3" />
-              Featured
-            </div>
+        {project.featured && (
+          <div className="absolute top-3 right-3 z-20 bg-amber-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+            <Star className="w-3 h-3" />
+            Featured
           </div>
         )}
 
-        {/* Compact Navigation */}
-        <div className="absolute bottom-9 right-3 flex gap-1">
+        {/* Navigation Controls */}
+        <div className="absolute bottom-3 right-3 z-20 flex gap-1">
           <button
             onClick={handlePrevImage}
-            className="w-6 h-6 bg-white/80 rounded-full flex items-center justify-center transition-all hover:bg-white"
+            className="w-6 h-6 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/50 transition-colors"
           >
-            <ChevronLeft className="w-3 h-3 text-gray-600" />
+            <ChevronLeft className="w-3 h-3 text-white" />
           </button>
           <button
             onClick={handleNextImage}
-            className="w-6 h-6 bg-white/80 rounded-full flex items-center justify-center transition-all hover:bg-white"
+            className="w-6 h-6 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/50 transition-colors"
           >
-            <ChevronRight className="w-3 h-3 text-gray-600" />
+            <ChevronRight className="w-3 h-3 text-white" />
           </button>
         </div>
 
-        {/* Mini Indicators */}
-        <div className="absolute bottom-2 left-2 flex gap-1">
-          {projectImages.map((_, index) => (
+        {/* Image Indicators */}
+        <div className="absolute bottom-3 left-3 z-20 flex gap-1">
+          {images.map((_, index) => (
             <div
               key={index}
-              className={`w-1.5 h-1.5 rounded-full transition-all ${index === currentImageIndex ? 'bg-white' : 'bg-white/50'
-                }`}
+              className={`w-1.5 h-1.5 rounded-full transition-all ${
+                index === currentImageIndex 
+                  ? "bg-white" 
+                  : "bg-white/50"
+              }`}
             />
           ))}
         </div>
       </div>
 
-      {/* Compact Content Section */}
-      <div className="p-3">
-        {/* Header */}
-        <div className="mb-2">
-          <div className="flex justify-between items-start mb-1">
-            <h3 className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">
-              {project?.name || "Globe Residency Apartments"}
-            </h3>
-            <div className="text-xs text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded">
-              {project?.category ? project.category.charAt(0).toUpperCase() + project.category.slice(1) : "Commercial"}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1 text-gray-500 text-xs mb-1.5">
-            <MapPin className="w-3 h-3" />
-            <span className="truncate">{project?.location ? `${project.location.city}, ${project.location.state}` : "Location TBD"}</span>
-          </div>
-
-          {/* Compact Price */}
-          <div className="bg-gray-50 rounded-lg p-1.5 mb-2">
-            <div className="text-gray-500 text-xs mb-0.5">RETAIL PRICE RANGE</div>
-            <div className="text-gray-900 font-semibold text-xs">
-              {project?.priceRange ? `${project.priceRange.min.toLocaleString()} - ${project.priceRange.max.toLocaleString()}` : "Price on Request"}
-            </div>
+      {/* Content Section */}
+      <div className="p-4 flex-1 flex flex-col">
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="text-lg font-semibold text-gray-900 line-clamp-1">
+            {project.name}
+          </h3>
+          <div className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
+            {project.category}
           </div>
         </div>
 
-        {/* Compact Stats Grid */}
-        <div className="grid grid-cols-2 gap-1.5 mb-2">
-          <div className="bg-gray-50 rounded-lg p-1.5">
-            <div className="text-gray-500 text-xs mb-0.5">AVAILABLE</div>
-            <div className="text-gray-900 font-semibold text-xs">{mockAvailableUnits} Units</div>
+        <div className="flex items-center gap-1 text-gray-600 text-sm mb-3">
+          <MapPin className="w-4 h-4" />
+          <span className="truncate">
+            {project.location?.city}, {project.location?.state}
+          </span>
+        </div>
+
+        <div className="mb-4">
+          <div className="text-xs text-gray-500 uppercase tracking-wide">
+            Retail Price Range
           </div>
-          <div className="bg-gray-50 rounded-lg p-1.5">
-            <div className="text-gray-500 text-xs mb-0.5">TOTAL AREA</div>
-            <div className="text-gray-900 font-semibold text-xs">
-              {project?.totalArea !== undefined
-                ? `${Number(project.totalArea).toLocaleString()} sq ft`
-                : "TBD"}
-            </div>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-1.5">
-            <div className="text-gray-500 text-xs mb-0.5">EXPECTED ROI</div>
-            <div className="text-green-600 font-semibold text-xs">{mockROI}%</div>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-1.5">
-            <div className="text-gray-500 text-xs mb-0.5">INVESTMENT</div>
-            <div className="text-blue-600 font-semibold text-xs">{mockInvestmentAmount}</div>
+          <div className="text-gray-900 font-medium">
+            {project.priceRange?.min 
+              ? `$${project.priceRange.min.toLocaleString()} - $${project.priceRange.max.toLocaleString()}`
+              : "Price on Request"}
           </div>
         </div>
 
-
-
-
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 gap-4 mt-auto">
+          <div>
+            <div className="text-xs text-gray-500 uppercase tracking-wide">Available</div>
+            <div className="text-gray-900 font-semibold">{project.stats?.availableUnits || 32} Units</div>
+          </div>
+          <div>
+            <div className="text-xs text-gray-500 uppercase tracking-wide">Total Area</div>
+            <div className="text-gray-900 font-semibold">{project.totalArea || 40} sq ft</div>
+          </div>
+          <div>
+            <div className="text-xs text-gray-500 uppercase tracking-wide">Investment</div>
+            <div className="text-gray-900 font-semibold">$2.8M</div>
+          </div>
+          <div>
+            <div className="text-xs text-gray-500 uppercase tracking-wide">Occupancy</div>
+            <div className="text-gray-900 font-semibold">97%</div>
+          </div>
+        </div>
       </div>
     </div>
   );

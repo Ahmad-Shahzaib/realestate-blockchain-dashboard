@@ -6,21 +6,14 @@ import { IoHome } from "react-icons/io5";
 import { FaConnectdevelop } from "react-icons/fa";
 import { MdOutlineSignalCellularAlt2Bar } from "react-icons/md";
 import { FaCalendarAlt } from "react-icons/fa";
+import Tabs, { TabItem } from "@/components/ui/Tabs";
 import ProjectService, { Project } from "@/services/project.service";
 
-const tabs = [
-    {
-        id: "all", label: "Home", icon: IoHome
-    },
-    {
-        id: "residential", label: "Development", icon: FaConnectdevelop
-    },
-    {
-        id: "commercial", label: "Mature", icon: MdOutlineSignalCellularAlt2Bar
-    },
-    {
-        id: "plots", label: "Up Comming", icon: FaCalendarAlt
-    },
+const tabs: TabItem[] = [
+    { id: "all", label: "Home", icon: IoHome },
+    { id: "residential", label: "Development", icon: FaConnectdevelop },
+    { id: "commercial", label: "Mature", icon: MdOutlineSignalCellularAlt2Bar },
+    { id: "plots", label: "Up Comming", icon: FaCalendarAlt },
 ];
 
 export function OverviewCards() {
@@ -61,6 +54,11 @@ export function OverviewCards() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab]);
 
+    const handleTabChange = (id: string) => {
+        setActiveTab(id);
+        setPage(1);
+    };
+
     const handleLoadMore = () => {
         if (page < totalPages && !loadingMore) {
             const nextPage = page + 1;
@@ -69,21 +67,7 @@ export function OverviewCards() {
         }
     };
 
-    const renderCards = () => {
-        let filteredProjects = projects;
-        if (activeTab === "residential") {
-            filteredProjects = projects.filter(p => p.category === "residential");
-        } else if (activeTab === "commercial") {
-            filteredProjects = projects.filter(p => p.category === "commercial");
-        } else if (activeTab === "plots") {
-            filteredProjects = projects.filter(p => p.category === "plots");
-        }
-        return filteredProjects.map((project, index) => (
-            <OverviewCard key={project._id || index} initialImageIndex={index} item={project} />
-        ));
-    };
-
-    // Determine if there are more projects to load
+    // Filter projects by active tab
     let filteredProjects = projects;
     if (activeTab === "residential") {
         filteredProjects = projects.filter(p => p.category === "residential");
@@ -96,34 +80,19 @@ export function OverviewCards() {
 
     return (
         <>
-            <div className="w-full px-10 mb-6 mt-3 border-b  pb-2">
-                <h1 className="text-2xl font-bold  "> All Projects</h1>
-            </div>
-            <div className="w-full  px-10">
-                {/* Tabs */}
-                <div className="flex space-x-4 mb-6 overflow-x-auto ">
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => { setActiveTab(tab.id); setPage(1); }}
-                            className={`flex items-center px-4 py-2 text-lg font-medium rounded-lg whitespace-nowrap ${activeTab === tab.id
-                                ? "bg-black text-white"
-                                : "bg-gray-100 text-black hover:bg-gray-200"
-                                }`}
-                        >
-                            <tab.icon className="w-6 h-6 mr-2" />
-                            {tab.label}
-                        </button>
-                    ))}
-                </div>
+            <div className="w-full p-6">
+                {/* Generic Tabs */}
+                <Tabs tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} />
 
                 {/* Cards Grid */}
-                <div className="grid gap-2 sm:gap-6 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                    {loading ? <div>Loading...</div> : error ? <div>{error}</div> : renderCards()}
+                <div className="grid gap-12" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(330px, 1fr))' }}>
+                    {loading ? <div>Loading...</div> : error ? <div>{error}</div> : filteredProjects.map((project, index) => (
+                        <OverviewCard key={project._id || index} item={project} />
+                    ))}
                 </div>
-                <div className="w-full flex justify-end mt-6">
+                <div className="w-full flex justify-end mt-10">
                     <button
-                        className={`bg-blue-500 text-white py-2 px-4 rounded-lg transition-colors ${!hasMore ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
+                        className={`bg-accent text-accent-foreground py-3 px-6 rounded-lg text-lg font-medium shadow transition-colors ${!hasMore ? 'opacity-50 cursor-not-allowed' : 'hover:bg-accent-hover'}`}
                         onClick={handleLoadMore}
                         disabled={!hasMore || loadingMore}
                     >
@@ -138,4 +107,5 @@ export function OverviewCards() {
 export default function ProjectPage() {
     return <OverviewCards />;
 }
+
 

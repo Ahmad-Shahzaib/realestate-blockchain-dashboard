@@ -98,7 +98,7 @@ export function DropdownContent({
       role="menu"
       aria-orientation="vertical"
       className={cn(
-        "fade-in-0 zoom-in-95 pointer-events-auto absolute z-99 mt-2 min-w-[8rem] origin-top-right rounded-lg",
+        "inline-flex h-[53px] rounded-[8px] border border-[#E7E7E7] px-[24px] py-[15px] pr-[174px] pb-[14px] items-center flex-shrink-0 min-w-[8rem] absolute z-99 mt-2 origin-top-right bg-white",
         {
           "animate-in right-0": align === "end",
           "left-0": align === "start",

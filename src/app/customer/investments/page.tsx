@@ -71,21 +71,19 @@ const PropertyInvestmentDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-2 rounded-lg">
-                <Building2 className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">My Investment Portfolio</h1>
-                <p className="text-gray-600 mt-1">Overview of your property investment details and performance</p>
-              </div>
+      <div className="bg-background/90 shadow-sm border-border">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-2 rounded-lg">
+              <Building2 className="h-6 w-6 text-white" />
             </div>
-            <div className="flex items-center space-x-3">
-              {/* View toggle button placeholder */}
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">My Investment Portfolio</h1>
+              <p className="text-gray-600 mt-1">Overview of your property investment details and performance</p>
             </div>
+          </div>
+          <div className="flex items-center space-x-3">
+            {/* View toggle button removed */}
           </div>
         </div>
       </div>
@@ -95,7 +93,7 @@ const PropertyInvestmentDashboard = () => {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow">
+          <div className="bg-background/80 rounded-2xl shadow-lg p-6 border border-border hover:shadow-xl transition-shadow text-white">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">My Total Investment</p>
@@ -111,7 +109,7 @@ const PropertyInvestmentDashboard = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow">
+          <div className="bg-background/80 rounded-2xl shadow-lg p-6 border border-border hover:shadow-xl transition-shadow text-white">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">My Avg Returns</p>
@@ -124,7 +122,7 @@ const PropertyInvestmentDashboard = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow">
+          <div className="bg-background/80 rounded-2xl shadow-lg p-6 border border-border hover:shadow-xl transition-shadow text-white">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">My Active Properties</p>
@@ -137,7 +135,7 @@ const PropertyInvestmentDashboard = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow">
+          <div className="bg-background/80 rounded-2xl shadow-lg p-6 border border-border hover:shadow-xl transition-shadow text-white">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">My Properties</p>
@@ -150,21 +148,11 @@ const PropertyInvestmentDashboard = () => {
             </div>
           </div>
         </div>
-        {/* Search and Filter */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex-1 max-w-md">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search investments by name, location, or type..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-            </div>
+
+        {/* Filter Tabs */}
+        <div className="bg-background/80 rounded-2xl shadow-lg p-6 mb-8 text-white">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">Your Investment Details</h2>
             <div className="flex items-center space-x-4">
               <Filter className="h-5 w-5 text-gray-400" />
               <div className="flex bg-gray-100 rounded-lg p-1">
@@ -173,7 +161,7 @@ const PropertyInvestmentDashboard = () => {
                     key={status}
                     onClick={() => setFilter(status)}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${filter === status
-                      ? 'bg-white text-blue-600 shadow-sm'
+                      ? 'bg-background text-blue-400 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
                       }`}
                   >
@@ -248,7 +236,7 @@ const PropertyInvestmentDashboard = () => {
         </div>
 
         {/* Performance Chart Section */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6 text-white">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900">My Investment Performance</h2>
             <div className="flex space-x-2">
@@ -257,6 +245,7 @@ const PropertyInvestmentDashboard = () => {
               <button className="px-4 py-2 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50">All</button>
             </div>
           </div>
+
 
           <div className="h-64 flex items-center justify-center bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
             <div className="text-center">

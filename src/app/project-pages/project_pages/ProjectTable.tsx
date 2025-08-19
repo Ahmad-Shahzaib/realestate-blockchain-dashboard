@@ -1,4 +1,8 @@
 import React, { useState } from 'react'
+import Tabs from '@/components/ui/Tabs'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import DAOListings from './DaoListing'
 import Rentals from './RentalPage'
 import QubeLahore from './QubePage'
@@ -35,73 +39,75 @@ const ProjectTable = () => {
                 return (
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                         <Rentals />
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
-                            <h3 className="text-lg lg:text-xl font-bold text-gray-800 mb-4">Investment Calculator</h3>
+                        <div className="bg-background rounded-xl shadow-sm  p-4 lg:p-6">
+                            <h3 className="text-lg lg:text-xl font-bold text-black mb-4">Investment Calculator</h3>
                             <div className="space-y-4">
-                                <div className="p-4 bg-blue-50 rounded-lg">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <div className="p-4 bg-background rounded-lg border border-themebgColor">
+                                    <label className="block text-sm font-medium text-black mb-2">
                                         Area to Own (sq. ft.)
                                     </label>
-                                    <input
+                                    {/* Use Input from components/ui */}
+                                    <Input
                                         type="number"
                                         placeholder="Enter area..."
-                                        className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full text-black border-themebgColor bg-background focus:outline-none focus:ring-2 focus:ring-black"
                                     />
                                 </div>
-                                <div className="p-4 bg-gray-50 rounded-lg">
-                                    <div className="text-sm text-gray-600 mb-1">Price per sq. ft.</div>
-                                    <div className="text-xl font-bold text-gray-800">28,000 PKR</div>
+                                <div className="p-4 bg-background rounded-lg border border-themebgColor">
+                                    <div className="text-sm text-black mb-1">Price per sq. ft.</div>
+                                    <div className="text-xl font-bold text-black">28,000 PKR</div>
                                 </div>
-                                <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                                {/* Use Button from components/ui */}
+                                <Button className="w-full bg-background text-black border border-themebgColor font-medium">
                                     Calculate Investment
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     </div>
                 );
             case 'calculate':
                 return (
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
-                        <h3 className="text-lg lg:text-xl font-bold text-gray-800 mb-6">Calculate Rentals</h3>
+                    <div className="bg-background rounded-xl shadow-sm  p-4 lg:p-6">
+                        <h3 className="text-lg lg:text-xl font-bold text-black mb-6">Calculate Rentals</h3>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-black mb-2">
                                         Investment Amount (PKR)
                                     </label>
                                     <input
                                         type="number"
                                         placeholder="Enter investment amount..."
-                                        className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full p-3 border border-themebgColor rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-black"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-black mb-2">
                                         Area (sq. ft.)
                                     </label>
                                     <input
                                         type="number"
                                         placeholder="Enter area..."
-                                        className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full p-3 border border-themebgColor rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-black"
                                     />
                                 </div>
-                                <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                                <button className="w-full bg-background text-black py-3 rounded-lg border border-themebgColor transition-colors font-medium">
                                     Calculate Returns
                                 </button>
                             </div>
-                            <div className="bg-blue-50 rounded-lg p-4">
-                                <h4 className="font-semibold text-gray-800 mb-4">Estimated Returns</h4>
+                            <div className="bg-background rounded-lg p-4">
+                                <h4 className="font-semibold text-black mb-4">Estimated Returns</h4>
                                 <div className="space-y-3">
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">Monthly Rental:</span>
+                                        <span className="text-black">Monthly Rental:</span>
                                         <span className="font-semibold">-- PKR</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">Yearly Rental:</span>
+                                        <span className="text-black">Yearly Rental:</span>
                                         <span className="font-semibold">-- PKR</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">ROI:</span>
+                                        <span className="text-black">ROI:</span>
                                         <span className="font-semibold">--%</span>
                                     </div>
                                 </div>
@@ -118,39 +124,51 @@ const ProjectTable = () => {
                 );
             case 'stats':
                 return (
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
-                        <h3 className="text-lg lg:text-xl font-bold text-gray-800 mb-6">Project Statistics</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div className="p-4 bg-blue-50 rounded-lg text-center">
-                                <div className="text-2xl font-bold text-blue-600">95%</div>
-                                <div className="text-sm text-gray-600">Occupancy Rate</div>
-                            </div>
-                            <div className="p-4 bg-green-50 rounded-lg text-center">
-                                <div className="text-2xl font-bold text-green-600">1,250</div>
-                                <div className="text-sm text-gray-600">Total Investors</div>
-                            </div>
-                            <div className="p-4 bg-purple-50 rounded-lg text-center">
-                                <div className="text-2xl font-bold text-purple-600">22K</div>
-                                <div className="text-sm text-gray-600">Total Area (sq. ft.)</div>
-                            </div>
-                            <div className="p-4 bg-amber-50 rounded-lg text-center">
-                                <div className="text-2xl font-bold text-amber-600">5.1%</div>
-                                <div className="text-sm text-gray-600">Average Yield</div>
-                            </div>
+                    <div className="space-y-6">
+                        <h3 className="text-lg lg:text-xl font-bold text-black mb-2">Project Statistics</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {/* Card for Occupancy Rate */}
+                            <Card className="text-center border-themebgColor">
+                                <CardHeader>
+                                    <CardTitle>95%</CardTitle>
+                                    <CardDescription>Occupancy Rate</CardDescription>
+                                </CardHeader>
+                            </Card>
+                            {/* Card for Total Investors */}
+                            <Card className="text-center border-themebgColor">
+                                <CardHeader>
+                                    <CardTitle>1,250</CardTitle>
+                                    <CardDescription>Total Investors</CardDescription>
+                                </CardHeader>
+                            </Card>
+                            {/* Card for Total Area */}
+                            <Card className="text-center border-themebgColor">
+                                <CardHeader>
+                                    <CardTitle>22K</CardTitle>
+                                    <CardDescription>Total Area (sq. ft.)</CardDescription>
+                                </CardHeader>
+                            </Card>
+                            {/* Card for Average Yield */}
+                            <Card className="text-center border-themebgColor">
+                                <CardHeader>
+                                    <CardTitle>5.1%</CardTitle>
+                                    <CardDescription>Average Yield</CardDescription>
+                                </CardHeader>
+                            </Card>
                         </div>
-                        <div className="mt-6 h-64 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <div className="text-center">
-                                <div className="text-gray-400 mb-2">📊</div>
-                                <p className="text-gray-500">Interactive Chart</p>
-                                <p className="text-sm text-gray-400">Performance Analytics</p>
-                            </div>
-                        </div>
+                        <Card className="mt-6 h-64 flex items-center justify-center border-themebgColor">
+                            <CardContent className="flex flex-col items-center justify-center">
+                                <div className="text-black mb-2 text-2xl">📊</div>
+                                <p className="text-black font-semibold">Interactive Chart</p>
+                                <p className="text-sm text-muted-foreground">Performance Analytics</p>
+                            </CardContent>
+                        </Card>
                     </div>
                 );
             case 'investors':
                 return (
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
-                        <h3 className="text-lg lg:text-xl font-bold text-gray-800 mb-6">Top Investors</h3>
+                    <div className="bg-background rounded-xl shadow-sm  p-4 lg:p-6">
+                        <h3 className="text-lg lg:text-xl font-bold text-black mb-6">Top Investors</h3>
                         <div className="space-y-4">
                             {[
                                 { name: 'Ahmed Khan', investment: '2,500,000', area: '89.3 sq. ft.', returns: '12.5%' },
@@ -158,19 +176,19 @@ const ProjectTable = () => {
                                 { name: 'Usman Ali', investment: '1,200,000', area: '42.9 sq. ft.', returns: '10.8%' },
                                 { name: 'Fatima Sheikh', investment: '950,000', area: '33.9 sq. ft.', returns: '9.7%' }
                             ].map((investor, index) => (
-                                <div key={index} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                <div key={index} className="flex items-center justify-between p-4 border border-themebgColor rounded-lg">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                            <span className="text-blue-600 font-semibold">{investor.name.charAt(0)}</span>
+                                        <div className="w-10 h-10 bg-background rounded-full flex items-center justify-center">
+                                            <span className="text-black font-semibold">{investor.name.charAt(0)}</span>
                                         </div>
                                         <div>
-                                            <div className="font-medium text-gray-800">{investor.name}</div>
-                                            <div className="text-sm text-gray-500">{investor.area}</div>
+                                            <div className="font-medium text-black">{investor.name}</div>
+                                            <div className="text-sm text-black">{investor.area}</div>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <div className="font-semibold text-gray-800">{investor.investment} PKR</div>
-                                        <div className="text-sm text-green-600">+{investor.returns}</div>
+                                        <div className="font-semibold text-black">{investor.investment} PKR</div>
+                                        <div className="text-sm text-black">+{investor.returns}</div>
                                     </div>
                                 </div>
                             ))}
@@ -191,26 +209,13 @@ const ProjectTable = () => {
 
     return (
         <div className="space-y-6">
-            {/* Tab Navigation */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="border-b border-gray-200">
-                    <nav className="flex overflow-x-auto scrollbar-hide" aria-label="Tabs">
-                        {tabs.map((tab) => (
-                            <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
-                                className={`py-4 px-4 lg:px-6 border-b-2 font-medium text-sm whitespace-nowrap transition-colors ${
-                                    activeTab === tab.id
-                                        ? 'border-blue-500 text-blue-600 bg-blue-50'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-                                }`}
-                            >
-                                {tab.label}
-                            </button>
-                        ))}
-                    </nav>
-                </div>
-            </div>
+            {/* Dynamic Tabs Navigation */}
+            <Tabs
+                tabs={tabs}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                className="mb-0"
+            />
 
             {/* Tab Content */}
             <div>

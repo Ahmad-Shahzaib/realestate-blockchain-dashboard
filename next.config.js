@@ -30,6 +30,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "picsum.photos", // 👈 added this
       },
+      {
+        protocol: 'https',
+        hostname: 'fastly.clutch.ca',
+      },
     ],
   },
 };

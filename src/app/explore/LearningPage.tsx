@@ -1,16 +1,20 @@
 "use client"
 
+
 import Image from "next/image"
 import { Play, Calendar, ChevronLeft, ChevronRight } from "lucide-react"
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+
 
 export default function PropTechMasterClass() {
     const [currentSlide, setCurrentSlide] = useState(0)
-
+    const sliderRef = useRef<HTMLDivElement>(null)
+    const cardsPerView = 3
     const videos = [
         {
             id: 1,
-            title: "Are You Prepared for the Oncoming Econom...",
+            title: "Are You Prepared for the Oncoming Economic Downturn?",
             subtitle: "JULY 2022 EDITION",
             thumbnail: "/placeholder.svg?height=200&width=350",
             part: null,
@@ -18,7 +22,7 @@ export default function PropTechMasterClass() {
         },
         {
             id: 2,
-            title: "Outlook on Future Prices with Respect to...",
+            title: "Outlook on Future Prices with Respect to Construction",
             subtitle: "OUTLOOK ON FUTURE PRICES WITH RESPECT TO CONSTRUCTION",
             speaker: "Ghaus Gadri",
             role: "Private Equity & Investment Adviser",
@@ -27,7 +31,7 @@ export default function PropTechMasterClass() {
         },
         {
             id: 3,
-            title: "Tax on Rental Income x Federal Budget 20...",
+            title: "Tax on Rental Income x Federal Budget 2022",
             subtitle: "TAX ON RENTAL INCOME X FEDERAL BUDGET 2022",
             speaker: "Ghaus Gadri",
             role: "Private Equity & Investment Adviser",
@@ -36,7 +40,7 @@ export default function PropTechMasterClass() {
         },
         {
             id: 4,
-            title: "Capital Gains Tax Budget...",
+            title: "Capital Gains Tax Budget",
             subtitle: "CAPITAL GAINS TAX SLABS X FEDERAL BUDGET",
             speaker: "Ghaus Gadri",
             role: "Private Equity & Investment Adviser",
@@ -45,7 +49,7 @@ export default function PropTechMasterClass() {
         },
         {
             id: 5,
-            title: "Real Estate Investment Strategies...",
+            title: "Real Estate Investment Strategies for 2024",
             subtitle: "INVESTMENT STRATEGIES FOR 2024",
             speaker: "Ghaus Gadri",
             role: "Private Equity & Investment Adviser",
@@ -54,7 +58,7 @@ export default function PropTechMasterClass() {
         },
         {
             id: 6,
-            title: "Property Market Analysis...",
+            title: "Property Market Analysis",
             subtitle: "COMPREHENSIVE MARKET ANALYSIS",
             speaker: "Ghaus Gadri",
             role: "Private Equity & Investment Adviser",
@@ -62,9 +66,17 @@ export default function PropTechMasterClass() {
             thumbnail: "/placeholder.svg?height=200&width=350",
         },
     ]
-
-    const cardsPerView = 3
     const maxSlide = Math.max(0, videos.length - cardsPerView)
+
+    // Keyboard navigation for accessibility
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "ArrowLeft") prevSlide()
+            if (e.key === "ArrowRight") nextSlide()
+        }
+        window.addEventListener("keydown", handleKeyDown)
+        return () => window.removeEventListener("keydown", handleKeyDown)
+    })
 
     const nextSlide = () => {
         setCurrentSlide((prev) => (prev >= maxSlide ? 0 : prev + 1))
@@ -75,71 +87,83 @@ export default function PropTechMasterClass() {
     }
 
     return (
-        <div className=" p-6 md:p-8 lg:p-12">
+        <div className="p-4 md:p-8 lg:p-12 bg-background text-black border-themebgColor min-h-screen">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="mb-8 md:mb-12">
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold  mb-2">PropTech MasterClass</h1>
-                    <p className="text-lg md:text-xl">catch real estate industry experts in conversation</p>
-                </div>
+                <header className="mb-8 md:mb-12 flex flex-col items-center text-center">
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 text-black drop-shadow-sm">PropTech MasterClass</h1>
+                    <p className="text-lg md:text-xl text-black opacity-80">Catch real estate industry experts in conversation</p>
+                </header>
 
                 {/* Slider Container */}
-                <div className="relative">
+                <section className="relative">
                     {/* Left Arrow */}
-                    <button
+                    <Button
                         onClick={prevSlide}
-                        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 bg-white rounded-full shadow-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-black text-black rounded-[20px] shadow-lg  flex items-center justify-center hover:bg-themebgColor hover:text-white focus:ring-2 focus:ring-themebgColor transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={currentSlide === 0}
                         aria-label="Previous Slide"
+                        tabIndex={0}
+                        variant="ghost"
                     >
-                        <ChevronLeft className="w-6 h-6 text-gray-600" />
-                    </button>
+                        <ChevronLeft className="w-6 h-6" />
+                    </Button>
 
                     {/* Right Arrow */}
-                    <button
+                    <Button
                         onClick={nextSlide}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-12 h-12 bg-white rounded-full shadow-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-black text-black rounded-[20px] shadow-lg border-0 flex items-center justify-center hover:text-white focus:ring-2 focus:ring-themebgColor transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={currentSlide === maxSlide}
                         aria-label="Next Slide"
-                        title="Next Slide"
+                        tabIndex={0}
+                        variant="ghost"
                     >
-                        <ChevronRight className="w-6 h-6 text-gray-600" />
-                    </button>
+                        <ChevronRight className="w-6 h-6" />
+                    </Button>
 
                     {/* Slider Content */}
                     <div className="overflow-hidden">
                         <div
+                            ref={sliderRef}
                             className="flex transition-transform duration-500 ease-in-out"
                             style={{
                                 transform: `translateX(-${currentSlide * (100 / cardsPerView)}%)`,
                             }}
+                            aria-live="polite"
                         >
-                            {videos.map((video) => (
-                                <div key={video.id} className="w-1/3 flex-shrink-0 px-3">
-                                    <div className="group cursor-pointer">
+                            {videos.map((video, idx) => (
+                                <div
+                                    key={video.id}
+                                    className="w-full sm:w-1/2 md:w-1/3 flex-shrink-0 px-2 md:px-3"
+                                    tabIndex={0}
+                                    aria-label={video.title}
+                                >
+                                    <div className="group cursor-pointer h-full flex flex-col">
                                         {/* Video Thumbnail */}
-                                        <div className="relative aspect-video mb-4 rounded-lg overflow-hidden bg-gray-900">
+                                        <div className="relative aspect-video mb-4 rounded-xl overflow-hidden bg-background shadow-lg">
                                             <Image
-                                                src={video.thumbnail || "/placeholder.svg"}
+                                                src={"https://fastly.clutch.ca/assets/stc_location_wolfedale_1.jpg"}
                                                 alt={video.title}
                                                 fill
                                                 className="object-cover"
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 350px"
+                                                priority={idx < cardsPerView}
                                             />
 
                                             {/* Overlay */}
-                                            <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-200" />
+                                            <div className="absolute inset-0 bg-background bg-opacity-20 group-hover:bg-opacity-40 transition-all duration-200" />
 
                                             {/* Play Button */}
                                             <div className="absolute inset-0 flex items-center justify-center">
-                                                <div className="w-12 h-12 bg-white bg-opacity-90 rounded-full flex items-center justify-center group-hover:bg-opacity-100 transition-all duration-200">
-                                                    <Play className="w-5 h-5 text-gray-900 ml-0.5" fill="currentColor" />
+                                                <div className="w-12 h-12 bg-background bg-opacity-90 rounded-full flex items-center justify-center group-hover:bg-themebgColor group-hover:text-white transition-all duration-200 border border-themebgColor shadow-md">
+                                                    <Play className="w-5 h-5 ml-0.5" fill="currentColor" />
                                                 </div>
                                             </div>
 
                                             {/* Top Left Branding */}
                                             {!video.featured && (
                                                 <div className="absolute top-3 left-3">
-                                                    <div className="bg-blue-600 bg-opacity-80 px-2 py-1 rounded text-xs text-white font-medium">
+                                                    <div className="bg-background bg-opacity-80 px-2 py-1 rounded text-xs text-black font-medium border border-themebgColor shadow-sm">
                                                         PROPTECH MASTERCLASS
                                                     </div>
                                                 </div>
@@ -148,7 +172,7 @@ export default function PropTechMasterClass() {
                                             {/* Top Right Part Number */}
                                             {video.part && (
                                                 <div className="absolute top-3 right-3">
-                                                    <div className="bg-black bg-opacity-60 px-2 py-1 rounded text-xs text-white font-medium">
+                                                    <div className="bg-background bg-opacity-60 px-2 py-1 rounded text-xs text-black font-medium border border-themebgColor shadow-sm">
                                                         {video.part}
                                                     </div>
                                                 </div>
@@ -157,8 +181,8 @@ export default function PropTechMasterClass() {
                                             {/* Bottom Left DAO PROPTECH */}
                                             {!video.featured && (
                                                 <div className="absolute bottom-3 left-3">
-                                                    <div className="flex items-center space-x-1 text-white text-xs">
-                                                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                                    <div className="flex items-center space-x-1 text-black text-xs">
+                                                        <div className="w-2 h-2 bg-background rounded-full"></div>
                                                         <span className="font-medium">DAO PROPTECH</span>
                                                     </div>
                                                 </div>
@@ -166,18 +190,13 @@ export default function PropTechMasterClass() {
 
                                             {/* Featured Video Text Overlay */}
                                             {video.featured && (
-                                                <div className="absolute inset-0 flex flex-col justify-center items-start p-6 text-white">
-                                                    <h3 className="text-xl md:text-2xl font-bold mb-2 leading-tight">
+                                                <div className="absolute inset-0 flex flex-col justify-center items-start p-6 text-black">
+                                                    <h3 className="text-xl md:text-2xl font-bold mb-2 leading-tight drop-shadow">
                                                         ARE YOU
                                                         <br />
                                                         PREPARED
                                                         <br />
-                                                        FOR THE{" "}
-                                                        <span className="text-yellow-400">
-                                                            ECONOMIC
-                                                            <br />
-                                                            DOWNTURN?
-                                                        </span>
+                                                        FOR THE <span className="text-black">ECONOMIC<br />DOWNTURN?</span>
                                                     </h3>
                                                     <p className="text-xs opacity-90 mt-2">{video.subtitle}</p>
                                                 </div>
@@ -185,7 +204,7 @@ export default function PropTechMasterClass() {
 
                                             {/* Speaker Info for non-featured videos */}
                                             {!video.featured && video.speaker && (
-                                                <div className="absolute bottom-12 left-3 text-white text-xs">
+                                                <div className="absolute bottom-12 left-3 text-black text-xs">
                                                     <div className="font-medium">{video.speaker}</div>
                                                     <div className="opacity-80">{video.role}</div>
                                                 </div>
@@ -193,12 +212,12 @@ export default function PropTechMasterClass() {
                                         </div>
 
                                         {/* Video Info */}
-                                        <div className="space-y-2">
-                                            <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 group-hover:text-gray-700 transition-colors">
+                                        <div className="space-y-2 flex-1 flex flex-col justify-between">
+                                            <h3 className="text-lg font-semibold text-black line-clamp-2 group-hover:text-themebgColor transition-colors">
                                                 {video.title}
                                             </h3>
 
-                                            <div className="flex items-center text-sm text-gray-500">
+                                            <div className="flex items-center text-sm text-black opacity-70">
                                                 <Calendar className="w-4 h-4 mr-1" />
                                                 <span>2 years ago</span>
                                             </div>
@@ -210,19 +229,20 @@ export default function PropTechMasterClass() {
                     </div>
 
                     {/* Slide Indicators */}
-                    <div className="flex justify-center mt-6 space-x-2">
+                    <nav className="flex justify-center mt-6 space-x-2" aria-label="Slider pagination">
                         {Array.from({ length: maxSlide + 1 }).map((_, index) => (
-                            <button
+                            <Button
                                 key={index}
                                 onClick={() => setCurrentSlide(index)}
-                                className={`w-2 h-2 rounded-full transition-colors duration-200 ${currentSlide === index ? "bg-blue-600" : "bg-gray-300"
-                                    }`}
+                                className={`w-3 h-3 rounded-full transition-colors duration-200 border border-themebgColor shadow-sm ${currentSlide === index ? "bg-themebgColor" : "bg-background"}`}
                                 title={`Go to slide ${index + 1}`}
                                 aria-label={`Go to slide ${index + 1}`}
+                                tabIndex={0}
+                                variant="ghost"
                             />
                         ))}
-                    </div>
-                </div>
+                    </nav>
+                </section>
             </div>
         </div>
     )

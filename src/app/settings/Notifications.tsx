@@ -1,10 +1,13 @@
 "use client"
 
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import React from "react"
+
 
 export default function Notifications() {
     return (
-        <div className="rounded-lg custom-border   p-6 shadow-sm">
+        <div className="rounded-lg custom-border bg-background text-black border themebgColor p-6 shadow-sm">
             <h2 className="text-2xl font-bold ">Notifications</h2>
             <p className="mt-1 ">
                 Your personal information is completely secure and we don’t share it with anyone.
@@ -12,35 +15,21 @@ export default function Notifications() {
 
             <div className="mt-8 space-y-4">
                 {/* Push Notifications */}
-                <div className="flex items-center justify-between rounded-md custom-border px-4 py-3">
-                    <span className=" font-medium">Push Notifications</span>
-                    <label htmlFor="push-toggle" className="relative inline-flex cursor-pointer items-center">
-                        <input
-                            type="checkbox"
-                            id="push-toggle"
-                            className="sr-only peer"
-                            title="Enable push notifications"
-                        />
-                        <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-blue-600 transition-all duration-300"></div>
-                        <div className="absolute left-0.5 top-0.5 h-5 w-5 bg-white rounded-full shadow-md transform peer-checked:translate-x-full transition-transform duration-300"></div>
-                        <span className="sr-only">Enable push notifications</span>
-                    </label>
+                <div className="flex items-center justify-between rounded-md custom-border bg-background border themebgColor px-4 py-3">
+                    <span className="font-medium text-black">Push Notifications</span>
+                    <div className="flex items-center gap-2">
+                        <Input type="checkbox" id="push-toggle" title="Enable push notifications" />
+                        <Button>Save</Button>
+                    </div>
                 </div>
 
                 {/* SMS Notifications */}
-                <div className="flex items-center justify-between rounded-md custom-border px-4 py-3">
-                    <span className=" font-medium">SMS Notifications</span>
-                    <label className="relative inline-flex cursor-pointer items-center">
-                        <input
-                            type="checkbox"
-                            id="sms-toggle"
-                            className="sr-only peer"
-                            title="Enable SMS notifications"
-                        />
-                        <span className="sr-only">Enable SMS notifications</span>
-                        <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-blue-600 transition-all duration-300"></div>
-                        <div className="absolute left-0.5 top-0.5 h-5 w-5 bg-white rounded-full shadow-md transform peer-checked:translate-x-full transition-transform duration-300"></div>
-                    </label>
+                <div className="flex items-center justify-between rounded-md custom-border bg-background border themebgColor px-4 py-3">
+                    <span className="font-medium text-black">SMS Notifications</span>
+                    <div className="flex items-center gap-2">
+                        <Input type="checkbox" id="sms-toggle" title="Enable SMS notifications" />
+                        <Button>Save</Button>
+                    </div>
                 </div>
             </div>
 

@@ -40,24 +40,22 @@ const FaqAccordion: React.FC = () => {
     };
 
     return (
-        <div className=" mx-auto p-6 custom-border ">
-            <h2 className="text-3xl font-bold  mb-2 ">FAQs</h2>
-            <p className="  mb-8">
+        <div className="mx-auto p-6 bg-background">
+            <h2 className="text-3xl font-bold mb-2 text-black">FAQs</h2>
+            <p className="mb-8 text-black">
                 What people frequently ask! The set-up is designed with a keen focus on empowering neighborhood & more specialists.
             </p>
 
             <div className="space-y-4">
                 {faqData.map((item, index) => (
-                    <div key={index} className="custom-border rounded-xl overflow-hidden shadow-sm">
+                    <div key={index} className="border border-themebgColor rounded-xl overflow-hidden shadow-sm bg-background">
                         <button
                             onClick={() => toggle(index)}
-                            className="w-full text-left p-4 font-medium flex justify-between items-center 
-                                 hover:bg-gray-100 transition"
+                            className="w-full text-left p-4 font-medium flex justify-between items-center hover:bg-background transition text-black"
                         >
                             {item.question}
                             <svg
-                                className={`w-5 h-5 transition-transform duration-200 ${openIndex === index ? 'transform rotate-180' : ''
-                                    }`}
+                                className={`w-5 h-5 transition-transform duration-200 ${openIndex === index ? 'transform rotate-180' : ''}`}
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -71,7 +69,7 @@ const FaqAccordion: React.FC = () => {
                             </svg>
                         </button>
                         {openIndex === index && (
-                            <div className="p-4 text-gray-600 bg-white border-t border-gray-200">
+                            <div className="p-4 text-black bg-background border-t border-themebgColor">
                                 {item.answer}
                             </div>
                         )}

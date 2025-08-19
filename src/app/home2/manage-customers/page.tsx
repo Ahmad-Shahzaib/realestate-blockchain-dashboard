@@ -322,7 +322,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-end pt-6">
                 <button
                   type="button"
-                  className="px-6 py-3 bg-slate-700/50 hover:bg-slate-700/70 text-white rounded-xl transition-all duration-300 flex items-center gap-2 justify-center"
+                  className="px-6 py-3  text-white rounded-xl transition-all duration-300 flex items-center gap-2 justify-center"
                   onClick={() => setForm(initialFormState)}
                   disabled={loading}
                 >
@@ -331,7 +331,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2 justify-center"
+                  className="px-8 py-3  text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2 justify-center"
                   disabled={loading}
                 >
                   <Save className="w-5 h-5" />

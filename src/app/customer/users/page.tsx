@@ -96,7 +96,7 @@ const UsersInvestmentDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-background/90 shadow-sm border-border">
         <div className=" mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -117,7 +117,7 @@ const UsersInvestmentDashboard = () => {
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Search and Filter */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+        <div className="bg-background/80 rounded-2xl shadow-lg p-6 mb-8 text-white">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex-1 max-w-md">
               <div className="relative">
@@ -139,7 +139,7 @@ const UsersInvestmentDashboard = () => {
                     key={status}
                     onClick={() => setStatusFilter(status)}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${statusFilter === status
-                      ? 'bg-white text-blue-600 shadow-sm'
+                      ? 'bg-background text-blue-400 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
                       }`}
                   >
@@ -152,7 +152,7 @@ const UsersInvestmentDashboard = () => {
         </div>
 
         {/* Users Display */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
+        <div className="bg-background/80 rounded-2xl shadow-lg p-6 text-white">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Investment Users ({filteredUsers.length})</h2>
           </div>
@@ -225,7 +225,7 @@ const UsersInvestmentDashboard = () => {
         {/* User Detail Modal */}
         {selectedUser && (
           <div className="fixed inset-0 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-background/90 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto text-white">
               <div className="p-6 bg-gray-100 rounded-t-2xl">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center space-x-3">

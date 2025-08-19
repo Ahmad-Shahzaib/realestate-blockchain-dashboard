@@ -82,77 +82,61 @@ export function UserInfo() {
       </DropdownTrigger>
 
       <DropdownContent
-        className="border border-stroke bg-white shadow-md dark:border-dark-3 dark:bg-gray-dark min-[230px]:min-w-[17.5rem]"
+        className="flex flex-col min-w-[18rem] h-auto rounded-2xl border border-border bg-background text-dark shadow-2xl dark:bg-gray-dark dark:text-white dark:border-dark-3 transition-all duration-200 py-5 px-0"
         align="end"
       >
-        <h2 className="sr-only">User information</h2>
-
-        <figure className="flex items-center gap-2.5 px-5 py-3.5">
+        <h2 className="sr-only text-black">User information</h2>
+        <figure className="flex w-full flex gap-2 items-center gap-2.5 px-5 py-3.5">
           {isLoading ? (
-            <div className="size-12 rounded-full bg-gray-200 animate-pulse"></div>
+            <div className="w-12 h-12 rounded-full bg-border animate-pulse" />
           ) : (
             <Image
               src={userImage}
-              className="size-12"
+              className="w-12 h-12 rounded-full object-cover border border-border"
               alt={`Avatar for ${displayName}`}
               role="presentation"
-              width={200}
-              height={200}
+              width={48}
+              height={48}
             />
           )}
-
           <figcaption className="space-y-1 text-base font-medium">
-            <div className="mb-2 leading-none text-dark dark:text-white">
+            <div className="mb-1 leading-none text-dark dark:text-white text-lg font-semibold">
               {isLoading ? "Loading..." : displayName}
             </div>
-
-            <div className="leading-none text-gray-6">
+            <div className="leading-none text-gray-500 dark:text-gray-400 text-sm">
               {isLoading ? "..." : userEmail}
             </div>
           </figcaption>
         </figure>
-
-        <hr className="border-[#E8E8E8] dark:border-dark-3" />
-
-        <div className="p-2 text-base text-[#4B5563] dark:text-dark-6 [&>*]:cursor-pointer">
+        <hr className="border-border dark:border-dark-3" />
+        <div className="px-4 py-2 w-full text-base text-gray-700 dark:text-dark-6 space-y-1 [&>*]:cursor-pointer">
           <Link
             href={"/profile"}
             onClick={() => setIsOpen(false)}
-            className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 hover:bg-gray-100 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
           >
             <UserIcon />
-
-            <span className="mr-auto text-base font-medium">
-              Active Investments
-            </span>
+            <span className="mr-auto text-base font-medium">Active Investments</span>
           </Link>
-
           <Link
             href={"/pages/settings"}
             onClick={() => setIsOpen(false)}
-            className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 hover:bg-gray-100 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
           >
             <SettingsIcon />
-
-            <span className="mr-auto text-base font-medium">
-              Account Settings
-            </span>
+            <span className="mr-auto text-base font-medium">Account Settings</span>
           </Link>
+          <div className=" w-full cursor-pointer text-base text-gray-700 dark:text-dark-6">
+            <button
+              className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2 hover:bg-gray-100 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
+              onClick={() => { handleLogout() }}
+            >
+              <LogOutIcon />
+              <span className="text-base font-medium">Log out</span>
+            </button>
+          </div>
         </div>
 
-        <hr className="border-[#E8E8E8] dark:border-dark-3" />
-
-        <div className="p-2 text-base text-[#4B5563] dark:text-dark-6">
-          <button
-            className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
-            onClick={() => {
-              handleLogout();
-            }}
-          >
-            <LogOutIcon />
-            <span className="text-base font-medium">Log out</span>
-          </button>
-        </div>
       </DropdownContent>
     </Dropdown>
   );

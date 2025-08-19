@@ -31,6 +31,14 @@ const config: Config = {
 					7: "#D1D5DB",
 					8: "#E5E7EB",
 				},
+				sidebarbg: '#FFFFFF',
+				selectedsidebarcolor: 'rgba(0,84,109,0.08)',
+				background: "#F3F2F7",
+				text: "black",
+				themebgColor:"#0FB9A8",
+				border: {
+					DEFAULT: "#6b7280", // gray-500
+				},
 				gray: {
 					DEFAULT: "#EFF4FB",
 					dark: "#122031",

@@ -1,7 +1,7 @@
 const CalendarBox = () => {
   return (
     <>
-      <div className="w-full max-w-full rounded-[10px] bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
+      <div className="w-full max-w-full rounded-[10px] bg-background/80 shadow-1 text-white border border-border">
         <table className="w-full">
           <thead>
             <tr className="grid grid-cols-7 rounded-t-[10px] bg-primary text-white">

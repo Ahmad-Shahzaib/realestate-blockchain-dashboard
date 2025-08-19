@@ -67,6 +67,7 @@ export const handleRegister = async (credentials: {
 
 
 export const handleLogout = () => {
+    console.log("Logging out...");
     deleteCookie("token");
     deleteCookie("refreshToken");
     deleteCookie("user");
@@ -74,6 +75,7 @@ export const handleLogout = () => {
     window.dispatchEvent(new Event('storage'));
     window.location.href = "/auth/sign-in";
 };
+
 export const isAuthenticated = () => {
     const token = getCookie("token");
     return !!token;
