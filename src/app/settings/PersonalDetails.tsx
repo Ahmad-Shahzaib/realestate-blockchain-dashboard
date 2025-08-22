@@ -45,9 +45,7 @@ export default function PersonalDetails() {
                 if (result.status === "success") {
                     const user = result.data.user;
 
-
                     dispatch(setUser(user));
-
 
                     setFormData({
                         name: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
@@ -81,7 +79,6 @@ export default function PersonalDetails() {
             setIsLoading(true);
             setError('');
 
-
             const nameParts = formData.name.trim().split(' ');
             const firstName = nameParts[0] || '';
             const lastName = nameParts.slice(1).join(' ') || '';
@@ -95,7 +92,6 @@ export default function PersonalDetails() {
                 gender: formData.gender
             };
 
-
             const result = await putRequest(
                 getAxiosInstance('/api'),
                 "/api/users/profile",
@@ -103,12 +99,10 @@ export default function PersonalDetails() {
             );
 
             if (result.status === "success") {
-
                 dispatch(setUser({
                     ...userInfo.user,
                     ...userData
                 }));
-
 
                 setIsEditing(false);
             }
@@ -121,18 +115,19 @@ export default function PersonalDetails() {
     };
 
     return (
-        <div className="custom-border rounded-xl p-6 shadow-sm">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-100 dark:border-gray-700 transition-colors">
             <div className="flex justify-between items-start mb-6">
                 <div>
-                    <h2 className="text-2xl font-semibold">Personal Details</h2>
-                    <p className="text-sm text-gray-600 mt-1">
-                        Please keep your personal information up-to-date at all times. We do not share your information with any third party.
+                    <h2 className="text-2xl font-bold text-[#003049] dark:text-white">Personal Details</h2>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                        Please keep your personal information up-to-date at all times.
+                        We do not share your information with any third party.
                     </p>
                 </div>
                 {!isEditing && (
                     <button
                         onClick={() => setIsEditing(true)}
-                        className="text-blue-700 underline text-sm font-medium"
+                        className="text-[#0277BD] hover:text-[#00B894] underline text-sm font-medium transition dark:text-[#00D2B6]"
                     >
                         Edit
                     </button>
@@ -141,12 +136,12 @@ export default function PersonalDetails() {
 
             {isLoading && !isEditing && (
                 <div className="flex justify-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-700"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00B894]"></div>
                 </div>
             )}
 
             {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3 rounded mb-4">
                     {error}
                 </div>
             )}
@@ -155,24 +150,27 @@ export default function PersonalDetails() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Full Name */}
                     <div>
-                        <label className="block text-sm font-semibold mb-1">Full Name (Legal)</label>
+                        <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">
+                            Full Name (Legal)
+                        </label>
                         {isEditing ? (
                             <input
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
-                                className="w-full custom-border rounded-md px-4 py-2"
+                                className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#00B894]/50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                 placeholder="Enter your full legal name"
-                                title="Full Name (Legal)"
                             />
                         ) : (
-                            <div className="custom-border rounded-md px-4 py-2">{formData.name || "-"}</div>
+                            <div className="border rounded-md px-4 py-2 text-gray-700 dark:text-gray-200 dark:border-gray-600 dark:bg-gray-700">
+                                {formData.name || "-"}
+                            </div>
                         )}
                     </div>
 
                     {/* Photo */}
                     <div>
-                        <label className="block text-sm font-semibold mb-1">Photo</label>
+                        <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Photo</label>
                         <div className="flex items-center gap-3">
                             <Image
                                 src="/profile.jpg"
@@ -182,14 +180,16 @@ export default function PersonalDetails() {
                                 className="rounded-full"
                             />
                             {isEditing && (
-                                <a href="#" className="text-blue-600 underline text-sm">Change</a>
+                                <a href="#" className="text-[#0277BD] hover:text-[#00B894] underline text-sm transition dark:text-[#00D2B6]">
+                                    Change
+                                </a>
                             )}
                         </div>
                     </div>
 
                     {/* Email */}
                     <div>
-                        <label className="block text-sm font-semibold mb-1">Email</label>
+                        <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Email</label>
                         {isEditing ? (
                             <input
                                 name="email"
@@ -197,19 +197,21 @@ export default function PersonalDetails() {
                                 placeholder="Enter your email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="w-full custom-border rounded-md px-4 py-2"
+                                className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#00B894]/50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             />
                         ) : (
-                            <div className="custom-border rounded-md px-4 py-2">{formData.email || "-"}</div>
+                            <div className="border rounded-md px-4 py-2 text-gray-700 dark:text-gray-200 dark:border-gray-600 dark:bg-gray-700">
+                                {formData.email || "-"}
+                            </div>
                         )}
                     </div>
 
                     {/* Phone */}
                     <div>
-                        <label className="block text-sm font-semibold mb-1">Phone</label>
-                        <div className="flex items-center custom-border rounded-md px-2 py-2 gap-2">
+                        <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Phone</label>
+                        <div className="flex items-center border rounded-md px-2 py-2 gap-2 dark:bg-gray-700 dark:border-gray-600">
                             <span className="flex items-center gap-1 px-2">
-                                <span className="text-sm">+92</span>
+                                <span className="text-sm dark:text-gray-200">+92</span>
                             </span>
                             {isEditing ? (
                                 <>
@@ -217,32 +219,32 @@ export default function PersonalDetails() {
                                         name="phone"
                                         value={formData.phone}
                                         onChange={handleChange}
-                                        className="w-full custom-border-none focus:ring-0"
-                                        title="Phone Number"
+                                        className="w-full border-0 focus:ring-0 dark:bg-gray-700 dark:text-white"
                                         placeholder="Enter your phone number"
                                     />
-                                    <button className="bg-blue-700 text-white text-sm px-4 py-1.5 rounded-full">Verify</button>
+                                    <button className="bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white text-sm px-4 py-1.5 rounded-full shadow-md hover:opacity-90 transition">
+                                        Verify
+                                    </button>
                                 </>
                             ) : (
-                                <span className="text-gray-700 text-sm">{formData.phone || "-"}</span>
+                                <span className="text-gray-700 dark:text-gray-200 text-sm">{formData.phone || "-"}</span>
                             )}
                         </div>
                     </div>
 
                     {/* Date of Birth */}
                     <div>
-                        <label className="block text-sm font-semibold mb-1">Date Of Birth</label>
+                        <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Date Of Birth</label>
                         {isEditing ? (
                             <input
                                 name="dob"
                                 type="date"
-                                placeholder="Select your date of birth"
                                 value={formData.dob}
                                 onChange={handleChange}
-                                className="w-full custom-border rounded-md px-4 py-2"
+                                className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#00B894]/50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             />
                         ) : (
-                            <div className="custom-border custom-border-gray-200 rounded-md px-4 py-2 min-h-[42px]">
+                            <div className="border rounded-md px-4 py-2 min-h-[42px] text-gray-700 dark:text-gray-200 dark:border-gray-600 dark:bg-gray-700">
                                 {formData.dob || "-"}
                             </div>
                         )}
@@ -250,9 +252,9 @@ export default function PersonalDetails() {
 
                     {/* Gender */}
                     <div>
-                        <label className="block text-sm font-semibold mb-1">Gender</label>
+                        <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Gender</label>
                         {isEditing ? (
-                            <div className="flex gap-6">
+                            <div className="flex gap-6 text-gray-700 dark:text-gray-200">
                                 <label className="flex items-center gap-2 text-sm">
                                     <input
                                         type="radio"
@@ -275,7 +277,7 @@ export default function PersonalDetails() {
                                 </label>
                             </div>
                         ) : (
-                            <div className="custom-border custom-border-gray-200 rounded-md px-4 py-2 text-gray-600">
+                            <div className="border rounded-md px-4 py-2 text-gray-700 dark:text-gray-200 dark:border-gray-600 dark:bg-gray-700">
                                 {formData.gender || "-"}
                             </div>
                         )}
@@ -288,14 +290,14 @@ export default function PersonalDetails() {
                 <div className="mt-6 flex justify-end gap-4">
                     <button
                         onClick={() => setIsEditing(false)}
-                        className="text-black font-medium"
+                        className="text-gray-600 dark:text-gray-300 font-medium hover:text-[#003049] dark:hover:text-white transition"
                         disabled={isLoading}
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleSubmit}
-                        className={`bg-blue-700 text-white px-6 py-2 rounded-md font-semibold flex items-center ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                        className={`bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white px-6 py-2 rounded-md font-semibold shadow-md flex items-center hover:opacity-90 transition ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                         disabled={isLoading}
                     >
                         {isLoading && (
@@ -309,5 +311,6 @@ export default function PersonalDetails() {
                 </div>
             )}
         </div>
+
     );
 }

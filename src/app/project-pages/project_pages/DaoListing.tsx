@@ -6,37 +6,35 @@ export default function DAOListings() {
 
     const listings = [
         { price: '27,500 PKR', area: '3.8 sq.ft.', date: 'Apr 18, 2025', seller: 'Aliraza' },
-        { price: '26,500 PKR', area: '6 sq.ft.', date: 'Apr 18, 2025', seller: 'Gul54481' }
+        { price: '26,500 PKR', area: '6 sq.ft.', date: 'Apr 18, 2025', seller: 'Gul54481' },
     ];
 
     const transactions = [
         { seller: 'Hf27', price: '27,999 sq.ft.', date: 'Feb 23, 2025', status: 'completed' },
-        { seller: 'Hf27', price: '38,000 sq.ft.', date: 'Oct 11, 2024', status: 'completed' }
+        { seller: 'Hf27', price: '38,000 sq.ft.', date: 'Oct 11, 2024', status: 'completed' },
     ];
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
-            <h3 className="text-lg lg:text-xl font-bold text-gray-800 mb-6">Live Orders on DAO Listings</h3>
-            
+        <div className="p-6 rounded-2xl shadow-md bg-white border border-gray-100 hover:shadow-xl transition">
+            <h3 className="text-lg lg:text-xl font-bold text-[#003049] mb-6">Live Orders on DAO Listings</h3>
+
             {/* Tabs */}
-            <div className="flex bg-gray-100 rounded-lg p-1 mb-6 w-fit">
-                <button 
+            <div className="flex bg-[#F5F7FA] rounded-lg p-1 mb-6 w-fit">
+                <button
                     onClick={() => setActiveTab('listings')}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                        activeTab === 'listings' 
-                            ? 'bg-white text-blue-600 shadow-sm' 
-                            : 'text-gray-600 hover:text-gray-800'
-                    }`}
+                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === 'listings'
+                        ? 'bg-gradient-to-r from-[#00B894]/20 to-[#00D2B6]/20 text-[#003049] shadow-sm'
+                        : 'text-gray-700 hover:text-[#0277BD] hover:bg-[#F5F7FA]'
+                        }`}
                 >
                     DAO Listings Orders
                 </button>
-                <button 
+                <button
                     onClick={() => setActiveTab('transactions')}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                        activeTab === 'transactions' 
-                            ? 'bg-white text-blue-600 shadow-sm' 
-                            : 'text-gray-600 hover:text-gray-800'
-                    }`}
+                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === 'transactions'
+                        ? 'bg-gradient-to-r from-[#00B894]/20 to-[#00D2B6]/20 text-[#003049] shadow-sm'
+                        : 'text-gray-700 hover:text-[#0277BD] hover:bg-[#F5F7FA]'
+                        }`}
                 >
                     Recent Transactions
                 </button>
@@ -44,7 +42,7 @@ export default function DAOListings() {
 
             {activeTab === 'listings' && (
                 <div className="space-y-4">
-                    <div className="grid grid-cols-5 gap-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    <div className="grid grid-cols-5 gap-2 text-xs font-semibold text-gray-700 uppercase tracking-wide">
                         <span>Price / sq. ft.</span>
                         <span>Area Available</span>
                         <span>Age</span>
@@ -53,18 +51,21 @@ export default function DAOListings() {
                     </div>
 
                     {listings.map((item, idx) => (
-                        <div key={idx} className="grid grid-cols-5 gap-4 items-center p-4 border border-gray-200 rounded-lg">
-                            <span className="text-sm font-medium text-gray-800">{item.price}</span>
-                            <span className="text-sm text-gray-600">{item.area}</span>
-                            <span className="text-sm text-gray-600">{item.date}</span>
-                            <div className="flex items-center gap-2">
-                                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <User className="w-3 h-3 text-blue-600" />
+                        <div
+                            key={idx}
+                            className="grid grid-cols-5 gap-2 items-center p-2 border border-gray-100 rounded-lg hover:bg-[#F5F7FA] transition"
+                        >
+                            <span className="text-sm font-medium text-[#003049]">{item.price}</span>
+                            <span className="text-sm text-gray-700">{item.area}</span>
+                            <span className="text-sm text-gray-700">{item.date}</span>
+                            <div className="flex items-center gap-1">
+                                <div className="w-6 h-6 bg-[#00B894]/20 rounded-full flex items-center justify-center">
+                                    <User className="w-3 h-3 text-[#00B894]" />
                                 </div>
-                                <span className="text-sm text-gray-800">{item.seller}</span>
+                                <span className="text-sm text-[#003049]">{item.seller}</span>
                             </div>
-                            <button className="flex items-center gap-2 text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                                <ExternalLink className="w-3 h-3" />
+                            <button className="flex items-center gap-1 text-sm px-2 py-2 rounded font-semibold bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white shadow-lg hover:opacity-90 transition">
+
                                 Buy Now
                             </button>
                         </div>
@@ -74,7 +75,7 @@ export default function DAOListings() {
 
             {activeTab === 'transactions' && (
                 <div className="space-y-4">
-                    <div className="grid grid-cols-5 gap-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    <div className="grid grid-cols-5 gap-4 text-xs font-semibold text-gray-700 uppercase tracking-wide">
                         <span>Seller</span>
                         <span>Price / sq. ft.</span>
                         <span>Date Listed</span>
@@ -83,20 +84,22 @@ export default function DAOListings() {
                     </div>
 
                     {transactions.map((item, idx) => (
-                        <div key={idx} className="grid grid-cols-5 gap-4 items-center p-4 border border-gray-200 rounded-lg">
+                        <div
+                            key={idx}
+                            className="grid grid-cols-5 gap-4 items-center p-4 border border-gray-100 rounded-lg hover:bg-[#F5F7FA] transition"
+                        >
                             <div className="flex items-center gap-2">
-                                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <User className="w-3 h-3 text-blue-600" />
+                                <div className="w-6 h-6 bg-[#00B894]/20 rounded-full flex items-center justify-center">
+                                    <User className="w-3 h-3 text-[#00B894]" />
                                 </div>
-                                <span className="text-sm text-gray-800">{item.seller}</span>
+                                <span className="text-sm text-[#003049]">{item.seller}</span>
                             </div>
-                            <span className="text-sm text-gray-600">{item.price}</span>
-                            <span className="text-sm text-gray-600">{item.date}</span>
-                            <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                            <span className="text-sm text-gray-700">{item.price}</span>
+                            <span className="text-sm text-gray-700">{item.date}</span>
+                            <span className="text-xs bg-[#00B894]/20 text-[#00B894] px-2 py-1 rounded-full font-medium">
                                 {item.status}
                             </span>
-                            <button className="flex items-center gap-2 text-sm border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors">
-                                <ExternalLink className="w-3 h-3" />
+                            <button className="flex items-center gap-2 text-sm border  px-2 py-2 rounded bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white transition-colors">
                                 View Details
                             </button>
                         </div>

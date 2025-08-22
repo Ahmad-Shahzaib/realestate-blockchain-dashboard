@@ -54,7 +54,7 @@ export default function WalletInfo() {
     )
 
     return (
-        <div className="mx-auto max-w-7xl p-6 rounded custom-border ">
+        <div className="mx-auto max-w-7xl p-6 rounded custom-border dark:bg-dark  ">
             <h1 className="mb-6 text-2xl font-semibold ">Wallet Info</h1>
 
 

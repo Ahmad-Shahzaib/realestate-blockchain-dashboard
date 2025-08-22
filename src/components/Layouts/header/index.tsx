@@ -51,6 +51,10 @@ export function Header() {
       </div>
 
       <div className="flex flex-1 items-center justify-end gap-2 min-[375px]:gap-4">
+        {/* Theme toggle button added here */}
+        <div className="shrink-0">
+          <ThemeToggleSwitch />
+        </div>
         <div className="shrink-0 relative">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent rounded-full opacity-0 hover:opacity-100 transition-opacity duration-300 blur-md" />
           <div className="relative z-10 p-1 rounded-xl bg-gradient-to-br from-white to-gray-50/50 shadow-sm dark:from-dark-2 dark:to-dark-3/50 transition-all duration-300 hover:shadow-md hover:scale-105">
@@ -58,7 +62,6 @@ export function Header() {
           </div>
         </div>
       </div>
-
     </header>
   );
 }

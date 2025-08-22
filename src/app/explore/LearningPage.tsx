@@ -75,12 +75,16 @@ export default function PropTechMasterClass() {
     }
 
     return (
-        <div className=" p-6 md:p-8 lg:p-12">
+        <div className="h-screen p-6 md:p-8 lg:p-12 dark:bg-dark">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8 md:mb-12">
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold  mb-2">PropTech MasterClass</h1>
-                    <p className="text-lg md:text-xl">catch real estate industry experts in conversation</p>
+                    <h1 className="text-3xl text-black  dark:text-white md:text-4xl lg:text-5xl font-bold mb-2">
+                        FractPropTech MasterClass
+                    </h1>
+                    <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300">
+                        catch real estate industry experts in conversation
+                    </p>
                 </div>
 
                 {/* Slider Container */}
@@ -88,22 +92,22 @@ export default function PropTechMasterClass() {
                     {/* Left Arrow */}
                     <button
                         onClick={prevSlide}
-                        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 bg-white rounded-full shadow-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 bg-white dark:bg-dark rounded-full shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-[#2A2A2A] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={currentSlide === 0}
                         aria-label="Previous Slide"
                     >
-                        <ChevronLeft className="w-6 h-6 text-gray-600" />
+                        <ChevronLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                     </button>
 
                     {/* Right Arrow */}
                     <button
                         onClick={nextSlide}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-12 h-12 bg-white rounded-full shadow-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-12 h-12 bg-white dark:bg-[#1E1E1E] rounded-full shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-[#2A2A2A] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={currentSlide === maxSlide}
                         aria-label="Next Slide"
                         title="Next Slide"
                     >
-                        <ChevronRight className="w-6 h-6 text-gray-600" />
+                        <ChevronRight className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                     </button>
 
                     {/* Slider Content */}
@@ -131,8 +135,8 @@ export default function PropTechMasterClass() {
 
                                             {/* Play Button */}
                                             <div className="absolute inset-0 flex items-center justify-center">
-                                                <div className="w-12 h-12 bg-white bg-opacity-90 rounded-full flex items-center justify-center group-hover:bg-opacity-100 transition-all duration-200">
-                                                    <Play className="w-5 h-5 text-gray-900 ml-0.5" fill="currentColor" />
+                                                <div className="w-12 h-12 bg-white dark:bg-gray-200 bg-opacity-90 rounded-full flex items-center justify-center group-hover:bg-opacity-100 transition-all duration-200">
+                                                    <Play className="w-5 h-5 text-gray-900 dark:text-gray-800 ml-0.5" fill="currentColor" />
                                                 </div>
                                             </div>
 
@@ -194,11 +198,11 @@ export default function PropTechMasterClass() {
 
                                         {/* Video Info */}
                                         <div className="space-y-2">
-                                            <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 group-hover:text-gray-700 transition-colors">
+                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white line-clamp-2 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">
                                                 {video.title}
                                             </h3>
 
-                                            <div className="flex items-center text-sm text-gray-500">
+                                            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                                                 <Calendar className="w-4 h-4 mr-1" />
                                                 <span>2 years ago</span>
                                             </div>
@@ -215,7 +219,9 @@ export default function PropTechMasterClass() {
                             <button
                                 key={index}
                                 onClick={() => setCurrentSlide(index)}
-                                className={`w-2 h-2 rounded-full transition-colors duration-200 ${currentSlide === index ? "bg-blue-600" : "bg-gray-300"
+                                className={`w-2 h-2 rounded-full transition-colors duration-200 ${currentSlide === index
+                                    ? "bg-blue-600"
+                                    : "bg-gray-300 dark:bg-gray-600"
                                     }`}
                                 title={`Go to slide ${index + 1}`}
                                 aria-label={`Go to slide ${index + 1}`}
@@ -225,5 +231,6 @@ export default function PropTechMasterClass() {
                 </div>
             </div>
         </div>
+
     )
 }

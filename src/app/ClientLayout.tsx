@@ -44,7 +44,7 @@ const ClientLayout = ({ children }: any) => {
                     <AuthWrapper>
                         <div className="flex min-h-screen">
                             <Sidebar />
-                            <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
+                            <div className="w-full  dark:bg-[#020d1a]">
                                 <Header />
                                 <main className="isolate mx-auto w-full  overflow-hidden ">
                                     {children}
@@ -58,7 +58,7 @@ const ClientLayout = ({ children }: any) => {
                 <Providers>
                     <AuthWrapper>
                         <div className="flex min-h-screen">
-                            <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
+                            <div className="w-full  dark:bg-[#020d1a]">
                                 <main className="isolate mx-auto w-full  overflow-hidden ">
                                     {children}
                                 </main>

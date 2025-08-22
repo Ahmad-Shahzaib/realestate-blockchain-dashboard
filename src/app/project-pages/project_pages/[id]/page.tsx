@@ -80,17 +80,17 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
             <div className="max-w-7xl mx-auto p-4 lg:p-8 space-y-6">
                 {/* Project Header */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
-                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+                            {/* <div className="w-12 h-18 bg-[#00D2B6] rounded-xl flex items-center justify-center">
                                 <Image
                                     src={dao}
                                     alt="Qube Logo"
                                     className="h-8 w-8"
                                 />
-                            </div>
+                            </div> */}
                             <div>
-                                <h1 className="text-xl lg:text-2xl font-bold text-gray-800">
+                                <h1 className="text-xl lg:text-xl font-semibold text-gray-800">
                                     {project?.name} | {project?.location.city}
                                 </h1>
                                 <span className="inline-block bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium">
@@ -107,37 +107,41 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
                                 </div>
                                 <div className="text-sm text-gray-500">Total Area</div>
                             </div>
-                            <button 
-                                onClick={handleCardClick} 
-                                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                            <button
+                                onClick={handleCardClick}
+                                className="bg-[#00D2B6] text-white px-6 py-3 rounded-lg transition-colors font-medium"
                             >
                                 Invest Now
                             </button>
                         </div>
                     </div>
                 </div>
+                {/* Project Slider and Table */}
+                <div>
+                    <ProjectSlider />
+                </div>
 
                 {/* Main Content Grid */}
-                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                    {/* Left Section - Project Details */}
-                    <div className="xl:col-span-2 space-y-6">
+                <div className="flex flex-col lg:flex-row gap-6">
+                    {/* Left Section - Project Details (50% width) */}
+                    <div className="flex-1 space-y-6">
                         {/* Contractual Occupancy */}
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
+                        <div className="p-6 rounded-2xl shadow-md bg-white border border-gray-100 hover:shadow-xl transition">
                             <div className="flex items-center gap-2 mb-4">
-                                <CheckCircle className="w-5 h-5 text-green-500" />
-                                <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                                <CheckCircle className="w-5 h-5 text-[#00B894]" />
+                                <span className="text-sm font-semibold text-[#003049] uppercase tracking-wide">
                                     Contractual Occupancy
                                 </span>
                             </div>
 
                             {/* Progress Bar */}
                             <div className="mb-6">
-                                <div className="w-full bg-gray-200 rounded-full h-3">
-                                    <div className="bg-green-500 h-3 rounded-full" style={{ width: "100%" }}></div>
+                                <div className="w-full bg-[#F5F7FA] rounded-full h-3">
+                                    <div className="bg-gradient-to-r from-[#00B894] to-[#00D2B6] h-3 rounded-full" style={{ width: "100%" }}></div>
                                 </div>
                                 <div className="flex justify-between items-center mt-2">
-                                    <span className="text-sm text-gray-500">Progress</span>
-                                    <span className="text-sm font-semibold text-green-600">100%</span>
+                                    <span className="text-sm text-gray-700">Progress</span>
+                                    <span className="text-sm font-semibold text-[#00B894]">100%</span>
                                 </div>
                             </div>
 
@@ -145,44 +149,44 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                 <div className="space-y-4">
                                     <div className="flex items-start gap-3">
-                                        <MapPin className="w-5 h-5 text-blue-500 mt-0.5" />
+                                        <MapPin className="w-5 h-5 text-[#0277BD] mt-0.5" />
                                         <div>
-                                            <p className="text-sm text-gray-600">Location</p>
-                                            <p className="font-medium text-gray-800">
+                                            <p className="text-sm text-gray-700">Location</p>
+                                            <p className="font-medium text-[#003049]">
                                                 Plot 59, Block A Divine Gardens, Lahore, Punjab
                                             </p>
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
-                                        <div className="w-5 h-5 bg-blue-500 rounded mt-0.5"></div>
+                                        <div className="w-5 h-5 bg-[#0277BD] rounded mt-0.5"></div>
                                         <div>
-                                            <p className="text-sm text-gray-600">Type</p>
-                                            <p className="font-medium text-gray-800">Corporate Office</p>
+                                            <p className="text-sm text-gray-700">Type</p>
+                                            <p className="font-medium text-[#003049]">Corporate Office</p>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="space-y-4">
                                     <div className="flex items-start gap-3">
-                                        <Calendar className="w-5 h-5 text-gray-500 mt-0.5" />
+                                        <Calendar className="w-5 h-5 text-[#2F3E46] mt-0.5" />
                                         <div>
-                                            <p className="text-sm text-gray-600">Operational Since</p>
-                                            <p className="font-medium text-gray-800">12 December, 2022</p>
+                                            <p className="text-sm text-gray-700">Operational Since</p>
+                                            <p className="font-medium text-[#003049]">12 December, 2022</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <span className="text-sm text-gray-600">Social:</span>
+                                        <span className="text-sm text-gray-700">Social:</span>
                                         <div className="flex gap-2">
-                                            <a href="#" className="text-blue-600 hover:text-blue-700">
+                                            <a href="#" className="text-[#0277BD] hover:text-[#00B894]">
                                                 <FaFacebookF size={16} />
                                             </a>
-                                            <a href="#" className="text-pink-500 hover:text-pink-600">
+                                            <a href="#" className="text-[#0277BD] hover:text-[#00B894]">
                                                 <FaInstagram size={16} />
                                             </a>
-                                            <a href="#" className="text-blue-700 hover:text-blue-800">
+                                            <a href="#" className="text-[#0277BD] hover:text-[#00B894]">
                                                 <FaLinkedinIn size={16} />
                                             </a>
-                                            <a href="#" className="text-gray-600 hover:text-gray-700">
+                                            <a href="#" className="text-[#0277BD] hover:text-[#00B894]">
                                                 <FaGlobe size={16} />
                                             </a>
                                         </div>
@@ -192,61 +196,61 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
                         </div>
                     </div>
 
-                    {/* Right Section - Stats */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
-                        <h3 className="text-lg font-bold text-gray-800 mb-6">Investment Overview</h3>
-                        
-                        <div className="space-y-6">
-                            {/* Price per sq ft */}
-                            <div className="p-4 bg-blue-50 rounded-lg">
-                                <div className="flex items-center justify-between mb-2">
-                                    <span className="text-sm font-medium text-gray-600 uppercase tracking-wide">
-                                        Price / sq. ft.
-                                    </span>
-                                    <ArrowRight className="w-4 h-4 text-blue-600" />
-                                </div>
-                                <div className="text-2xl font-bold text-gray-800">28,000</div>
-                                <div className="text-sm text-gray-500">PKR / sq. ft.</div>
-                            </div>
+                    {/* Right Section - Investment Overview (50% width) */}
+                    <div className="flex-1">
+                        <div className="px-4 py-3 rounded-2xl shadow-md bg-white border border-gray-100 hover:shadow-xl transition">
+                            <h3 className="text-lg font-bold text-[#003049] mb-2">Investment Overview</h3>
 
-                            {/* Rental Yield */}
-                            <div className="p-4 bg-green-50 rounded-lg">
-                                <div className="text-sm font-medium text-gray-600 uppercase tracking-wide mb-2">
-                                    Rental Yield
+                            {/* 2x2 Grid for Investment Cards */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {/* Price per sq ft */}
+                                <div className="p-3 bg-[#F5F7FA] rounded-lg">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-sm font-medium text-gray-700 uppercase tracking-wide">
+                                            Price / sq. ft.
+                                        </span>
+                                        <ArrowRight className="w-4 h-4 text-[#0277BD]" />
+                                    </div>
+                                    <div className="text-xl font-semibold text-[#003049]">28,000</div>
+                                    <div className="text-sm text-gray-700">PKR / sq. ft.</div>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-2xl font-bold text-gray-800">5.1%</span>
-                                    <span className="bg-orange-100 text-orange-700 text-xs font-medium px-2 py-1 rounded">
-                                        Average
-                                    </span>
-                                </div>
-                            </div>
 
-                            {/* Yearly Rental Returns */}
-                            <div className="p-4 bg-purple-50 rounded-lg">
-                                <div className="text-sm font-medium text-gray-600 uppercase tracking-wide mb-2">
-                                    Yearly Rental Returns
+                                {/* Rental Yield */}
+                                <div className="p-3 bg-[#F5F7FA] rounded-lg">
+                                    <div className="text-sm font-medium text-gray-700 uppercase tracking-wide mb-2">
+                                        Rental Yield
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xl font-semibold text-[#003049]">5.1%</span>
+                                        <span className="bg-[#00B894]/20 text-[#00B894] text-xs font-medium px-2 py-1 rounded">
+                                            Average
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className="text-2xl font-bold text-gray-800">1,440</div>
-                                <div className="text-sm text-gray-500">PKR / sq. ft.</div>
-                            </div>
 
-                            {/* Area Available */}
-                            <div className="p-4 bg-amber-50 rounded-lg">
-                                <div className="text-sm font-medium text-gray-600 uppercase tracking-wide mb-2">
-                                    Area Available for Sale
+                                {/* Yearly Rental Returns */}
+                                <div className="p-3 bg-[#F5F7FA] rounded-lg">
+                                    <div className="text-sm font-medium text-gray-700 uppercase tracking-wide mb-2">
+                                        Yearly Rental Returns
+                                    </div>
+                                    <div className="text-xl font-semibold text-[#003049]">1,440</div>
+                                    <div className="text-sm text-gray-700">PKR / sq. ft.</div>
                                 </div>
-                                <div className="text-2xl font-bold text-gray-800">20,059</div>
-                                <div className="text-sm text-gray-500">sq. ft.</div>
+
+                                {/* Area Available */}
+                                <div className="p-3 bg-[#F5F7FA] rounded-lg">
+                                    <div className="text-sm font-medium text-gray-700 uppercase tracking-wide mb-2">
+                                        Area Available for Sale
+                                    </div>
+                                    <div className="text-xl font-semibold text-[#003049]">20,059</div>
+                                    <div className="text-sm text-gray-700">sq. ft.</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Project Slider and Table */}
-                <div>
-                    <ProjectSlider />
-                </div>
+
             </div>
         </div>
     )

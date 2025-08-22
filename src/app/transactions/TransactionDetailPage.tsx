@@ -1,5 +1,7 @@
-import React from 'react'
-import Image from 'next/image'
+"use client"; // Mark as client component for Next.js
+
+import React from 'react';
+import Image from 'next/image';
 
 interface TransactionDetail {
     id: string;
@@ -13,7 +15,7 @@ interface TransactionDetail {
 }
 
 const TransactionDetailPage = () => {
-    // Mock data - replace with actual data fetching 
+    // Mock data - replace with actual data fetching
     const transaction: TransactionDetail = {
         id: "TX123456",
         propertyName: "Luxury Villa",
@@ -22,72 +24,77 @@ const TransactionDetailPage = () => {
         status: "completed",
         date: "2024-01-15",
         buyer: "John Doe",
-        seller: "Jane Smith"
-    }
+        seller: "Jane Smith",
+    };
 
     return (
-        <div className=" p-6">
-            <div className="max-w-5xl mx-auto  rounded-lg shadow-md custom-border  ">
+        <div className="min-h-screen bg-[#F5F7FA] dark:bg-dark p-6">
+            <div className="rounded-2xl shadow-md bg-white dark:bg-dark border border-gray-100 dark:border-gray-700">
                 {/* Header */}
-                <div className="p-6 ">
-                    <h1 className="text-2xl font-bold ">Transaction Details</h1>
-                    <p className="">Transaction ID: {transaction.id}</p>
+                <div className="p-6 bg-[#00D2B6] dark:bg-dark rounded-t-2xl">
+                    <h1 className="text-2xl font-bold text-white">Transaction Details</h1>
+                    <p className="text-gray-200">Transaction ID: {transaction.id}</p>
                 </div>
 
-                {/* Property Details */}
-                <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                        <h2 className="text-xl font-semibold ">Property Information</h2>
-                        <div className="space-y-2">
-                            <p className=""><span className="font-medium">Property:</span> {transaction.propertyName}</p>
-                            <p className=""><span className="font-medium">Address:</span> {transaction.address}</p>
-                        </div>
-                    </div>
-
-                    {/* Transaction Status */}
-                    <div className="space-y-4">
-                        <h2 className="text-xl font-semibold ">Transaction Status</h2>
-                        <div className="space-y-2">
-                            <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm
-                                ${transaction.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                    transaction.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                        'bg-red-100 text-red-800'}`}>
-                                {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
-                            </div>
-                            <p className=""><span className="font-medium">Date:</span> {transaction.date}</p>
-                        </div>
-                    </div>
-
-                    {/* Price Information */}
-                    <div className="space-y-4">
-                        <h2 className="text-xl font-semibold ">Price Details</h2>
-                        <div className="text-2xl font-bold ">
-                            ${transaction.price.toLocaleString()}
-                        </div>
-                    </div>
-
-                    {/* Parties Involved */}
-                    <div className="space-y-4">
-                        <h2 className="text-xl font-semibold ">Parties Involved</h2>
-                        <div className="space-y-2">
-                            <p className=""><span className="font-medium">Buyer:</span> {transaction.buyer}</p>
-                            <p className=""><span className="font-medium">Seller:</span> {transaction.seller}</p>
-                        </div>
+                {/* Transaction Table */}
+                <div className="p-6">
+                    <h2 className="text-xl font-bold text-[#003049] dark:text-white mb-4">Transaction Information</h2>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-[#F5F7FA] dark:bg-dark text-[#003049] dark:text-gray-200">
+                                    <th className="px-4 py-2 font-medium border-b border-gray-200 dark:border-gray-700">Property</th>
+                                    <th className="px-4 py-2 font-medium border-b border-gray-200 dark:border-gray-700">Address</th>
+                                    <th className="px-4 py-2 font-medium border-b border-gray-200 dark:border-gray-700">Price</th>
+                                    <th className="px-4 py-2 font-medium border-b border-gray-200 dark:border-gray-700">Status</th>
+                                    <th className="px-4 py-2 font-medium border-b border-gray-200 dark:border-gray-700">Date</th>
+                                    <th className="px-4 py-2 font-medium border-b border-gray-200 dark:border-gray-700">Buyer</th>
+                                    <th className="px-4 py-2 font-medium border-b border-gray-200 dark:border-gray-700">Seller</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr className="hover:bg-gray-50 dark:hover:bg-[#2A2A2A]">
+                                    <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">{transaction.propertyName}</td>
+                                    <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">{transaction.address}</td>
+                                    <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">${transaction.price.toLocaleString()}</td>
+                                    <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+                                        <span
+                                            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${transaction.status === 'completed'
+                                                ? 'bg-[#F5F7FA] dark:bg-[#2A2A2A] text-[#00B894]'
+                                                : transaction.status === 'pending'
+                                                    ? 'bg-[#F5F7FA] dark:bg-[#2A2A2A] text-[#0277BD]'
+                                                    : 'bg-[#F5F7FA] dark:bg-[#2A2A2A] text-red-600'
+                                                }`}
+                                        >
+                                            {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
+                                        </span>
+                                    </td>
+                                    <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">{transaction.date}</td>
+                                    <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">{transaction.buyer}</td>
+                                    <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">{transaction.seller}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
                 {/* Actions */}
-                <div className="p-6  flex justify-end space-x-4">
-                    <button className="px-4 py-2 rounded  custom-border shadow-xl">
+                <div className="p-6 flex justify-end space-x-4 rounded-b-2xl">
+                    <button
+                        className="px-4 py-2 rounded-lg border border-gray-100 dark:border-gray-700 shadow-md text-[#003049] dark:text-white font-semibold bg-white dark:bg-[#2A2A2A] hover:bg-gray-100 dark:hover:bg-[#333] transition"
+                    >
                         Download Details
                     </button>
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    <button
+                        className="px-4 py-2 rounded-lg bg-[#00D2B6] dark:bg-dark border text-white font-semibold shadow-md hover:opacity-90 transition focus:ring-2 focus:ring-[#00B894] focus:ring-offset-2"
+                    >
                         Contact Support
                     </button>
                 </div>
             </div>
         </div>
-    )
-}
 
-export default TransactionDetailPage
+    );
+};
+
+export default TransactionDetailPage;

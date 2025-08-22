@@ -9,7 +9,6 @@ import Notification from "./Notifications";
 import SetPasswordSection from "./SetPasswordSection";
 import QRCodePage from "./QRCodePage";
 
-
 const tabs = [
   "Personal Details",
   "Address",
@@ -24,19 +23,20 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <div className="p-6 mx-auto">
+    <div className="p-6 mx-auto max-w-6xl bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors">
+      {/* Breadcrumb */}
+      <Breadcrumb pageName="Settings" />
 
-      <h1 className="text-2xl font-semibold  mb-4">Settings</h1>
-
-      <div className="border-b border-gray-300">
-        <nav className="flex flex-wrap gap-4 text-sm font-medium text-gray-600">
+      {/* Tabs */}
+      <div className="border-b border-gray-300 dark:border-gray-700 overflow-x-auto">
+        <nav className="flex gap-4 text-sm font-medium text-gray-600 dark:text-gray-300 min-w-max">
           {tabs.map((tab, index) => (
             <button
               key={index}
               onClick={() => setActiveTab(index)}
               className={`px-4 py-2 rounded-t-md transition ${activeTab === index
-                ? "bg-white  font-semibold"
-                : "hover:text-blue-500"
+                ? "bg-white dark:bg-gray-800 text-[#003049] dark:text-white font-semibold border-b-2 border-[#00B894]"
+                : "hover:text-[#00B894] dark:hover:text-[#00D2B6]"
                 }`}
             >
               {tab}
@@ -45,17 +45,17 @@ export default function SettingsPage() {
         </nav>
       </div>
 
-      <div className="mt-6 ">
-        {/* Tab Content */}
-        {activeTab === 0 && <div><PersonalDetails /></div>}
-        {activeTab === 1 && <div><MyAddresses /></div>}
-        {activeTab === 2 && <div><BankDetails /></div>}
-        {activeTab === 3 && <div><LegalAddress /></div>}
-        {activeTab === 4 && <div><SetPasswordSection /></div>}
-        {activeTab === 5 && <div><Notification /></div>}
-        {activeTab === 6 && <div><QRCodePage /></div>}
-
+      {/* Tab Content */}
+      <div className="mt-6 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 transition-colors">
+        {activeTab === 0 && <PersonalDetails />}
+        {activeTab === 1 && <MyAddresses />}
+        {activeTab === 2 && <BankDetails />}
+        {activeTab === 3 && <LegalAddress />}
+        {activeTab === 4 && <SetPasswordSection />}
+        {activeTab === 5 && <Notification />}
+        {activeTab === 6 && <QRCodePage />}
       </div>
     </div>
+
   );
 }

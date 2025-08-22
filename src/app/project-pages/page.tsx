@@ -19,7 +19,7 @@ const tabs = [
         id: "commercial", label: "Mature", icon: MdOutlineSignalCellularAlt2Bar
     },
     {
-        id: "plots", label: "Up Comming", icon: FaCalendarAlt
+        id: "plots", label: "Up Coming", icon: FaCalendarAlt
     },
 ];
 
@@ -33,24 +33,24 @@ export function OverviewCards() {
     const [loadingMore, setLoadingMore] = useState(false); // Track loading state for pagination
 
     // Fetch projects for a given page
-    const fetchProjects = async (pageNum = 1, reset = false) => {
+    const fetchProjects = async (pageMUX = 1, reset = false) => {
         try {
-            if (pageNum === 1) setLoading(true);
+            if (pageMUX === 1) setLoading(true);
             else setLoadingMore(true);
             // Update API to support pagination: /projects?page=pageNum
-            const response = await ProjectService.getAllProjects(pageNum);
+            const response = await ProjectService.getAllProjects(pageMUX);
             if (response && response.data && response.data.length > 0) {
                 setProjects(prev => reset ? response.data : [...prev, ...response.data]);
                 setTotalPages(response.pagination.pages || 1);
                 setError(null);
-            } else if (pageNum === 1) {
+            } else if (pageMUX === 1) {
                 setProjects([]);
                 setError("No projects available. Please check back later.");
             }
         } catch (err: any) {
             setError(err.message || "Failed to load projects. Please try again later.");
         } finally {
-            if (pageNum === 1) setLoading(false);
+            if (pageMUX === 1) setLoading(false);
             else setLoadingMore(false);
         }
     };
@@ -96,19 +96,22 @@ export function OverviewCards() {
 
     return (
         <>
-            <div className="w-full px-10 mb-6 mt-3 border-b  pb-2">
-                <h1 className="text-2xl font-bold  "> All Projects</h1>
+            <div className="w-full px-10 mb-6 mt-3 border-b pb-2 ">
+                <h1 className="text-2xl font-bold text-[#003049] dark:text-gray-2">
+                    All Projects
+                </h1>
             </div>
-            <div className="w-full  px-10">
+
+            <div className="w-full px-10 ">
                 {/* Tabs */}
-                <div className="flex space-x-4 mb-6 overflow-x-auto ">
+                <div className="flex space-x-4 mb-6 overflow-x-auto">
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
                             onClick={() => { setActiveTab(tab.id); setPage(1); }}
                             className={`flex items-center px-4 py-2 text-lg font-medium rounded-lg whitespace-nowrap ${activeTab === tab.id
-                                ? "bg-black text-white"
-                                : "bg-gray-100 text-black hover:bg-gray-200"
+                                ? " bg-[#00D2B6] dark:bg-[#0971a8] text-white"
+                                : "bg-white text-[#003049] dark:text-white dark:bg-[#003049]   hover:bg-gray-100 dark:bg-dark-1  dark:hover:bg-dark-3"
                                 }`}
                         >
                             <tab.icon className="w-6 h-6 mr-2" />
@@ -119,18 +122,34 @@ export function OverviewCards() {
 
                 {/* Cards Grid */}
                 <div className="grid gap-2 sm:gap-6 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                    {loading ? <div>Loading...</div> : error ? <div>{error}</div> : renderCards()}
+                    {loading ? (
+                        <div className="text-gray-700 dark:text-gray-3">Loading...</div>
+                    ) : error ? (
+                        <div className="text-gray-700 dark:text-red-400">{error}</div>
+                    ) : (
+                        renderCards()
+                    )}
                 </div>
+
+                {/* Load More Button */}
                 <div className="w-full flex justify-end mt-6">
                     <button
-                        className={`bg-blue-500 text-white py-2 px-4 rounded-lg transition-colors ${!hasMore ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
+                        className={`py-2 px-4 rounded-lg font-semibold text-white shadow-lg transition-colors bg-gradient-to-r from-[#00B894] to-[#00D2B6] ${!hasMore
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:opacity-90"
+                            }`}
                         onClick={handleLoadMore}
                         disabled={!hasMore || loadingMore}
                     >
-                        {loadingMore ? 'Loading...' : hasMore ? 'Load More Projects' : 'No More Projects'}
+                        {loadingMore
+                            ? "Loading..."
+                            : hasMore
+                                ? "Load More Projects"
+                                : "No More Projects"}
                     </button>
                 </div>
             </div>
+
         </>
     );
 }
@@ -138,4 +157,3 @@ export function OverviewCards() {
 export default function ProjectPage() {
     return <OverviewCards />;
 }
-

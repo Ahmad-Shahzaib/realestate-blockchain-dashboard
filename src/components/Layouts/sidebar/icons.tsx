@@ -186,3 +186,33 @@ export function ArrowLeftIcon(props: PropsType) {
     </svg>
   );
 }
+
+import { LuLayoutDashboard } from 'react-icons/lu';
+import { IconType } from 'react-icons';
+
+interface CustomDashboardIconProps {
+  size?: number;
+  fill?: string;
+  [key: string]: any;
+}
+
+export function CustomDashboardIcon(props: CustomDashboardIconProps) {
+  return (
+    <LuLayoutDashboard
+      size={24}
+      fill="currentColor"
+      {...props}
+    />
+  );
+}
+export { LuLayoutDashboard };
+
+export function FaFileInvoiceDollar(props: CustomDashboardIconProps) {
+  return (
+    <FaFileInvoiceDollar
+      size={24}
+      fill="currentColor"
+      {...props}
+    />
+  );
+}

@@ -2,7 +2,13 @@
 
 import * as Icons from "../icons";
 import { isAdmin, isUser, isSuperAdmin, isCustomer } from "@/redux/auth/handler";
+import { LuLayoutDashboard } from "@/components/Layouts/sidebar/icons";
+import { FaFileInvoiceDollar, FaDashcube, FaFirefoxBrowser, } from "react-icons/fa";
+import { BiSupport } from "react-icons/bi";
 
+import { SiPolymerproject } from "react-icons/si";
+import { GrTransaction } from "react-icons/gr";
+import { MdOutlineTravelExplore } from "react-icons/md";
 export const USER_NAV_DATA = [
   {
     label: "USER MENU",
@@ -10,30 +16,30 @@ export const USER_NAV_DATA = [
       {
         title: "Dashboard",
         url: "/",
-        icon: Icons.HomeIcon,
+        icon: LuLayoutDashboard,
         items: [],
       },
       {
         title: 'My Investments',
         url: "/user/investments",
-        icon: Icons.PieChart,
+        icon: FaFileInvoiceDollar,
         items: [],
       },
 
       {
         title: "Projects",
         url: "/project-pages",
-        icon: Icons.HomeIcon,
+        icon: SiPolymerproject,
         items: [],
       },
 
       {
         title: "My DAO",
-        icon: Icons.HomeIcon,
+        icon: FaDashcube,
         items: [
           {
             title: "Portfolio",
-            url: "/profile",
+            url: "/portfolio",
           },
           {
             title: "Active Investments",
@@ -48,13 +54,13 @@ export const USER_NAV_DATA = [
       {
         title: "My Referrals",
         url: "/referals",
-        icon: Icons.User,
+        icon: FaFirefoxBrowser,
         items: [],
       },
       {
         title: "Transactions",
         url: "/transactions",
-        icon: Icons.User,
+        icon: GrTransaction,
         items: [],
       },
     ],
@@ -64,7 +70,7 @@ export const USER_NAV_DATA = [
       {
         title: "Explore & Learn",
         url: "/explore",
-        icon: Icons.FourCircle,
+        icon: MdOutlineTravelExplore,
         items: [],
       },
     ],
@@ -79,6 +85,16 @@ export const USER_NAV_DATA = [
       },
     ],
   },
+  {
+    items: [
+      {
+        title: "Support",
+        url: "/support",
+        icon: BiSupport,
+        items: [],
+      },
+    ],
+  }
 ];
 
 // Super Admin specific navigation items (all items)
@@ -230,6 +246,16 @@ export const ADMIN_NAV_DATA_WITH_CUSTOMERS = [
         icon: Icons.User,
         items: [],
       },
+      {
+        items: [
+          {
+            title: "Support",
+            url: "/support",
+            icon: BiSupport,
+            items: [],
+          },
+        ],
+      }
       // {
       //   title: "Projects",
       //   url: "/project-pages",

@@ -51,7 +51,7 @@ export function Sidebar() {
 
       <aside
         className={cn(
-          "max-w-[250px] overflow-hidden border-r border-gray-200 bg-white transition-[width] duration-200 ease-linear dark:border-gray-800 dark:bg-gray-dark",
+          "max-w-[250px] overflow-hidden border-r border-gray-200 bg-white transition-[width] duration-200 ease-linear dark:border-gray-800 dark:bg-dark",
           isMobile ? "fixed bottom-0 top-0 z-50" : "sticky top-0 h-screen",
           isOpen ? "w-full" : "w-0",
         )}
@@ -59,8 +59,8 @@ export function Sidebar() {
         aria-hidden={!isOpen}
         inert={!isOpen}
       >
-        <div className="flex h-full flex-col  pl-[25px] pr-[7px]">
-          <div className="relative pr-4.5">
+        <div className="flex h-full flex-col pl-[25px] pr-[7px]">
+          <div className="relative pr-4.5 text-white py-4 px-2 rounded-lg dark:text-gray-200">
             <Link
               href={"/"}
               onClick={() => isMobile && toggleSidebar()}
@@ -75,24 +75,23 @@ export function Sidebar() {
                 className="absolute left-3/4 right-4.5 top-1/2 -translate-y-1/2 text-right"
               >
                 <span className="sr-only">Close Menu</span>
-
-                <ArrowLeftIcon className="ml-auto size-7" />
+                <ArrowLeftIcon className="ml-auto size-7 text-white dark:text-gray-200" />
               </button>
             )}
           </div>
 
           {/* Navigation */}
-          <div className="custom-scrollbar mt-6 flex-1 overflow-y-auto pr-3 min-[850px]:mt-10">
+          <div className="custom-scrollbar mt-2 flex-1 overflow-y-auto pr-3 min-[850px]:mt-10">
             {NAV_DATA.map((section) => (
-              <div key={section.label} className="mb-6">
-                <h2 className="mb-5 text-sm font-medium text-dark-4 dark:text-dark-6">
+              <div key={section.label} className="mb-2">
+                <h2 className="mb-3 text-sm font-bold text-[#003049] dark:text-gray-3">
                   {section.label}
                 </h2>
 
                 <nav role="navigation" aria-label={section.label}>
                   <ul className="space-y-2">
                     {section.items.map((item) => (
-                      <li key={`${section.label || 'section'}-${item.title}`}>
+                      <li key={`${section.label || "section"}-${item.title}`}>
                         {item.items && item.items.length ? (
                           <div>
                             <MenuItem
@@ -100,12 +99,20 @@ export function Sidebar() {
                                 ({ url }) => url === pathname,
                               )}
                               onClick={() => toggleExpanded(item.title)}
+                              className={cn(
+                                "flex items-center gap-1 py-1 px-3 rounded-xl transition-all",
+                                item.items.some(({ url }) => url === pathname)
+                                  ? "bg-gradient-to-r from-[#00B894]/10 to-[#00D2B6]/10 border-l-2 border-[#00B894] text-[#003049] font-semibold dark:text-gray-2"
+                                  : "text-gray-700 hover:text-[#00B894] dark:text-gray-3 dark:hover:text-green-light"
+                              )}
                             >
                               {item.icon && (
-                                <item.icon
-                                  className="size-6 shrink-0"
-                                  aria-hidden="true"
-                                />
+                                <div className="size-8 flex items-center justify-center rounded-md ">
+                                  <item.icon
+                                    className="size-5"
+                                    aria-hidden="true"
+                                  />
+                                </div>
                               )}
 
                               <span>{item.title}</span>
@@ -114,7 +121,7 @@ export function Sidebar() {
                                 className={cn(
                                   "ml-auto rotate-180 transition-transform duration-200",
                                   expandedItems.includes(item.title) &&
-                                  "rotate-0",
+                                  "rotate-0 text-[#00B894]",
                                 )}
                                 aria-hidden="true"
                               />
@@ -126,11 +133,20 @@ export function Sidebar() {
                                 role="menu"
                               >
                                 {item.items.map((subItem) => (
-                                  <li key={`${item.title}-${subItem.title}`} role="none">
+                                  <li
+                                    key={`${item.title}-${subItem.title}`}
+                                    role="none"
+                                  >
                                     <MenuItem
                                       as="link"
                                       href={subItem.url}
                                       isActive={pathname === subItem.url}
+                                      className={cn(
+                                        "flex items-center py-2 px-3 rounded-lg text-sm transition-all",
+                                        pathname === subItem.url
+                                          ? "bg-gradient-to-r from-[#00B894]/10 to-[#00D2B6]/10 border-l-2 border-[#00B894] text-[#003049] font-semibold dark:text-gray-2"
+                                          : "text-gray-600 hover:text-[#00B894] dark:text-gray-4 dark:hover:text-green-light"
+                                      )}
                                     >
                                       <span>{subItem.title}</span>
                                     </MenuItem>
@@ -149,13 +165,23 @@ export function Sidebar() {
 
                             return (
                               <MenuItem
-                                className="flex items-center gap-3 py-3"
+                                className={cn(
+                                  "flex items-center gap-1 py-1 px-3 rounded-xl transition-all",
+                                  pathname === href
+                                    ? "bg-gradient-to-r from-[#00B894]/10 to-[#00D2B6]/10 border-l-2 border-[#00B894] text-[#003049] font-semibold dark:text-gray-2"
+                                    : "text-gray-700 hover:text-[#00B894] dark:text-gray-3 dark:hover:text-green-light"
+                                )}
                                 as="link"
                                 href={href}
                                 isActive={pathname === href}
                               >
                                 {item.icon && (
-                                  <item.icon className="size-6 shrink-0" aria-hidden="true" />
+                                  <div className="size-8 flex items-center justify-center rounded-md ">
+                                    <item.icon
+                                      className="size-5"
+                                      aria-hidden="true"
+                                    />
+                                  </div>
                                 )}
 
                                 <span>{item.title}</span>
