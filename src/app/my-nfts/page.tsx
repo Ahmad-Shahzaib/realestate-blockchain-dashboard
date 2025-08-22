@@ -14,7 +14,7 @@ const IncomeStreamPage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-[#F5F7FA] dark:bg-dark transition-colors">
       {/* Header */}
-      <header className="bg-[#00B894] text-white py-4 px-8 dark:bg-dark">
+      <header className="text-black pt-3 px-8 dark:bg-dark">
         <h1 className="text-2xl font-bold">Income Streams</h1>
       </header>
 

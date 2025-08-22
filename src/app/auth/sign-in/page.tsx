@@ -10,7 +10,8 @@ export const metadata: Metadata = {
 
 export default function SignIn() {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-[#00B894] to-[#00D2B6] relative overflow-hidden flex items-center justify-center">
+    <div className="min-h-screen w-full bg-gradient-to-tr from-[#1E90FF] via-[#00D2B6] to-[#00B894] relative overflow-hidden flex items-center justify-center">
+
       {/* Animated Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-40 h-40 sm:w-64 sm:h-64 bg-[#0277BD]/20 rounded-full blur-3xl animate-pulse"></div>
@@ -89,7 +90,7 @@ export default function SignIn() {
                   { icon: Globe, text: "Global Accessibility" }
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center gap-4 group justify-center lg:justify-start">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#F5F7FA] rounded-xl flex items-center justify-center group-hover:bg-[#00B894]/20 transition-all duration-300">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#F5F7FA] rounded-xl flex items-center justify-center  transition-all duration-300">
                       <feature.icon className="w-6 h-6 text-[#0277BD] group-hover:text-[#00B894]" />
                     </div>
                     <span className="text-[#003049] font-medium">{feature.text}</span>

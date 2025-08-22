@@ -14,8 +14,8 @@ const ProjectDetailsPage = ({ projectId }: ProjectDetailsPageProps) => {
     const [currentStep, setCurrentStep] = useState(1);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4 lg:p-8">
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 lg:p-8 mb-8">
+        <div className="min-h-screen  p-4 lg:p-8 dark:bg-dark">
+            <div className="bg-white dark:bg-dark dark:text-white rounded-2xl shadow-lg border border-gray-100 p-6 lg:p-8 mb-8">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                     {/* Project Info */}
                     <div className="flex items-center gap-4">
@@ -23,15 +23,15 @@ const ProjectDetailsPage = ({ projectId }: ProjectDetailsPageProps) => {
                             <span className="text-white font-bold text-xl">UD</span>
                         </div>
                         <div>
-                            <h2 className="text-2xl lg:text-3xl font-bold text-[#003049]">
+                            <h2 className="text-2xl lg:text-3xl font-bold text-[#003049] dark:text-white">
                                 Urban Dwellings
                             </h2>
-                            <div className="flex items-center gap-3 text-gray-600">
+                            <div className="flex items-center gap-3 text-gray-600 dark:text-white">
                                 <span className="text-sm font-medium uppercase tracking-wide">
                                     Area I Own
                                 </span>
                                 <div className="w-4 h-4 bg-[#00B894] rounded-full"></div>
-                                <span className="text-lg font-semibold text-[#003049]">
+                                <span className="text-lg font-semibold text-[#003049] dark:text-white">
                                     0 sq. ft.
                                 </span>
                             </div>
@@ -49,14 +49,14 @@ const ProjectDetailsPage = ({ projectId }: ProjectDetailsPageProps) => {
                                 <div className="flex items-center gap-3 flex-shrink-0">
                                     <div
                                         className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm shadow-sm transition-colors ${currentStep >= item.step
-                                            ? "bg-[#00B894] text-white"
+                                            ? "bg-[#00B894] text-white dark:text-white"
                                             : "bg-gray-100 text-gray-400"
                                             }`}
                                     >
                                         {item.step}
                                     </div>
                                     <span
-                                        className={`text-sm font-medium ${currentStep >= item.step ? "text-[#003049]" : "text-gray-400"
+                                        className={`text-sm font-medium ${currentStep >= item.step ? "text-[#003049] dark:text-white" : "text-gray-400"
                                             } whitespace-nowrap`}
                                     >
                                         {item.label}

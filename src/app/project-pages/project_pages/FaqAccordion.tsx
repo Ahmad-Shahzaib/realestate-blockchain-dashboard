@@ -42,9 +42,12 @@ const FaqAccordion: React.FC = () => {
     return (
         <div className="mx-auto p-6">
             {/* Heading */}
-            <h2 className="text-3xl font-bold text-[#003049] mb-2">FAQs</h2>
-            <p className="text-gray-600 mb-8">
-                What people frequently ask! The set-up is designed with a keen focus on empowering neighborhood & more specialists.
+            <h2 className="text-3xl font-bold text-[#003049] dark:text-white mb-2">
+                FAQs
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-8">
+                What people frequently ask! The set-up is designed with a keen focus on
+                empowering neighborhood & more specialists.
             </p>
 
             {/* Accordion */}
@@ -52,11 +55,11 @@ const FaqAccordion: React.FC = () => {
                 {faqData.map((item, index) => (
                     <div
                         key={index}
-                        className="rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition overflow-hidden"
+                        className="rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition overflow-hidden bg-white dark:bg-[#1E293B]"
                     >
                         <button
                             onClick={() => toggle(index)}
-                            className="w-full flex justify-between items-center p-5 text-left text-lg font-semibold text-[#003049] hover:bg-gray-50 transition"
+                            className="w-full flex justify-between items-center p-5 text-left text-lg font-semibold text-[#003049] dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition"
                         >
                             {item.question}
                             <svg
@@ -66,7 +69,12 @@ const FaqAccordion: React.FC = () => {
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
                             >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M19 9l-7 7-7-7"
+                                />
                             </svg>
                         </button>
 
@@ -75,7 +83,7 @@ const FaqAccordion: React.FC = () => {
                             className={`transition-all duration-300 ease-in-out overflow-hidden ${openIndex === index ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
                                 }`}
                         >
-                            <div className="p-5 text-gray-600 bg-white border-t border-gray-100">
+                            <div className="p-5 text-gray-600 dark:text-gray-300 bg-white dark:bg-[#0F172A] border-t border-gray-100 dark:border-gray-700">
                                 {item.answer}
                             </div>
                         </div>
@@ -83,6 +91,7 @@ const FaqAccordion: React.FC = () => {
                 ))}
             </div>
         </div>
+
     );
 };
 
