@@ -24,7 +24,7 @@ const ApiProjects = [
             "walletAddress": "Consectetur ipsum "
         },
         "_id": "68638b593c4e3d238292ee37",
-        "name": "FAM  Complex",
+        "name": "Doctor Medical Complex",
         "description": "Rerum voluptatem nos",
         "apartments": [],
         "status": "pending_approval",
@@ -70,7 +70,10 @@ const ApiProjects = [
         "amenities": [],
         "mainImageUrl": "https://www.sagudaluxihib.me",
         "galleryImages": [
-            "Et elit adipisicing"
+            "https://www.sagudaluxihib.me",
+            "https://www.bygemisyl.cm",
+            "https://www.posyhekub.me",
+
         ],
         "totalArea": 40,
         "sellableArea": 97,
@@ -124,7 +127,7 @@ const ApiProjects = [
             "walletAddress": "Aliquip molestiae qu"
         },
         "_id": "685e76d5633af443513bd1f4",
-        "name": "Doctor Medical Complex",
+        "name": "FAM Complex",
         "description": "Provident et impedi",
         "apartments": [],
         "status": "pending_approval",
@@ -335,7 +338,7 @@ const ApiProjects = [
             "walletAddress": "0x123abc"
         },
         "_id": "685e707d3813c34944be9e1b",
-        "name": "",
+        "name": "Vienna Heights",
         "description": "A test project number 3",
         "apartments": [],
         "status": "planning",
@@ -445,7 +448,7 @@ const ApiProjects = [
             "walletAddress": "0x123abc"
         },
         "_id": "685e707d3813c34944be9e17",
-        "name": "Vienna Heights ",
+        "name": "Al-Madev Complex",
         "description": "A test project number 2",
         "apartments": [],
         "status": "planning",
@@ -555,7 +558,7 @@ const ApiProjects = [
             "walletAddress": "0x123abc"
         },
         "_id": "685e707d3813c34944be9e1f",
-        "name": "Al-Madev Complex",
+        "name": "Boulevard Heights",
         "description": "A test project number 4",
         "apartments": [],
         "status": "planning",
@@ -665,7 +668,7 @@ const ApiProjects = [
             "walletAddress": "0x123abc"
         },
         "_id": "685e707d3813c34944be9e13",
-        "name": "Boulevard Heights",
+        "name": "Fort Munor",
         "description": "A test project number 1",
         "apartments": [],
         "status": "planning",

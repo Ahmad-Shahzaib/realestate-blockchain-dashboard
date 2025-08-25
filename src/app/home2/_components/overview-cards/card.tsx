@@ -38,6 +38,7 @@ export interface Project {
   stats?: { availableUnits: number };
   featured?: boolean;
   totalArea?: number;
+  galleryImages?: any[];
 }
 
 const defaultImages = [
@@ -56,16 +57,15 @@ export function OverviewCard({
   projectId,
 }: PropsType) {
   const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex);
-  const [projectImages, setProjectImages] = useState<string[]>(defaultImages);
+  const [projectImages, setProjectImages] = useState<string[]>(item?.galleryImages);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (item) {
       const imageArray = [
-        ...(item.mainImageUrl ? [item.mainImageUrl] : []),
-        ...(item.additionalImageUrls || []),
-        ...defaultImages,
+        ...(item.galleryImages ? [item.mainImageUrl] : []),
+        ...(item.additionalImageUrls || []), ,
       ].filter((url, index, self) => url && self.indexOf(url) === index);
 
       setProjectImages(imageArray.length > 1 ? imageArray : defaultImages);
