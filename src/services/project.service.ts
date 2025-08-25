@@ -122,7 +122,7 @@ api.interceptors.request.use(
 );
 
 // Response Interceptor
-api.interceptors.response.use(  
+api.interceptors.response.use(
   (response: AxiosResponse) => {
     console.log('Response received:', response.config.method?.toUpperCase(), response.config.url, response.data);
     return response;
@@ -161,8 +161,9 @@ export const ProjectService = {
    */
   getAllProjects: async (page?: number): Promise<ApiResponse> => {
     try {
-      const params = page ? { params: { page } } : {};
-      const response = await api.get('/projects', params);
+      // const params = page ? { params: { page } } : {};
+      const response = await api.get('/projects');
+      console.log("API Response:", response.data);
       return response.data;
     } catch (error: any) {
       throw error; // Error already handled by interceptor

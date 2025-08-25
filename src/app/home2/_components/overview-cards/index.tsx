@@ -11,9 +11,12 @@ import { FaCalendarAlt } from "react-icons/fa";
 import type { JSX, SVGProps } from "react";
 import ProjectService, { Project } from "@/services/project.service";
 import property1 from "../../../../../public/images/cards/image1.jpg";
-import property2 from "../../../../../public/images/cards/image2.jpg";
 import property3 from "../../../../../public/images/cards/image3.jpg";
-
+import Veina from "../../../../../public/images/cards/vienna-l.jpg";
+import almadiev from "../../../../../public/images/cards/Al-madev-complex.jpg";
+import boulevard from "../../../../../public/images/cards/boulevard-heights.jpg";
+import fort from "../../../../../public/images/cards/fort-monro-resorts.jpg";
+import property2 from "../../../../../public/images/cards/image2.jpg";
 type PropsType = {
   label?: string;
   data?: {
@@ -41,12 +44,12 @@ const tabs = [
   {
     id: "plots", label: "Up Comming", icon: FaCalendarAlt
   },
-]; 
+];
 
 export function OverviewCardsGroup() {
   const [activeTab, setActiveTab] = useState("all");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const defaultImages = [property1, property2, property3];
+  const defaultImages = [property1, property2, property3, Veina, almadiev, boulevard, fort];
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -73,7 +76,7 @@ export function OverviewCardsGroup() {
         setProjectImages(defaultImages.map(img => img.src));
       } finally {
         setLoading(false);
-      }    
+      }
     };
 
     fetchProjects();
@@ -139,8 +142,8 @@ export function OverviewCardsGroup() {
           Load More Projects
         </button>
       </div>
-      
-      
+
+
     </>
   );
 }
