@@ -53,7 +53,7 @@ export default function DAOListings() {
                     {listings.map((item, idx) => (
                         <div
                             key={idx}
-                            className="grid grid-cols-5 gap-2 items-center dark:text-white p-2 border border-gray-100 rounded-lg hover:bg-dark transition"
+                            className="grid grid-cols-5 gap-2 items-center dark:text-white p-2 border border-gray-100 rounded-lg hover:bg-gray-3 transition"
                         >
                             <span className="text-sm font-medium text-[#003049] dark:text-white">{item.price}</span>
                             <span className="text-sm text-gray-700 dark:text-white">{item.area}</span>
