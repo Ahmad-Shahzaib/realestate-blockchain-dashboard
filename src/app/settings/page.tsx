@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+// Update the import path to match the actual location and filename of Breadcrumb
+// import Breadcrumb from "@/components/Breadcrumbs/Breadcrumbs";
 import PersonalDetails from "./PersonalDetails";
 import MyAddresses from "./MyAddresses";
 import BankDetails from "./BankDetails";
@@ -25,7 +26,7 @@ export default function SettingsPage() {
   return (
     <div className="p-6 mx-auto max-w-6xl bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors">
       {/* Breadcrumb */}
-      <Breadcrumb pageName="Settings" />
+      {/* <Breadcrumb pageName="Settings" /> */}
 
       {/* Tabs */}
       <div className="border-b border-gray-300 dark:border-gray-700 overflow-x-auto">

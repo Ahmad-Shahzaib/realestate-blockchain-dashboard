@@ -205,16 +205,21 @@ export function OverviewCard({
         <div className="absolute bottom-9 right-3 flex gap-1">
           <button
             onClick={handlePrevImage}
+            type="button"
+            aria-label="Previous image"
             className="w-6 h-6 bg-white/80 dark:bg-dark-3 rounded-full flex items-center justify-center transition-all hover:bg-white dark:hover:bg-dark-2"
           >
             <ChevronLeft className="w-3 h-3 text-gray-700 dark:text-gray-200" />
           </button>
           <button
+            type="button"
             onClick={handleNextImage}
+            aria-label="Next image"
             className="w-6 h-6 bg-white/80 dark:bg-dark-3 rounded-full flex items-center justify-center transition-all hover:bg-white dark:hover:bg-dark-2"
           >
             <ChevronRight className="w-3 h-3 text-gray-700 dark:text-gray-200" />
           </button>
+
         </div>
 
         {/* Indicators */}

@@ -160,7 +160,6 @@ const Dashboard = () => {
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#003049] dark:text-gray-2">BlockEstate Dashboard</h1>
               <p className="mt-2 text-lg text-gray-700 dark:text-gray-4">Manage your tokenized real estate investments</p>
             </div>
-
             <div className="flex items-center space-x-4 mt-4 md:mt-0">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 dark:text-gray-500">
@@ -170,6 +169,7 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+
 
           {/* Cards */}
           {/* Stats Cards */}
