@@ -1,32 +1,33 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Line, Doughnut, Bar } from 'react-chartjs-2';
-import { IoLogoUsd } from "react-icons/io";
-import { MdAccountBalanceWallet, MdCalendarMonth, MdOutlineDataSaverOff } from "react-icons/md";
+import { Line, Doughnut, Bar } from 'react-chartjs-2'; // 🟢 commit: chart components from chart.js
 import { Search } from 'lucide-react';
-import SearchInput from '../common/Input';
-import StatCard from '../common/Card';
-import StatsData from "../utils/statsData";
+import SearchInput from '../common/Input';  // 🟢 commit: reusable search input
+import StatCard from '../common/Card';      // 🟢 commit: reusable card for stats
+import StatsData from "../utils/statsData"; // 🟢 commit: static stats data
 
-
-import 'chart.js/auto';
+import 'chart.js/auto'; // 🟢 commit: auto-registers all chart.js components
 
 const Dashboard = () => {
+  // 🟢 commit: state management
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTimeframe, setActiveTimeframe] = useState('6M');
   const [isLoading, setIsLoading] = useState(true);
 
+  // 🟢 commit: toggle dark/light theme
   const toggleTheme = () => {
     setIsDarkTheme(!isDarkTheme);
     document.documentElement.classList.toggle('dark', !isDarkTheme);
   };
 
+  // 🟢 commit: simulate loading delay for blockchain data
   useEffect(() => {
     setTimeout(() => setIsLoading(false), 1500);
   }, []);
 
+  // 🟢 commit: line chart data for portfolio performance
   const portfolioData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     datasets: [
@@ -51,6 +52,7 @@ const Dashboard = () => {
     ],
   };
 
+  // 🟢 commit: doughnut chart data for property type distribution
   const propertyTypeData = {
     labels: ['Residential', 'Commercial', 'Industrial', 'Land'],
     datasets: [
@@ -62,17 +64,13 @@ const Dashboard = () => {
           'rgba(34, 197, 94, 0.8)',
           'rgba(251, 191, 36, 0.8)',
         ],
-        borderColor: [
-          '#00D4FF',
-          '#9333EA',
-          '#22C55E',
-          '#FBBf24',
-        ],
+        borderColor: ['#00D4FF', '#9333EA', '#22C55E', '#FBBf24'],
         borderWidth: 2,
       },
     ],
   };
 
+  // 🟢 commit: bar chart data for regional investments
   const regionalData = {
     labels: ['New York', 'California', 'Florida', 'Texas', 'Others'],
     datasets: [
@@ -87,6 +85,7 @@ const Dashboard = () => {
     ],
   };
 
+  // 🟢 commit: chart options for consistent styling
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -107,10 +106,7 @@ const Dashboard = () => {
       },
     },
     scales: {
-      x: {
-        grid: { display: false },
-        ticks: { color: '#64748B', font: { size: 12 } },
-      },
+      x: { grid: { display: false }, ticks: { color: '#64748B', font: { size: 12 } } },
       y: {
         grid: { color: 'rgba(100, 116, 139, 0.1)', drawBorder: false },
         ticks: {
@@ -123,6 +119,7 @@ const Dashboard = () => {
     animation: { duration: 2000, easing: 'easeInOutQuart' },
   };
 
+  // 🟢 commit: static blockchain activity log
   const recentActivities = [
     { activity: 'Smart Contract Executed - NYC Property', timestamp: '2025-06-20', icon: 'fa-shield-alt', amount: '$1,250,000', type: 'purchase', hash: '0x1a2b3c...' },
     { activity: 'Token Sale Completed - LA Commercial', timestamp: '2025-06-18', icon: 'fa-coins', amount: '$850,000', type: 'sale', hash: '0x4d5e6f...' },
@@ -131,6 +128,7 @@ const Dashboard = () => {
     { activity: 'New Asset Tokenized - Miami Villa', timestamp: '2025-06-05', icon: 'fa-plus-circle', amount: '$950,000', type: 'tokenize', hash: '0xpqrstu...' },
   ];
 
+  // 🟢 commit: property types for legend in doughnut chart
   const propertyTypes = [
     { type: 'Residential', value: 65, color: '#00D4FF' },
     { type: 'Commercial', value: 20, color: '#9333EA' },
@@ -138,6 +136,7 @@ const Dashboard = () => {
     { type: 'Land', value: 5, color: '#FBBF24' },
   ];
 
+  // 🟢 commit: loading state UI
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center dark:bg-dark">
@@ -151,7 +150,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden rounded-lg dark:bg-dark text-dark dark:text-gray-2">
-      {/* Background */}
+      {/* 🟢 commit: decorative background blur effects */}
       <div className="absolute z-0">
         <div className="w-full h-full"></div>
         <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse dark:bg-primary/20" />
@@ -160,7 +159,8 @@ const Dashboard = () => {
 
       <div className="relative z-20 p-4 md:p-6 lg:p-8">
         <div className="mx-auto">
-          {/* Header */}
+
+          {/* 🟢 commit: dashboard header with search */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
             <div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#003049] dark:text-gray-2">BlockEstate Dashboard</h1>
@@ -176,9 +176,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-
-          {/* Cards */}
-          {/* Stats Cards */}
+          {/* 🟢 commit: statistic cards grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {StatsData.map((stat) => (
               <StatCard
@@ -193,15 +191,19 @@ const Dashboard = () => {
             ))}
           </div>
 
-
-          {/* Charts Section */}
+          {/* 🟢 commit: portfolio performance chart + asset distribution */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
+            {/* Line chart */}
             <div className="xl:col-span-2 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 bg-white dark:bg-dark-2">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold text-[#003049] dark:text-gray-2">Portfolio Performance</h2>
                 <div className="flex rounded-xl p-1 bg-[#F5F7FA] dark:bg-dark-3">
                   {['1M', '6M', '1Y', 'All'].map(period => (
-                    <button key={period} onClick={() => setActiveTimeframe(period)} className={`${activeTimeframe === period ? 'bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white' : 'text-gray-700 dark:text-gray-3 hover:bg-gray-100 dark:hover:bg-dark-4'} px-4 py-2 rounded-lg text-sm font-medium transition-all`}>
+                    <button
+                      key={period}
+                      onClick={() => setActiveTimeframe(period)}
+                      className={`${activeTimeframe === period ? 'bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white' : 'text-gray-700 dark:text-gray-3 hover:bg-gray-100 dark:hover:bg-dark-4'} px-4 py-2 rounded-lg text-sm font-medium transition-all`}
+                    >
                       {period}
                     </button>
                   ))}
@@ -210,6 +212,7 @@ const Dashboard = () => {
               <div className="h-80"><Line data={portfolioData} options={chartOptions} /></div>
             </div>
 
+            {/* Doughnut chart */}
             <div className="border border-gray-200 dark:border-gray-700 rounded-2xl p-6 bg-white dark:bg-dark-2">
               <h2 className="text-xl font-bold text-[#003049] dark:text-gray-2 mb-6">Asset Distribution</h2>
               <div className="h-64 mb-6"><Doughnut data={propertyTypeData} /></div>
@@ -227,13 +230,15 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Regional Analysis */}
+          {/* 🟢 commit: regional distribution + quick actions */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
+            {/* Bar chart */}
             <div className="xl:col-span-2 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 bg-white dark:bg-dark-2">
               <h2 className="text-xl font-bold text-[#003049] dark:text-gray-2 mb-6">Regional Investment Distribution</h2>
               <div className="h-80"><Bar data={regionalData} /></div>
             </div>
 
+            {/* Quick Actions */}
             <div className="border border-gray-200 dark:border-gray-700 rounded-2xl p-6 bg-white dark:bg-dark-2">
               <h2 className="text-xl font-bold text-[#003049] dark:text-gray-2 mb-6">Quick Actions</h2>
               <div className="space-y-4">
@@ -252,7 +257,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Recent Activity */}
+          {/* 🟢 commit: recent blockchain activity list */}
           <div className="border border-[#00B894] rounded-2xl p-6 bg-[#F5F7FA] dark:bg-dark-2">
             <h2 className="text-xl font-bold text-[#003049] dark:text-gray-2 mb-6">Recent Blockchain Activity</h2>
             <div className="space-y-4">

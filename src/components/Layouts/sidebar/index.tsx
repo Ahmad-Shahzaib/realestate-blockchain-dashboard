@@ -10,6 +10,9 @@ import { ArrowLeftIcon, ChevronUp } from "./icons";
 import { MenuItem } from "./menu-item";
 import { useSidebarContext } from "./sidebar-context";
 
+
+
+// Sidebar component with navigation links and collapsible sections based on user role and current path 
 export function Sidebar() {
   const pathname = usePathname();
   const { setIsOpen, isOpen, isMobile, toggleSidebar } = useSidebarContext();
@@ -49,6 +52,8 @@ export function Sidebar() {
         />
       )}
 
+      {/* Sidebar container with responsive behavior and navigation items */}
+
       <aside
         className={cn(
           "max-w-[250px] overflow-hidden border-r border-gray-200 bg-white transition-[width] duration-200 ease-linear dark:border-gray-800 dark:bg-dark",
@@ -61,6 +66,7 @@ export function Sidebar() {
       >
         <div className="flex h-full flex-col pl-[25px] pr-[7px]">
           <div className="relative pr-4.5 text-white py-4 px-2 rounded-lg dark:text-gray-200">
+            {/* Logo and Close Button for Mobile View */}
             <Link
               href={"/"}
               onClick={() => isMobile && toggleSidebar()}
@@ -87,7 +93,7 @@ export function Sidebar() {
                 <h2 className="mb-3 text-sm font-bold text-[#003049] dark:text-gray-3">
                   {section.label}
                 </h2>
-
+                {/* Navigation section with collapsible items and active state highlighting */}
                 <nav role="navigation" aria-label={section.label}>
                   <ul className="space-y-2">
                     {section.items.map((item) => (
@@ -126,6 +132,7 @@ export function Sidebar() {
                                 aria-hidden="true"
                               />
                             </MenuItem>
+                            {/* Submenu for collapsible items */}
 
                             {expandedItems.includes(item.title) && (
                               <ul

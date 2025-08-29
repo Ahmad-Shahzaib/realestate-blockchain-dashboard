@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "export": "next export",
     "lint": "next lint"
   },
   "dependencies": {
@@ -41,6 +42,7 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.12.1",
     "@types/node": "^22",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",

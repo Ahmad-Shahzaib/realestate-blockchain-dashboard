@@ -40,7 +40,7 @@ export function UserInfo() {
   const defaultUser = {
     name: "User",
     email: "user@example.com",
-    img: "/images/user/user-03.png",
+    img: "/images/user.png",
   };
 
   // Display name based on available profile data

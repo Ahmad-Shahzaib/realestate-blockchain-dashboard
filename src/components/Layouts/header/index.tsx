@@ -5,15 +5,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSidebarContext } from "../sidebar/sidebar-context";
 import { MenuIcon } from "./icons";
-import { Notification } from "./notification";
 import { ThemeToggleSwitch } from "./theme-toggle";
 import { UserInfo } from "./user-info";
 
 export function Header() {
   const { toggleSidebar, isMobile } = useSidebarContext();
+  // 🟢 commit: use custom sidebar context to manage sidebar state and detect mobile
 
   return (
     <header className="h-18 sticky top-0 z-9999 flex items-center justify-between border-b border-stroke/20 bg-white/80 backdrop-blur-md px-4 py-5 shadow-sm dark:border-stroke-dark/20 dark:bg-gray-dark/80 md:px-5 2xl:px-10 transition-all duration-300">
+      {/* 🟢 commit: Sidebar toggle button for mobile screens */}
       <button
         onClick={toggleSidebar}
         className="group relative overflow-hidden rounded-xl border border-stroke/40 bg-gradient-to-br from-white to-gray-50 px-2.5 py-2.5 shadow-sm transition-all duration-300 hover:shadow-md hover:scale-105 dark:border-stroke-dark/40 dark:from-[#020D1A] dark:to-[#0A1628] hover:dark:from-[#0A1628] hover:dark:to-[#1A2B3D] lg:hidden"
@@ -23,6 +24,7 @@ export function Header() {
         <span className="sr-only">Toggle Sidebar</span>
       </button>
 
+      {/* 🟢 commit: Show logo when on mobile only */}
       {isMobile && (
         <Link
           href={"/"}
@@ -41,6 +43,7 @@ export function Header() {
         </Link>
       )}
 
+      {/* 🟢 commit: Page title "Dashboard" (hidden on smaller screens) */}
       <div className="max-xl:hidden">
         <div className="relative">
           <h1 className="mb-0.5 text-heading-5 font-bold bg-gradient-to-r from-dark to-dark/80 bg-clip-text text-transparent dark:from-white dark:to-white/80 transition-all duration-300">
@@ -50,11 +53,14 @@ export function Header() {
         </div>
       </div>
 
+      {/* 🟢 commit: Right side controls (theme toggle + user info) */}
       <div className="flex flex-1 items-center justify-end gap-2 min-[375px]:gap-4">
-        {/* Theme toggle button added here */}
+        {/* 🟢 commit: Theme toggle switch */}
         <div className="shrink-0">
           <ThemeToggleSwitch />
         </div>
+
+        {/* 🟢 commit: User info with hover glow effect */}
         <div className="shrink-0 relative">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent rounded-full opacity-0 hover:opacity-100 transition-opacity duration-300 blur-md" />
           <div className="relative z-10 p-1 rounded-xl bg-gradient-to-br from-white to-gray-50/50 shadow-sm dark:from-dark-2 dark:to-dark-3/50 transition-all duration-300 hover:shadow-md hover:scale-105">
