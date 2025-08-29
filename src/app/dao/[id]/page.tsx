@@ -1,4 +1,3 @@
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { Metadata } from "next";
 import Image from "next/image";
 
@@ -9,11 +8,11 @@ export const metadata: Metadata = {
 export default function DAODetailsPage({ params }: { params: { id: string } }) {
   // This would normally fetch data based on the ID
   const daoId = params.id;
-  
+
   return (
     <>
-      <Breadcrumb pageName={`DAO Details: ${daoId}`} />
-      
+
+
       <div className="rounded-[10px] bg-white p-6 shadow-1 dark:bg-gray-dark">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left column - DAO info */}
@@ -29,10 +28,10 @@ export default function DAODetailsPage({ params }: { params: { id: string } }) {
                 Active
               </div>
             </div>
-            
+
             <h1 className="text-2xl font-bold mb-2">Globe Residency DAO #{daoId}</h1>
             <p className="text-gray-600 mb-4">Residential Property Investment in Karachi, Pakistan</p>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <div className="p-3 bg-gray-50 rounded-lg">
                 <p className="text-gray-500 text-sm">Members</p>
@@ -51,7 +50,7 @@ export default function DAODetailsPage({ params }: { params: { id: string } }) {
                 <p className="font-bold text-lg">75%</p>
               </div>
             </div>
-            
+
             <div className="mb-6">
               <h2 className="text-lg font-bold mb-3">About This DAO</h2>
               <p className="text-gray-600">
@@ -64,7 +63,7 @@ export default function DAODetailsPage({ params }: { params: { id: string } }) {
                 quarterly dividend payments from rental income, and voting rights on property management decisions.
               </p>
             </div>
-            
+
             <div className="mb-6">
               <h2 className="text-lg font-bold mb-3">Key Metrics</h2>
               <div className="space-y-3">
@@ -98,25 +97,25 @@ export default function DAODetailsPage({ params }: { params: { id: string } }) {
               </div>
             </div>
           </div>
-          
+
           {/* Right column - Investment options */}
           <div className="md:w-1/3">
             <div className="sticky top-6 border rounded-lg p-5 shadow-sm">
               <h2 className="text-lg font-bold mb-4 text-center">Join This DAO</h2>
-              
+
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Investment Amount (USD)
                 </label>
-                <input 
-                  type="number" 
+                <input
+                  type="number"
                   className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   placeholder="5,000"
                   min="1000"
                 />
                 <p className="text-xs text-gray-500 mt-1">Minimum investment: $1,000</p>
               </div>
-              
+
               <div className="bg-gray-50 p-3 rounded-lg mb-4">
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-600">Tokens</span>
@@ -131,15 +130,15 @@ export default function DAODetailsPage({ params }: { params: { id: string } }) {
                   <span className="font-medium text-green-600">20%</span>
                 </div>
               </div>
-              
+
               <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors mb-3">
                 Invest Now
               </button>
-              
+
               <button className="w-full bg-white border border-blue-600 text-blue-600 py-3 rounded-lg font-medium hover:bg-blue-50 transition-colors">
                 Add to Watchlist
               </button>
-              
+
               <div className="mt-4 text-xs text-gray-500 text-center">
                 By investing, you agree to the <a href="#" className="text-blue-600">terms and conditions</a> of this DAO.
               </div>

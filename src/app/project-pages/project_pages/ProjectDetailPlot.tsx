@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import dao from "@/assets/logos/dao.svg";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaGlobe } from 'react-icons/fa';
 import { ArrowRight } from "lucide-react"
 import ProjectSlider from "@/app/project-pages/project_pages/ProjectSlider";

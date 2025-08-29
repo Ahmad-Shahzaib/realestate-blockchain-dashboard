@@ -1,4 +1,3 @@
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -8,8 +7,8 @@ export const metadata: Metadata = {
 export default function DAOBotPage() {
   return (
     <>
-      <Breadcrumb pageName="DAO Bot" />
-      
+
+
       <div className="rounded-[10px] bg-white p-6 shadow-1 dark:bg-gray-dark">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
@@ -18,7 +17,7 @@ export default function DAOBotPage() {
               Get instant answers to your questions about DAOs, investments, and real estate blockchain technology.
             </p>
           </div>
-          
+
           <div className="bg-gray-50 rounded-lg h-96 p-4 mb-4 overflow-y-auto">
             {/* Chat messages would appear here */}
             <div className="flex justify-start mb-4">
@@ -27,10 +26,10 @@ export default function DAOBotPage() {
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center">
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="Type your message here..."
               className="flex-1 border rounded-l-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -38,7 +37,7 @@ export default function DAOBotPage() {
               Send
             </button>
           </div>
-          
+
           <div className="mt-6">
             <h3 className="font-medium mb-2">Suggested questions:</h3>
             <div className="flex flex-wrap gap-2">

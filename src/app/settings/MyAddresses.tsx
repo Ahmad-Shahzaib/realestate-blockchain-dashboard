@@ -1,3 +1,4 @@
+import Button from '@/common/Button';
 import React, { useState } from 'react';
 
 const MyAddresses = () => {
@@ -12,12 +13,9 @@ const MyAddresses = () => {
             </p>
 
             {/* Add New Address Button */}
-            <button
-                onClick={() => setIsModalOpen(true)}
-                className="px-6 py-2 rounded-md font-semibold bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white shadow-md hover:opacity-90 transition"
-            >
-                Add new address
-            </button>
+            <Button onClick={() => setIsModalOpen(true)} className="mb-4">
+                + Add New Address
+            </Button>
 
             {/* Modal */}
             {isModalOpen && (
@@ -83,12 +81,9 @@ const MyAddresses = () => {
                                 >
                                     Cancel
                                 </button>
-                                <button
-                                    type="submit"
-                                    className="px-6 py-2 rounded-md font-semibold bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white shadow-md hover:opacity-90 transition"
-                                >
-                                    Add
-                                </button>
+                                <Button >
+                                    Save Address
+                                </Button>
                             </div>
                         </form>
                     </div>

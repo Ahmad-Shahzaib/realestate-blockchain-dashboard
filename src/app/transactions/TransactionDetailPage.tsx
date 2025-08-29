@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Button from '@/common/Button';
 
 interface TransactionDetail {
     id: string;
@@ -85,11 +86,9 @@ const TransactionDetailPage = () => {
                     >
                         Download Details
                     </button>
-                    <button
-                        className="px-4 py-2 rounded-lg bg-[#00D2B6] dark:bg-dark border text-white font-semibold shadow-md hover:opacity-90 transition focus:ring-2 focus:ring-[#00B894] focus:ring-offset-2"
-                    >
-                        Contact Support
-                    </button>
+                    <Button onClick={() => alert('Transaction confirmed!')}>
+                        Confirm Transaction
+                    </Button>
                 </div>
             </div>
         </div>

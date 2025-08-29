@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react'
 import { Building2, MapPin, Calendar, Filter, Search } from 'lucide-react'
+import SearchInput from '@/common/Input';
 
 const investments = [
   {
@@ -63,6 +64,7 @@ const InvestmentDashboardTable = () => {
     return matchesSearch && matchesStatus
   })
 
+
   return (
     <div className="min-h-screen bg-[#F5F7FA] dark:bg-dark">
       {/* Header */}
@@ -89,16 +91,12 @@ const InvestmentDashboardTable = () => {
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 dark:bg-dark-2">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex-1 max-w-md">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#34495E] dark:text-gray-3" />
-                <input
-                  type="text"
-                  placeholder="Search investments by name or location..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-[#ECF0F1] rounded-lg focus:ring-2 focus:ring-[#3498DB] focus:border-[#3498DB] text-[#34495E] dark:border-dark-4 dark:bg-dark-3 dark:text-gray-2"
-                />
-              </div>
+              <SearchInput
+                placeholder="Search by property name or location"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                icon={<Search className="h-5 w-5 text-[#34495E] dark:text-gray-3" />}
+              />
             </div>
             <div className="flex items-center space-x-4">
               <Filter className="h-5 w-5 text-[#34495E] dark:text-gray-3" />

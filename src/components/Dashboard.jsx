@@ -4,11 +4,17 @@ import React, { useState, useEffect } from 'react';
 import { Line, Doughnut, Bar } from 'react-chartjs-2';
 import { IoLogoUsd } from "react-icons/io";
 import { MdAccountBalanceWallet, MdCalendarMonth, MdOutlineDataSaverOff } from "react-icons/md";
+import { Search } from 'lucide-react';
+import SearchInput from '../common/Input';
+import StatCard from '../common/Card';
+import StatsData from "../utils/statsData";
+
 
 import 'chart.js/auto';
 
 const Dashboard = () => {
   const [isDarkTheme, setIsDarkTheme] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
   const [activeTimeframe, setActiveTimeframe] = useState('6M');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -160,13 +166,13 @@ const Dashboard = () => {
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#003049] dark:text-gray-2">BlockEstate Dashboard</h1>
               <p className="mt-2 text-lg text-gray-700 dark:text-gray-4">Manage your tokenized real estate investments</p>
             </div>
-            <div className="flex items-center space-x-4 mt-4 md:mt-0">
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 dark:text-gray-500">
-                  <i className="fas fa-search"></i>
-                </div>
-                <input type="text" placeholder="Search properties..." className="rounded-xl pl-10 pr-4 py-3 bg-[#F5F7FA] dark:bg-dark-3 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00B894]/50 transition-all text-gray-700 dark:text-gray-2" />
-              </div>
+            <div className="relative">
+              <SearchInput
+                placeholder="Search by property name or location"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                icon={<Search className="h-5 w-5 text-[#34495E] dark:text-gray-3" />}
+              />
             </div>
           </div>
 
@@ -174,119 +180,17 @@ const Dashboard = () => {
           {/* Cards */}
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-
-            {/* Total Portfolio Value */}
-            <div className="relative border border-gray-200 dark:border-gray-700 rounded-2xl p-6 
-                  hover:border-[#00B894]/50 transition-all duration-300 group 
-                  bg-white dark:bg-dark-2">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="p-2 bg-gradient-to-br from-[#00B894]/20 to-[#00D2B6]/20 rounded-2xl 
-                        border border-[#00B894]/30 group-hover:border-[#00B894]/50 transition-colors 
-                        text-[#003049] dark:text-gray-2">
-                    <IoLogoUsd />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-700 dark:text-gray-3">Total Portfolio Value</p>
-                    <p className="text-2xl font-bold mt-1 text-[#003049] dark:text-gray-2">$1.75M</p>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-4 flex items-center gap-2">
-                <i className="fas fa-arrow-up text-[#00B894] text-sm"></i>
-                <span className="text-sm text-[#00B894]">+8.3%</span>
-                <span className="text-gray-500 dark:text-gray-4 text-sm">vs last period</span>
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-[#00B894]/5 to-[#00D2B6]/5 
-                    rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-
-            {/* FCI Balance */}
-            <div className="relative border border-gray-200 dark:border-gray-700 rounded-2xl p-6 
-                  hover:border-[#00B894]/50 transition-all duration-300 group 
-                  bg-white dark:bg-dark-2">
-              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-[#00B894] to-[#00D2B6] 
-                    text-white text-xs font-bold px-2 py-1 rounded-full z-10">
-                Coming Soon
-              </div>
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="p-2 bg-gradient-to-br from-[#00B894]/20 to-[#00D2B6]/20 rounded-2xl 
-                        border border-[#00B894]/30 group-hover:border-[#00B894]/50 transition-colors 
-                        text-[#003049] dark:text-gray-2">
-                    <MdAccountBalanceWallet />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-700 dark:text-gray-3">FCI Balance</p>
-                    <p className="text-2xl font-bold mt-1 text-[#003049] dark:text-gray-2">$0</p>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-4">
-                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-4 mb-1">
-                  <span>Available</span>
-                  <span>$0</span>
-                </div>
-                <div className="w-full bg-gray-200 dark:bg-dark-3 rounded-full h-2">
-                  <div className="bg-gradient-to-r from-[#00B894] to-[#00D2B6] h-2 rounded-full" style={{ width: '0%' }}></div>
-                </div>
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-[#00B894]/5 to-[#00D2B6]/5 
-                    rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-
-            {/* Monthly Income */}
-            <div className="relative border border-gray-200 dark:border-gray-700 rounded-2xl p-6 
-                  hover:border-[#00B894]/50 transition-all duration-300 group 
-                  bg-white dark:bg-dark-2">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="p-2 bg-gradient-to-br from-[#00B894]/20 to-[#00D2B6]/20 rounded-2xl 
-                        border border-[#00B894]/30 group-hover:border-[#00B894]/50 transition-colors 
-                        text-[#003049] dark:text-gray-2">
-                    <MdCalendarMonth />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-700 dark:text-gray-3">Monthly Income</p>
-                    <p className="text-2xl font-bold mt-1 text-[#003049] dark:text-gray-2">$25,600</p>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-4 flex items-center gap-2">
-                <i className="fas fa-arrow-up text-[#00B894] text-sm"></i>
-                <span className="text-sm text-[#00B894]">+12.5%</span>
-                <span className="text-gray-500 dark:text-gray-4 text-sm">vs last period</span>
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-[#00B894]/5 to-[#00D2B6]/5 
-                    rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-
-            {/* Average Yield */}
-            <div className="relative border border-gray-200 dark:border-gray-700 rounded-2xl p-6 
-                  hover:border-[#00B894]/50 transition-all duration-300 group 
-                  bg-white dark:bg-dark-2">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="p-2 bg-gradient-to-br from-[#00B894]/20 to-[#00D2B6]/20 rounded-2xl 
-                        border border-[#00B894]/30 group-hover:border-[#00B894]/50 transition-colors 
-                        text-[#003049] dark:text-gray-2">
-                    <MdOutlineDataSaverOff />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-700 dark:text-gray-3">Average Yield</p>
-                    <p className="text-2xl font-bold mt-1 text-[#003049] dark:text-gray-2">8.2%</p>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-4 flex items-center gap-2">
-                <i className="fas fa-arrow-up text-[#00B894] text-sm"></i>
-                <span className="text-sm text-[#00B894]">+1.2%</span>
-                <span className="text-gray-500 dark:text-gray-4 text-sm">vs last period</span>
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-[#00B894]/5 to-[#00D2B6]/5 
-                    rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-
+            {StatsData.map((stat) => (
+              <StatCard
+                key={stat.id}
+                title={stat.title}
+                value={stat.value}
+                icon={stat.icon}
+                iconBg={stat.iconBg}
+                change={stat.change}
+                changeType={stat.changeType}
+              />
+            ))}
           </div>
 
 
