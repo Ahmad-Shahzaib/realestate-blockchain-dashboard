@@ -5,8 +5,9 @@ import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { handleLogin } from "@/redux/auth/handler";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/redux/reducers/userInfoSlice";
+import { setUser } from "@/redux/reducers/userinfoslice/userInfoSlice";
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { ToastContainer, toast } from "react-toastify";
 
 // Define the validation schema using Yup
 const LoginSchema = Yup.object().shape({
@@ -19,6 +20,8 @@ const LoginSchema = Yup.object().shape({
 });
 
 export default function SigninWithPassword() {
+  const notify = (message: string) => toast(message);
+
   const dispatch = useDispatch();
   const [data, setData] = useState({
     email: "",
@@ -34,7 +37,7 @@ export default function SigninWithPassword() {
     const { name, value, type, checked } = e.target;
     setData({
       ...data,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     });
     setError(""); // Clear error on input change
   };
@@ -66,14 +69,20 @@ export default function SigninWithPassword() {
         // Handle case where response is undefined or unsuccessful
         const errorMessage = "Authentication failed. Please try again.";
         setError(errorMessage);
+        notify(errorMessage);
       }
     } catch (err: any) {
       if (err instanceof Yup.ValidationError) {
-        // Handle validation errors
-        setError(err.errors[0] || "Please check your input");
+        const msg = err.errors[0] || "Please check your input";
+        setError(msg);
+        notify(msg);
       } else {
-        // Handle other errors
-        setError(err?.message || "An error occurred during sign in");
+        const msg =
+          err?.response?.data?.message ||
+          err?.message ||
+          "An error occurred during sign in";
+        setError(msg);
+        notify(msg);
       }
     } finally {
       setLoading(false);
@@ -132,13 +141,13 @@ export default function SigninWithPassword() {
       </div>
 
       {/* Error Message */}
-      {error && (
+      {/* {error && ( 
         <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
           <p className="text-red-300 text-sm text-center">{error}</p>
         </div>
-      )}
+      )} */}
 
-      {/* Remember Me & Forgot Password */}
+      {/* Remember Me */}
       <div className="flex items-center justify-between">
         <label className="flex items-center gap-3 cursor-pointer">
           <input
@@ -150,12 +159,12 @@ export default function SigninWithPassword() {
           />
           <span className="text-blue-200 text-sm">Remember me</span>
         </label>
-        <Link
+        {/* <Link
           href="/auth/forgot-password"
           className="text-blue-300 hover:text-white text-sm transition-colors"
         >
           Forgot Password?
-        </Link>
+        </Link> */}
       </div>
 
       {/* Sign In Button */}
@@ -176,6 +185,7 @@ export default function SigninWithPassword() {
           </>
         )}
       </button>
+      <ToastContainer />
     </form>
   );
 }

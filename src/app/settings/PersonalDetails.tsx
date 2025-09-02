@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { setUser } from '@/redux/reducers/userInfoSlice';
+import { setUser } from '@/redux/reducers/userinfoslice/userInfoSlice';
 import { getAxiosInstance } from "@/lib/axios";
 import { getRequest, putRequest } from "@/app/utils/requests";
 

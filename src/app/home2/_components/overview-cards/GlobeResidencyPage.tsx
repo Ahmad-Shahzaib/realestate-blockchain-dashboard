@@ -12,7 +12,7 @@ import {
     FaCoins
 } from "react-icons/fa";
 import { useDispatch, useSelector } from 'react-redux';
-import { createProject } from '@/redux/reducers/projectSlice';
+import { createProject } from '@/redux/reducers/projectslice/projectSlice';
 
 // Types for form and floor
 interface Floor {

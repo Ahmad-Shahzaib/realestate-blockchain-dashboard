@@ -3,12 +3,12 @@
 import * as Icons from "../icons";
 import { isAdmin, isUser, isSuperAdmin, isCustomer } from "@/redux/auth/handler";
 import { LuLayoutDashboard } from "@/components/Layouts/sidebar/icons";
-import { FaFileInvoiceDollar, FaDashcube, FaFirefoxBrowser, } from "react-icons/fa";
+import { FaFileInvoiceDollar, FaDashcube, FaFirefoxBrowser } from "react-icons/fa";
 import { BiSupport } from "react-icons/bi";
-
 import { SiPolymerproject } from "react-icons/si";
 import { GrTransaction } from "react-icons/gr";
 import { MdOutlineTravelExplore } from "react-icons/md";
+
 export const USER_NAV_DATA = [
   {
     label: "USER MENU",
@@ -20,35 +20,24 @@ export const USER_NAV_DATA = [
         items: [],
       },
       {
-        title: 'My Investments',
+        title: "My Investments",
         url: "/user/investments",
         icon: FaFileInvoiceDollar,
         items: [],
       },
-
       {
         title: "Projects",
         url: "/project-pages",
         icon: SiPolymerproject,
         items: [],
       },
-
       {
         title: "My DAO",
         icon: FaDashcube,
         items: [
-          {
-            title: "Portfolio",
-            url: "/portfolio",
-          },
-          {
-            title: "Active Investments",
-            url: "/my-assets",
-          },
-          {
-            title: "Income Stream",
-            url: "/my-nfts",
-          }
+          { title: "Portfolio", url: "/portfolio" },
+          { title: "Active Investments", url: "/my-assets" },
+          { title: "Income Stream", url: "/my-nfts" },
         ],
       },
       {
@@ -94,73 +83,39 @@ export const USER_NAV_DATA = [
         items: [],
       },
     ],
-  }
+  },
 ];
 
-// Super Admin specific navigation items (all items)
+// Super Admin specific navigation items
 export const SUPER_ADMIN_NAV_DATA = [
   {
     label: "SUPER ADMIN MENU",
     items: [
-      {
-        title: "Dashboard",
-        url: "/",
-        icon: Icons.HomeIcon,
-        items: [],
-      },
-      {
-        title: "Projects",
-        url: "/project-pages",
-        icon: Icons.PieChart,
-        items: [],
-      },
-      {
-        title: "Add Projects ",
-        url: "/admin/Add-project",
-        icon: Icons.Authentication,
-        items: [],
-      },
+      { title: "Dashboard", url: "/", icon: Icons.HomeIcon, items: [] },
+      { title: "Projects", url: "/project-pages", icon: Icons.PieChart, items: [] },
+      { title: "Add Projects ", url: "/admin/Add-project", icon: Icons.Authentication, items: [] },
       {
         title: "Customers",
         icon: Icons.User,
         items: [
-          {
-            title: "Manage Customers",
-            url: "/admin/manage-customers",
-          },
-          {
-            title: "Customers List ",
-            url: "/admin/customers-list",
-          },
-
+          { title: "Manage Customers", url: "/admin/manage-customers" },
+          { title: "Customers List ", url: "/admin/customers-list" },
         ],
       },
-      {
-        title: "Manage Admin",
-        url: "/admin/manage-admin",
-        icon: Icons.Table,
-        items: [],
-      },
+      { title: "Manage Admin", url: "/admin/manage-admin", icon: Icons.Table, items: [] },
       {
         title: "User Detail",
         icon: Icons.User,
         items: [
-          {
-            title: "Manage Users",
-            url: "/admin/manage-users",
-          },
-          {
-            title: "Users List ",
-            url: "/admin/users-list",
-          },
-
+          { title: "Manage Users", url: "/admin/manage-users" },
+          { title: "Users List ", url: "/admin/users-list" },
         ],
       },
     ],
   },
 ];
 
-// Common navigation items (kept for backward compatibility)
+// Common navigation items
 export const COMMON_NAV_DATA = USER_NAV_DATA;
 
 // Admin specific items
@@ -168,118 +123,72 @@ export const ADMIN_NAV_DATA = [
   {
     label: "ADMIN MENU",
     items: [
-      ...USER_NAV_DATA[0].items,
-      {
-        title: "Projects",
-        url: "/project-pages",
-        icon: Icons.HomeIcon,
-        items: [],
-      },
-      {
-        title: "DAO Listing",
-        url: "/dao-listing",
-        icon: Icons.Alphabet,
-        items: [],
-      },
 
+
+      // ✅ Extra items added for Admin (from screenshot)
       {
-        title: "User Detail",
+        title: "Dashboard",
+        url: "/",
+        icon: LuLayoutDashboard,
+        items: [],
+      },
+      {
+        title: "Manage Users",
+        url: "/admin/manage-users",
         icon: Icons.User,
-        items: [
-          {
-            title: "Manage Users",
-            url: "/manage-users",
-          },
-          {
-            title: "Users List ",
-            url: "/users-lisr",
-          },
-
-        ],
+        items: [],
       },
       {
-        title: "Tools",
-        icon: Icons.Alphabet,
-        items: [
-          {
-            title: "DAO Bot",
-            url: "/tools/dao-bot",
-          },
-          {
-            title: "Calculators",
-            url: "/tools/calculators",
-          },
-        ],
+        title: "Manage Properties",
+        url: "/admin/Add-project",
+        icon: SiPolymerproject,
+        items: [],
       },
-
-
+      {
+        title: "Add Customers",
+        url: "/admin/manage-customers",
+        icon: Icons.User,
+        items: [],
+      },
+      {
+        title: "Role Management",
+        url: "/admin/role-management",
+        icon: Icons.Table,
+        items: [],
+      },
+      {
+        title: "Transaction",
+        url: "/admin/transaction",
+        icon: GrTransaction,
+        items: [],
+      },
+      {
+        title: "Support Center",
+        url: "/admin/manage-support",
+        icon: BiSupport,
+        items: [],
+      },
     ],
   },
-  ...USER_NAV_DATA.slice(1),
+
 ];
 
 export const ADMIN_NAV_DATA_WITH_CUSTOMERS = [
   {
     label: "Customer MENU",
     items: [
-      {
-        title: "Dashboard",
-        url: "/customer/customer-dashboard",
-        icon: Icons.HomeIcon,
-        items: [],
-      },
-      {
-        title: "Properties",
-        url: "/customer/project-pages",
-        icon: Icons.PieChart,
-        items: [],
-      },
-      {
-        title: "Investments",
-        url: "/customer/investments",
-        icon: Icons.PieChart,
-        items: [],
-      },
-      {
-        title: "Users",
-        url: "/customer/users",
-        icon: Icons.User,
-        items: [],
-      },
+      { title: "Dashboard", url: "/customer/customer-dashboard", icon: Icons.HomeIcon, items: [] },
+      { title: "Properties", url: "/customer/project-pages", icon: Icons.PieChart, items: [] },
+      { title: "Investments", url: "/customer/investments", icon: Icons.PieChart, items: [] },
+      { title: "Users", url: "/customer/users", icon: Icons.User, items: [] },
       {
         items: [
-          {
-            title: "Support",
-            url: "/support",
-            icon: BiSupport,
-            items: [],
-          },
+          { title: "Support", url: "/support", icon: BiSupport, items: [] },
         ],
-      }
-      // {
-      //   title: "Projects",
-      //   url: "/project-pages",
-      //   icon: Icons.HomeIcon,
-      //   items: [],
-      // },
-      // {
-      //   title: "User Detail",
-      //   icon: Icons.User,
-      //   items: [
-      //     {
-      //       title: "Manage Users",
-      //       url: "/manage-users",
-      //     },
-      //     {
-      //       title: "Users List ",
-      //       url: "/users-lisr",
-      //     },
-
-      //   ],
-      // },
+      },
     ],
   },
-]
+];
 
 // Get the appropriate navigation data based on user role
 export const getNavDataByRole = () => {
@@ -289,10 +198,8 @@ export const getNavDataByRole = () => {
     return ADMIN_NAV_DATA;
   } else if (isUser()) {
     return USER_NAV_DATA;
-  }
-  else if (isCustomer()) {
+  } else if (isCustomer()) {
     return ADMIN_NAV_DATA_WITH_CUSTOMERS;
   }
-
   return USER_NAV_DATA;
 };

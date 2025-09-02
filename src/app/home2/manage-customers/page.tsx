@@ -26,7 +26,7 @@ import {
   Icon as LucideIcon,
 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { addCustomer } from '@/redux/reducers/customerSlice';
+import { addCustomer } from '@/redux/reducers/customerslice/customerSlice';
 
 // Define types for FormSection props
 interface FormSectionProps {
@@ -193,9 +193,9 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
       payload = formData;
     }
 
- 
+
     await dispatch(addCustomer(payload));
-    
+
   };
 
   return (

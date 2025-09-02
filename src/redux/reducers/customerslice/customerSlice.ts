@@ -60,7 +60,7 @@ export const addCustomer = createAsyncThunk(
   async (customer: any, { rejectWithValue }) => {
     try {
 
-      const response = await axios.post('https://proptechapi.softsuitetech.com//api/customers', customer, {
+      const response = await axios.post('https://proptechapi.softsuitetech.com/api/customers', customer, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       return response.data;

@@ -1,11 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import counterReducer from './counterSlice';
-import userInfoReducer from './userInfoSlice';
-import customerReducer from './customerSlice';
-import projectReducer from './projectSlice';
+import userInfoReducer from './userinfoslice/userInfoSlice';
+import customerReducer from './customerslice/customerSlice';
+import projectReducer from './projectslice/projectSlice';
 
 const rootReducer = combineReducers({
-    counter: counterReducer,
+
     userInfo: userInfoReducer,
     customer: customerReducer,
     project: projectReducer,
