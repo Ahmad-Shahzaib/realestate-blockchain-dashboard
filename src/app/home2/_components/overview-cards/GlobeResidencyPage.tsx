@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 import {
     FaBuilding,
@@ -9,13 +9,13 @@ import {
     FaChartBar,
     FaCamera,
     FaStar,
-    FaCoins
+    FaCoins,
 } from "react-icons/fa";
-import { useDispatch, useSelector } from 'react-redux';
-import { createProject } from '@/redux/reducers/projectslice/projectSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { createProject } from "@/redux/reducers/projectslice/projectSlice";
 import { fetchCustomers } from "@/redux/reducers/customerslice/customerSlice";
 
-// Types for form and floor
+// Types for form and floor (unchanged)
 interface Floor {
     name: string;
     description: string;
@@ -109,7 +109,7 @@ const initialFormState: FormState = {
     tokenSupply: "",
     pricePerToken: "",
     walletAddress: "",
-    customer: ""
+    customer: "68b7f3511ff5d34a6c9d723b",
 };
 
 const initialFloor: Floor = {
@@ -125,7 +125,7 @@ const initialFloor: Floor = {
     specifications: "",
     features: "",
     minSqftBuy: "",
-    maxSqftBuy: ""
+    maxSqftBuy: "",
 };
 
 function useGlobeResidencyForm() {
@@ -134,157 +134,178 @@ function useGlobeResidencyForm() {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>(
-        [{ question: "", answer: "" }]
-    );
+    const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>([
+        { question: "", answer: "" },
+    ]);
     const [documents, setDocuments] = useState<string[]>([""]);
     const dispatch = useDispatch();
 
     // Memoized validation
     const isValid = useMemo(() => {
-        // Add more validation as needed
         return !!form.propertyName && !!form.category && !!form.address && !!form.city && !!form.country;
     }, [form]);
 
-    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { id, value, type } = e.target;
-        setForm(f => ({
-            ...f,
-            [id]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value
-        }));
-    }, []);
+    const handleChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+            const { id, value, type } = e.target;
+            setForm((f) => ({
+                ...f,
+                [id]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+            }));
+        },
+        []
+    );
 
-    const handleFloorChange = useCallback((idx: number, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { id, value } = e.target;
-        setFloors(floors => floors.map((floor, i) => i === idx ? { ...floor, [id]: value } : floor));
-    }, []);
+    const handleFloorChange = useCallback(
+        (idx: number, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            const { id, value } = e.target;
+            setFloors((floors) =>
+                floors.map((floor, i) => (i === idx ? { ...floor, [id]: value } : floor))
+            );
+        },
+        []
+    );
 
-    const handleFloorSpecChange = useCallback((idx: number, field: "specifications" | "features", value: string) => {
-        setFloors(floors => floors.map((floor, i) => i === idx ? { ...floor, [field]: value } : floor));
-    }, []);
+    const handleFloorSpecChange = useCallback(
+        (idx: number, field: "specifications" | "features", value: string) => {
+            setFloors((floors) =>
+                floors.map((floor, i) => (i === idx ? { ...floor, [field]: value } : floor))
+            );
+        },
+        []
+    );
 
-    // Add Floor function
     const addFloor = useCallback(() => {
-        setFloors(floors => [...floors, { ...initialFloor }]);
+        setFloors((floors) => [...floors, { ...initialFloor }]);
     }, []);
 
-    // FAQ handlers
-    const handleFaqChange = useCallback((idx: number, field: "question" | "answer", value: string) => {
-        setFaqs(faqs => faqs.map((faq, i) => i === idx ? { ...faq, [field]: value } : faq));
-    }, []);
+    const handleFaqChange = useCallback(
+        (idx: number, field: "question" | "answer", value: string) => {
+            setFaqs((faqs) =>
+                faqs.map((faq, i) => (i === idx ? { ...faq, [field]: value } : faq))
+            );
+        },
+        []
+    );
+
     const addFaq = useCallback(() => {
-        setFaqs(faqs => [...faqs, { question: "", answer: "" }]);
-    }, []);
-    const removeFaq = useCallback((idx: number) => {
-        setFaqs(faqs => faqs.filter((_, i) => i !== idx));
+        setFaqs((faqs) => [...faqs, { question: "", answer: "" }]);
     }, []);
 
-    // Document handlers
-    const handleDocumentChange = useCallback((idx: number, value: string) => {
-        setDocuments(docs => docs.map((doc, i) => i === idx ? value : doc));
+    const removeFaq = useCallback((idx: number) => {
+        setFaqs((faqs) => faqs.filter((_, i) => i !== idx));
     }, []);
+
+    const handleDocumentChange = useCallback((idx: number, value: string) => {
+        setDocuments((docs) => docs.map((doc, i) => (i === idx ? value : doc)));
+    }, []);
+
     const handleDocumentFileChange = useCallback((idx: number, file: File) => {
-        // For demo, just use file name as value. In real app, upload to server and use the URL.
-        setDocuments(docs => docs.map((doc, i) => i === idx ? file.name : doc));
+        setDocuments((docs) => docs.map((doc, i) => (i === idx ? file.name : doc)));
         // TODO: Implement actual upload logic and setDocuments with the uploaded file URL
     }, []);
+
     const addDocument = useCallback(() => {
-        setDocuments(docs => [...docs, ""]);
-    }, []);
-    const removeDocument = useCallback((idx: number) => {
-        setDocuments(docs => docs.filter((_, i) => i !== idx));
+        setDocuments((docs) => [...docs, ""]);
     }, []);
 
-    const handleSubmit = useCallback(async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (loading) return; // Prevent double submit
-        setLoading(true);
-        setError(null);
-        setSuccess(false);
-        if (!isValid) {
-            setError("Please fill all required fields.");
-            setLoading(false);
-            return;
-        }
-        try {
-            const payload = {
-                name: form.propertyName,
-                description: form.description,
-                location: {
-                    address: form.address,
-                    city: form.city,
-                    state: form.state,
-                    country: form.country,
-                    coordinates: {
-                        latitude: Number(form.latitude) || 0,
-                        longitude: Number(form.longitude) || 0
-                    }
-                },
-                developer: {
-                    name: form.developerName,
-                    description: form.developerDescription,
-                    logoUrl: form.developerLogo,
-                    website: form.developerWebsite
-                },
-                status: form.projectStatus || "planning",
-                category: form.category || "residential",
-                subcategory: form.subcategory,
-                featured: !!form.featured,
-                startDate: form.startDate ? new Date(form.startDate).toISOString() : "",
-                completionDate: form.completionDate ? new Date(form.completionDate).toISOString() : "",
-                sellableArea: Number(form.sellableArea) || 0,
-                floors: floors.map(floor => ({
-                    name: floor.name,
-                    description: floor.description,
-                    floorNumber: Number(floor.floorNumber) || 0,
-                    floorPlanUrl: floor.floorPlanUrl,
-                    totalUnits: Number(floor.totalUnits) || 0,
-                    pricePerSqFt: Number(floor.pricePerSqFt) || 0,
-                    minPrice: Number(floor.minPrice) || 0,
-                    maxPrice: Number(floor.maxPrice) || 0,
-                    totalSquareFootage: Number(floor.totalSquareFootage) || 0,
-                    specifications: floor.specifications ? floor.specifications.split(",").map(s => s.trim()) : [],
-                    features: floor.features ? floor.features.split(",").map(s => s.trim()) : []
-                })),
-                mainImageUrl: form.mainImageUrl,
-                galleryImages: form.galleryImages ? form.galleryImages.split(",").map(s => s.trim()) : [],
-                totalArea: Number(form.totalArea) || 0,
-                priceRange: {
-                    min: Number(form.priceMin) || 0,
-                    max: Number(form.priceMax) || 0
-                },
-                totalUnits: Number(form.totalUnits) || 0,
-                soldUnits: Number(form.soldUnits) || 0,
-                reservedUnits: Number(form.reservedUnits) || 0,
-                availableUnits: Number(form.availableUnits) || 0,
-                views: Number(form.views) || 0,
-                inquiries: Number(form.inquiries) || 0,
-                amenities: form.amenities ? form.amenities.split(",").map(s => s.trim()) : [],
-                token: {
-                    name: form.tokenName,
-                    symbol: form.tokenSymbol,
-                    supply: Number(form.tokenSupply) || 0,
-                    pricePerToken: Number(form.pricePerToken) || 0,
-                    walletAddress: form.walletAddress
-                },
-                faqs: faqs.filter(f => f.question && f.answer),
-                documents: documents.filter(d => d),
-                customer: form.customer || undefined
-            };
-            // await dispatch(createProject(payload)).unwrap();
-            setSuccess(true);
-            setForm(initialFormState);
-            setFloors([initialFloor]);
-            setFaqs([{ question: "", answer: "" }]);
-            setDocuments([""]);
-        } catch (err: any) {
-            if (typeof window !== 'undefined' && window.console) {
-                console.error('Project creation failed:', err);
+    const removeDocument = useCallback((idx: number) => {
+        setDocuments((docs) => docs.filter((_, i) => i !== idx));
+    }, []);
+
+    const handleSubmit = useCallback(
+        async (e: React.FormEvent) => {
+            e.preventDefault();
+            if (loading) return;
+            setLoading(true);
+            setError(null);
+            setSuccess(false);
+            if (!isValid) {
+                setError("Please fill all required fields.");
+                setLoading(false);
+                return;
             }
-            setError(err.message || (typeof err === 'string' ? err : "Submission failed"));
-        }
-        setLoading(false);
-    }, [form, floors, isValid, faqs, documents, loading, dispatch]);
+            try {
+                const payload = {
+                    name: form.propertyName,
+                    description: form.description,
+                    location: {
+                        address: form.address,
+                        city: form.city,
+                        state: form.state,
+                        country: form.country,
+                        coordinates: {
+                            latitude: Number(form.latitude) || 0,
+                            longitude: Number(form.longitude) || 0,
+                        },
+                    },
+                    developer: {
+                        name: form.developerName,
+                        description: form.developerDescription,
+                        logoUrl: form.developerLogo,
+                        website: form.developerWebsite,
+                    },
+                    status: form.projectStatus || "planning",
+                    category: form.category || "residential",
+                    subcategory: form.subcategory,
+                    featured: !!form.featured,
+                    startDate: form.startDate ? new Date(form.startDate).toISOString() : "",
+                    completionDate: form.completionDate ? new Date(form.completionDate).toISOString() : "",
+                    sellableArea: Number(form.sellableArea) || 0,
+                    floors: floors.map((floor) => ({
+                        name: floor.name,
+                        description: floor.description,
+                        floorNumber: Number(floor.floorNumber) || 0,
+                        floorPlanUrl: floor.floorPlanUrl,
+                        totalUnits: Number(floor.totalUnits) || 0,
+                        pricePerSqFt: Number(floor.pricePerSqFt) || 0,
+                        minPrice: Number(floor.minPrice) || 0,
+                        maxPrice: Number(floor.maxPrice) || 0,
+                        totalSquareFootage: Number(floor.totalSquareFootage) || 0,
+                        specifications: floor.specifications ? floor.specifications.split(",").map((s) => s.trim()) : [],
+                        features: floor.features ? floor.features.split(",").map((s) => s.trim()) : [],
+                    })),
+                    mainImageUrl: form.mainImageUrl,
+                    galleryImages: form.galleryImages ? form.galleryImages.split(",").map((s) => s.trim()) : [],
+                    totalArea: Number(form.totalArea) || 0,
+                    priceRange: {
+                        min: Number(form.priceMin) || 0,
+                        max: Number(form.priceMax) || 0,
+                    },
+                    totalUnits: Number(form.totalUnits) || 0,
+                    soldUnits: Number(form.soldUnits) || 0,
+                    reservedUnits: Number(form.reservedUnits) || 0,
+                    availableUnits: Number(form.availableUnits) || 0,
+                    views: Number(form.views) || 0,
+                    inquiries: Number(form.inquiries) || 0,
+                    amenities: form.amenities ? form.amenities.split(",").map((s) => s.trim()) : [],
+                    token: {
+                        name: form.tokenName,
+                        symbol: form.tokenSymbol,
+                        supply: Number(form.tokenSupply) || 0,
+                        pricePerToken: Number(form.pricePerToken) || 0,
+                        walletAddress: form.walletAddress,
+                    },
+                    faqs: faqs.filter((f) => f.question && f.answer),
+                    documents: documents.filter((d) => d),
+                    customer: "68b7f3511ff5d34a6c9d723b",
+                };
+                await dispatch(createProject(payload)).unwrap();
+                setSuccess(true);
+                setForm(initialFormState);
+                setFloors([initialFloor]);
+                setFaqs([{ question: "", answer: "" }]);
+                setDocuments([""]);
+            } catch (err: any) {
+                if (typeof window !== "undefined" && window.console) {
+                    console.error("Project creation failed:", err);
+                }
+                setError(err.message || (typeof err === "string" ? err : "Submission failed"));
+            }
+            setLoading(false);
+        },
+        [form, floors, isValid, faqs, documents, loading, dispatch]
+    );
 
     return {
         form,
@@ -305,7 +326,7 @@ function useGlobeResidencyForm() {
         handleDocumentChange,
         handleDocumentFileChange,
         addDocument,
-        removeDocument
+        removeDocument,
     };
 }
 
@@ -329,49 +350,62 @@ export default function GlobeResidencyForm() {
         handleDocumentChange,
         handleDocumentFileChange,
         addDocument,
-        removeDocument
+        removeDocument,
     } = useGlobeResidencyForm();
 
+    const dispatch = useDispatch();
+    // Select customers and their status from Redux store
+    const { customers, status: customerStatus, error: customerError } = useSelector(
+        (state: any) => state.customer || { customers: [], status: "", error: null }
+    );
 
-
-    // Select customers from redux store
-    const customers = useSelector((state: any) => state.customer?.customers || []);
-    console.log('Customers from Redux:', customers); // Debugging line
+    // Fetch customers when component mounts
+    useEffect(() => {
+        if (customerStatus === "") {
+            dispatch(fetchCustomers());
+        }
+    }, [customerStatus, dispatch]);
 
     return (
         <div className="min-h-screen shadow-lg rounded-md py-8 px-4">
             <div className="max-w-6xl mx-auto">
                 {/* Customer Dropdown */}
-                <div className="mb-8">
-                    <label htmlFor="customer" className="block text-sm font-semibold mb-2">Customer</label>
+                {/* <div className="mb-8">
+                    <label htmlFor="customer" className="block text-sm font-semibold mb-2">
+                        Customer
+                    </label>
+                    {customerStatus === "loading" && (
+                        <div className="text-gray-600">Loading customers...</div>
+                    )}
+                    {customerError && (
+                        <div className="text-red-600">Error: {customerError}</div>
+                    )}
                     <select
                         id="customer"
-                        className="w-full p-2 border border-gray-200 rounded  outline-none"
-                        value={form.customer || ''}
+                        className="w-full p-2 border border-gray-200 rounded outline-none"
+                        value={form.customer || ""}
                         onChange={handleChange}
+                        disabled={customerStatus === "loading"}
                     >
-                        <option value=""
-                        >Select customer</option>
+                        <option value="">Select customer</option>
                         {customers.map((customer: any) => (
                             <option key={customer.id || customer._id} value={customer.id || customer._id}>
-                                {customer.name || customer.fullName || customer.email}
+                                {customer.fullName || customer.lastName || customer.email || "Unknown Customer"}
                             </option>
                         ))}
                     </select>
-                </div>
+                </div> */}
                 {/* Header */}
                 <div className="text-left mb-8">
-                    <div className=" gap-3 mb-4">
-                        <h1 className="text-4xl font-bold text-left">
-                            Add Project
-                        </h1>
+                    <div className="gap-3 mb-4">
+                        <h1 className="text-4xl font-bold text-left">Add Project</h1>
                     </div>
                 </div>
                 <form className="space-y-8" onSubmit={handleSubmit} autoComplete="off" noValidate>
                     {success && <div className="text-green-600 mt-4">Project created successfully!</div>}
                     {error && <div className="text-red-600 mt-4">{error}</div>}
                     {/* Basic Information */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
+                    <div className="backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaBuilding className="w-5 h-5" />
@@ -380,7 +414,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label htmlFor="propertyName" className="text-sm font-semibold ">
+                                <label htmlFor="propertyName" className="text-sm font-semibold">
                                     Property Name
                                 </label>
                                 <input
@@ -392,7 +426,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="category" className="text-sm font-semibold ">
+                                <label htmlFor="category" className="text-sm font-semibold">
                                     Category
                                 </label>
                                 <select
@@ -402,13 +436,13 @@ export default function GlobeResidencyForm() {
                                     onChange={handleChange}
                                 >
                                     <option value="">Select category</option>
-                                    <option value="residential">residential</option>
-                                    <option value="commercial">commercial</option>
+                                    <option value="residential">Residential</option>
+                                    <option value="commercial">Commercial</option>
                                     <option value="mixed">Mixed Use</option>
                                 </select>
                             </div>
                             <div className="md:col-span-2 space-y-2">
-                                <label htmlFor="description" className="text-sm font-semibold ">
+                                <label htmlFor="description" className="text-sm font-semibold">
                                     Description
                                 </label>
                                 <textarea
@@ -424,7 +458,7 @@ export default function GlobeResidencyForm() {
                     </div>
 
                     {/* Location Details */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
+                    <div className="backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaMapMarkerAlt className="w-5 h-5" />
@@ -433,7 +467,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             <div className="space-y-2">
-                                <label htmlFor="address" className="text-sm font-semibold ">
+                                <label htmlFor="address" className="text-sm font-semibold">
                                     Address
                                 </label>
                                 <input
@@ -445,7 +479,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="city" className="text-sm font-semibold ">
+                                <label htmlFor="city" className="text-sm font-semibold">
                                     City
                                 </label>
                                 <input
@@ -457,7 +491,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="state" className="text-sm font-semibold ">
+                                <label htmlFor="state" className="text-sm font-semibold">
                                     State
                                 </label>
                                 <input
@@ -469,7 +503,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="country" className="text-sm font-semibold ">
+                                <label htmlFor="country" className="text-sm font-semibold">
                                     Country
                                 </label>
                                 <input
@@ -481,7 +515,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="latitude" className="text-sm font-semibold ">
+                                <label htmlFor="latitude" className="text-sm font-semibold">
                                     Latitude
                                 </label>
                                 <input
@@ -495,7 +529,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="longitude" className="text-sm font-semibold ">
+                                <label htmlFor="longitude" className="text-sm font-semibold">
                                     Longitude
                                 </label>
                                 <input
@@ -512,7 +546,7 @@ export default function GlobeResidencyForm() {
                     </div>
 
                     {/* Developer Information */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
+                    <div className="backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaUser className="w-5 h-5" />
@@ -521,7 +555,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label htmlFor="developerName" className="text-sm font-semibold ">
+                                <label htmlFor="developerName" className="text-sm font-semibold">
                                     Developer Name
                                 </label>
                                 <input
@@ -533,7 +567,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="developerWebsite" className="text-sm font-semibold ">
+                                <label htmlFor="developerWebsite" className="text-sm font-semibold">
                                     Website
                                 </label>
                                 <input
@@ -546,7 +580,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="developerDescription" className="text-sm font-semibold ">
+                                <label htmlFor="developerDescription" className="text-sm font-semibold">
                                     Description
                                 </label>
                                 <textarea
@@ -559,7 +593,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="developerLogo" className="text-sm font-semibold ">
+                                <label htmlFor="developerLogo" className="text-sm font-semibold">
                                     Logo URL
                                 </label>
                                 <input
@@ -575,7 +609,7 @@ export default function GlobeResidencyForm() {
                     </div>
 
                     {/* Project Timeline */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
+                    <div className="backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaCalendarAlt className="w-5 h-5" />
@@ -584,7 +618,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             <div className="space-y-2">
-                                <label htmlFor="projectStatus" className="text-sm font-semibold ">
+                                <label htmlFor="projectStatus" className="text-sm font-semibold">
                                     Project Status
                                 </label>
                                 <select
@@ -600,7 +634,7 @@ export default function GlobeResidencyForm() {
                                 </select>
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="subcategory" className="text-sm font-semibold ">
+                                <label htmlFor="subcategory" className="text-sm font-semibold">
                                     Subcategory
                                 </label>
                                 <select
@@ -620,7 +654,7 @@ export default function GlobeResidencyForm() {
                                 </select>
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="startDate" className="text-sm font-semibold ">
+                                <label htmlFor="startDate" className="text-sm font-semibold">
                                     Start Date
                                 </label>
                                 <input
@@ -632,7 +666,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="completionDate" className="text-sm font-semibold ">
+                                <label htmlFor="completionDate" className="text-sm font-semibold">
                                     Completion Date
                                 </label>
                                 <input
@@ -644,7 +678,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-semibold ">Featured Property</label>
+                                <label className="text-sm font-semibold">Featured Property</label>
                                 <div className="flex items-center gap-2">
                                     <input
                                         id="featured"
@@ -662,7 +696,7 @@ export default function GlobeResidencyForm() {
                     </div>
 
                     {/* Pricing & Area */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
+                    <div className="backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaDollarSign className="w-5 h-5" />
@@ -671,7 +705,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             <div className="space-y-2">
-                                <label htmlFor="totalArea" className="text-sm font-semibold ">
+                                <label htmlFor="totalArea" className="text-sm font-semibold">
                                     Total Area (sq.ft)
                                 </label>
                                 <input
@@ -684,7 +718,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="sellableArea" className="text-sm font-semibold ">
+                                <label htmlFor="sellableArea" className="text-sm font-semibold">
                                     Sellable Area (sq.ft)
                                 </label>
                                 <input
@@ -697,7 +731,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="priceMin" className="text-sm font-semibold ">
+                                <label htmlFor="priceMin" className="text-sm font-semibold">
                                     Min Price
                                 </label>
                                 <input
@@ -710,7 +744,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="priceMax" className="text-sm font-semibold ">
+                                <label htmlFor="priceMax" className="text-sm font-semibold">
                                     Max Price
                                 </label>
                                 <input
@@ -726,7 +760,7 @@ export default function GlobeResidencyForm() {
                     </div>
 
                     {/* Statistics */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
+                    <div className="backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaChartBar className="w-5 h-5" />
@@ -735,7 +769,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
                             <div className="space-y-2">
-                                <label htmlFor="totalUnits" className="text-sm font-semibold ">
+                                <label htmlFor="totalUnits" className="text-sm font-semibold">
                                     Total Units
                                 </label>
                                 <input
@@ -748,7 +782,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="soldUnits" className="text-sm font-semibold ">
+                                <label htmlFor="soldUnits" className="text-sm font-semibold">
                                     Sold Units
                                 </label>
                                 <input
@@ -761,7 +795,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="reservedUnits" className="text-sm font-semibold ">
+                                <label htmlFor="reservedUnits" className="text-sm font-semibold">
                                     Reserved
                                 </label>
                                 <input
@@ -774,7 +808,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="availableUnits" className="text-sm font-semibold ">
+                                <label htmlFor="availableUnits" className="text-sm font-semibold">
                                     Available
                                 </label>
                                 <input
@@ -787,7 +821,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="views" className="text-sm font-semibold ">
+                                <label htmlFor="views" className="text-sm font-semibold">
                                     Views
                                 </label>
                                 <input
@@ -800,7 +834,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="inquiries" className="text-sm font-semibold ">
+                                <label htmlFor="inquiries" className="text-sm font-semibold">
                                     Inquiries
                                 </label>
                                 <input
@@ -825,7 +859,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 space-y-6">
                             <div className="space-y-2">
-                                <label htmlFor="mainImageUrl" className="text-sm font-semibold ">
+                                <label htmlFor="mainImageUrl" className="text-sm font-semibold">
                                     Main Image URL
                                 </label>
                                 <input
@@ -838,7 +872,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="galleryImages" className="text-sm font-semibold ">
+                                <label htmlFor="galleryImages" className="text-sm font-semibold">
                                     Gallery Images (comma separated URLs)
                                 </label>
                                 <textarea
@@ -863,24 +897,109 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 space-y-6">
                             {floors.map((floor, idx) => (
-                                <div key={idx} className="border p-4 rounded-lg mb-4 ">
+                                <div key={idx} className="border p-4 rounded-lg mb-4">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <input id="name" placeholder="Name" className="p-2 border rounded" value={floor.name} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="floorNumber" type="number" placeholder="Floor Number" className="p-2 border rounded" value={floor.floorNumber} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="floorPlanUrl" placeholder="Floor Plan URL" className="p-2 border rounded" value={floor.floorPlanUrl} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="totalUnits" type="number" placeholder="Total Units" className="p-2 border rounded" value={floor.totalUnits} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="pricePerSqFt" type="number" placeholder="Price Per SqFt" className="p-2 border rounded" value={floor.pricePerSqFt} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="minPrice" type="number" placeholder="Min Price" className="p-2 border rounded" value={floor.minPrice} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="maxPrice" type="number" placeholder="Max Price" className="p-2 border rounded" value={floor.maxPrice} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="totalSquareFootage" type="number" placeholder="Total Square Footage" className="p-2 border rounded" value={floor.totalSquareFootage} onChange={e => handleFloorChange(idx, e)} />
-                                        {/* New fields for min/max sqft buy */}
-                                        <input id="minSqftBuy" type="number" placeholder="Minimum Sqft Buy" className="p-2 border rounded" value={floor.minSqftBuy || ''} onChange={e => handleFloorChange(idx, e)} />
-                                        <input id="maxSqftBuy" type="number" placeholder="Maximum Sqft Buy" className="p-2 border rounded" value={floor.maxSqftBuy || ''} onChange={e => handleFloorChange(idx, e)} />
+                                        <input
+                                            id="name"
+                                            placeholder="Name"
+                                            className="p-2 border rounded"
+                                            value={floor.name}
+                                            onChange={(e) => handleFloorChange(idx, e)}
+                                        />
+                                        <input
+                                            id="floorNumber"
+                                            type="number"
+                                            placeholder="Floor Number"
+                                            className="p-2 border rounded"
+                                            value={floor.floorNumber}
+                                            onChange={(e) => handleFloorChange(idx, e)}
+                                        />
+                                        <input
+                                            id="floorPlanUrl"
+                                            placeholder="Floor Plan URL"
+                                            className="p-2 border rounded"
+                                            value={floor.floorPlanUrl}
+                                            onChange={(e) => handleFloorChange(idx, e)}
+                                        />
+                                        <input
+                                            id="totalUnits"
+                                            type="number"
+                                            placeholder="Total Units"
+                                            className="p-2 border rounded"
+                                            value={floor.totalUnits}
+                                            onChange={(e) => handleFloorChange(idx, e)}
+                                        />
+                                        <input
+                                            id="pricePerSqFt"
+                                            type="number"
+                                            placeholder="Price Per SqFt"
+                                            className="p-2 border rounded"
+                                            value={floor.pricePerSqFt}
+                                            onChange={(e) => handleFloorChange(idx, e)}
+                                        />
+                                        <input
+                                            id="minPrice"
+                                            type="number"
+                                            placeholder="Min Price"
+                                            className="p-2 border rounded"
+                                            value={floor.minPrice}
+                                            onChange={(e) => handleFloorChange(idx, e)}
+                                        />
+                                        <input
+                                            id="maxPrice"
+                                            type="number"
+                                            placeholder="Max Price"
+                                            className="p-2 border rounded"
+                                            value={floor.maxPrice}
+                                            onChange={(e) => handleFloorChange(idx, e)}
+                                        />
+                                        <input
+                                            id="totalSquareFootage"
+                                            type="number"
+                                            placeholder="Total Square Footage"
+                                            className="p-2 border rounded"
+                                            value={floor.totalSquareFootage}
+                                            onChange={(e) => handleFloorChange(idx, e)}
+                                        />
+                                        <input
+                                            id="minSqftBuy"
+                                            type="number"
+                                            placeholder="Minimum Sqft Buy"
+                                            className="p-2 border rounded"
+                                            value={floor.minSqftBuy || ""}
+                                            onChange={(e) => handleFloorChange(idx, e)}
+                                        />
+                                        <input
+                                            id="maxSqftBuy"
+                                            type="number"
+                                            placeholder="Maximum Sqft Buy"
+                                            className="p-2 border rounded"
+                                            value={floor.maxSqftBuy || ""}
+                                            onChange={(e) => handleFloorChange(idx, e)}
+                                        />
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                                        <textarea id="description" placeholder="Description" className="p-2 border rounded" value={floor.description} onChange={e => handleFloorChange(idx, e)} />
-                                        <textarea id="specifications" placeholder="Specifications (comma separated)" className="p-2 border rounded" value={floor.specifications} onChange={e => handleFloorSpecChange(idx, "specifications", e.target.value)} />
-                                        <textarea id="features" placeholder="Features (comma separated)" className="p-2 border rounded" value={floor.features} onChange={e => handleFloorSpecChange(idx, "features", e.target.value)} />
+                                        <textarea
+                                            id="description"
+                                            placeholder="Description"
+                                            className="p-2 border rounded"
+                                            value={floor.description}
+                                            onChange={(e) => handleFloorChange(idx, e)}
+                                        />
+                                        <textarea
+                                            id="specifications"
+                                            placeholder="Specifications (comma separated)"
+                                            className="p-2 border rounded"
+                                            value={floor.specifications}
+                                            onChange={(e) => handleFloorSpecChange(idx, "specifications", e.target.value)}
+                                        />
+                                        <textarea
+                                            id="features"
+                                            placeholder="Features (comma separated)"
+                                            className="p-2 border rounded"
+                                            value={floor.features}
+                                            onChange={(e) => handleFloorSpecChange(idx, "features", e.target.value)}
+                                        />
                                     </div>
                                 </div>
                             ))}
@@ -895,7 +1014,7 @@ export default function GlobeResidencyForm() {
                     </div>
 
                     {/* Token Information */}
-                    <div className=" backdrop-blur-sm rounded-lg shadow-lg border">
+                    <div className="backdrop-blur-sm rounded-lg shadow-lg border">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaCoins className="w-5 h-5" />
@@ -904,7 +1023,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <div className="space-y-2">
-                                <label htmlFor="tokenName" className="text-sm font-semibold ">
+                                <label htmlFor="tokenName" className="text-sm font-semibold">
                                     Token Name
                                 </label>
                                 <input
@@ -916,7 +1035,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="tokenSymbol" className="text-sm font-semibold ">
+                                <label htmlFor="tokenSymbol" className="text-sm font-semibold">
                                     Token Symbol
                                 </label>
                                 <input
@@ -928,7 +1047,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="tokenSupply" className="text-sm font-semibold ">
+                                <label htmlFor="tokenSupply" className="text-sm font-semibold">
                                     Token Supply
                                 </label>
                                 <input
@@ -941,7 +1060,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="pricePerToken" className="text-sm font-semibold ">
+                                <label htmlFor="pricePerToken" className="text-sm font-semibold">
                                     Price Per Token (PKR)
                                 </label>
                                 <input
@@ -954,7 +1073,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div>
                             <div className="md:col-span-2 space-y-2">
-                                <label htmlFor="walletAddress" className="text-sm font-semibold ">
+                                <label htmlFor="walletAddress" className="text-sm font-semibold">
                                     Wallet Address
                                 </label>
                                 <input
@@ -968,7 +1087,7 @@ export default function GlobeResidencyForm() {
                         </div>
                     </div>
 
-                    {/* Add FAQs Section */}
+                    {/* FAQs Section */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border mt-8">
                         <div className="bg-black text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
@@ -984,7 +1103,7 @@ export default function GlobeResidencyForm() {
                                             placeholder="Enter FAQ question"
                                             className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
                                             value={faq.question}
-                                            onChange={e => handleFaqChange(idx, "question", e.target.value)}
+                                            onChange={(e) => handleFaqChange(idx, "question", e.target.value)}
                                         />
                                     </div>
                                     <div className="flex-1 space-y-2">
@@ -994,7 +1113,7 @@ export default function GlobeResidencyForm() {
                                             rows={2}
                                             className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
                                             value={faq.answer}
-                                            onChange={e => handleFaqChange(idx, "answer", e.target.value)}
+                                            onChange={(e) => handleFaqChange(idx, "answer", e.target.value)}
                                         />
                                     </div>
                                     <button
@@ -1034,13 +1153,13 @@ export default function GlobeResidencyForm() {
                                             placeholder="Enter document URL"
                                             className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
                                             value={doc}
-                                            onChange={e => handleDocumentChange(idx, e.target.value)}
+                                            onChange={(e) => handleDocumentChange(idx, e.target.value)}
                                         />
                                         <div className="mt-2">
                                             <input
                                                 type="file"
                                                 className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                                onChange={e => {
+                                                onChange={(e) => {
                                                     if (e.target.files && e.target.files[0]) {
                                                         handleDocumentFileChange(idx, e.target.files[0]);
                                                     }
@@ -1078,7 +1197,6 @@ export default function GlobeResidencyForm() {
                             {loading ? "Creating..." : "Submit"}
                         </button>
                     </div>
-
                 </form>
             </div>
         </div>

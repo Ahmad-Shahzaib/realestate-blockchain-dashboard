@@ -29,7 +29,7 @@ export const handleLogin = async (credentials: {
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
         });
-        
+
         // Store user data including role in cookie
         setCookie("user", JSON.stringify(user), {
             maxAge: 7 * 24 * 60 * 60, // 7 days
@@ -40,7 +40,7 @@ export const handleLogin = async (credentials: {
 
         // Dispatch a custom event to notify components about login
         window.dispatchEvent(new Event('storage'));
-        
+
         return user;
     } catch (error) {
         throw error;

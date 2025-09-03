@@ -62,7 +62,7 @@ export const addCustomer = createAsyncThunk(
   async (customer: any, { rejectWithValue }) => {
     try {
 
-      const response = await getAxiosInstance('/api/auth').post("/api/auth/register", customer);
+      const response = await getAxiosInstance('/api/auth').post("/api/register", customer);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to add customer');

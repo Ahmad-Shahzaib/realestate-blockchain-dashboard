@@ -7,7 +7,6 @@ import { FaConnectdevelop } from "react-icons/fa";
 import { MdOutlineSignalCellularAlt2Bar } from "react-icons/md";
 import { FaCalendarAlt } from "react-icons/fa";
 import ProjectService, { Project } from "@/services/project.service";
-import ApiProjects from "@/services/constant";
 
 const tabs = [
     {
@@ -36,13 +35,18 @@ export function OverviewCards() {
     // Fetch projects for a given page
     const fetchProjects = async (pageMUX = 1, reset = false) => {
         try {
-            const response = ApiProjects;
             if (pageMUX === 1) setLoading(true);
             else setLoadingMore(true);
             // Update API to support pagination: /projects?page=pageNum
-            console.log("Fetched projects:", response);
-            setProjects(response)
-
+            const response = await ProjectService.getAllProjects(pageMUX);
+            if (response && response.data && response.data.length > 0) {
+                setProjects(prev => reset ? response.data : [...prev, ...response.data]);
+                setTotalPages(response.pagination.pages || 1);
+                setError(null);
+            } else if (pageMUX === 1) {
+                setProjects([]);
+                setError("No projects available. Please check back later.");
+            }
         } catch (err: any) {
             setError(err.message || "Failed to load projects. Please try again later.");
         } finally {
