@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { addCustomer } from '@/redux/reducers/customerslice/customerSlice';
+import Button from '@/common/Button';
 
 // Define types for FormSection props
 interface FormSectionProps {
@@ -50,12 +51,10 @@ interface InputFieldProps {
 }
 
 const FormSection: React.FC<FormSectionProps> = ({ title, icon: Icon, children, className }) => (
-  <div className={`bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 ${className}`}>
+  <div className={` border text-black border-slate-700/50 rounded-2xl p-6 ${className}`}>
     <div className="flex items-center gap-3 mb-6">
-      <div className="p-2 bg-blue-500/20 rounded-lg border border-blue-500/30">
-        <Icon className="w-5 h-5 text-blue-400" iconNode={[]} />
-      </div>
-      <h3 className="text-lg font-semibold text-white">{title}</h3>
+
+      <h3 className="text-lg font-semibold">{title}</h3>
     </div>
     {children}
   </div>
@@ -63,33 +62,49 @@ const FormSection: React.FC<FormSectionProps> = ({ title, icon: Icon, children, 
 
 const InputField: React.FC<InputFieldProps> = ({ label, name, type = "text", required = false, placeholder, icon: Icon, value, onChange, options }) => (
   <div className="space-y-2">
-    <label className="text-slate-300 text-sm font-medium flex items-center gap-2">
-      {Icon && <Icon className="w-4 h-4 text-slate-400" iconNode={[]} />}
+    <label className="text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2">
+      {Icon && <Icon className="w-4 h-4" iconNode={[]} />}
       {label}
-      {required && <span className="text-red-400">*</span>}
+      {required && <span className="text-red-500 dark:text-red-400">*</span>}
     </label>
-    {type === 'select' ? (
+
+    {type === "select" ? (
       <select
         name={name}
         value={value}
         onChange={onChange}
-        className="w-full p-3 bg-slate-800/50 backdrop-blur-sm border border-slate-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+        className="w-full p-3 
+        bg-white dark:bg-slate-800/50 
+        text-slate-900 dark:text-white 
+        placeholder-slate-500 dark:placeholder-slate-400
+        backdrop-blur-sm border border-slate-300 dark:border-slate-600/50 
+        rounded-xl focus:outline-none focus:ring-2 
+        focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
       >
         <option value="">Select {label}</option>
-        {options && options.map(opt => (
-          <option key={opt.value} value={opt.value}>{opt.label}</option>
-        ))}
+        {options &&
+          options.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
       </select>
-    ) : type === 'textarea' ? (
+    ) : type === "textarea" ? (
       <textarea
         name={name}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
         rows={4}
-        className="w-full p-3 bg-slate-800/50 backdrop-blur-sm border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all resize-vertical"
+        className="w-full p-3 
+        bg-white dark:bg-slate-800/50 
+        text-slate-900 dark:text-white 
+        placeholder-slate-500 dark:placeholder-slate-400
+        backdrop-blur-sm border border-slate-300 dark:border-slate-600/50 
+        rounded-xl focus:outline-none focus:ring-2 
+        focus:ring-blue-500/50 focus:border-blue-500/50 transition-all resize-vertical"
       />
-    ) : type === 'file' ? (
+    ) : type === "file" ? (
       <div className="relative">
         <input
           type="file"
@@ -101,7 +116,11 @@ const InputField: React.FC<InputFieldProps> = ({ label, name, type = "text", req
         />
         <label
           htmlFor={name}
-          className="w-full p-3 bg-slate-800/50 backdrop-blur-sm border border-slate-600/50 rounded-xl text-slate-400 hover:border-blue-500/50 transition-all cursor-pointer flex items-center gap-3"
+          className="w-full p-3 
+          bg-white dark:bg-transparent
+          text-slate-900 dark:text-white 
+          backdrop-blur-sm border border-slate-300 dark:border-slate-600/50 
+          rounded-xl hover:border-blue-500/50 transition-all cursor-pointer flex items-center gap-3"
         >
           <Camera className="w-5 h-5" />
           Choose profile picture...
@@ -114,10 +133,17 @@ const InputField: React.FC<InputFieldProps> = ({ label, name, type = "text", req
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full p-3 bg-slate-800/50 backdrop-blur-sm border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+        className="w-full p-3 
+        bg-white dark:bg-slate-800/50 
+        text-slate-900 dark:text-white 
+        placeholder-slate-500 dark:placeholder-slate-400
+        backdrop-blur-sm border border-slate-300 dark:border-slate-600/50 
+        rounded-xl focus:outline-none focus:ring-2 
+        focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
       />
     )}
   </div>
+
 );
 
 const initialFormState = {
@@ -199,29 +225,33 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden rounded-lg dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 text-slate-900 dark:text-gray-2">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 right-1/3 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl animate-pulse delay-500"></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse bg-blue-500/10 dark:bg-blue-500/5"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full blur-3xl animate-pulse delay-1000 bg-purple-500/10 dark:bg-purple-500/5"></div>
+        <div className="absolute top-1/2 right-1/3 w-48 h-48 rounded-full blur-3xl animate-pulse delay-500 bg-cyan-500/10 dark:bg-cyan-500/5"></div>
       </div>
+
       {/* Grid Pattern Overlay */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwiiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDIpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40"></div>
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwiiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDIpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30 dark:opacity-40"></div>
+
       <div className="relative z-10 p-6 lg:p-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <UserPlus className="w-6 h-6 text-white" />
-              </div>
-              <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+          <div className=" mb-8">
+            <div className="flex gap-3 mb-4">
+
+              <h1 className="text-3xl lg:text-4xl font-extrabold text-black dark:text-white">
                 Add New Customer
               </h1>
+
             </div>
-            <p className="text-slate-400 text-lg">Create a new customer profile for the blockchain real estate platform</p>
+            <p className="text-slate-600 dark:text-gray-4 text-lg">
+              Create a new customer profile for the blockchain real estate platform
+            </p>
           </div>
+
           <form onSubmit={handleSubmit}>
             <div className="space-y-8">
               {/* Basic Information */}
@@ -239,6 +269,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                   <InputField label="Nationality" name="nationality" required placeholder="Enter nationality" icon={Globe} value={form.nationality} onChange={handleChange} />
                 </div>
               </FormSection>
+
               {/* Contact & Address Information */}
               <FormSection title="Contact & Address Information" icon={MapPin}>
                 <div className="grid grid-cols-1 gap-6">
@@ -253,6 +284,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                   </div>
                 </div>
               </FormSection>
+
               {/* Identity & Documentation */}
               <FormSection title="Identity & Documentation" icon={CreditCard}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -267,6 +299,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                   ]} />
                 </div>
               </FormSection>
+
               {/* Investment Profile */}
               <FormSection title="Investment Profile" icon={TrendingUp}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -285,6 +318,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                   <InputField label="Referral Code (Optional)" name="referralCode" placeholder="Enter referral code if any" value={form.referralCode} onChange={handleChange} />
                 </div>
               </FormSection>
+
               {/* Emergency Contact */}
               <FormSection title="Emergency Contact" icon={Users}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -293,6 +327,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                   <InputField label="Relationship" name="emergencyContactRelation" placeholder="e.g., Spouse, Parent, Sibling" value={form.emergencyContactRelation} onChange={handleChange} />
                 </div>
               </FormSection>
+
               {/* Account Settings */}
               <FormSection title="Account Settings" icon={Shield}>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -314,36 +349,35 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                   <InputField label="Registration Date" name="dateOfRegistration" type="date" icon={Calendar} value={form.dateOfRegistration} onChange={handleChange} />
                 </div>
               </FormSection>
+
               {/* Additional Information */}
               <FormSection title="Additional Information" icon={FileText}>
                 <InputField label="Notes" name="notes" type="textarea" placeholder="Enter any additional notes or comments about the customer" icon={FileText} value={form.notes} onChange={handleChange} />
               </FormSection>
+
               {/* Submit Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-end pt-6">
                 <button
                   type="button"
-                  className="px-6 py-3 bg-slate-700/50 hover:bg-slate-700/70 text-white rounded-xl transition-all duration-300 flex items-center gap-2 justify-center"
+                  className="px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700/50 dark:hover:bg-slate-700/70 text-slate-800 dark:text-gray-2 rounded-xl transition-all duration-300 flex items-center gap-2 justify-center"
                   onClick={() => setForm(initialFormState)}
                   disabled={loading}
                 >
                   <X className="w-5 h-5" />
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2 justify-center"
-                  disabled={loading}
-                >
-                  <Save className="w-5 h-5" />
+                <Button type="submit"
+                  disabled={loading}>
                   {loading ? 'Adding...' : 'Add Customer'}
-                </button>
+                </Button>
               </div>
-              {error && <div className="text-red-400 flex items-center gap-2 mt-2"><AlertCircle className="w-4 h-4" />{error}</div>}
+              {error && <div className="text-red-500 dark:text-red-400 flex items-center gap-2 mt-2"><AlertCircle className="w-4 h-4" />{error}</div>}
             </div>
           </form>
         </div>
       </div>
     </div>
+
   );
 };
 

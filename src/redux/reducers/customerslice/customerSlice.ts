@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { API_URLS } from '../../../config/apiUrls';
 
 export interface Customer {
   _id: number;
@@ -46,7 +47,7 @@ export const fetchCustomers = createAsyncThunk(
   'customer/fetchCustomers',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('https://proptechapi.softsuitetech.com//api/auth/customers');
+      const response = await axios.get(API_URLS.CUSTOMER);
       console.log('Fetched customers:', response.data); // Debugging line
       return response.data.data;
     } catch (error: any) {
@@ -60,7 +61,7 @@ export const addCustomer = createAsyncThunk(
   async (customer: any, { rejectWithValue }) => {
     try {
 
-      const response = await axios.post('https://proptechapi.softsuitetech.com/api/customers', customer, {
+      const response = await axios.post(API_URLS.CUSTOMER, customer, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       return response.data;
