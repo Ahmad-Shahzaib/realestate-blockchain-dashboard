@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import {
     FaBuilding,
     FaMapMarkerAlt,
@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import { useDispatch, useSelector } from 'react-redux';
 import { createProject } from '@/redux/reducers/projectslice/projectSlice';
+import { fetchCustomers } from "@/redux/reducers/customerslice/customerSlice";
 
 // Types for form and floor
 interface Floor {
@@ -331,8 +332,11 @@ export default function GlobeResidencyForm() {
         removeDocument
     } = useGlobeResidencyForm();
 
+
+
     // Select customers from redux store
     const customers = useSelector((state: any) => state.customer?.customers || []);
+    console.log('Customers from Redux:', customers); // Debugging line
 
     return (
         <div className="min-h-screen shadow-lg rounded-md py-8 px-4">
@@ -342,11 +346,12 @@ export default function GlobeResidencyForm() {
                     <label htmlFor="customer" className="block text-sm font-semibold mb-2">Customer</label>
                     <select
                         id="customer"
-                        className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
+                        className="w-full p-2 border border-gray-200 rounded  outline-none"
                         value={form.customer || ''}
                         onChange={handleChange}
                     >
-                        <option value="">Select customer</option>
+                        <option value=""
+                        >Select customer</option>
                         {customers.map((customer: any) => (
                             <option key={customer.id || customer._id} value={customer.id || customer._id}>
                                 {customer.name || customer.fullName || customer.email}

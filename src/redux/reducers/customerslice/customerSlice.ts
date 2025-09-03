@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { API_URLS } from '../../../config/apiUrls';
+import { getAxiosInstance } from '@/lib/axios';
 
 export interface Customer {
   _id: number;
@@ -61,9 +62,7 @@ export const addCustomer = createAsyncThunk(
   async (customer: any, { rejectWithValue }) => {
     try {
 
-      const response = await axios.post(API_URLS.CUSTOMER, customer, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const response = await getAxiosInstance('/api/auth').post("/api/auth/register", customer);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to add customer');

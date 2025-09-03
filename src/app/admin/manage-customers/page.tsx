@@ -147,7 +147,8 @@ const InputField: React.FC<InputFieldProps> = ({ label, name, type = "text", req
 );
 
 const initialFormState = {
-  name: '',
+  firstName: '',
+  lastName: '',
   email: '',
   phone: '',
   dateOfBirth: '',
@@ -172,6 +173,8 @@ const initialFormState = {
   emergencyContactPhone: '',
   emergencyContactRelation: '',
   notes: '',
+  password: '',
+
 };
 
 const SuperAdminAddCustomerFormUI: React.FC = () => {
@@ -197,10 +200,12 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
       profilePicture,
       ...rest
     } = form;
+
     const mappedForm = {
       name: name,
       phone: phone,
       preferredContactMethod: preferredContactMethod,
+      role: "customer",  // ✅ static role added
       ...rest,
     };
 
@@ -219,10 +224,9 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
       payload = formData;
     }
 
-
     await dispatch(addCustomer(payload));
-
   };
+
 
   return (
     <div className="min-h-screen relative overflow-hidden rounded-lg dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 text-slate-900 dark:text-gray-2">
@@ -257,7 +261,30 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
               {/* Basic Information */}
               <FormSection title="Basic Information" icon={User}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <InputField label="Full Name" name="name" required placeholder="Enter full name" icon={User} value={form.name} onChange={handleChange} />
+                  {/* <InputField label="Full Name" name="name" required placeholder="Enter full name" icon={User} value={form.name} onChange={handleChange} /> */}
+                  <InputField
+                    label="First Name"
+                    name="firstName"   // ✅ match state key
+                    required
+                    placeholder="Enter first name"
+                    icon={User}
+                    value={form.firstName}
+                    onChange={handleChange}
+                  />
+
+                  <InputField
+                    label="Last Name"
+                    name="lastName"    // ✅ match state key
+                    required
+                    placeholder="Enter last name"
+                    icon={User}
+                    value={form.lastName}
+                    onChange={handleChange}
+                  />
+
+                  {/* password  */}
+                  <InputField label="Password" name="password" type="password" required placeholder="Enter password" icon={User} value={form.password} onChange={handleChange} />
+
                   <InputField label="Email Address" name="email" type="email" required placeholder="Enter email address" icon={Mail} value={form.email} onChange={handleChange} />
                   <InputField label="Phone Number" name="phone" type="tel" required placeholder="+1 (555) 123-4567" icon={Phone} value={form.phone} onChange={handleChange} />
                   <InputField label="Date of Birth" name="dateOfBirth" type="date" required icon={Calendar} value={form.dateOfBirth} onChange={handleChange} />
