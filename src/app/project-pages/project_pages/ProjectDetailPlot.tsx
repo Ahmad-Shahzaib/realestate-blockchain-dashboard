@@ -40,7 +40,7 @@ const ProjectDetailPlot = () => {
             try {
                 setLoading(true);
                 // Direct Axios GET request
-                const response = await axios.get("https://proptechapi.softsuitetech.com/api/projects");
+                const response = await axios.get("http://localhost:5000/api/projects");
                 if (response.data && response.data.data && response.data.data.length > 0) {
                     setProjects(response.data.data);
                     const project = response.data.data;
@@ -71,6 +71,7 @@ const ProjectDetailPlot = () => {
     }, []);
 
     const project = projects.length > 0 ? projects[0] : null;
+    console.log("Projects fetched:", project);
 
     const handlePrevImage = (e: React.MouseEvent) => {
         e.preventDefault(); // Prevent Link navigation
@@ -115,7 +116,7 @@ const ProjectDetailPlot = () => {
 
 
             <div className="pt-4">
-                <ProjectSlider />
+                <ProjectSlider project={project} />
             </div>
         </div>
     )

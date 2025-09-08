@@ -1,6 +1,23 @@
 import { Download, Calculator } from 'lucide-react';
+import { useState } from 'react';
 
-export default function QubeLahore() {
+export default function QubeLahore({ project }: { project: any }) {
+    // State for area input and calculated price
+    const [area, setArea] = useState('');
+    const [calculatedPrice, setCalculatedPrice] = useState<number | null>(null);
+
+    // Get pricePerSqFt safely
+    const pricePerSqFt = project?.floors?.[0]?.pricePerSqFt || 0;
+
+    const handleCalculate = () => {
+        const areaNum = parseFloat(area);
+        if (!isNaN(areaNum) && areaNum > 0) {
+            setCalculatedPrice(areaNum * pricePerSqFt);
+        } else {
+            setCalculatedPrice(null);
+        }
+    };
+
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Qube Lahore Section */}
@@ -9,13 +26,9 @@ export default function QubeLahore() {
                     Qube Lahore
                 </h3>
                 <p className="text-gray-700 dark:text-gray-300 text-sm lg:text-base mb-6 leading-relaxed">
-                    Qube harmoniously inculcates a secure environment, equipped with all the
-                    principal features that prompt an integrated lifestyle. This project has
-                    been well constructed with amenities that offer luxury and comfort. It
-                    functions as a multipurpose, state-of-the-art lifestyle complex, enabling
-                    people and businesses to grow. The Corporate offices at Qube encompass
-                    dynamic conditions for maximum productivity. Spanning over 22,000 sqft, it
-                    features exceptional rentable and saleable commercial spaces.
+                    {
+                        project?.description || "description here  ."
+                    }
                 </p>
                 <button
                     className="flex items-center gap-2 px-6 py-3 rounded-xl font-medium 
@@ -40,22 +53,32 @@ export default function QubeLahore() {
                                 Area to Own
                             </label>
                             <span className="text-sm font-medium text-[#0277BD] dark:text-[#4FC3F7]">
-                                @ 28,000 PKR / sq.ft.
+                                {pricePerSqFt}/ sq.ft.
                             </span>
                         </div>
                         <input
-                            type="text"
+                            type="number"
+                            value={area}
+                            onChange={e => setArea(e.target.value)}
                             placeholder="Enter area..."
                             className="w-full p-3 border border-gray-200 dark:border-gray-600 rounded-lg text-sm 
             bg-white dark:bg-[#121417] text-gray-900 dark:text-gray-200
             focus:outline-none focus:ring-2 focus:ring-[#00B894] focus:border-transparent"
                         />
+                        {/* Show calculated price below input */}
+                        {calculatedPrice !== null && (
+                            <div className="mt-3 text-sm font-semibold text-[#003049] dark:text-white">
+                                Total Price: {calculatedPrice.toLocaleString()} PKR
+                            </div>
+                        )}
                     </div>
 
                     <button
                         className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium 
           bg-gradient-to-r from-[#00B894] to-[#00D2B6] 
           text-white shadow-md hover:opacity-90 transition"
+                        type="button"
+                        onClick={handleCalculate}
                     >
                         <Calculator className="w-4 h-4" />
                         Calculate

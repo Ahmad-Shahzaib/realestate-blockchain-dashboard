@@ -48,6 +48,7 @@ export interface ApiResponse {
 export interface ProjectPayload {
   name: string;
   description: string;
+  roi: number;
   location: {
     address: string;
     city: string;
@@ -91,7 +92,7 @@ export interface ProjectPayload {
   };
 }
 
-const API_BASE_URL = 'https://proptechapi.softsuitetech.com/api';
+const API_BASE_URL = 'http://localhost:5000/api';
 
 // Create Axios instance
 const api: AxiosInstance = axios.create({

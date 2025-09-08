@@ -57,7 +57,8 @@ export function OverviewCard({
   projectId,
 }: PropsType) {
   const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex);
-  const [projectImages, setProjectImages] = useState<string[]>(item?.galleryImages);
+  // Initialize projectImages to an empty array to avoid undefined
+  const [projectImages, setProjectImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -175,7 +176,11 @@ export function OverviewCard({
               e.currentTarget.src = defaultImages[1];
             }
           }}
-          unoptimized={projectImages[currentImageIndex].startsWith("http")}
+          // Only call .startsWith if projectImages[currentImageIndex] is defined
+          unoptimized={
+            !!projectImages[currentImageIndex] &&
+            projectImages[currentImageIndex].startsWith("http")
+          }
           priority
         />
 

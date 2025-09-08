@@ -14,6 +14,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { createProject } from "@/redux/reducers/projectslice/projectSlice";
 import { fetchCustomers } from "@/redux/reducers/customerslice/customerSlice";
+import Button from "@/common/Button";
 
 // Types for form and floor (unchanged)
 interface Floor {
@@ -398,7 +399,7 @@ export default function GlobeResidencyForm() {
                 {/* Header */}
                 <div className="text-left mb-8">
                     <div className="gap-3 mb-4">
-                        <h1 className="text-4xl font-bold text-left">Add Project</h1>
+                        <h1 className="text-4xl font-bold text-left text-black dark:text-white">Add Project</h1>
                     </div>
                 </div>
                 <form className="space-y-8" onSubmit={handleSubmit} autoComplete="off" noValidate>
@@ -406,7 +407,7 @@ export default function GlobeResidencyForm() {
                     {error && <div className="text-red-600 mt-4">{error}</div>}
                     {/* Basic Information */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="dark:text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaBuilding className="w-5 h-5" />
                                 Basic Information
@@ -431,7 +432,7 @@ export default function GlobeResidencyForm() {
                                 </label>
                                 <select
                                     id="category"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    className="w-full p-2.5 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
                                     value={form.category}
                                     onChange={handleChange}
                                 >
@@ -459,7 +460,7 @@ export default function GlobeResidencyForm() {
 
                     {/* Location Details */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="dark:text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaMapMarkerAlt className="w-5 h-5" />
                                 Location Details
@@ -547,7 +548,7 @@ export default function GlobeResidencyForm() {
 
                     {/* Developer Information */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="dark:text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaUser className="w-5 h-5" />
                                 Developer Information
@@ -610,7 +611,7 @@ export default function GlobeResidencyForm() {
 
                     {/* Project Timeline */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="dark:text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaCalendarAlt className="w-5 h-5" />
                                 Project Timeline & Status
@@ -697,7 +698,7 @@ export default function GlobeResidencyForm() {
 
                     {/* Pricing & Area */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="dark:text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaDollarSign className="w-5 h-5" />
                                 Pricing & Area Details
@@ -761,7 +762,7 @@ export default function GlobeResidencyForm() {
 
                     {/* Statistics */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="dark:text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaChartBar className="w-5 h-5" />
                                 Project Statistics
@@ -851,7 +852,7 @@ export default function GlobeResidencyForm() {
 
                     {/* Images & Media */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="dark:text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaCamera className="w-5 h-5" />
                                 Images & Media
@@ -889,7 +890,7 @@ export default function GlobeResidencyForm() {
 
                     {/* Floors Section */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="dark:text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaBuilding className="w-5 h-5" />
                                 Floor Details
@@ -1003,19 +1004,19 @@ export default function GlobeResidencyForm() {
                                     </div>
                                 </div>
                             ))}
-                            <button
-                                type="button"
-                                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                            <Button
+                                type="Button"
+
                                 onClick={addFloor}
                             >
                                 Add Floor
-                            </button>
+                            </Button>
                         </div>
                     </div>
 
                     {/* Token Information */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="dark:text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 <FaCoins className="w-5 h-5" />
                                 Token Information
@@ -1089,8 +1090,10 @@ export default function GlobeResidencyForm() {
 
                     {/* FAQs Section */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border mt-8">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="dark:text-white rounded-t-lg p-4">
+
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
+
                                 FAQs
                             </h2>
                         </div>
@@ -1116,29 +1119,29 @@ export default function GlobeResidencyForm() {
                                             onChange={(e) => handleFaqChange(idx, "answer", e.target.value)}
                                         />
                                     </div>
-                                    <button
-                                        type="button"
-                                        className="mt-6 md:mt-0 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                                    <Button
+                                        type="Button"
+
                                         onClick={() => removeFaq(idx)}
                                         disabled={faqs.length === 1}
                                     >
                                         Remove
-                                    </button>
+                                    </Button>
                                 </div>
                             ))}
-                            <button
-                                type="button"
-                                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                            <Button
+                                type="Button"
+
                                 onClick={addFaq}
                             >
                                 Add FAQ
-                            </button>
+                            </Button>
                         </div>
                     </div>
 
                     {/* Documents Section */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border mt-8">
-                        <div className="bg-black text-white rounded-t-lg p-4">
+                        <div className="dark:text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 Documents
                             </h2>
@@ -1155,7 +1158,7 @@ export default function GlobeResidencyForm() {
                                             value={doc}
                                             onChange={(e) => handleDocumentChange(idx, e.target.value)}
                                         />
-                                        <div className="mt-2">
+                                        <div className="mt-3">
                                             <input
                                                 type="file"
                                                 className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
@@ -1167,35 +1170,33 @@ export default function GlobeResidencyForm() {
                                             />
                                         </div>
                                     </div>
-                                    <button
-                                        type="button"
-                                        className="mt-6 md:mt-0 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                                    <Button
+
                                         onClick={() => removeDocument(idx)}
                                         disabled={documents.length === 1}
                                     >
                                         Remove
-                                    </button>
+                                    </Button>
                                 </div>
                             ))}
-                            <button
-                                type="button"
-                                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                            <Button
+
+
                                 onClick={addDocument}
                             >
                                 Add Document
-                            </button>
+                            </Button>
                         </div>
                     </div>
 
                     {/* Submit Button */}
                     <div className="flex justify-end pt-6">
-                        <button
-                            type="submit"
-                            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                        <Button
+                            type="Submit"
                             disabled={loading}
                         >
                             {loading ? "Creating..." : "Submit"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

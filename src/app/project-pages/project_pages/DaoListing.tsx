@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { ExternalLink, User } from 'lucide-react';
 
-export default function DAOListings() {
+interface DAOListingsProps {
+    project: any;
+}
+
+
+export default function ({ project }: DAOListingsProps) {
     const [activeTab, setActiveTab] = useState('listings');
 
     const listings = [

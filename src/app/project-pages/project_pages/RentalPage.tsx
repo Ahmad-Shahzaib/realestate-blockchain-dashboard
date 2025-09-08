@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, TrendingUp } from 'lucide-react';
 
-export default function Rentals() {
+export default function Rentals({ project }: { project: any }) {
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
@@ -14,7 +14,7 @@ export default function Rentals() {
                 {/* Base Rent */}
                 <div className="flex justify-between items-center p-4 rounded-xl bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white">
                     <span className="text-sm font-medium">BASE RENT</span>
-                    <span className="text-lg font-bold">120 PKR / sq.ft. / mo</span>
+                    <span className="text-lg font-bold">{project.floors[0].pricePerSqFt} PKR / sq.ft. / mo</span>
                 </div>
 
                 {/* Grid Stats */}

@@ -5,8 +5,13 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, Play, Eye, ArrowRight, Calendar, MapPin, CheckCircle } from "lucide-react";
 import ProjectTable from "./ProjectTable";
 import { FaFacebookF, FaGlobe, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import { Project } from "@/services/project.service";
 
-export default function ProjectSlider() {
+type ProjectSliderProps = {
+    project?: Project | null;
+};
+
+export default function ProjectSlider({ project }: ProjectSliderProps) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
 
@@ -191,8 +196,9 @@ export default function ProjectSlider() {
                                     <div>
                                         <p className="text-sm text-gray-700 dark:text-gray-300">Location</p>
                                         <p className="font-medium text-[#003049] dark:text-white">
-                                            Plot 59, Block A Divine Gardens, Lahore, Punjab
+                                            {project?.location?.city || "No location available"}
                                         </p>
+
                                     </div>
                                 </div>
                                 <div className="flex items-start gap-3">
@@ -212,7 +218,7 @@ export default function ProjectSlider() {
                                     <div>
                                         <p className="text-sm text-gray-700 dark:text-gray-300">Operational Since</p>
                                         <p className="font-medium text-[#003049] dark:text-white">
-                                            12 December, 2022
+                                            {project?.startDate ? new Date(project.startDate).toLocaleDateString() : "N/A"}
                                         </p>
                                     </div>
                                 </div>
@@ -256,7 +262,9 @@ export default function ProjectSlider() {
                                     </span>
                                     <ArrowRight className="w-4 h-4 text-[#0277BD]" />
                                 </div>
-                                <div className="text-xl font-semibold text-[#003049] dark:text-white">28,000</div>
+                                <div className="text-xl font-semibold text-[#003049] dark:text-white">
+                                    {project.floors[0].pricePerSqFt}
+                                </div>
                                 <div className="text-sm text-gray-700 dark:text-gray-400">PKR / sq. ft.</div>
                             </div>
 
@@ -287,7 +295,9 @@ export default function ProjectSlider() {
                                 <div className="text-sm font-medium text-gray-700 uppercase tracking-wide mb-2 dark:text-gray-300">
                                     Area Available for Sale
                                 </div>
-                                <div className="text-xl font-semibold text-[#003049] dark:text-white">20,059</div>
+                                <div className="text-xl font-semibold text-[#003049] dark:text-white">
+                                    {project?.totalArea ? `${(project.totalArea).toLocaleString()}` : "N/A"}
+                                </div>
                                 <div className="text-sm text-gray-700 dark:text-gray-400">sq. ft.</div>
                             </div>
                         </div>
@@ -296,7 +306,7 @@ export default function ProjectSlider() {
 
             </div>
             <div className="pt-3">
-                <ProjectTable />
+                <ProjectTable key={project?._id} project={project} />
             </div>
         </>
     );

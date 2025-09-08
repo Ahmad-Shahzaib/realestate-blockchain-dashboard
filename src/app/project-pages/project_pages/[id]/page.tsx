@@ -20,7 +20,7 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
         const fetchProjects = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get("https://proptechapi.softsuitetech.com/api/projects");
+                const response = await axios.get("http://localhost:5000/api/projects");
                 if (response.data && response.data.data && response.data.data.length > 0) {
                     setProjects(response.data.data);
                 }
@@ -47,6 +47,7 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
 
         fetchProjectDetails();
     }, [projectId]);
+    console.log("Projects fetched:", projects);
 
     const router = useRouter();
     const handleCardClick = () => {
@@ -118,7 +119,7 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
                 </div>
                 {/* Project Slider and Table */}
                 <div>
-                    <ProjectSlider />
+                    <ProjectSlider project={project} />
                 </div>
 
 

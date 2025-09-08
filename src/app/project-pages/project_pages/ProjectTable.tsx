@@ -6,7 +6,7 @@ import LocationSection from './LocationSection';
 import DocumentPage from './DocumentPage';
 import FaqAccordion from './FaqAccordion';
 
-const ProjectTable = () => {
+const ProjectTable = ({ project }: { project: any }) => {
     const [activeTab, setActiveTab] = useState('liveOrders');
 
     const tabs = [
@@ -19,22 +19,23 @@ const ProjectTable = () => {
         { id: 'investors', label: 'Investors' },
         { id: 'faqs', label: 'FAQs' },
     ];
+    console.log("Project roi:", project.roi);
 
     const renderTabContent = () => {
         switch (activeTab) {
             case 'liveOrders':
                 return (
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 ">
-                        <DAOListings />
-                        <Rentals />
+                        <DAOListings project={project} />
+                        <Rentals project={project} />
                     </div>
                 );
             case 'keyPoints':
-                return <QubeLahore />;
+                return <QubeLahore project={project} />;
             case 'rentals':
                 return (
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                        <Rentals />
+                        <Rentals project={project} />
                         <div className="p-6 rounded-2xl shadow-md bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-gray-700 hover:shadow-xl transition">
                             <h3 className="text-lg lg:text-xl font-bold text-[#003049] dark:text-white mb-4">
                                 Investment Calculator
@@ -128,7 +129,10 @@ const ProjectTable = () => {
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="dark:text-white dark:text-gray-300">ROI:</span>
-                                        <span className="font-semibold text-[#003049] dark:text-white">--%</span>
+
+                                        <span className="font-semibold text-[#003049] dark:text-white">
+                                            {project?.roi ? `${project.roi}%` : "--%"}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -139,8 +143,9 @@ const ProjectTable = () => {
             case 'documents':
                 return (
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                        <LocationSection />
-                        <DocumentPage />
+                        <LocationSection project={project} />
+
+                        <DocumentPage project={project} />
                     </div>
                 );
             case 'stats':
@@ -236,12 +241,12 @@ const ProjectTable = () => {
 
                 );
             case 'faqs':
-                return <FaqAccordion />;
+                return <FaqAccordion project={project} />;
             default:
                 return (
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                        <DAOListings />
-                        <Rentals />
+                        <DAOListings project={project} />
+                        <Rentals project={project} />
                     </div>
                 );
         }
