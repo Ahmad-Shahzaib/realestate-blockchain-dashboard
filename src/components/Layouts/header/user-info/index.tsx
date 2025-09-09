@@ -38,8 +38,8 @@ export function UserInfo() {
 
   // Default user info if profile not loaded
   const defaultUser = {
-    name: "User",
-    email: "user@example.com",
+    name: "",
+    email: "",
     img: "/images/user.png",
   };
 

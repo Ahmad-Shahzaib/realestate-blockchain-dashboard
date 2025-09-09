@@ -71,6 +71,12 @@ interface FormState {
     pricePerToken: string;
     walletAddress: string;
     customer?: string;
+    bankDetails?: {
+        bankName: string;
+        accountNumber: string;
+        accountTitle: string;
+        iban?: string | null;
+    }
 }
 
 const initialFormState: FormState = {
@@ -111,6 +117,12 @@ const initialFormState: FormState = {
     pricePerToken: "",
     walletAddress: "",
     customer: "68b7f3511ff5d34a6c9d723b",
+    bankDetails: {
+        bankName: "",
+        accountNumber: "",
+        accountTitle: "",
+        iban: "",
+    }
 };
 
 const initialFloor: Floor = {
@@ -214,6 +226,24 @@ function useGlobeResidencyForm() {
         setDocuments((docs) => docs.filter((_, i) => i !== idx));
     }, []);
 
+    // Handle bank details change
+    const handleBankDetailsChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+            const { id, value } = e.target;
+            setForm((f) => ({
+                ...f,
+                bankDetails: {
+                    bankName: f.bankDetails?.bankName ?? "",
+                    accountNumber: f.bankDetails?.accountNumber ?? "",
+                    accountTitle: f.bankDetails?.accountTitle ?? "",
+                    iban: f.bankDetails?.iban ?? "",
+                    [id]: value,
+                },
+            }));
+        },
+        []
+    );
+
     const handleSubmit = useCallback(
         async (e: React.FormEvent) => {
             e.preventDefault();
@@ -290,22 +320,29 @@ function useGlobeResidencyForm() {
                     faqs: faqs.filter((f) => f.question && f.answer),
                     documents: documents.filter((d) => d),
                     customer: "68b7f3511ff5d34a6c9d723b",
+                    bankDetails: {
+                        bankName: form.bankDetails?.bankName || "",
+                        accountNumber: form.bankDetails?.accountNumber || "",
+                        accountTitle: form.bankDetails?.accountTitle || "",
+                        iban: form.bankDetails?.iban || null,
+                    },
                 };
                 await dispatch(createProject(payload)).unwrap();
                 setSuccess(true);
-                setForm(initialFormState);
-                setFloors([initialFloor]);
-                setFaqs([{ question: "", answer: "" }]);
-                setDocuments([""]);
             } catch (err: any) {
-                if (typeof window !== "undefined" && window.console) {
-                    console.error("Project creation failed:", err);
-                }
-                setError(err.message || (typeof err === "string" ? err : "Submission failed"));
+                setError(err?.message || "Failed to create project.");
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         },
-        [form, floors, isValid, faqs, documents, loading, dispatch]
+        [
+            form,
+            floors,
+            faqs,
+            documents,
+            isValid,
+            dispatch
+        ]
     );
 
     return {
@@ -328,6 +365,7 @@ function useGlobeResidencyForm() {
         handleDocumentFileChange,
         addDocument,
         removeDocument,
+        handleBankDetailsChange,
     };
 }
 
@@ -352,6 +390,7 @@ export default function GlobeResidencyForm() {
         handleDocumentFileChange,
         addDocument,
         removeDocument,
+        handleBankDetailsChange, // add this
     } = useGlobeResidencyForm();
 
     const dispatch = useDispatch();
@@ -366,6 +405,18 @@ export default function GlobeResidencyForm() {
             dispatch(fetchCustomers());
         }
     }, [customerStatus, dispatch]);
+
+    // Placeholder for banks API
+    const [banks, setBanks] = useState<{ name: string; code: string }[]>([]);
+    useEffect(() => {
+        // TODO: Replace with real API call
+        setBanks([
+            { name: "Meezan Bank", code: "MEEZAN" },
+            { name: "HBL", code: "HBL" },
+            { name: "UBL", code: "UBL" },
+            { name: "MCB", code: "MCB" },
+        ]);
+    }, []);
 
     return (
         <div className="min-h-screen shadow-lg rounded-md py-8 px-4">
@@ -439,7 +490,25 @@ export default function GlobeResidencyForm() {
                                     <option value="">Select category</option>
                                     <option value="residential">Residential</option>
                                     <option value="commercial">Commercial</option>
-                                    <option value="mixed">Mixed Use</option>
+                                </select>
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="subcategory" className="text-sm font-semibold">
+                                    Subcategory
+                                </label>
+                                <select
+                                    id="subcategory"
+                                    className="w-full p-2 border border-gray-200 rounded focus:border-orange-500 focus:ring-2 focus:ring-orange-500 outline-none"
+                                    value={form.subcategory}
+                                    onChange={handleChange}
+                                >
+                                    <option value="">Select subcategory</option>
+                                    <option value="apartment">Apartment</option>
+                                    <option value="villa">Villa</option>
+                                    <option value="office">Office</option>
+                                    <option value="retail">Retail</option>
+                                    <option value="penthouse">Penthouse</option>
+                                    <option value="townhouse">Townhouse</option>
                                 </select>
                             </div>
                             <div className="md:col-span-2 space-y-2">
@@ -632,26 +701,6 @@ export default function GlobeResidencyForm() {
                                     <option value="under_construction">Under Construction</option>
                                     <option value="completed">Completed</option>
                                     <option value="planning">Planning</option>
-                                </select>
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="subcategory" className="text-sm font-semibold">
-                                    Subcategory
-                                </label>
-                                <select
-                                    id="subcategory"
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-orange-500 focus:ring-2 focus:ring-orange-500 outline-none"
-                                    value={form.subcategory}
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Select subcategory</option>
-                                    <option value="apartment">Apartment</option>
-                                    <option value="villa">Villa</option>
-                                    <option value="office">Office</option>
-                                    <option value="retail">Retail</option>
-                                    <option value="plot">Plot</option>
-                                    <option value="penthouse">Penthouse</option>
-                                    <option value="townhouse">Townhouse</option>
                                 </select>
                             </div>
                             <div className="space-y-2">
@@ -1005,7 +1054,7 @@ export default function GlobeResidencyForm() {
                                 </div>
                             ))}
                             <Button
-                                type="Button"
+                                type="button"
 
                                 onClick={addFloor}
                             >
@@ -1120,7 +1169,7 @@ export default function GlobeResidencyForm() {
                                         />
                                     </div>
                                     <Button
-                                        type="Button"
+                                        type="button"
 
                                         onClick={() => removeFaq(idx)}
                                         disabled={faqs.length === 1}
@@ -1130,7 +1179,7 @@ export default function GlobeResidencyForm() {
                                 </div>
                             ))}
                             <Button
-                                type="Button"
+                                type="button"
 
                                 onClick={addFaq}
                             >
@@ -1138,7 +1187,78 @@ export default function GlobeResidencyForm() {
                             </Button>
                         </div>
                     </div>
+                    {/* bank detail */}
+                    <div className="flex items-center justify-center ">
+                        <div className=" w-full  p-6 rounded-lg shadow-md border border-gray-200">
+                            <h2 className="text-xl font-semibold mb-4 ">Add Bank Details</h2>
 
+                            {/* Bank Name */}
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium mb-1 dark:text-white">
+                                    Bank Name
+                                </label>
+                                <select
+                                    id="bankName"
+                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    value={form.bankDetails?.bankName || ""}
+                                    onChange={handleBankDetailsChange}
+                                >
+                                    <option value="">Select Bank</option>
+                                    {banks.map((bank) => (
+                                        <option key={bank.code} value={bank.name}>{bank.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Account Number */}
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium mb-1 dark:text-white">Account Number</label>
+                                <input
+                                    id="accountNumber"
+                                    type="text"
+                                    placeholder="1234567890123456"
+                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    value={form.bankDetails?.accountNumber || ""}
+                                    onChange={handleBankDetailsChange}
+                                />
+                            </div>
+
+                            {/* Account Title */}
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium mb-1 dark:text-white">Account Title</label>
+                                <input
+                                    id="accountTitle"
+                                    type="text"
+                                    placeholder="Muhammad Shakeel"
+                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    value={form.bankDetails?.accountTitle || ""}
+                                    onChange={handleBankDetailsChange}
+                                />
+                            </div>
+
+                            {/* IBAN */}
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium mb-1 dark:text-white">
+                                    IBAN <span className="text-gray-400">(Optional)</span>
+                                </label>
+                                <input
+                                    id="iban"
+                                    type="text"
+                                    placeholder="PK36SCBL000000123456702"
+                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    value={form.bankDetails?.iban || ""}
+                                    onChange={handleBankDetailsChange}
+                                />
+                            </div>
+
+                            {/* Note */}
+                            <p className="text-xs text-gray-500 mb-4">
+                                All account information is accurate & I am responsible for the information provided above.
+                            </p>
+
+
+                        </div>
+                    </div>
                     {/* Documents Section */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border mt-8">
                         <div className="dark:text-white rounded-t-lg p-4">
@@ -1192,7 +1312,7 @@ export default function GlobeResidencyForm() {
                     {/* Submit Button */}
                     <div className="flex justify-end pt-6">
                         <Button
-                            type="Submit"
+                            type="submit"
                             disabled={loading}
                         >
                             {loading ? "Creating..." : "Submit"}

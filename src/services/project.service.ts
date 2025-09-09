@@ -59,6 +59,12 @@ export interface ProjectPayload {
       longitude: number;
     };
   };
+  bankDetails: {
+    bankName: string;
+    accountNumber: string;
+    accountTitle: string;
+    iban?: string | null;
+  };
   developer: {
     name: string;
     description: string;
@@ -91,6 +97,7 @@ export interface ProjectPayload {
     max: number;
   };
 }
+
 
 const API_BASE_URL = 'http://localhost:5000/api';
 

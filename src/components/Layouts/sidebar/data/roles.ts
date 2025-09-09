@@ -157,6 +157,12 @@ export const ADMIN_NAV_DATA = [
         items: [],
       },
       {
+        title: "Refrerals",
+        url: "/admin/referals",
+        icon: FaFirefoxBrowser,
+        items: [],
+      },
+      {
         title: "Transaction",
         url: "/admin/transaction",
         icon: GrTransaction,
