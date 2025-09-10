@@ -16,6 +16,10 @@ interface UserProfile {
     dateOfBirth?: string;
     gender?: string;
     [key: string]: any;
+    country?: string;
+    city?: string;
+    address?: string;
+
 }
 
 export default function PersonalDetails() {
@@ -28,6 +32,9 @@ export default function PersonalDetails() {
         phone: "",
         dob: "",
         gender: "",
+        country: "",
+        city: "",
+        address: ""
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
@@ -53,6 +60,9 @@ export default function PersonalDetails() {
                         phone: user.phoneNumber || "",
                         dob: user.dateOfBirth || "",
                         gender: user.gender || "",
+                        country: user.country || "",
+                        city: user.city || "",
+                        address: user.address || ""
                     });
                 }
             } catch (error) {
@@ -89,7 +99,11 @@ export default function PersonalDetails() {
                 email: formData.email,
                 phoneNumber: formData.phone,
                 dateOfBirth: formData.dob,
-                gender: formData.gender
+                gender: formData.gender,
+                country: formData.country,
+                city: formData.city,
+                address: formData.address
+
             };
 
             const result = await putRequest(

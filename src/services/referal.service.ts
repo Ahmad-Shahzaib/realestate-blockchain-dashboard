@@ -132,6 +132,16 @@ export const ReferralService = {
             throw error; // Already handled by interceptor
         }
     },
+    // get list of referrals
+    getReferrals: async (): Promise<Referral[]> => {
+        try {
+            const response = await api.get<{ status: string; data: Referral[] }>(`${BASE_URL}/referral/my-referrals`);
+            return response.data.data;
+        }
+        catch (error: any) {
+            throw error; // Already handled by interceptor
+        }
+    }
 };
 
 export default ReferralService;
