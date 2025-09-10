@@ -1,18 +1,20 @@
-// components/ReferralModal.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../redux/store"; // adjust path
-// ✅ Correct import
-import { createReferral } from "@/redux/reducers/referal/referalSlice"; // ✅ use thunk
-
-
+import { createReferral } from "@/redux/reducers/referal/referalSlice"; // ✅ create thunk
 import Button from "@/common/Button";
+import { Referral } from "./page";
 
 type Props = {
     onClose: () => void;
+    referral?: Referral & { _id?: string }; // optional for edit
+    onSave?: (data: Partial<Referral>) => void; // optional for update
+    refreshTable?: () => void; // 🔹 new
+
+
 };
 
-const ReferralModal: React.FC<Props> = ({ onClose }) => {
+const ReferralModal: React.FC<Props> = ({ onClose, referral, onSave }) => {
     const dispatch = useDispatch<AppDispatch>();
 
     const [formData, setFormData] = useState({
@@ -21,6 +23,18 @@ const ReferralModal: React.FC<Props> = ({ onClose }) => {
         description: "",
         isActive: false,
     });
+
+    // 🔹 Prefill data if editing
+    useEffect(() => {
+        if (referral) {
+            setFormData({
+                level: referral.level,
+                percentage: referral.percentage,
+                description: referral.description,
+                isActive: referral.status, // map status to isActive
+            });
+        }
+    }, [referral]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value, type, checked } = e.target;
@@ -32,16 +46,36 @@ const ReferralModal: React.FC<Props> = ({ onClose }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        dispatch(createReferral(formData))
-            .unwrap()
-            .then(() => {
-                onClose();
-            })
-            .catch((err) => {
-                console.error("Failed to create referral:", err);
-            });
-    };
 
+        if (onSave && referral?._id) {
+            // 🔹 Update mode
+            onSave({
+                level: formData.level,
+                percentage: formData.percentage,
+                description: formData.description,
+                status: formData.isActive,
+            });
+        } else {
+            // 🔹 Create mode
+            dispatch(
+                createReferral({
+                    level: formData.level,
+                    percentage: formData.percentage,
+                    description: formData.description,
+                    isActive: formData.isActive,
+                })
+            )
+                .unwrap()
+                .then(() => {
+                    onClose();
+                })
+                .catch((err) => {
+                    console.error("Failed to create referral:", err);
+                });
+        }
+
+        onClose();
+    };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -54,12 +88,12 @@ const ReferralModal: React.FC<Props> = ({ onClose }) => {
                 </button>
 
                 <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">
-                    Add Referral Information
+                    {referral ? "Edit Referral Information" : "Add Referral Information"}
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Status */}
-                    <div className="flex justify-between">
+                    {/* <div className="flex justify-between">
                         <label className="block text-gray-600 dark:text-gray-400 text-sm font-medium mb-2">
                             Status
                         </label>
@@ -76,7 +110,7 @@ const ReferralModal: React.FC<Props> = ({ onClose }) => {
                                     }`}
                             ></div>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Level */}
                     <div>
@@ -125,7 +159,7 @@ const ReferralModal: React.FC<Props> = ({ onClose }) => {
                     </div>
 
                     <Button type="submit" className="w-full font-semibold py-2 px-4">
-                        Submit
+                        {referral ? "Update" : "Create"}
                     </Button>
                 </form>
             </div>

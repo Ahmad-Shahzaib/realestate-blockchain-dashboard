@@ -114,6 +114,24 @@ export const ReferralService = {
             throw error; // Already handled by interceptor
         }
     },
+    //  create deleteReferral method (also missing before)
+    deleteReferral: async (id: string): Promise<void> => {
+        try {
+            await api.delete(`${BASE_URL}/admin/refer-settings/${id}`);
+        } catch (error: any) {
+            throw error; // Already handled by interceptor
+        }
+    },
+
+    //  create updateReferral method (also missing before)
+    updateReferral: async (id: string, data: Partial<Referral>): Promise<Referral> => {
+        try {
+            const response = await api.put<ReferralApiResponse>(`${BASE_URL}/admin/refer-settings/${id}`, data);
+            return response.data.data;
+        } catch (error: any) {
+            throw error; // Already handled by interceptor
+        }
+    },
 };
 
 export default ReferralService;

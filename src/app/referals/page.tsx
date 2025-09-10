@@ -1,9 +1,10 @@
 "use client"; // Mark as client component for Next.js
 
 import { useState, useEffect } from "react";
-import { Copy, Mail, Users, Gift, CheckCircle } from "lucide-react";
+import { Copy, Mail, Users, Gift, CheckCircle, Facebook, Twitter, Linkedin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast"; // Optional: For user feedback notifications
+
 
 // Mock service for referral data (replace with actual ProjectService or ReferralService)
 const ReferralService = {
@@ -152,52 +153,145 @@ export default function Page() {
 
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Referral Link Section */}
-                <section className="mb-8">
-                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-                        <h2 className="text-[#003049] dark:text-[#E0E7FF] font-bold text-lg mb-4">Your Referral Link</h2>
-                        <div className="flex items-center gap-4">
-                            <input
-                                type="text"
-                                value={referralData.referralLink}
-                                readOnly
-                                className="flex-1 p-3 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 bg-[#F5F7FA] dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00B894]"
-                            />
-                            <button
-                                onClick={handleCopyLink}
-                                className="px-4 py-3 rounded-lg font-semibold bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white shadow-lg hover:opacity-90 transition flex items-center gap-2"
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Invite Form Section */}
+                    <section>
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                            <h2 className="text-[#003049] dark:text-[#E0E7FF] font-bold text-lg mb-4">
+                                Invite Friends
+                            </h2>
+                            <form
+                                onSubmit={handleSendInvite}
+                                className="flex flex-col sm:flex-row gap-4"
                             >
-                                <Copy className="w-4 h-4" />
-                                Copy Link
-                            </button>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="Enter friend's email"
+                                    className="flex-1 p-3 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 bg-[#F5F7FA] dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00B894]"
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={inviteLoading}
+                                    className={`px-4 py-3 rounded-lg font-semibold bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white shadow-lg transition flex items-center gap-2 ${inviteLoading
+                                        ? "opacity-50 cursor-not-allowed"
+                                        : "hover:opacity-90"
+                                        }`}
+                                >
+                                    <Mail className="w-4 h-4" />
+                                    {inviteLoading ? "Sending..." : "Send Invite"}
+                                </button>
+                            </form>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                {/* Invite Form Section */}
-                <section className="mb-8">
-                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-                        <h2 className="text-[#003049] dark:text-[#E0E7FF] font-bold text-lg mb-4">Invite Friends</h2>
-                        <form onSubmit={handleSendInvite} className="flex flex-col sm:flex-row gap-4">
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter friend's email"
-                                className="flex-1 p-3 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 bg-[#F5F7FA] dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00B894]"
-                            />
-                            <button
-                                type="submit"
-                                disabled={inviteLoading}
-                                className={`px-4 py-3 rounded-lg font-semibold bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white shadow-lg transition flex items-center gap-2 ${inviteLoading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"}`}
-                            >
-                                <Mail className="w-4 h-4" />
-                                {inviteLoading ? "Sending..." : "Send Invite"}
-                            </button>
-                        </form>
-                    </div>
-                </section>
+                    {/* Referral Link Section */}
+                    <section>
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                            <h2 className="text-[#003049] dark:text-[#E0E7FF] font-bold text-lg mb-4">
+                                Your Referral Link
+                            </h2>
+
+                            <div className="flex items-center gap-4">
+                                {/* Input with Copy inside */}
+                                <div className="relative flex-1">
+                                    <input
+                                        type="text"
+                                        value={referralData.referralLink}
+                                        readOnly
+                                        className="w-full p-3 pr-12 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 bg-[#F5F7FA] dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00B894]"
+                                    />
+                                    <button
+                                        type="button"
+                                        aria-label="Copy Referral Link"
+                                        onClick={handleCopyLink}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#00B894] transition"
+                                    >
+                                        <Copy className="w-5 h-5" />
+                                    </button>
+                                </div>
+
+                                {/* Social Icons */}
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        aria-label="Share on Facebook"
+                                        className="p-2 rounded-full bg-blue-600 text-white hover:opacity-90 transition"
+                                    >
+                                        <Facebook className="w-5 h-5" />
+                                    </button>
+                                    <button
+                                        aria-label="Share on Twitter"
+                                        className="p-2 rounded-full bg-sky-500 text-white hover:opacity-90 transition"
+                                    >
+                                        <Twitter className="w-5 h-5" />
+                                    </button>
+                                    <button
+                                        aria-label="Share on LinkedIn"
+                                        className="p-2 rounded-full bg-blue-700 text-white hover:opacity-90 transition"
+                                    >
+                                        <Linkedin className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
             </main>
+
+            <div className="overflow-x-auto p-6">
+                <table className="min-w-full border-collapse overflow-hidden rounded-2xl shadow-lg">
+                    <thead>
+                        <tr className="bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white">
+                            <th className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">
+                                Level
+                            </th>
+                            <th className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">
+                                Percentage
+                            </th>
+                            <th className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">
+                                Description
+                            </th>
+                            <th className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th className="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">
+                                Created At
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-800">
+                        <tr className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                            <td className="px-6 py-4 font-medium text-gray-800 dark:text-gray-100">1</td>
+                            <td className="px-6 py-4 text-gray-600 dark:text-gray-300">10%</td>
+                            <td className="px-6 py-4 text-gray-600 dark:text-gray-300">
+                                Direct referral - 10% commission
+                            </td>
+                            <td className="px-6 py-4">
+                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 dark:bg-green-700 dark:text-green-100">
+                                    Active
+                                </span>
+                            </td>
+                            <td className="px-6 py-4 text-gray-600 dark:text-gray-300">2025-09-10</td>
+                        </tr>
+
+                        <tr className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                            <td className="px-6 py-4 font-medium text-gray-800 dark:text-gray-100">2</td>
+                            <td className="px-6 py-4 text-gray-600 dark:text-gray-300">5%</td>
+                            <td className="px-6 py-4 text-gray-600 dark:text-gray-300">
+                                Second level - 5% commission
+                            </td>
+                            <td className="px-6 py-4">
+                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 dark:bg-red-700 dark:text-red-100">
+                                    Inactive
+                                </span>ing
+                            </td>
+                            <td className="px-6 py-4 text-gray-600 dark:text-gray-300">2025-09-09</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
 
     );
