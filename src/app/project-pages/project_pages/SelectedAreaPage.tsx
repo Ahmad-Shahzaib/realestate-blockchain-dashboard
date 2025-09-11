@@ -3,8 +3,11 @@
 
 import type { NextPage } from "next";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 import { Info, Building2, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
+
 
 const SelectedAreaPage: NextPage = () => {
     const PRICE_PER_SQFT = 16000; // Price per square foot in PKR
@@ -13,6 +16,7 @@ const SelectedAreaPage: NextPage = () => {
     const lockedArea = 163933;
     const availableArea = totalArea - lockedArea; // 460,067
     const pledgeAmount = selectedArea * PRICE_PER_SQFT;
+    const router = useRouter();
 
     // Animation variants for panels and cards
     const panelVariants = {
@@ -27,6 +31,9 @@ const SelectedAreaPage: NextPage = () => {
     const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number.parseInt(e.target.value);
         setSelectedArea(value);
+    };
+    const handleClick = () => {
+        router.push("/project-pages/investment-details");
     };
 
     return (
@@ -210,6 +217,7 @@ const SelectedAreaPage: NextPage = () => {
 
                     <div className="pt-4 border-t dark:border-gray-700">
                         <button
+                            onClick={handleClick}
                             className="w-full bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white py-3 lg:py-4 rounded-xl font-semibold text-base lg:text-lg hover:from-[#00A383] hover:to-[#00BFA5] transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={selectedArea === 0}
                         >
