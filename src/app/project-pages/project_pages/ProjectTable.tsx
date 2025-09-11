@@ -5,6 +5,7 @@ import QubeLahore from './QubePage';
 import LocationSection from './LocationSection';
 import DocumentPage from './DocumentPage';
 import FaqAccordion from './FaqAccordion';
+import InvestmentCalculator from './InvestmentCalculator';
 
 const ProjectTable = ({ project }: { project: any }) => {
     const [activeTab, setActiveTab] = useState('liveOrders');
@@ -27,63 +28,8 @@ const ProjectTable = ({ project }: { project: any }) => {
                 return (
                     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 ">
                         {/* <DAOListings project={project} /> */}
-                        <div className="p-6 rounded-2xl shadow-md bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition">
-                            <h3 className="text-lg lg:text-xl font-bold text-[#003049] dark:text-[#00D2B6] mb-6">
-                                Calculate Rentals
-                            </h3>
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                {/* Left Side */}
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium dark:text-white dark:text-gray-300 mb-2">
-                                            Investment Amount (PKR)
-                                        </label>
-                                        <input
-                                            type="number"
-                                            placeholder="Enter investment amount..."
-                                            className="w-full p-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0277BD] bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium dark:text-white dark:text-gray-300 mb-2">
-                                            Area (sq. ft.)
-                                        </label>
-                                        <input
-                                            type="number"
-                                            placeholder="Enter area..."
-                                            className="w-full p-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0277BD] bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-                                        />
-                                    </div>
-                                    <button className="w-full px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white shadow-lg hover:opacity-90 transition">
-                                        Calculate Returns
-                                    </button>
-                                </div>
+                        <InvestmentCalculator />
 
-                                {/* Right Side */}
-                                <div className="p-4 dark:bg-dark dark:bg-gray-800 rounded-lg">
-                                    <h4 className="font-semibold text-[#003049] dark:text-[#00D2B6] mb-4">
-                                        Estimated Returns
-                                    </h4>
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between">
-                                            <span className="dark:text-white dark:text-gray-300">Monthly Rental:</span>
-                                            <span className="font-semibold text-[#003049] dark:text-white">-- PKR</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="dark:text-white dark:text-gray-300">Yearly Rental:</span>
-                                            <span className="font-semibold text-[#003049] dark:text-white">-- PKR</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="dark:text-white dark:text-gray-300">ROI:</span>
-
-                                            <span className="font-semibold text-[#003049] dark:text-white">
-                                                {project?.roi ? `${project.roi}%` : "--%"}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <Rentals project={project} />
                     </div>
                 );

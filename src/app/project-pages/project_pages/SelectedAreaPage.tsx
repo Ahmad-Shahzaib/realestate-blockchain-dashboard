@@ -218,7 +218,7 @@ const SelectedAreaPage: NextPage = () => {
                     <div className="pt-4 border-t dark:border-gray-700">
                         <button
                             onClick={handleClick}
-                            className="w-full bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white py-3 lg:py-4 rounded-xl font-semibold text-base lg:text-lg hover:from-[#00A383] hover:to-[#00BFA5] transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-2 bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white py-3 lg:py-4 rounded-xl font-semibold text-base lg:text-lg hover:from-[#00A383] hover:to-[#00BFA5] transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={selectedArea === 0}
                         >
                             {selectedArea === 0

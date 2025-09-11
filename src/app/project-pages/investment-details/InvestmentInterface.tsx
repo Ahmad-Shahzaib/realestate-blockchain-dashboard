@@ -9,71 +9,80 @@ export default function TransactionPage() {
 
     const steps = [
         "Pledge Request Submission",
-        "Payment guide",
+        "Payment Guide",
         "Confirm Payment",
         "Transaction Completed!",
         "Sync with Blockchain",
     ];
 
     return (
-        <div className="max-w-7xl mx-auto p-6">
-            {/* Tabs */}
-            <div className="flex border-b border-gray-200">
-                <button
-                    onClick={() => setActiveTab("details")}
-                    className={`px-6 py-2 font-medium ${activeTab === "details"
-                        ? "text-blue-600 border-b-2 border-blue-600"
-                        : "text-gray-500"
-                        }`}
-                >
-                    DETAILS
-                </button>
-                <button
-                    onClick={() => setActiveTab("attachments")}
-                    className={`px-6 py-2 font-medium ${activeTab === "attachments"
-                        ? "text-blue-600 border-b-2 border-blue-600"
-                        : "text-gray-500"
-                        }`}
-                >
-                    ATTACHMENTS
-                </button>
-            </div>
-
-            {/* Tab Content */}
-            {activeTab === "details" && (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-                    {/* Left Stepper Section */}
-                    <div className="bg-white border rounded-lg p-6 shadow-sm">
-                        <div className="mb-6">
-                            <p className="flex items-center text-yellow-600 font-medium">
-                                <Circle className="w-5 h-5 mr-2" /> Pending
-                            </p>
-                            <p className="text-gray-500 text-sm">
-                                Please complete the payment to get your transaction verified.
-                            </p>
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex justify-center items-start py-16">
+            <div className="w-full max-w-7xl px-6">
+                {/* Header with Tabs */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 mb-8">
+                    <div className="flex justify-between items-center mb-6">
+                        <h1 className="text-3xl font-bold text-gray-800 dark:text-white tracking-tight">
+                            Transaction Dashboard
+                        </h1>
+                        <div className="flex gap-4">
+                            <button
+                                onClick={() => setActiveTab("details")}
+                                className={`px-6 py-2 rounded-full font-semibold text-lg transition-all ${activeTab === "details"
+                                    ? "bg-blue-600 text-white shadow-md"
+                                    : "text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    }`}
+                            >
+                                Details
+                            </button>
+                            <button
+                                onClick={() => setActiveTab("attachments")}
+                                className={`px-6 py-2 rounded-full font-semibold text-lg transition-all ${activeTab === "attachments"
+                                    ? "bg-blue-600 text-white shadow-md"
+                                    : "text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    }`}
+                            >
+                                Attachments
+                            </button>
                         </div>
+                    </div>
+                </div>
 
-                        {/* Steps */}
-                        <div className="space-y-6">
-                            {steps.map((step, index) => {
-                                const stepNum = index + 1;
-                                const isCompleted = stepNum < currentStep;
-                                const isActive = stepNum === currentStep;
+                {/* Tab Content */}
+                {activeTab === "details" && (
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        {/* Left Stepper Section */}
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
+                            <div className="mb-8">
+                                <p className="flex items-center text-yellow-600 dark:text-yellow-400 font-semibold text-lg">
+                                    <Circle className="w-6 h-6 mr-3" /> Pending
+                                </p>
+                                <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
+                                    Complete the payment to verify your transaction.
+                                </p>
+                            </div>
 
-                                return (
-                                    <div key={stepNum} className="flex flex-col">
-                                        <div className="flex items-start">
-                                            {isCompleted ? (
-                                                <CheckCircle className="text-green-500 w-5 h-5 mt-1 mr-2" />
-                                            ) : (
-                                                <Circle
-                                                    className={`w-5 h-5 mt-1 mr-2 ${isActive ? "text-blue-600" : "text-gray-400"
-                                                        }`}
-                                                />
-                                            )}
-                                            <div>
+                            {/* Steps */}
+                            <div className="space-y-8">
+                                {steps.map((step, index) => {
+                                    const stepNum = index + 1;
+                                    const isCompleted = stepNum < currentStep;
+                                    const isActive = stepNum === currentStep;
+
+                                    return (
+                                        <div key={stepNum} className="flex items-start group">
+                                            <div className="flex-shrink-0">
+                                                {isCompleted ? (
+                                                    <CheckCircle className="text-green-500 w-6 h-6 mt-1 mr-4" />
+                                                ) : (
+                                                    <Circle
+                                                        className={`w-6 h-6 mt-1 mr-4 ${isActive ? "text-blue-600 dark:text-blue-400" : "text-gray-400 dark:text-gray-500"
+                                                            } group-hover:scale-110 transition-transform`}
+                                                    />
+                                                )}
+                                            </div>
+                                            <div className="flex-1">
                                                 <p
-                                                    className={`font-medium ${isActive ? "text-blue-600" : ""
+                                                    className={`font-semibold text-lg ${isActive ? "text-blue-600 dark:text-blue-400" : "text-gray-700 dark:text-gray-200"
                                                         }`}
                                                 >
                                                     {step}
@@ -82,13 +91,13 @@ export default function TransactionPage() {
                                                 {/* Step-specific actions */}
                                                 {isActive && stepNum === 2 && (
                                                     <>
-                                                        <p className="text-red-500 font-semibold">
+                                                        <p className="text-red-500 dark:text-red-400 font-semibold text-lg mt-2">
                                                             22,110,000 PKR Due
                                                         </p>
                                                         <input
                                                             type="text"
                                                             placeholder="0.0 PKR"
-                                                            className="mt-2 w-40 border rounded-md px-3 py-1 text-sm"
+                                                            className="mt-3 w-48 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-sm bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 transition-all"
                                                         />
                                                     </>
                                                 )}
@@ -96,116 +105,126 @@ export default function TransactionPage() {
                                                 {isActive && stepNum === 3 && (
                                                     <button
                                                         onClick={() => setCurrentStep(currentStep + 1)}
-                                                        className="mt-2 bg-blue-600 text-white px-4 py-1 rounded-md text-sm"
+                                                        className="mt-3 bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold text-sm hover:bg-blue-700 dark:hover:bg-blue-500 transition-all"
                                                     >
                                                         Submit Payment Proof
                                                     </button>
                                                 )}
                                             </div>
                                         </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-
-                        {/* Next button (for demo, auto progress) */}
-                        {currentStep < steps.length && (
-                            <button
-                                onClick={() => setCurrentStep(currentStep + 1)}
-                                className="mt-6 bg-green-600 text-white px-4 py-2 rounded-md text-sm w-full"
-                            >
-                                Continue
-                            </button>
-                        )}
-                    </div>
-
-                    {/* Right Transaction Section */}
-                    <div className="lg:col-span-2 space-y-6">
-                        {/* Transaction Details */}
-                        <div className="bg-white border rounded-lg p-6 shadow-sm">
-                            <h3 className="font-semibold text-gray-700 mb-4">
-                                Transaction Details
-                            </h3>
-
-                            <div className="flex justify-between items-start mb-6">
-                                {/* From */}
-                                <div>
-                                    <p className="font-semibold">FROM</p>
-                                    <p className="text-gray-700">DAO Proptech</p>
-                                    <p className="text-blue-600 text-sm">
-                                        investors@daoproptech.com
-                                    </p>
-                                </div>
-
-                                <div className="text-gray-400">→</div>
-
-                                {/* To */}
-                                <div>
-                                    <p className="font-semibold">TO</p>
-                                    <p className="text-gray-700">
-                                        Ahmad Shahzaib{" "}
-                                        <span className="ml-2 text-xs bg-gray-200 px-2 py-0.5 rounded-full">
-                                            DAO-80103
-                                        </span>
-                                    </p>
-                                    <p className="text-gray-500 text-sm">
-                                        Member Since Mar 12, 2025
-                                    </p>
-                                    <p className="text-gray-600 text-sm">+923040057791</p>
-                                </div>
+                                    );
+                                })}
                             </div>
 
-                            <div className="flex justify-between items-center">
-                                <div className="flex items-center space-x-2">
-                                    <FileText className="w-4 h-4 text-red-500" />
-                                    <span className="text-sm">
-                                        Area Pledged Receipt (166.2 KB)
-                                    </span>
-                                </div>
-                                <button className="text-sm font-medium text-gray-600 hover:text-blue-600">
-                                    View All Attachments
+                            {/* Next button */}
+                            {currentStep < steps.length && (
+                                <button
+                                    onClick={() => setCurrentStep(currentStep + 1)}
+                                    className="mt-8 w-full bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-lg font-semibold text-lg hover:from-green-700 hover:to-green-800 dark:hover:from-green-500 dark:hover:to-green-600 transition-all shadow-md hover:shadow-lg"
+                                >
+                                    Continue
                                 </button>
-                            </div>
+                            )}
                         </div>
 
-                        {/* Bank Account Info */}
-                        <div className="bg-white border rounded-lg p-6 shadow-sm">
-                            <h3 className="font-semibold text-gray-700 mb-4">
-                                Bank Account Information
-                            </h3>
+                        {/* Right Transaction Section */}
+                        <div className="lg:col-span-2 space-y-8">
+                            {/* Transaction Details */}
+                            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
+                                <h3 className="font-semibold text-xl text-gray-800 dark:text-white mb-6">
+                                    Transaction Details
+                                </h3>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="border rounded-lg p-4 flex items-center justify-between hover:shadow">
-                                    <div>
-                                        <p className="font-medium">JS Bank</p>
-                                        <p className="text-sm text-gray-500">0001533435</p>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                                    {/* From */}
+                                    <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-all">
+                                        <p className="font-semibold text-gray-800 dark:text-white">FROM</p>
+                                        <p className="text-gray-700 dark:text-gray-200 mt-1">DAO Proptech</p>
+                                        <p className="text-blue-600 dark:text-blue-400 text-sm mt-1">
+                                            investors@daoproptech.com
+                                        </p>
                                     </div>
-                                    <span className="text-gray-500">⌄</span>
+
+                                    {/* To */}
+                                    <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-all">
+                                        <p className="font-semibold text-gray-800 dark:text-white">TO</p>
+                                        <p className="text-gray-700 dark:text-gray-200 mt-1">
+                                            Ahmad Shahzaib{" "}
+                                            <span className="ml-2 text-xs bg-gray-200 dark:bg-gray-600 px-3 py-1 rounded-full">
+                                                DAO-80103
+                                            </span>
+                                        </p>
+                                        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+                                            Member Since Mar 12, 2025
+                                        </p>
+                                        <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
+                                            +923040057791
+                                        </p>
+                                    </div>
                                 </div>
 
-                                <div className="border rounded-lg p-4 flex items-center justify-between hover:shadow">
-                                    <div>
-                                        <p className="font-medium">Bank Islami</p>
-                                        <p className="text-sm text-gray-500">301200394620001</p>
+                                <div className="flex justify-between items-center">
+                                    <div className="flex items-center space-x-3">
+                                        <FileText className="w-5 h-5 text-red-500 dark:text-red-400" />
+                                        <span className="text-sm text-gray-600 dark:text-gray-300">
+                                            Area Pledged Receipt (166.2 KB)
+                                        </span>
                                     </div>
-                                    <span className="text-gray-500">⌄</span>
+                                    <button className="text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                        View All Attachments
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Bank Account Info */}
+                            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
+                                <h3 className="font-semibold text-xl text-gray-800 dark:text-white mb-6">
+                                    Bank Account Information
+                                </h3>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-all flex items-center justify-between">
+                                        <div>
+                                            <p className="font-semibold text-gray-800 dark:text-white">JS Bank</p>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">0001533435</p>
+                                        </div>
+
+                                    </div>
+
+                                    <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-all flex items-center justify-between">
+                                        <div>
+                                            <p className="font-semibold text-gray-800 dark:text-white">Bank Islami</p>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">301200394620001</p>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
 
-            {activeTab === "attachments" && (
-                <div className="bg-white border rounded-lg p-6 shadow-sm mt-6">
-                    <h3 className="font-semibold text-gray-700 mb-4">Attachments</h3>
-                    <ul className="list-disc pl-6 space-y-2 text-gray-600">
-                        <li>Sample Document 1 (PDF, 250 KB)</li>
-                        <li>Proof of Payment (JPG, 1.2 MB)</li>
-                        <li>Agreement File (DOCX, 500 KB)</li>
-                    </ul>
-                </div>
-            )}
+                {activeTab === "attachments" && (
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
+                        <h3 className="font-semibold text-xl text-gray-800 dark:text-white mb-6">Attachments</h3>
+                        <ul className="space-y-4">
+                            {[
+                                "Sample Document 1 (PDF, 250 KB)",
+                                "Proof of Payment (JPG, 1.2 MB)",
+                                "Agreement File (DOCX, 500 KB)",
+                            ].map((item, index) => (
+                                <li
+                                    key={index}
+                                    className="flex items-center space-x-3 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-all"
+                                >
+                                    <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                    <span className="text-gray-600 dark:text-gray-300">{item}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
