@@ -16,22 +16,7 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
     const [error, setError] = useState<string | null>(null);
     const [projects, setProjects] = useState<Project[]>([]);
 
-    useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get("http://localhost:5000/api/projects");
-                if (response.data && response.data.data && response.data.data.length > 0) {
-                    setProjects(response.data.data);
-                }
-            } catch (err: any) {
-                setError(err.message || "Failed to fetch projects.");
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProjects();
-    }, []);
+
 
     useEffect(() => {
         const fetchProjectDetails = async () => {

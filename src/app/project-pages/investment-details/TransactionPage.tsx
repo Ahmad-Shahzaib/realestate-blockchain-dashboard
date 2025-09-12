@@ -13,7 +13,7 @@ export default function InvestmentInterface() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex justify-center items-start py-12">
+        <div className=" bg-gray-100 dark:bg-gray-900 flex justify-center items-start py-2">
             <div className="w-full max-w-6xl px-4">
                 {/* Header */}
                 <div className="flex justify-end items-center mb-10 gap-6">

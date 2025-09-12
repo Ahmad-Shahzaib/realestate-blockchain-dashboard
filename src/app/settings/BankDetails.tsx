@@ -162,7 +162,7 @@ const BankDetails = () => {
 
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center z-[9999] bg-black/50">
+                <div className="fixed inset-0 flex items-center justify-center z-[9999]">
                     <div className="relative bg-white dark:bg-dark p-6 rounded-2xl shadow-lg w-full max-w-xl border border-gray-100 dark:border-gray-700">
                         <h3 className="text-xl font-semibold text-[#003049] dark:text-white mb-4">Add Bank Details</h3>
 

@@ -252,6 +252,7 @@ const SelectedAreaPage: NextPage = () => {
       -moz-appearance: none;
     }
   `}</style>
+
         </div>
 
     );
