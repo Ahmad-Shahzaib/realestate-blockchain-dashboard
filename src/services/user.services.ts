@@ -43,6 +43,10 @@ export interface UserDetails {
     lastName?: string;
     email?: string;
     [key: string]: any;
+    phone: string;
+    address: string;
+    city: string;
+    country: string
 }
 
 export async function getUsersInfo(): Promise<{

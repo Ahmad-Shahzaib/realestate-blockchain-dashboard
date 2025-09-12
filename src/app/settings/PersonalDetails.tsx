@@ -35,6 +35,7 @@ export default function PersonalDetails() {
         country: "",
         city: "",
         address: ""
+
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
