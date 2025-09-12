@@ -15,11 +15,10 @@ interface UserProfile {
     phoneNumber?: string;
     dateOfBirth?: string;
     gender?: string;
-    [key: string]: any;
     country?: string;
     city?: string;
     address?: string;
-
+    [key: string]: any;
 }
 
 export default function PersonalDetails() {
@@ -34,8 +33,7 @@ export default function PersonalDetails() {
         gender: "",
         country: "",
         city: "",
-        address: ""
-
+        address: "",
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
@@ -44,17 +42,13 @@ export default function PersonalDetails() {
         const fetchUserProfile = async () => {
             try {
                 setIsLoading(true);
-
-                const result = await getRequest(
-                    getAxiosInstance('/api'),
-                    "/api/users/profile"
-                );
-
+                setError('');
+                const result = await getRequest(getAxiosInstance('/api'), "/api/users/profile");
+                console.log('getUserProfile response:', JSON.stringify(result, null, 2));
                 if (result.status === "success") {
                     const user = result.data.user;
-
+                    console.log('Fetched user data:', JSON.stringify(user, null, 2));
                     dispatch(setUser(user));
-
                     setFormData({
                         name: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
                         email: user.email || "",
@@ -63,17 +57,18 @@ export default function PersonalDetails() {
                         gender: user.gender || "",
                         country: user.country || "",
                         city: user.city || "",
-                        address: user.address || ""
+                        address: user.address || "",
                     });
+                } else {
+                    setError('Failed to load user profile: Invalid response status');
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Failed to fetch profile:", error);
-                setError('Failed to load user profile. Please try again later.');
+                setError(error.message || 'Failed to load user profile. Please try again later.');
             } finally {
                 setIsLoading(false);
             }
         };
-
         fetchUserProfile();
     }, [dispatch]);
 
@@ -89,41 +84,32 @@ export default function PersonalDetails() {
         try {
             setIsLoading(true);
             setError('');
-
             const nameParts = formData.name.trim().split(' ');
             const firstName = nameParts[0] || '';
             const lastName = nameParts.slice(1).join(' ') || '';
-
             const userData: UserProfile = {
                 firstName,
                 lastName,
                 email: formData.email,
                 phoneNumber: formData.phone,
-                dateOfBirth: formData.dob,
-                gender: formData.gender,
-                country: formData.country,
-                city: formData.city,
-                address: formData.address
-
+                dateOfBirth: formData.dob || undefined,
+                gender: formData.gender || undefined,
+                country: formData.country || undefined,
+                city: formData.city || undefined,
+                address: formData.address || undefined,
             };
-
-            const result = await putRequest(
-                getAxiosInstance('/api'),
-                "/api/users/profile",
-                userData
-            );
-
+            console.log('Sending payload to updateUserProfile:', JSON.stringify(userData, null, 2));
+            const result = await putRequest(getAxiosInstance('/api'), "/api/users/profile", userData);
+            console.log('updateUserProfile response:', JSON.stringify(result, null, 2));
             if (result.status === "success") {
-                dispatch(setUser({
-                    ...userInfo.user,
-                    ...userData
-                }));
-
+                dispatch(setUser({ ...userInfo.user, ...userData }));
                 setIsEditing(false);
+            } else {
+                setError('Failed to update profile: Invalid response status');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to update profile:", error);
-            setError('Failed to update profile. Please try again.');
+            setError(error.message || 'Failed to update profile. Please try again.');
         } finally {
             setIsLoading(false);
         }
@@ -162,142 +148,146 @@ export default function PersonalDetails() {
             )}
 
             {!isLoading && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Full Name */}
-                    <div>
-                        <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">
-                            Full Name (Legal)
-                        </label>
-                        {isEditing ? (
-                            <input
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#00B894]/50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                placeholder="Enter your full legal name"
-                            />
-                        ) : (
-                            <div className="border rounded-md px-4 py-2 text-gray-700 dark:text-gray-200 dark:border-gray-600 dark:bg-gray-700">
-                                {formData.name || "-"}
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Photo */}
-                    <div>
-                        <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Photo</label>
-                        <div className="flex items-center gap-3">
-                            <Image
-                                src="/profile.jpg"
-                                alt="Profile"
-                                width={40}
-                                height={40}
-                                className="rounded-full"
-                            />
-                            {isEditing && (
-                                <a href="#" className="text-[#0277BD] hover:text-[#00B894] underline text-sm transition dark:text-[#00D2B6]">
-                                    Change
-                                </a>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Email */}
-                    <div>
-                        <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Email</label>
-                        {isEditing ? (
-                            <input
-                                name="email"
-                                type="email"
-                                placeholder="Enter your email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#00B894]/50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            />
-                        ) : (
-                            <div className="border rounded-md px-4 py-2 text-gray-700 dark:text-gray-200 dark:border-gray-600 dark:bg-gray-700">
-                                {formData.email || "-"}
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Phone */}
-                    <div>
-                        <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Phone</label>
-                        <div className="flex items-center border rounded-md px-2 py-2 gap-2 dark:bg-gray-700 dark:border-gray-600">
-                            <span className="flex items-center gap-1 px-2">
-                                <span className="text-sm dark:text-gray-200">+92</span>
-                            </span>
+                <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Full Name */}
+                        <div>
+                            <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">
+                                Full Name (Legal)
+                            </label>
                             {isEditing ? (
-                                <>
-                                    <input
-                                        name="phone"
-                                        value={formData.phone}
-                                        onChange={handleChange}
-                                        className="w-full border-0 focus:ring-0 dark:bg-gray-700 dark:text-white"
-                                        placeholder="Enter your phone number"
-                                    />
-                                    <button className="bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white text-sm px-4 py-1.5 rounded-full shadow-md hover:opacity-90 transition">
-                                        Verify
-                                    </button>
-                                </>
+                                <input
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#00B894]/50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                    placeholder="Enter your full legal name"
+                                />
                             ) : (
-                                <span className="text-gray-700 dark:text-gray-200 text-sm">{formData.phone || "-"}</span>
+                                <div className="border rounded-md px-4 py-2 text-gray-700 dark:text-gray-200 dark:border-gray-600 dark:bg-gray-700">
+                                    {formData.name || "-"}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Photo */}
+                        <div>
+                            <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Photo</label>
+                            <div className="flex items-center gap-3">
+                                <Image
+                                    src="/profile.jpg"
+                                    alt="Profile"
+                                    width={40}
+                                    height={40}
+                                    className="rounded-full"
+                                />
+                                {isEditing && (
+                                    <a href="#" className="text-[#0277BD] hover:text-[#00B894] underline text-sm transition dark:text-[#00D2B6]">
+                                        Change
+                                    </a>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Email */}
+                        <div>
+                            <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Email</label>
+                            {isEditing ? (
+                                <input
+                                    name="email"
+                                    type="email"
+                                    placeholder="Enter your email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#00B894]/50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                />
+                            ) : (
+                                <div className="border rounded-md px-4 py-2 text-gray-700 dark:text-gray-200 dark:border-gray-600 dark:bg-gray-700">
+                                    {formData.email || "-"}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Phone */}
+                        <div>
+                            <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Phone</label>
+                            <div className="flex items-center border rounded-md px-2 py-2 gap-2 dark:bg-gray-700 dark:border-gray-600">
+                                <span className="flex items-center gap-1 px-2">
+                                    <span className="text-sm dark:text-gray-200">+92</span>
+                                </span>
+                                {isEditing ? (
+                                    <>
+                                        <input
+                                            name="phone"
+                                            value={formData.phone}
+                                            onChange={handleChange}
+                                            className="w-full border-0 focus:ring-0 dark:bg-gray-700 dark:text-white"
+                                            placeholder="Enter your phone number"
+                                        />
+                                        <button className="bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white text-sm px-4 py-1.5 rounded-full shadow-md hover:opacity-90 transition">
+                                            Verify
+                                        </button>
+                                    </>
+                                ) : (
+                                    <span className="text-gray-700 dark:text-gray-200 text-sm">{formData.phone || "-"}</span>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Date of Birth */}
+                        <div>
+                            <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Date Of Birth</label>
+                            {isEditing ? (
+                                <input
+                                    name="dob"
+                                    type="date"
+                                    value={formData.dob}
+                                    onChange={handleChange}
+                                    className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#00B894]/50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                />
+                            ) : (
+                                <div className="border rounded-md px-4 py-2 min-h-[42px] text-gray-700 dark:text-gray-200 dark:border-gray-600 dark:bg-gray-700">
+                                    {formData.dob || "-"}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Gender */}
+                        <div>
+                            <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Gender</label>
+                            {isEditing ? (
+                                <div className="flex gap-6 text-gray-700 dark:text-gray-200">
+                                    <label className="flex items-center gap-2 text-sm">
+                                        <input
+                                            type="radio"
+                                            name="gender"
+                                            value="Male"
+                                            checked={formData.gender === "Male"}
+                                            onChange={handleGenderChange}
+                                        />
+                                        Male
+                                    </label>
+                                    <label className="flex items-center gap-2 text-sm">
+                                        <input
+                                            type="radio"
+                                            name="gender"
+                                            value="Female"
+                                            checked={formData.gender === "Female"}
+                                            onChange={handleGenderChange}
+                                        />
+                                        Female
+                                    </label>
+                                </div>
+                            ) : (
+                                <div className="border rounded-md px-4 py-2 text-gray-700 dark:text-gray-200 dark:border-gray-600 dark:bg-gray-700">
+                                    {formData.gender || "-"}
+                                </div>
                             )}
                         </div>
                     </div>
 
-                    {/* Date of Birth */}
-                    <div>
-                        <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Date Of Birth</label>
-                        {isEditing ? (
-                            <input
-                                name="dob"
-                                type="date"
-                                value={formData.dob}
-                                onChange={handleChange}
-                                className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-[#00B894]/50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            />
-                        ) : (
-                            <div className="border rounded-md px-4 py-2 min-h-[42px] text-gray-700 dark:text-gray-200 dark:border-gray-600 dark:bg-gray-700">
-                                {formData.dob || "-"}
-                            </div>
-                        )}
-                    </div>
 
-                    {/* Gender */}
-                    <div>
-                        <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Gender</label>
-                        {isEditing ? (
-                            <div className="flex gap-6 text-gray-700 dark:text-gray-200">
-                                <label className="flex items-center gap-2 text-sm">
-                                    <input
-                                        type="radio"
-                                        name="gender"
-                                        value="Male"
-                                        checked={formData.gender === "Male"}
-                                        onChange={handleGenderChange}
-                                    />
-                                    Male
-                                </label>
-                                <label className="flex items-center gap-2 text-sm">
-                                    <input
-                                        type="radio"
-                                        name="gender"
-                                        value="Female"
-                                        checked={formData.gender === "Female"}
-                                        onChange={handleGenderChange}
-                                    />
-                                    Female
-                                </label>
-                            </div>
-                        ) : (
-                            <div className="border rounded-md px-4 py-2 text-gray-700 dark:text-gray-200 dark:border-gray-600 dark:bg-gray-700">
-                                {formData.gender || "-"}
-                            </div>
-                        )}
-                    </div>
-                </div>
+                </>
             )}
 
             {/* Buttons */}
@@ -326,6 +316,5 @@ export default function PersonalDetails() {
                 </div>
             )}
         </div>
-
     );
 }
