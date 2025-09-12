@@ -31,6 +31,9 @@ const floors = [
             { id: "SF-302", label: "Unit B", area: 650 },
         ],
     },
+
+
+
 ];
 
 const PRICE_PER_SQFT = 16000; // PKR price
@@ -85,23 +88,22 @@ const FloorSelectionPage: NextPage = () => {
                     </h3>
                 </div>
 
-                {/* Floor Tabs */}
-                <div className="flex flex-wrap gap-3 mb-6">
-                    {floors.map((floor) => (
-                        <button
-                            key={floor.name}
-                            onClick={() => {
-                                setSelectedFloor(floor.name);
-                                setSelectedUnits([]); // reset when switching floors
-                            }}
-                            className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${selectedFloor === floor.name
-                                ? "bg-[#00B894] text-white shadow-md"
-                                : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                                }`}
-                        >
-                            {floor.name}
-                        </button>
-                    ))}
+                {/* Floor Dropdown */}
+                <div className="mb-6">
+                    <select
+                        value={selectedFloor}
+                        onChange={(e) => {
+                            setSelectedFloor(e.target.value);
+                            setSelectedUnits([]); // reset when switching floors
+                        }}
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium focus:outline-none focus:ring-2 focus:ring-[#00B894]"
+                    >
+                        {floors.map((floor) => (
+                            <option key={floor.name} value={floor.name}>
+                                {floor.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 {/* Unit Selection */}
