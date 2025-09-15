@@ -163,7 +163,7 @@ export default function PropTechMasterClass() {
                                                 <div className="absolute bottom-3 left-3">
                                                     <div className="flex items-center space-x-1 text-white text-xs">
                                                         <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                                        <span className="font-medium">DAO PROPTECH</span>
+                                                        <span className="font-medium">Fract PROPTECH</span>
                                                     </div>
                                                 </div>
                                             )}

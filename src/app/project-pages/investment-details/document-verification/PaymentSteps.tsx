@@ -90,9 +90,9 @@ const PaymentSteps = () => {
                                         <li>Make payment via cash or a crossed cheque.</li>
                                         <li>Deposit cash directly at the bank.</li>
                                         <li>
-                                            Send cheques to DAO PropTech, 23-A Business Bay, DHA Phase 1, Islamabad, or deposit at the bank.
+                                            Send cheques to Fract PropTech, 23-A Business Bay, DHA Phase 1, Islamabad, or deposit at the bank.
                                         </li>
-                                        <li>Address cheques to DAO PropTech Pvt. Ltd.</li>
+                                        <li>Address cheques to Fract PropTech Pvt. Ltd.</li>
                                         <li>Include your DAO ID in the "Reference" section for bank deposits.</li>
                                         <li>
                                             Email proof of payment to{" "}

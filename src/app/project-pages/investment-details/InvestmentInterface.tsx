@@ -73,9 +73,9 @@ export default function TransactionPage() {
                                     {/* From */}
                                     <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl">
                                         <p className="font-semibold text-gray-800 dark:text-white">FROM</p>
-                                        <p className="text-gray-700 dark:text-gray-200 mt-1">DAO Proptech</p>
+                                        <p className="text-gray-700 dark:text-gray-200 mt-1">FractProp Tech</p>
                                         <p className="text-blue-600 dark:text-blue-400 text-sm mt-1 break-words">
-                                            investors@daoproptech.com
+                                            investors@fractproptech.com
                                         </p>
                                     </div>
 

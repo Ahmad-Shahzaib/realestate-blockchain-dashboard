@@ -81,7 +81,7 @@ export default function SignUp() {
     };
 
     return (
-        <div className="min-h-screen w-full bg-gradient-to-tr from-[#1E90FF] via-[#00D2B6] to-[#00B894] relative overflow-hidden flex items-center justify-center">
+        <div className="min-h-screen w-full bg-gradient-to-tr from-[#E6F0FA] via-[#D6EAF8] to-[#C3E2E6] relative overflow-hidden flex items-center justify-center">
             {/* Animated Background Elements */}
             <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute top-1/4 left-1/4 w-40 h-40 sm:w-64 sm:h-64 bg-[#0277BD]/20 rounded-full blur-3xl animate-pulse"></div>
@@ -94,6 +94,79 @@ export default function SignUp() {
 
             <div className="relative z-10 w-full flex flex-col items-center justify-center min-h-screen">
                 <div className="flex flex-col-reverse lg:flex-row w-full max-w-6xl items-center justify-center mx-auto px-4 sm:px-8 py-8 gap-8">
+                    {/* Left Side - Branding & Info */}
+                    <div className="w-full max-w-lg flex flex-col justify-center items-center px-2 sm:px-8 xl:px-16 mb-2 lg:mb-0">
+                        {/* Logo */}
+                        <div className="lg:flex items-center gap-4">
+                            <img src={logo.src} alt="BlockEstate Logo" style={
+                                {
+                                    width: "50%",
+                                    height: "auto",
+                                    filter: "brightness(0.5)",
+                                }
+                            } />
+                        </div>
+
+                        {/* Hero Content */}
+                        <div className="space-y-2 w-full  lg:mt-0">
+                            <div>
+                                <h2 className="text-3xl sm:text-4xl xl:text-5xl font-bold text-[#003049] leading-tight mb-6 text-center lg:text-left">
+                                    Join the
+                                    <span className="bg-gradient-to-r from-[#1d453d] to-[#1b3834] bg-clip-text text-transparent">
+                                        {" "}
+                                        Revolution{" "}
+                                    </span>
+                                    in Real Estate
+                                </h2>
+                                <p className="text-lg sm:text-xl text-gray-700 leading-relaxed text-center lg:text-left">
+                                    Start your journey with secure, transparent
+                                    blockchain-powered property investments today.
+                                </p>
+                            </div>
+
+                            {/* Features */}
+                            <div className="space-y-4 mt-4">
+                                {[
+                                    { icon: Shield, text: "Military-grade Security" },
+                                    { icon: Zap, text: "Lightning Fast Setup" },
+                                    { icon: Globe, text: "Worldwide Access" },
+                                ].map((feature, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex items-center gap-4 group justify-center lg:justify-start"
+                                    >
+                                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#F5F7FA] rounded-xl flex items-center justify-center transition-all duration-300">
+                                            <feature.icon className="w-6 h-6 text-[#0277BD] group-hover:text-[#00B894]" />
+                                        </div>
+                                        <span className="text-[#003049] font-medium">
+                                            {feature.text}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Stats / Benefits */}
+                            <div className="grid grid-cols-2 gap-4 sm:gap-6 pt-8 border-t border-gray-100">
+                                <div className="text-center lg:text-left">
+                                    <div className="text-2xl sm:text-3xl font-bold text-[#003049]">
+                                        Zero Fees
+                                    </div>
+                                    <div className="text-gray-700 text-xs sm:text-sm">
+                                        No upfront setup cost
+                                    </div>
+                                </div>
+                                <div className="text-center lg:text-left">
+                                    <div className="text-2xl sm:text-3xl font-bold text-[#003049]">
+                                        24/7
+                                    </div>
+                                    <div className="text-gray-700 text-xs sm:text-sm">
+                                        Expert support
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* Right Side - Sign Up Form */}
                     <div className="w-full max-w-md flex flex-col items-center justify-center mx-auto">
 
@@ -316,78 +389,7 @@ export default function SignUp() {
 
                     </div>
 
-                    {/* Left Side - Branding & Info */}
-                    <div className="w-full max-w-lg flex flex-col justify-center items-center px-2 sm:px-8 xl:px-16 mb-2 lg:mb-0">
-                        {/* Logo */}
-                        <div className="lg:flex items-center gap-4">
-                            <img src={logo.src} alt="BlockEstate Logo" style={
-                                {
-                                    width: "50%",
-                                    height: "auto",
-                                    filter: "brightness(0.5)",
-                                }
-                            } />
-                        </div>
 
-                        {/* Hero Content */}
-                        <div className="space-y-2 w-full  lg:mt-0">
-                            <div>
-                                <h2 className="text-3xl sm:text-4xl xl:text-5xl font-bold text-[#003049] leading-tight mb-6 text-center lg:text-left">
-                                    Join the
-                                    <span className="bg-gradient-to-r from-[#1d453d] to-[#1b3834] bg-clip-text text-transparent">
-                                        {" "}
-                                        Revolution{" "}
-                                    </span>
-                                    in Real Estate
-                                </h2>
-                                <p className="text-lg sm:text-xl text-gray-700 leading-relaxed text-center lg:text-left">
-                                    Start your journey with secure, transparent
-                                    blockchain-powered property investments today.
-                                </p>
-                            </div>
-
-                            {/* Features */}
-                            <div className="space-y-4 mt-4">
-                                {[
-                                    { icon: Shield, text: "Military-grade Security" },
-                                    { icon: Zap, text: "Lightning Fast Setup" },
-                                    { icon: Globe, text: "Worldwide Access" },
-                                ].map((feature, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex items-center gap-4 group justify-center lg:justify-start"
-                                    >
-                                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#F5F7FA] rounded-xl flex items-center justify-center transition-all duration-300">
-                                            <feature.icon className="w-6 h-6 text-[#0277BD] group-hover:text-[#00B894]" />
-                                        </div>
-                                        <span className="text-[#003049] font-medium">
-                                            {feature.text}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Stats / Benefits */}
-                            <div className="grid grid-cols-2 gap-4 sm:gap-6 pt-8 border-t border-gray-100">
-                                <div className="text-center lg:text-left">
-                                    <div className="text-2xl sm:text-3xl font-bold text-[#003049]">
-                                        Zero Fees
-                                    </div>
-                                    <div className="text-gray-700 text-xs sm:text-sm">
-                                        No upfront setup cost
-                                    </div>
-                                </div>
-                                <div className="text-center lg:text-left">
-                                    <div className="text-2xl sm:text-3xl font-bold text-[#003049]">
-                                        24/7
-                                    </div>
-                                    <div className="text-gray-700 text-xs sm:text-sm">
-                                        Expert support
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

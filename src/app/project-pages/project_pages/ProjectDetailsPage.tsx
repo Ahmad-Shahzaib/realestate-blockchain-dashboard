@@ -5,6 +5,7 @@ import AreaDetailPage from './AreaDetailPage';
 import SelectedAreaPage from './SelectedAreaPage';
 import { useRouter } from 'next/navigation';
 import { motion } from "framer-motion";
+import FloorAreaSelectionPage from './FloorSelectionPage';
 
 interface ProjectDetailsPageProps {
 
@@ -24,23 +25,23 @@ const ProjectDetailsPage = ({ project }: ProjectDetailsPageProps) => {
                             <span className="text-white font-bold text-xl">UD</span>
                         </div>
                         <div>
-                            <h2 className="text-2xl lg:text-3xl font-bold text-[#003049] dark:text-white">
+                            <h2 className="text-xl lg:text-xl font-bold text-[#003049] text-wrap dark:text-white">
                                 {project?.name}
                             </h2>
                             <div className="flex items-center gap-3 text-gray-600 dark:text-white">
                                 <span className="text-sm font-medium uppercase tracking-wide">
-                                    Area I Own
+                                    {project?.location.city}
                                 </span>
                                 <div className="w-4 h-4 bg-[#00B894] rounded-full"></div>
                                 <span className="text-lg font-semibold text-[#003049] dark:text-white">
-                                    0 sq. ft.
+                                    {project?.totalSquareFootage} sq. ft.
                                 </span>
                             </div>
                         </div>
                     </div>
 
                     {/* Progress Steps */}
-                    <div className="flex items-center gap-4 lg:gap-8 overflow-x-auto py-2">
+                    <div className="flex items-center gap-4 lg:gap-8 overflow-x-hidden py-2">
                         {[
                             { step: 1, label: "Select Area" },
                             { step: 2, label: "Summary" },
@@ -79,7 +80,8 @@ const ProjectDetailsPage = ({ project }: ProjectDetailsPageProps) => {
             <AreaDetailPage />
 
             {/* Selected Area */}
-            <SelectedAreaPage />
+            {/* <SelectedAreaPage /> */}
+            <FloorAreaSelectionPage />
         </div>
     )
 }

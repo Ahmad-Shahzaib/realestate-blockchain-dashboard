@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Play, Eye, ArrowRight, Calendar, MapPin, CheckCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, Eye, ArrowRight, Calendar, MapPin, CheckCircle, X } from "lucide-react";
 import ProjectTable from "./ProjectTable";
 import { FaFacebookF, FaGlobe, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { Project } from "@/services/project.service";
@@ -13,75 +13,69 @@ type ProjectSliderProps = {
 
 export default function ProjectSlider({ project }: ProjectSliderProps) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
+    const [isFullScreenOpen, setIsFullScreenOpen] = useState(false);
+    const [fullScreenImageIndex, setFullScreenImageIndex] = useState(0);
 
     const propertyImages = [
-        {
-            id: 1,
-            src: "/images/images1.jpg",
-            alt: "Property exterior view",
-            isVideo: false,
-        },
-        {
-            id: 2,
-            src: "/images/images4.jpg",
-            alt: "Property front view",
-            isVideo: false,
-        },
-        {
-            id: 3,
-            src: "/videos/property-video.mp4",
-            alt: "Property video tour",
-            isVideo: true,
-        },
-        {
-            id: 4,
-            src: "/images/images2.jpg",
-            alt: "Property side view",
-            isVideo: false,
-        },
-        {
-            id: 5,
-            src: "/images/images3.jpg",
-            alt: "Property aerial view",
-            isVideo: false,
-        },
+        { id: 1, src: "/images/images1.jpg", alt: "Property exterior view", isVideo: false },
+        { id: 2, src: "/images/images4.jpg", alt: "Property front view", isVideo: false },
+        { id: 3, src: "/videos/property-video.mp4", alt: "Property video tour", isVideo: true },
+        { id: 4, src: "/images/images2.jpg", alt: "Property side view", isVideo: false },
+        { id: 5, src: "/images/images3.jpg", alt: "Property aerial view", isVideo: false },
     ];
 
     const nextImage = () => {
-        setCurrentImageIndex((prev) => {
-            const next = prev === propertyImages.length - 1 ? 0 : prev + 1;
-            console.log("Next index:", next, "Src:", propertyImages[next].src);
-            return next;
-        });
+        setCurrentImageIndex((prev) => (prev === propertyImages.length - 1 ? 0 : prev + 1));
     };
 
     const prevImage = () => {
-        setCurrentImageIndex((prev) => {
-            const prevIndex = prev === 0 ? propertyImages.length - 1 : prev - 1;
-            console.log("Previous index:", prevIndex, "Src:", propertyImages[prevIndex].src);
-            return prevIndex;
-        });
+        setCurrentImageIndex((prev) => (prev === 0 ? propertyImages.length - 1 : prev - 1));
     };
 
     const goToImage = (index: number) => {
-        console.log("Going to index:", index, "Src:", propertyImages[index].src);
         setCurrentImageIndex(index);
+    };
+
+    // Full screen gallery functions
+    const openFullScreen = () => {
+        setFullScreenImageIndex(currentImageIndex);
+        setIsFullScreenOpen(true);
+        document.body.style.overflow = "hidden";
+    };
+
+    const closeFullScreen = () => {
+        setIsFullScreenOpen(false);
+        document.body.style.overflow = "unset";
+    };
+
+    const nextFullScreenImage = () => {
+        setFullScreenImageIndex((prev) => (prev === propertyImages.length - 1 ? 0 : prev + 1));
+    };
+
+    const prevFullScreenImage = () => {
+        setFullScreenImageIndex((prev) => (prev === 0 ? propertyImages.length - 1 : prev - 1));
+    };
+
+    const goToFullScreenImage = (index: number) => {
+        setFullScreenImageIndex(index);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === "ArrowRight") nextFullScreenImage();
+        if (e.key === "ArrowLeft") prevFullScreenImage();
+        if (e.key === "Escape") closeFullScreen();
     };
 
     return (
         <>
-
+            {/* Main Slider */}
             <div className="w-full mx-auto bg-white rounded-lg overflow-hidden">
-
                 <div className="relative aspect-video bg-gray-100">
                     {propertyImages[currentImageIndex].isVideo ? (
                         <video
                             src={propertyImages[currentImageIndex].src}
                             className="object-cover w-full h-full"
                             controls
-                            aria-label={propertyImages[currentImageIndex].alt}
-                            onError={(e) => console.error("Video loading error:", e)}
                         />
                     ) : (
                         <Image
@@ -89,10 +83,8 @@ export default function ProjectSlider({ project }: ProjectSliderProps) {
                             alt={propertyImages[currentImageIndex].alt}
                             fill
                             className="object-cover"
-                            onError={(e) => console.error("Image loading error:", propertyImages[currentImageIndex].src)}
                         />
                     )}
-
 
                     <button
                         aria-label="Previous image"
@@ -109,7 +101,6 @@ export default function ProjectSlider({ project }: ProjectSliderProps) {
                     >
                         <ChevronRight className="w-5 h-5" />
                     </button>
-
 
                     <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
                         {currentImageIndex + 1}/{propertyImages.length}
@@ -129,20 +120,9 @@ export default function ProjectSlider({ project }: ProjectSliderProps) {
                                         }`}
                                 >
                                     {image.isVideo ? (
-                                        <video
-                                            src={image.src}
-                                            className="object-cover w-full h-full"
-                                            muted
-                                            aria-label={image.alt}
-                                        />
+                                        <video src={image.src} className="object-cover w-full h-full" muted />
                                     ) : (
-                                        <Image
-                                            src={image.src || "/placeholder.svg"}
-                                            alt={image.alt}
-                                            fill
-                                            className="object-cover"
-                                            onError={(e) => console.error("Thumbnail loading error:", image.src)}
-                                        />
+                                        <Image src={image.src} alt={image.alt} fill className="object-cover" />
                                     )}
                                     {image.isVideo && (
                                         <div className="absolute inset-0 flex items-center justify-center bg-black/20">
@@ -153,20 +133,83 @@ export default function ProjectSlider({ project }: ProjectSliderProps) {
                             ))}
                         </div>
 
-                        <button className="ml-4 flex-shrink-0 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        <button
+                            onClick={openFullScreen}
+                            className="ml-4 flex-shrink-0 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                        >
                             <Eye className="w-4 h-4 mr-2" />
                             SEE FULL GALLERY
                         </button>
                     </div>
                 </div>
             </div>
+
+            {/* Half-Screen Gallery Modal */}
+            {isFullScreenOpen && (
+                <div
+                    className="fixed inset-0 z-50 bg-black bg-opacity-0 flex items-center justify-center"
+                    onClick={closeFullScreen}
+                    onKeyDown={handleKeyDown}
+                    tabIndex={0}
+                >
+                    {/* Modal Box (half screen) */}
+                    <div
+                        className="relative w-full max-w-5xl h-1/2 bg-black rounded-xl overflow-hidden flex items-center justify-center"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Close Button */}
+                        <button
+                            onClick={closeFullScreen}
+                            className="absolute top-4 right-4 z-10 bg-white/20 hover:bg-white/30 rounded-full p-2 text-white"
+                        >
+                            <X className="w-6 h-6" />
+                        </button>
+
+                        {/* Image Counter */}
+                        <div className="absolute top-4 left-4 z-10 bg-black/60 text-white px-4 py-1 rounded-full text-sm">
+                            {fullScreenImageIndex + 1} / {propertyImages.length}
+                        </div>
+
+                        {/* Image/Video */}
+                        {propertyImages[fullScreenImageIndex].isVideo ? (
+                            <video
+                                src={propertyImages[fullScreenImageIndex].src}
+                                className="max-w-full max-h-full object-contain"
+                                controls
+                                autoPlay
+                            />
+                        ) : (
+                            <Image
+                                src={propertyImages[fullScreenImageIndex].src}
+                                alt={propertyImages[fullScreenImageIndex].alt}
+                                width={1280}
+                                height={720}
+                                className="max-w-full max-h-full object-contain"
+                            />
+                        )}
+
+                        {/* Navigation */}
+                        <button
+                            onClick={prevFullScreenImage}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 rounded-full p-3 text-white"
+                        >
+                            <ChevronLeft className="w-6 h-6" />
+                        </button>
+                        <button
+                            onClick={nextFullScreenImage}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 rounded-full p-3 text-white"
+                        >
+                            <ChevronRight className="w-6 h-6" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Main Content Grid */}
             <div className="flex flex-col lg:flex-row gap-6 pt-3">
-                {/* Left Section - Project Details (50% width) */}
+                {/* Left Section */}
                 <div className="flex-1 space-y-6">
-                    {/* Contractual Occupancy */}
-                    <div className="p-6 rounded-2xl shadow-md border border-gray-100 hover:shadow-xl transition 
-                  bg-white dark:bg-gray-900 dark:border-gray-700">
+                    <div className="p-6 rounded-2xl shadow-md border border-gray-100 hover:shadow-xl transition bg-white dark:bg-gray-900 dark:border-gray-700">
                         <div className="flex items-center gap-2 mb-4">
                             <CheckCircle className="w-5 h-5 text-[#00B894]" />
                             <span className="text-sm font-semibold text-[#003049] uppercase tracking-wide dark:text-white">
@@ -177,10 +220,7 @@ export default function ProjectSlider({ project }: ProjectSliderProps) {
                         {/* Progress Bar */}
                         <div className="mb-6">
                             <div className="w-full bg-[#F5F7FA] dark:bg-gray-700 rounded-full h-3">
-                                <div
-                                    className="bg-gradient-to-r from-[#00B894] to-[#00D2B6] h-3 rounded-full"
-                                    style={{ width: "100%" }}
-                                ></div>
+                                <div className="bg-gradient-to-r from-[#00B894] to-[#00D2B6] h-3 rounded-full" style={{ width: "100%" }}></div>
                             </div>
                             <div className="flex justify-between items-center mt-2">
                                 <span className="text-sm text-gray-700 dark:text-gray-300">Progress</span>
@@ -188,7 +228,7 @@ export default function ProjectSlider({ project }: ProjectSliderProps) {
                             </div>
                         </div>
 
-                        {/* Location and Details */}
+                        {/* Location */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div className="space-y-4">
                                 <div className="flex items-start gap-3">
@@ -198,16 +238,13 @@ export default function ProjectSlider({ project }: ProjectSliderProps) {
                                         <p className="font-medium text-[#003049] dark:text-white">
                                             {project?.location?.city || "No location available"}
                                         </p>
-
                                     </div>
                                 </div>
                                 <div className="flex items-start gap-3">
                                     <div className="w-5 h-5 bg-[#0277BD] rounded mt-0.5"></div>
                                     <div>
                                         <p className="text-sm text-gray-700 dark:text-gray-300">Type</p>
-                                        <p className="font-medium text-[#003049] dark:text-white">
-                                            Corporate Office
-                                        </p>
+                                        <p className="font-medium text-[#003049] dark:text-white">Corporate Office</p>
                                     </div>
                                 </div>
                             </div>
@@ -225,18 +262,10 @@ export default function ProjectSlider({ project }: ProjectSliderProps) {
                                 <div className="flex items-center gap-3">
                                     <span className="text-sm text-gray-700 dark:text-gray-300">Social:</span>
                                     <div className="flex gap-2">
-                                        <a href="#" className="text-[#0277BD] hover:text-[#00B894]">
-                                            <FaFacebookF size={16} />
-                                        </a>
-                                        <a href="#" className="text-[#0277BD] hover:text-[#00B894]">
-                                            <FaInstagram size={16} />
-                                        </a>
-                                        <a href="#" className="text-[#0277BD] hover:text-[#00B894]">
-                                            <FaLinkedinIn size={16} />
-                                        </a>
-                                        <a href="#" className="text-[#0277BD] hover:text-[#00B894]">
-                                            <FaGlobe size={16} />
-                                        </a>
+                                        <a href="#" className="text-[#0277BD] hover:text-[#00B894]"><FaFacebookF size={16} /></a>
+                                        <a href="#" className="text-[#0277BD] hover:text-[#00B894]"><FaInstagram size={16} /></a>
+                                        <a href="#" className="text-[#0277BD] hover:text-[#00B894]"><FaLinkedinIn size={16} /></a>
+                                        <a href="#" className="text-[#0277BD] hover:text-[#00B894]"><FaGlobe size={16} /></a>
                                     </div>
                                 </div>
                             </div>
@@ -244,67 +273,48 @@ export default function ProjectSlider({ project }: ProjectSliderProps) {
                     </div>
                 </div>
 
-
-                {/* Right Section - Investment Overview (50% width) */}
+                {/* Right Section */}
                 <div className="flex-1">
                     <div className="px-4 py-3 rounded-2xl shadow-md bg-white border border-gray-100 hover:shadow-xl transition dark:bg-dark dark:border-gray-700">
-                        <h3 className="text-lg font-bold text-[#003049] mb-2 dark:text-white">
-                            Investment Overview
-                        </h3>
-
-                        {/* 2x2 Grid for Investment Cards */}
+                        <h3 className="text-lg font-bold text-[#003049] mb-2 dark:text-white">Investment Overview</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {/* Price per sq ft */}
                             <div className="p-3 bg-[#F5F7FA] rounded-lg dark:bg-[#334155]">
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-sm font-medium text-gray-700 uppercase tracking-wide dark:text-gray-300">
-                                        Price / sq. ft.
-                                    </span>
+                                    <span className="text-sm font-medium text-gray-700 uppercase tracking-wide dark:text-gray-300">Price / sq. ft.</span>
                                     <ArrowRight className="w-4 h-4 text-[#0277BD]" />
                                 </div>
                                 <div className="text-xl font-semibold text-[#003049] dark:text-white">
-                                    {project.floors[0].pricePerSqFt}
+                                    {project?.floors?.[0]?.pricePerSqFt || "N/A"}
                                 </div>
                                 <div className="text-sm text-gray-700 dark:text-gray-400">PKR / sq. ft.</div>
                             </div>
 
-                            {/* Rental Yield */}
                             <div className="p-3 bg-[#F5F7FA] rounded-lg dark:bg-[#334155]">
-                                <div className="text-sm font-medium text-gray-700 uppercase tracking-wide mb-2 dark:text-gray-300">
-                                    Rental Yield
-                                </div>
+                                <div className="text-sm font-medium text-gray-700 uppercase tracking-wide mb-2 dark:text-gray-300">Rental Yield</div>
                                 <div className="flex items-center gap-2">
                                     <span className="text-xl font-semibold text-[#003049] dark:text-white">5.1%</span>
-                                    <span className="bg-[#00B894]/20 text-[#00B894] text-xs font-medium px-2 py-1 rounded">
-                                        Average
-                                    </span>
+                                    <span className="bg-[#00B894]/20 text-[#00B894] text-xs font-medium px-2 py-1 rounded">Average</span>
                                 </div>
                             </div>
 
-                            {/* Yearly Rental Returns */}
                             <div className="p-3 bg-[#F5F7FA] rounded-lg dark:bg-[#334155]">
-                                <div className="text-sm font-medium text-gray-700 uppercase tracking-wide mb-2 dark:text-gray-300">
-                                    Yearly Rental Returns
-                                </div>
+                                <div className="text-sm font-medium text-gray-700 uppercase tracking-wide mb-2 dark:text-gray-300">Yearly Rental Returns</div>
                                 <div className="text-xl font-semibold text-[#003049] dark:text-white">1,440</div>
                                 <div className="text-sm text-gray-700 dark:text-gray-400">PKR / sq. ft.</div>
                             </div>
 
-                            {/* Area Available */}
                             <div className="p-3 bg-[#F5F7FA] rounded-lg dark:bg-[#334155]">
-                                <div className="text-sm font-medium text-gray-700 uppercase tracking-wide mb-2 dark:text-gray-300">
-                                    Area Available for Sale
-                                </div>
+                                <div className="text-sm font-medium text-gray-700 uppercase tracking-wide mb-2 dark:text-gray-300">Area Available for Sale</div>
                                 <div className="text-xl font-semibold text-[#003049] dark:text-white">
-                                    {project?.totalArea ? `${(project.totalArea).toLocaleString()}` : "N/A"}
+                                    {project?.totalArea ? project.totalArea.toLocaleString() : "N/A"}
                                 </div>
                                 <div className="text-sm text-gray-700 dark:text-gray-400">sq. ft.</div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
+
             <div className="pt-3">
                 <ProjectTable key={project?._id} project={project} />
             </div>

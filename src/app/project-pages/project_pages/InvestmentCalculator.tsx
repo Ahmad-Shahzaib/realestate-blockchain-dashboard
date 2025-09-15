@@ -8,7 +8,6 @@ export default function InvestmentCalculator() {
     const [annualAppreciation, setAnnualAppreciation] = useState(6);
     const [rentalYield, setRentalYield] = useState(6.71);
     const [investmentPeriod, setInvestmentPeriod] = useState(5);
-    const [isCollapsed, setIsCollapsed] = useState(true);
 
     const calculateReturns = () => {
         const netRentalIncome = (investmentAmount * rentalYield) / 100;
@@ -32,7 +31,7 @@ export default function InvestmentCalculator() {
                     type="number"
                     value={investmentAmount}
                     onChange={(e) => setInvestmentAmount(Number(e.target.value))}
-                    className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded mt-1 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                    className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded mt-1 focus:ring-2 focus:ring-[#00C5A5] dark:bg-gray-800 dark:text-white"
                 />
             </div>
 
@@ -44,7 +43,7 @@ export default function InvestmentCalculator() {
                     max="10"
                     value={annualAppreciation}
                     onChange={(e) => setAnnualAppreciation(Number(e.target.value))}
-                    className="w-full accent-blue-500"
+                    className="w-full accent-[#00C5A5]"
                 />
                 <span className="text-gray-600 dark:text-gray-300">{annualAppreciation}%</span>
             </div>
@@ -57,7 +56,7 @@ export default function InvestmentCalculator() {
                     max="10"
                     value={rentalYield}
                     onChange={(e) => setRentalYield(Number(e.target.value))}
-                    className="w-full accent-blue-500"
+                    className="w-full accent-[#00C5A5]"
                 />
                 <span className="text-gray-600 dark:text-gray-300">{rentalYield}%</span>
             </div>
@@ -70,7 +69,7 @@ export default function InvestmentCalculator() {
                     max="10"
                     value={investmentPeriod}
                     onChange={(e) => setInvestmentPeriod(Number(e.target.value))}
-                    className="w-full accent-blue-500"
+                    className="w-full accent-[#00C5A5]"
                 />
                 <span className="text-gray-600 dark:text-gray-300">{investmentPeriod} Years</span>
             </div>
@@ -87,25 +86,16 @@ export default function InvestmentCalculator() {
                 <span>{averageAnnualReturn.toFixed(2)}%</span>
             </div>
 
-            <div className="mt-4">
-                <Button
-                    onClick={() => setIsCollapsed(!isCollapsed)}
-                    className="  text-white p-2 rounded-lg  transition duration-200"
-                >
-                    {isCollapsed ? "Show Details" : "Hide Details"}
-                </Button>
-                {!isCollapsed && (
-                    <div className="mt-4 grid grid-cols-2 gap-4">
-                        <div className="p-4 bg-blue-50 dark:bg-gray-800 rounded-lg border border-blue-200 dark:border-gray-700">
-                            <p className="font-semibold text-gray-700 dark:text-gray-200">Net rental income</p>
-                            <p className="text-xl text-blue-600 dark:text-blue-400">AED {netRentalIncome.toFixed(2)}</p>
-                        </div>
-                        <div className="p-4 bg-blue-50 dark:bg-gray-800 rounded-lg border border-blue-200 dark:border-gray-700">
-                            <p className="font-semibold text-gray-700 dark:text-gray-200">Expected capital appreciation</p>
-                            <p className="text-xl text-blue-600 dark:text-blue-400">AED {capitalAppreciation.toFixed(2)}</p>
-                        </div>
-                    </div>
-                )}
+            {/* Details are always visible now */}
+            <div className="mt-4 grid grid-cols-2 gap-4">
+                <div className="p-4 bg-[#E6FFFA] dark:bg-gray-800 rounded-lg border border-[#00C5A5]/30 dark:border-gray-700">
+                    <p className="font-semibold text-gray-700 dark:text-gray-200">Net rental income</p>
+                    <p className="text-xl text-[#00C5A5]">AED {netRentalIncome.toFixed(2)}</p>
+                </div>
+                <div className="p-4 bg-[#E6FFFA] dark:bg-gray-800 rounded-lg border border-[#00C5A5]/30 dark:border-gray-700">
+                    <p className="font-semibold text-gray-700 dark:text-gray-200">Expected capital appreciation</p>
+                    <p className="text-xl text-[#00C5A5]">AED {capitalAppreciation.toFixed(2)}</p>
+                </div>
             </div>
         </div>
     );

@@ -55,17 +55,17 @@ export default function Page() {
                 <h2 className="text-lg font-bold mb-4">Referral Stats</h2>
                 <div className="grid gap-4 sm:grid-cols-3">
                     <div className="border shadow-md p-4 rounded-xl ">
-                        <Users className="w-5 h-5 text-green-500" />
+                        <Users className="w-5 h-5 text-[#00B894]" />
                         <p className="font-semibold">{stats.totalReferrals}</p>
                         <p className="text-sm text-gray-500">Total Referrals</p>
                     </div>
                     <div className="border shadow-md p-4 rounded-xl ">
-                        <Gift className="w-5 h-5 text-green-500" />
+                        <Gift className="w-5 h-5 text-[#00B894]" />
                         <p className="font-semibold">{stats.directReferrals}</p>
                         <p className="text-sm text-gray-500">Direct Referrals</p>
                     </div>
                     <div className="border shadow-md p-4 rounded-xl ">
-                        <CheckCircle className="w-5 h-5 text-green-500" />
+                        <CheckCircle className="w-5 h-5 text-[#00B894]" />
                         <p className="font-semibold">{stats.indirectReferrals}</p>
                         <p className="text-sm text-gray-500">Indirect Referrals</p>
                     </div>
@@ -84,7 +84,7 @@ export default function Page() {
                                 <input
                                     type="email"
                                     placeholder="Enter friend's email"
-                                    className="flex-1 p-3 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 bg-[#F5F7FA] dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00B894]"
+                                    className="flex-1 p-3 rounded-lg border border-[#00B894] dark:border-gray-600 text-gray-700 dark:text-gray-200 bg-[#F5F7FA] dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00B894]"
                                 />
                                 <button
                                     type="button"
@@ -111,7 +111,7 @@ export default function Page() {
                                         type="text"
                                         value="https://example.com/referral/abcd1234"
                                         readOnly
-                                        className="w-full p-3 pr-12 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 bg-[#F5F7FA] dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00B894]"
+                                        className="w-full p-3 pr-12 rounded-lg border border-[#00B894] dark:border-gray-600 text-gray-700 dark:text-gray-200 bg-[#F5F7FA] dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00B894]"
                                     />
                                     <button
                                         type="button"
@@ -155,7 +155,7 @@ export default function Page() {
             <div className="overflow-x-auto">
                 <table className="min-w-full border-collapse rounded-xl shadow-lg overflow-hidden">
                     <thead>
-                        <tr className="bg-gradient-to-r from-green-500 to-teal-400 text-white">
+                        <tr className="bg-[#00B894] text-white">
                             <th className="px-6 py-3 text-left text-sm font-semibold">Level</th>
                             <th className="px-6 py-3 text-left text-sm font-semibold">Email</th>
                             <th className="px-6 py-3 text-left text-sm font-semibold">Joined At</th>

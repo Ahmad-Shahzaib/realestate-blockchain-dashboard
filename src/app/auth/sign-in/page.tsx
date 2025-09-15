@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function SignIn() {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-tr from-[#1E90FF] via-[#00D2B6] to-[#00B894] relative overflow-hidden flex items-center justify-center">
+    <div className="min-h-screen w-full bg-gradient-to-tr from-[#E6F0FA] via-[#D6EAF8] to-[#C3E2E6] relative overflow-hidden flex items-center justify-center">
 
       {/* Animated Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
@@ -24,37 +24,6 @@ export default function SignIn() {
 
       <div className="relative z-10 w-full flex flex-col items-center justify-center min-h-screen">
         <div className="flex flex-col-reverse lg:flex-row w-full max-w-6xl items-center justify-center mx-auto px-4 sm:px-8 py-8 gap-8">
-          {/* Right Side - Login Form */}
-          <div className="w-full max-w-md flex flex-col items-center justify-center mx-auto">
-            {/* Mobile Logo */}
-            <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-              <img src={logo.src} alt="BlockEstate Logo" style={
-                {
-                  width: "50%",
-                  height: "auto",
-                  filter: "brightness(0.5)",
-                }
-              } />
-            </div>
-
-            {/* Login Card */}
-            <div className="w-full bg-[#003049] text-white rounded-2xl p-6 sm:p-8 shadow-md border border-gray-100 hover:shadow-xl transition">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
-                <p className="text-white">Sign in to your investment dashboard</p>
-              </div>
-
-              <Signin />
-
-              {/* Security Notice */}
-              <div className="mt-6 text-center">
-                <p className="text-white text-xs flex items-center justify-center gap-2">
-                  <Shield className="w-4 h-4 text-[#0277BD]" />
-                  Your data is protected with end-to-end encryption
-                </p>
-              </div>
-            </div>
-          </div>
 
           {/* Left Side - Branding & Info */}
           <div className="w-full max-w-lg flex flex-col justify-center items-center px-2 sm:px-8 xl:px-16 mb-2 lg:mb-0">
@@ -115,6 +84,39 @@ export default function SignIn() {
               </div>
             </div>
           </div>
+          {/* Right Side - Login Form */}
+          <div className="w-full max-w-md flex flex-col items-center justify-center mx-auto">
+            {/* Mobile Logo */}
+            <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+              <img src={logo.src} alt="BlockEstate Logo" style={
+                {
+                  width: "50%",
+                  height: "auto",
+                  filter: "brightness(0.5)",
+                }
+              } />
+            </div>
+
+            {/* Login Card */}
+            <div className="w-full bg-[#003049] text-white rounded-2xl p-6 sm:p-8 shadow-md border border-gray-100 hover:shadow-xl transition">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+                <p className="text-white">Sign in to your investment dashboard</p>
+              </div>
+
+              <Signin />
+
+              {/* Security Notice */}
+              <div className="mt-6 text-center">
+                <p className="text-white text-xs flex items-center justify-center gap-2">
+                  <Shield className="w-4 h-4 text-[#0277BD]" />
+                  Your data is protected with end-to-end encryption
+                </p>
+              </div>
+            </div>
+          </div>
+
+
         </div>
       </div>
     </div>
