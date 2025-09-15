@@ -28,7 +28,7 @@ export default function PersonalDetails() {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
-        phone: "",
+        phoneNumber: "",
         dob: "",
         gender: "",
         country: "",
@@ -52,7 +52,7 @@ export default function PersonalDetails() {
                     setFormData({
                         name: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
                         email: user.email || "",
-                        phone: user.phoneNumber || "",
+                        phoneNumber: user.phoneNumber || "",
                         dob: user.dateOfBirth || "",
                         gender: user.gender || "",
                         country: user.country || "",
@@ -91,7 +91,7 @@ export default function PersonalDetails() {
                 firstName,
                 lastName,
                 email: formData.email,
-                phoneNumber: formData.phone,
+                phoneNumber: formData.phoneNumber,
                 dateOfBirth: formData.dob || undefined,
                 gender: formData.gender || undefined,
                 country: formData.country || undefined,
@@ -218,18 +218,19 @@ export default function PersonalDetails() {
                                 {isEditing ? (
                                     <>
                                         <input
-                                            name="phone"
-                                            value={formData.phone}
+                                            name="phoneNumber"
+                                            value={formData.phoneNumber}
                                             onChange={handleChange}
                                             className="w-full border-0 focus:ring-0 dark:bg-gray-700 dark:text-white"
                                             placeholder="Enter your phone number"
                                         />
+
                                         <button className="bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white text-sm px-4 py-1.5 rounded-full shadow-md hover:opacity-90 transition">
                                             Verify
                                         </button>
                                     </>
                                 ) : (
-                                    <span className="text-gray-700 dark:text-gray-200 text-sm">{formData.phone || "-"}</span>
+                                    <span className="text-gray-700 dark:text-gray-200 text-sm">{formData.phoneNumber || "-"}</span>
                                 )}
                             </div>
                         </div>

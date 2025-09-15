@@ -99,7 +99,7 @@ export interface ProjectPayload {
 }
 
 
-const API_BASE_URL = 'https://proptechapi.softsuitetech.com/api';
+const API_BASE_URL = 'https://api.fractprop.com/api';
 
 // Create Axios instance
 const api: AxiosInstance = axios.create({

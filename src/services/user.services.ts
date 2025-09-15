@@ -35,7 +35,7 @@ export async function updateUserProfile(userData: UserProfile): Promise<{
         throw error;
     }
 }
-//  get all user detai https://proptechapi.softsuitetech.com//api/admin/users'
+//  get all user detai https://api.fractprop.com//api/admin/users'
 
 export interface UserDetails {
     id?: number;

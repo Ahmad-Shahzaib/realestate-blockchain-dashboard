@@ -7,10 +7,11 @@ import { useRouter } from 'next/navigation';
 import { motion } from "framer-motion";
 
 interface ProjectDetailsPageProps {
-    projectId?: string;
+
+    project: any
 }
 
-const ProjectDetailsPage = ({ projectId }: ProjectDetailsPageProps) => {
+const ProjectDetailsPage = ({ project }: ProjectDetailsPageProps) => {
     const [currentStep, setCurrentStep] = useState(1);
 
     return (
@@ -24,7 +25,7 @@ const ProjectDetailsPage = ({ projectId }: ProjectDetailsPageProps) => {
                         </div>
                         <div>
                             <h2 className="text-2xl lg:text-3xl font-bold text-[#003049] dark:text-white">
-                                Urban Dwellings
+                                {project?.name}
                             </h2>
                             <div className="flex items-center gap-3 text-gray-600 dark:text-white">
                                 <span className="text-sm font-medium uppercase tracking-wide">

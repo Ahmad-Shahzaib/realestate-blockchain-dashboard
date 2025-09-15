@@ -36,7 +36,8 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
 
     const router = useRouter();
     const handleCardClick = () => {
-        router.push("/project-pages/project-plot-detail");
+        router.push(`/project-pages/project_pages/${projectId}/project-plot-detail`);
+
     };
 
     if (loading) {

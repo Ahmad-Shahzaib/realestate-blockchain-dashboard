@@ -40,7 +40,7 @@ const ProjectDetailPlot = () => {
             try {
                 setLoading(true);
                 // Direct Axios GET request
-                const response = await axios.get("https://proptechapi.softsuitetech.com/api/projects");
+                const response = await axios.get("https://api.fractprop.com/api/projects");
                 if (response.data && response.data.data && response.data.data.length > 0) {
                     setProjects(response.data.data);
                     const project = response.data.data;
