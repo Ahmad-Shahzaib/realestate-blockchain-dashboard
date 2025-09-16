@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import {
   User,
   Mail,
@@ -41,7 +42,7 @@ interface FormSectionProps {
 interface InputFieldProps {
   label: string;
   name: string;
-  type?: 'text' | 'email' | 'tel' | 'date' | 'select' | 'textarea' | 'file';
+  type?: 'text' | 'email' | 'tel' | 'date' | 'select' | 'textarea' | 'file' | 'password';
   required?: boolean;
   placeholder?: string;
   icon?: typeof LucideIcon;
@@ -60,7 +61,7 @@ const FormSection: React.FC<FormSectionProps> = ({ title, icon: Icon, children, 
   </div>
 );
 
-const InputField: React.FC<InputFieldProps> = ({ label, name, type = "text", required = false, placeholder, icon: Icon, value, onChange, options }) => (
+const InputFieldInner: React.FC<InputFieldProps> = ({ label, name, type = "text", required = false, placeholder, icon: Icon, value, onChange, options }) => (
   <div className="space-y-2">
     <label className="text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2">
       {Icon && <Icon className="w-4 h-4" iconNode={[]} />}
@@ -143,8 +144,10 @@ const InputField: React.FC<InputFieldProps> = ({ label, name, type = "text", req
       />
     )}
   </div>
-
 );
+
+// memoized wrapper to avoid unnecessary re-renders
+const InputField = React.memo(InputFieldInner);
 
 const initialFormState = {
   firstName: '',
@@ -181,6 +184,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
   const [form, setForm] = useState(initialFormState);
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector(state => state.customer || { loading: false, error: null });
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type, files } = e.target as any;
@@ -191,40 +195,52 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
     }
   };
 
+  const resetForm = useCallback(() => {
+    setForm(initialFormState);
+    // clear file input if present
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const {
-      name,
-      phone,
-      preferredContactMethod,
-      profilePicture,
-      ...rest
-    } = form;
+    // Build full name from first and last
+    const fullName = `${form.firstName || ''} ${form.lastName || ''}`.trim();
 
-    const mappedForm = {
-      name: name,
-      phone: phone,
-      preferredContactMethod: preferredContactMethod,
-      role: "customer",  // ✅ static role added
+    const { profilePicture, ...rest } = form as any;
+
+    const mappedForm: any = {
+      name: fullName,
+      phone: form.phone,
+      preferredContactMethod: form.preferredContactMethod,
+      role: 'customer',
       ...rest,
     };
 
     let payload: any = mappedForm;
-    let useFormData = false;
 
     if (profilePicture) {
-      useFormData = true;
       const formData = new FormData();
       Object.entries(mappedForm).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           formData.append(key, value as any);
         }
       });
-      formData.append('profilePicture', profilePicture);
+      formData.append('profilePicture', profilePicture as any);
       payload = formData;
     }
 
-    await dispatch(addCustomer(payload));
+    try {
+      // dispatch and unwrap to get thrown error on rejection
+      // @ts-ignore
+      await dispatch(addCustomer(payload)).unwrap();
+      toast.success('Customer added successfully');
+      resetForm();
+    } catch (err: any) {
+      const msg = err?.message || String(err) || 'Failed to add customer';
+      toast.error(msg);
+    }
   };
 
 
@@ -257,6 +273,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
           </div>
 
           <form onSubmit={handleSubmit}>
+            <Toaster position="top-right" />
             <div className="space-y-8">
               {/* Basic Information */}
               <FormSection title="Basic Information" icon={User}>

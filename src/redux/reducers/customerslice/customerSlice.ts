@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { API_URLS } from '../../../config/apiUrls';
 import { getAxiosInstance } from '@/lib/axios';
+import toast from 'react-hot-toast';
 
 export interface Customer {
   _id: number;
@@ -62,9 +63,13 @@ export const addCustomer = createAsyncThunk(
   async (customer: any, { rejectWithValue }) => {
     try {
 
-      const response = await getAxiosInstance('/api/auth').post("/api/register", customer);
+      const response:any = await getAxiosInstance('/api/auth').post("/api/auth/register", customer);
+      if(response.data.status === 'success'){
+        toast.success('Customer added successfully!');
+      }
       return response.data;
     } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to add customer');
       return rejectWithValue(error.response?.data?.message || 'Failed to add customer');
     }
   }
