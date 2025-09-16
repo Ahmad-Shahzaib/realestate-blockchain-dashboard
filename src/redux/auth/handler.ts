@@ -3,8 +3,6 @@
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { getAxiosInstance } from "@/lib/axios";
 
-
-
 export const handleLogin = async (credentials: {
     email: string;
     password: string;
@@ -58,10 +56,12 @@ export const handleRegister = async (credentials: {
         const response = await getAxiosInstance('/api/auth').post("/api/auth/register", {
             ...credentials,
         });
-
         return response.data.user;
-    } catch (error) {
-        throw error;
+    } catch (error:any) {
+        console.error("Registration error:", error);
+        const message =
+            error?.response?.data?.message || error?.message || 'Registration failed';
+        throw new Error(message);
     }
 };
 

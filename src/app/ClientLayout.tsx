@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 
 import { Sidebar } from "@/components/Layouts/sidebar";
 import { Header } from "@/components/Layouts/header";
@@ -37,39 +38,41 @@ const ClientLayout = ({ children }: any) => {
         };
     }, []);
 
+    if (isAuthenticatedUser) {
+        return (
+            <Providers>
+                {/* Global toaster so any toast() calls show up */}
+                <Toaster position="top-right" />
+                <AuthWrapper>
+                    <div className="flex min-h-screen">
+                        <Sidebar />
+                        <div className="w-full  dark:bg-[#020d1a]">
+                            <Header />
+                            <main className="isolate mx-auto w-full  overflow-hidden ">
+                                {children}
+                            </main>
+                        </div>
+                    </div>
+                </AuthWrapper>
+            </Providers>
+        );
+    }
+
     return (
-        <>
-            {isAuthenticatedUser ? (
-                <Providers>
-                    <AuthWrapper>
-                        <div className="flex min-h-screen">
-                            <Sidebar />
-                            <div className="w-full  dark:bg-[#020d1a]">
-                                <Header />
-                                <main className="isolate mx-auto w-full  overflow-hidden ">
-                                    {children}
-                                </main>
-                            </div>
-                        </div>
-
-                    </AuthWrapper>
-                </Providers>
-            ) : (<>
-                <Providers>
-                    <AuthWrapper>
-                        <div className="flex min-h-screen">
-                            <div className="w-full  dark:bg-[#020d1a]">
-                                <main className="isolate mx-auto w-full  overflow-hidden ">
-                                    {children}
-                                </main>
-                            </div>
-                        </div>
-
-                    </AuthWrapper>
-                </Providers>
-            </>)}
-        </>
-    )
+        <Providers>
+            {/* Global toaster so any toast() calls show up */}
+            <Toaster position="top-right" />
+            <AuthWrapper>
+                <div className="flex min-h-screen">
+                    <div className="w-full  dark:bg-[#020d1a]">
+                        <main className="isolate mx-auto w-full  overflow-hidden ">
+                            {children}
+                        </main>
+                    </div>
+                </div>
+            </AuthWrapper>
+        </Providers>
+    );
 }
 
 export default ClientLayout

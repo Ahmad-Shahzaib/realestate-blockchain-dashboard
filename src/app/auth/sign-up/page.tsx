@@ -22,6 +22,7 @@ import {
     UserPlus,
     ChevronRight,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 // Define the validation schema using Yup
 const RegisterSchema = Yup.object().shape({
@@ -36,6 +37,14 @@ const RegisterSchema = Yup.object().shape({
 });
 
 export default function SignUp() {
+    // helper to safely extract string messages
+    const getMessage = (err: any) => {
+        if (!err) return 'Something went wrong';
+        if (typeof err === 'string') return err;
+        if (err instanceof Error) return err.message;
+        if (err?.response?.data?.message) return err.response.data.message;
+        return JSON.stringify(err).slice(0, 200);
+    };
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -63,19 +72,25 @@ export default function SignUp() {
         password: string;
     }) => {
         try {
+
             setLoading(true);
             setError("");
             await handleRegister({
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
+                firstName: data.firstName.trim(),
+                lastName: data.lastName.trim(),
+                email: data.email.trim().toLowerCase(),
                 password: data.password,
             });
+            toast.success("Account created successfully! Please sign in.");
             // On success, redirect to login
             router.push("/auth/sign-in");
         } catch (err: any) {
-            setError(err.message || "Failed to create account");
+            console.error("Registration error:", err);
+            const message = getMessage(err);
+            toast.error(message);
+            // setError(message);
         } finally {
+
             setLoading(false);
         }
     };
