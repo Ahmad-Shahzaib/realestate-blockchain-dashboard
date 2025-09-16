@@ -44,14 +44,14 @@ export function Header() {
       )}
 
       {/* 🟢 commit: Page title "Dashboard" (hidden on smaller screens) */}
-      <div className="max-xl:hidden">
+      {/* <div className="max-xl:hidden">
         <div className="relative">
           <h1 className="mb-0.5 text-heading-5 font-bold bg-gradient-to-r from-dark to-dark/80 bg-clip-text text-transparent dark:from-white dark:to-white/80 transition-all duration-300">
             Dashboard
           </h1>
           <div className="absolute -bottom-1 left-0 h-0.5 w-8 bg-gradient-to-r from-primary to-primary/60 rounded-full" />
         </div>
-      </div>
+      </div> */}
 
       {/* 🟢 commit: Right side controls (theme toggle + user info) */}
       <div className="flex flex-1 items-center justify-end gap-2 min-[375px]:gap-4">

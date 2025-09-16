@@ -924,14 +924,7 @@ export default function GlobeResidencyForm() {
                                             value={floor.totalUnits}
                                             onChange={(e) => handleFloorChange(idx, e)}
                                         />
-                                        <input
-                                            id="pricePerSqFt"
-                                            type="number"
-                                            placeholder="Price Per SqFt"
-                                            className="p-2 border rounded"
-                                            value={floor.pricePerSqFt}
-                                            onChange={(e) => handleFloorChange(idx, e)}
-                                        />
+
                                         <input
                                             id="minPrice"
                                             type="number"
@@ -949,9 +942,17 @@ export default function GlobeResidencyForm() {
                                             onChange={(e) => handleFloorChange(idx, e)}
                                         />
                                         <input
+                                            id="pricePerSqFt"
+                                            type="number"
+                                            placeholder="Price Per SqFt"
+                                            className="p-2 border rounded"
+                                            value={floor.pricePerSqFt}
+                                            onChange={(e) => handleFloorChange(idx, e)}
+                                        />
+                                        <input
                                             id="totalSquareFootage"
                                             type="number"
-                                            placeholder="Total Square Footage"
+                                            placeholder="Total Sqft"
                                             className="p-2 border rounded"
                                             value={floor.totalSquareFootage}
                                             onChange={(e) => handleFloorChange(idx, e)}
@@ -959,7 +960,7 @@ export default function GlobeResidencyForm() {
                                         <input
                                             id="minSqftBuy"
                                             type="number"
-                                            placeholder="Minimum Sqft Buy"
+                                            placeholder="Minimum Buy Sqft "
                                             className="p-2 border rounded"
                                             value={floor.minSqftBuy || ""}
                                             onChange={(e) => handleFloorChange(idx, e)}
@@ -967,7 +968,7 @@ export default function GlobeResidencyForm() {
                                         <input
                                             id="maxSqftBuy"
                                             type="number"
-                                            placeholder="Maximum Sqft Buy"
+                                            placeholder="Maximum Buy Sqft "
                                             className="p-2 border rounded"
                                             value={floor.maxSqftBuy || ""}
                                             onChange={(e) => handleFloorChange(idx, e)}
