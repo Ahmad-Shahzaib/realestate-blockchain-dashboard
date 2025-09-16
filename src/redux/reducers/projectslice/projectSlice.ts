@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { ProjectPayload } from '@/services/project.service';
 import ProjectService from '@/services/project.service';
+import toast from 'react-hot-toast';
 
 interface ProjectState {
   projects: any[];
@@ -19,8 +20,12 @@ export const createProject = createAsyncThunk(
   async (payload: ProjectPayload, { rejectWithValue }) => {
     try {
       const response = await ProjectService.createProject(payload);
+      if(response.status == 'success') {
+        toast.success('Project created successfully!');
+      }
       return response;
     } catch (error: any) {
+      toast.error(error.message || 'Failed to create project');
       return rejectWithValue(error.message || 'Failed to create project');
     }
   }

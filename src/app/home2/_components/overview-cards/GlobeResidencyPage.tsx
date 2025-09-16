@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import {
     FaBuilding,
     FaMapMarkerAlt,
@@ -147,102 +148,69 @@ function useGlobeResidencyForm() {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>([
-        { question: "", answer: "" },
-    ]);
+    const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>([{ question: "", answer: "" }]);
     const [documents, setDocuments] = useState<string[]>([""]);
     const dispatch = useDispatch();
 
-    // Memoized validation
-    const isValid = useMemo(() => {
-        return !!form.propertyName && !!form.category && !!form.address && !!form.city && !!form.country;
-    }, [form]);
+    // Memoized validation: only depends on a few fields
+    const isValid = useMemo(
+        () => !!form.propertyName && !!form.category && !!form.address && !!form.city && !!form.country,
+        [form.propertyName, form.category, form.address, form.city, form.country]
+    );
 
     const handleChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
             const { id, value, type } = e.target;
-            setForm((f) => ({
-                ...f,
-                [id]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
-            }));
+            setForm((prev) => ({ ...prev, [id]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value }));
         },
         []
     );
 
-    const handleFloorChange = useCallback(
-        (idx: number, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-            const { id, value } = e.target;
-            setFloors((floors) =>
-                floors.map((floor, i) => (i === idx ? { ...floor, [id]: value } : floor))
-            );
-        },
-        []
-    );
-
-    const handleFloorSpecChange = useCallback(
-        (idx: number, field: "specifications" | "features", value: string) => {
-            setFloors((floors) =>
-                floors.map((floor, i) => (i === idx ? { ...floor, [field]: value } : floor))
-            );
-        },
-        []
-    );
-
-    const addFloor = useCallback(() => {
-        setFloors((floors) => [...floors, { ...initialFloor }]);
+    const handleFloorChange = useCallback((idx: number, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { id, value } = e.target;
+        setFloors((prev) => prev.map((f, i) => (i === idx ? { ...f, [id]: value } : f)));
     }, []);
 
-    const handleFaqChange = useCallback(
-        (idx: number, field: "question" | "answer", value: string) => {
-            setFaqs((faqs) =>
-                faqs.map((faq, i) => (i === idx ? { ...faq, [field]: value } : faq))
-            );
-        },
-        []
-    );
-
-    const addFaq = useCallback(() => {
-        setFaqs((faqs) => [...faqs, { question: "", answer: "" }]);
+    const handleFloorSpecChange = useCallback((idx: number, field: "specifications" | "features", value: string) => {
+        setFloors((prev) => prev.map((f, i) => (i === idx ? { ...f, [field]: value } : f)));
     }, []);
 
-    const removeFaq = useCallback((idx: number) => {
-        setFaqs((faqs) => faqs.filter((_, i) => i !== idx));
+    const addFloor = useCallback(() => setFloors((prev) => [...prev, { ...initialFloor }]), []);
+
+    const handleFaqChange = useCallback((idx: number, field: "question" | "answer", value: string) => {
+        setFaqs((prev) => prev.map((f, i) => (i === idx ? { ...f, [field]: value } : f)));
     }, []);
+
+    const addFaq = useCallback(() => setFaqs((prev) => [...prev, { question: "", answer: "" }]), []);
+    const removeFaq = useCallback((idx: number) => setFaqs((prev) => prev.filter((_, i) => i !== idx)), []);
 
     const handleDocumentChange = useCallback((idx: number, value: string) => {
-        setDocuments((docs) => docs.map((doc, i) => (i === idx ? value : doc)));
+        setDocuments((prev) => prev.map((d, i) => (i === idx ? value : d)));
     }, []);
 
     const handleDocumentFileChange = useCallback((idx: number, file: File) => {
-        setDocuments((docs) => docs.map((doc, i) => (i === idx ? file.name : doc)));
-        // TODO: Implement actual upload logic and setDocuments with the uploaded file URL
+        setDocuments((prev) => prev.map((d, i) => (i === idx ? file.name : d)));
+        // TODO: implement upload and replace with URL
     }, []);
 
-    const addDocument = useCallback(() => {
-        setDocuments((docs) => [...docs, ""]);
-    }, []);
-
-    const removeDocument = useCallback((idx: number) => {
-        setDocuments((docs) => docs.filter((_, i) => i !== idx));
-    }, []);
+    const addDocument = useCallback(() => setDocuments((prev) => [...prev, ""]), []);
+    const removeDocument = useCallback((idx: number) => setDocuments((prev) => prev.filter((_, i) => i !== idx)), []);
 
     // Handle bank details change
-    const handleBankDetailsChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-            const { id, value } = e.target;
-            setForm((f) => ({
-                ...f,
-                bankDetails: {
-                    bankName: f.bankDetails?.bankName ?? "",
-                    accountNumber: f.bankDetails?.accountNumber ?? "",
-                    accountTitle: f.bankDetails?.accountTitle ?? "",
-                    iban: f.bankDetails?.iban ?? "",
-                    [id]: value,
-                },
-            }));
-        },
-        []
-    );
+    const handleBankDetailsChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { id, value } = e.target;
+        setForm((prev) => ({ ...prev, bankDetails: { ...(prev.bankDetails ?? {}), [id]: value } }));
+    }, []);
+
+    const resetAll = useCallback(() => {
+        setForm(initialFormState);
+        setFloors([initialFloor]);
+        setFaqs([{ question: "", answer: "" }]);
+        setDocuments([""]);
+        setError(null);
+        setLoading(false);
+        setSuccess(false);
+    }, []);
 
     const handleSubmit = useCallback(
         async (e: React.FormEvent) => {
@@ -265,17 +233,9 @@ function useGlobeResidencyForm() {
                         city: form.city,
                         state: form.state,
                         country: form.country,
-                        coordinates: {
-                            latitude: Number(form.latitude) || 0,
-                            longitude: Number(form.longitude) || 0,
-                        },
+                        coordinates: { latitude: Number(form.latitude) || 0, longitude: Number(form.longitude) || 0 },
                     },
-                    developer: {
-                        name: form.developerName,
-                        description: form.developerDescription,
-                        logoUrl: form.developerLogo,
-                        website: form.developerWebsite,
-                    },
+                    developer: { name: form.developerName, description: form.developerDescription, logoUrl: form.developerLogo, website: form.developerWebsite },
                     status: form.projectStatus || "planning",
                     category: form.category || "residential",
                     subcategory: form.subcategory,
@@ -299,10 +259,7 @@ function useGlobeResidencyForm() {
                     mainImageUrl: form.mainImageUrl,
                     galleryImages: form.galleryImages ? form.galleryImages.split(",").map((s) => s.trim()) : [],
                     totalArea: Number(form.totalArea) || 0,
-                    priceRange: {
-                        min: Number(form.priceMin) || 0,
-                        max: Number(form.priceMax) || 0,
-                    },
+                    priceRange: { min: Number(form.priceMin) || 0, max: Number(form.priceMax) || 0 },
                     totalUnits: Number(form.totalUnits) || 0,
                     soldUnits: Number(form.soldUnits) || 0,
                     reservedUnits: Number(form.reservedUnits) || 0,
@@ -310,39 +267,28 @@ function useGlobeResidencyForm() {
                     views: Number(form.views) || 0,
                     inquiries: Number(form.inquiries) || 0,
                     amenities: form.amenities ? form.amenities.split(",").map((s) => s.trim()) : [],
-                    token: {
-                        name: form.tokenName,
-                        symbol: form.tokenSymbol,
-                        supply: Number(form.tokenSupply) || 0,
-                        pricePerToken: Number(form.pricePerToken) || 0,
-                        walletAddress: form.walletAddress,
-                    },
+                    token: { name: form.tokenName, symbol: form.tokenSymbol, supply: Number(form.tokenSupply) || 0, pricePerToken: Number(form.pricePerToken) || 0, walletAddress: form.walletAddress },
                     faqs: faqs.filter((f) => f.question && f.answer),
                     documents: documents.filter((d) => d),
-                    customer: "68b7f3511ff5d34a6c9d723b",
-                    bankDetails: {
-                        bankName: form.bankDetails?.bankName || "",
-                        accountNumber: form.bankDetails?.accountNumber || "",
-                        accountTitle: form.bankDetails?.accountTitle || "",
-                        iban: form.bankDetails?.iban || null,
-                    },
+                    customerId: "68c3b12ee63636836f38076e",
+                    bankDetails: { bankName: form.bankDetails?.bankName || "", accountNumber: form.bankDetails?.accountNumber || "", accountTitle: form.bankDetails?.accountTitle || "", iban: form.bankDetails?.iban || null },
                 };
+
                 await dispatch(createProject(payload)).unwrap();
+
+                // show success toast and reset form
+                toast.success("Project created successfully.");
+                resetAll();
                 setSuccess(true);
             } catch (err: any) {
-                setError(err?.message || "Failed to create project.");
+                const msg = err?.message || "Failed to create project.";
+                setError(msg);
+                toast.error(msg);
             } finally {
                 setLoading(false);
             }
         },
-        [
-            form,
-            floors,
-            faqs,
-            documents,
-            isValid,
-            dispatch
-        ]
+        [dispatch, form, floors, faqs, documents, isValid, resetAll, loading]
     );
 
     return {
@@ -400,11 +346,11 @@ export default function GlobeResidencyForm() {
     );
 
     // Fetch customers when component mounts
-    useEffect(() => {
-        if (customerStatus === "") {
-            dispatch(fetchCustomers());
-        }
-    }, [customerStatus, dispatch]);
+    // useEffect(() => {
+    //     if (customerStatus === "") {
+    //         dispatch(fetchCustomers());
+    //     }
+    // }, [customerStatus, dispatch]);
 
     // Placeholder for banks API
     const [banks, setBanks] = useState<{ name: string; code: string }[]>([]);
@@ -420,6 +366,7 @@ export default function GlobeResidencyForm() {
 
     return (
         <div className="min-h-screen shadow-lg rounded-md py-8 px-4">
+            <Toaster position="top-right" />
             <div className="max-w-6xl mx-auto">
                 {/* Customer Dropdown */}
                 {/* <div className="mb-8">
@@ -454,7 +401,6 @@ export default function GlobeResidencyForm() {
                     </div>
                 </div>
                 <form className="space-y-8" onSubmit={handleSubmit} autoComplete="off" noValidate>
-                    {success && <div className="text-green-600 mt-4">Project created successfully!</div>}
                     {error && <div className="text-red-600 mt-4">{error}</div>}
                     {/* Basic Information */}
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border">
@@ -507,7 +453,6 @@ export default function GlobeResidencyForm() {
                                     <option value="villa">Villa</option>
                                     <option value="office">Office</option>
                                     <option value="retail">Retail</option>
-                                    <option value="penthouse">Penthouse</option>
                                     <option value="townhouse">Townhouse</option>
                                 </select>
                             </div>
@@ -870,7 +815,7 @@ export default function GlobeResidencyForm() {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <div className="space-y-2">
+                            {/* <div className="space-y-2">
                                 <label htmlFor="views" className="text-sm font-semibold">
                                     Views
                                 </label>
@@ -882,8 +827,8 @@ export default function GlobeResidencyForm() {
                                     value={form.views}
                                     onChange={handleChange}
                                 />
-                            </div>
-                            <div className="space-y-2">
+                            </div> */}
+                            {/* <div className="space-y-2">
                                 <label htmlFor="inquiries" className="text-sm font-semibold">
                                     Inquiries
                                 </label>
@@ -895,7 +840,7 @@ export default function GlobeResidencyForm() {
                                     value={form.inquiries}
                                     onChange={handleChange}
                                 />
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
