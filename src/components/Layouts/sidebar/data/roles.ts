@@ -167,11 +167,26 @@ export const ADMIN_NAV_DATA = [
 
       },
       {
-        title: "Add Customers",
-        url: "/admin/manage-customers",
-        icon: Icons.User,
-        items: [],
+        title: "Customers",
+        Icon: Icons.User,
+        items: [
+          {
+            title: "Add Customers",
+            url: "/admin/manage-customers",
+            icon: Icons.User,
+            items: [],
+          },
+          {
+            title: "All Customers",
+            url: "/admin/customers-list",
+            icon: SiPolymerproject,
+            items: [],
+          }
+        ]
+
       },
+
+
       {
         title: "Role Management",
         url: "/admin/role-management",
