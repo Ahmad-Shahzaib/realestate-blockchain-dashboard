@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaGlobe } from 'react-icons/fa';
-import { ArrowRight, MapPin, Calendar, CheckCircle } from "lucide-react"
+import { ArrowRight, MapPin, Calendar, CheckCircle } from "lucide-react";
 import ProjectSlider from "@/app/project-pages/project_pages/ProjectSlider";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ProjectService, { Project } from "@/services/project.service";
-import axios from "axios";
+import { getUserProfile, UserProfile } from "@/services/user.services"; // Import the service
 
 const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
     const projectId = params.id;
@@ -15,8 +15,7 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [projects, setProjects] = useState<Project[]>([]);
-
-
+    const [userRole, setUserRole] = useState<string | null>(null); // State for user role
 
     useEffect(() => {
         const fetchProjectDetails = async () => {
@@ -30,14 +29,25 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
             }
         };
 
+        const fetchUserRole = async () => {
+            try {
+                const response = await getUserProfile();
+                setUserRole(response.data.user.role || null); // Get role from user profile
+            } catch (err) {
+                console.error("Failed to fetch user role:", err);
+                setUserRole(null); // Fallback to null if role fetch fails
+            }
+        };
+
         fetchProjectDetails();
+        fetchUserRole();
     }, [projectId]);
+
     console.log("Projects fetched:", projects);
 
     const router = useRouter();
     const handleCardClick = () => {
         router.push(`/project-pages/project_pages/${projectId}/project-plot-detail`);
-
     };
 
     if (loading) {
@@ -62,24 +72,17 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
     }
 
     return (
-        <div className="min-h-screen ">
+        <div className="min-h-screen">
             <div className="max-w-7xl mx-auto p-4 lg:p-8 space-y-6">
                 {/* Project Header */}
-                <div className=" rounded-xl shadow-sm border border-gray-200 dark:text-white p-4 lg:p-6">
+                <div className="rounded-xl shadow-sm border border-gray-200 dark:text-white p-4 lg:p-6">
                     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4">
                         <div className="flex items-center gap-4">
-                            {/* <div className="w-12 h-18 bg-[#00D2B6] rounded-xl flex items-center justify-center">
-                                <Image
-                                    src={dao}
-                                    alt="Qube Logo"
-                                    className="h-8 w-8"
-                                />
-                            </div> */}
                             <div>
                                 <h1 className="text-xl lg:text-xl font-semibold text-gray-800 dark:text-white">
                                     {project?.name} | {project?.location.city}
                                 </h1>
-                                <span className="inline-bloc dark:text-whitek bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium">
+                                <span className="inline-block dark:text-white bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium">
                                     Mature
                                 </span>
                             </div>
@@ -93,27 +96,24 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
                                 </div>
                                 <div className="text-sm text-gray-500 dark:text-white">Total Area</div>
                             </div>
-                            <button
-                                onClick={handleCardClick}
-                                className="bg-[#00D2B6] text-white px-6 py-3 rounded-lg transition-colors font-medium"
-                            >
-                                Invest Now
-                            </button>
+                            {userRole === "user" && ( // Show button only if userRole is "user"
+                                <button
+                                    onClick={handleCardClick}
+                                    className="bg-[#00D2B6] text-white px-6 py-3 rounded-lg transition-colors font-medium"
+                                >
+                                    Invest Now
+                                </button>
+                            )}
                         </div>
                     </div>
-
                 </div>
                 {/* Project Slider and Table */}
                 <div>
                     <ProjectSlider project={project} />
                 </div>
-
-
-
-
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default ProjectDetailPlot
+export default ProjectDetailPlot;
