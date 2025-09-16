@@ -1,5 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosError } from "axios";
-
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 // Transaction interface (based on your example)
 export interface Transaction {
@@ -13,14 +12,37 @@ export interface Transaction {
     updatedAt: string;
 }
 
-const API_BASE_URL = 'https://api.fractprop.com/api';
+const API_BASE_URL = "https://api.fractprop.com/api";
+
+// Axios instance
 const api: AxiosInstance = axios.create({
     baseURL: API_BASE_URL,
     timeout: 10000, // 10 second timeout
     headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
     },
 });
+
+// ✅ Add interceptor to inject token into every request
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem("token");
+        console.log("🔑 Token from localStorage:", token);
+
+        if (token) {
+            // Try this first (most common)
+            config.headers.Authorization = `Bearer ${token}`;
+
+            // Or uncomment this if your backend uses x-auth-token
+            // config.headers["x-auth-token"] = token;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
+
+
 // API Response structure for transaction
 export interface TransactionResponse {
     status: string;
@@ -33,8 +55,6 @@ export interface TransactionResponse {
 export const TransactionService = {
     /**
      * Create a new transaction
-     * @param payload Transaction payload
-     * @returns Promise with created transaction
      */
     createTransaction: async (payload: {
         propertyId: string;
@@ -50,12 +70,12 @@ export const TransactionService = {
             );
             return response.data;
         } catch (error: any) {
-            throw error; // handled by interceptor
+            throw error.response?.data || error;
         }
     },
 
     /**
-     * Get all transactions (optionally with pagination)
+     * Get all transactions
      */
     getAllTransactions: async (): Promise<Transaction[]> => {
         try {
@@ -63,7 +83,7 @@ export const TransactionService = {
                 await api.get("/transactions");
             return response.data.data;
         } catch (error: any) {
-            throw error;
+            throw error.response?.data || error;
         }
     },
 
@@ -76,7 +96,7 @@ export const TransactionService = {
                 await api.get(`/transactions/${id}`);
             return response.data.data;
         } catch (error: any) {
-            throw error;
+            throw error.response?.data || error;
         }
     },
 };

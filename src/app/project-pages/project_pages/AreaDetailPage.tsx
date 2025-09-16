@@ -70,7 +70,7 @@ const AreaDetailPage = ({ project }: AreaDetailPageeProps) => {
                     </span>
                 </div>
                 <div className="text-3xl font-bold text-[#003049] dark:text-white">
-
+                    {project.soldUnits}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">sq. ft.</div>
             </motion.div>
