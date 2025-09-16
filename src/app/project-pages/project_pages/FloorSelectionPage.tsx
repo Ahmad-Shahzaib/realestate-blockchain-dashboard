@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Building2, TrendingUp, Layers, Info } from "lucide-react";
 import { motion } from "framer-motion";
+import { TransactionService } from "@/services/transaction.service"; // Adjust the import path as needed
 
 interface FloorAreaSelectionPageProps {
     project: any;
@@ -48,11 +49,29 @@ const FloorAreaSelectionPage: NextPage<FloorAreaSelectionPageProps> = ({ project
         visible: { opacity: 1, x: 0, transition: { duration: 0.4 } },
     };
 
-    const handleProceed = () => {
-        if (!project?._id) return; // safe check
-        router.push(`/project-pages/project_pages/${project._id}/investment-details`);
-    };
+    const handleProceed = async () => {
+        if (!project?._id || totalArea === 0) return; // Safe check
 
+        try {
+            // Construct the transaction payload
+            const payload = {
+                propertyId: project._id,
+                customerId: project.customerId, // Replace with actual customer ID (e.g., from auth context or state)
+                totalPrice: totalInvestment,
+                totalSquareFeet: totalArea,
+                type: "chosen", // Adjust based on your API requirements
+            };
+
+            // Call the TransactionService.createTransaction API
+            const response = await TransactionService.createTransaction(payload);
+            console.log("Transaction created successfully:", response);
+
+            // Navigate to the investment details page
+            router.push(`/project-pages/project_pages/${project._id}/investment-details`);
+        } catch (error) {
+            console.error("Failed to create transaction:", error);
+        }
+    };
 
     return (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8 max-w-7xl mx-auto">
@@ -234,28 +253,28 @@ const FloorAreaSelectionPage: NextPage<FloorAreaSelectionPageProps> = ({ project
 
             {/* Custom Slider Styling */}
             <style jsx>{`
-                input[type="range"]::-webkit-slider-thumb {
-                    -webkit-appearance: none;
-                    appearance: none;
-                    width: 20px;
-                    height: 20px;
-                    border-radius: 50%;
-                    background: #00b894;
-                    cursor: pointer;
-                    border: 3px solid white;
-                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-                }
-                input[type="range"]::-moz-range-thumb {
-                    width: 20px;
-                    height: 20px;
-                    border-radius: 50%;
-                    background: #00b894;
-                    cursor: pointer;
-                    border: 3px solid white;
-                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-                    -moz-appearance: none;
-                }
-            `}</style>
+        input[type="range"]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: #00b894;
+          cursor: pointer;
+          border: 3px solid white;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        input[type="range"]::-moz-range-thumb {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: #00b894;
+          cursor: pointer;
+          border: 3px solid white;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+          -moz-appearance: none;
+        }
+      `}</style>
         </div>
     );
 };
