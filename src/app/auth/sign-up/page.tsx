@@ -310,6 +310,22 @@ export default function SignUp() {
                                             )}
                                         </button>
                                     </div>
+                                    {/* resferal code  */}
+                                    <div className="space-y-2">
+                                        <label className="text-white text-sm font-medium">
+                                            Referal Code
+                                        </label>
+                                        <div>
+                                            <input type="text"
+                                                required
+                                                className="w-full pl-12 pr-12 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
+                                                placeholder="Enter Referal Code" />
+                                        </div>
+
+                                    </div>
+
+
+
                                     {errors.password && (
                                         <p className="text-red-300 text-sm">
                                             {errors.password.message}
