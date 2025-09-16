@@ -662,7 +662,7 @@ export default function GlobeResidencyForm() {
                             </div>
                             <div className="space-y-2">
                                 <label htmlFor="completionDate" className="text-sm font-semibold">
-                                    Completion Date
+                                    Expected Completion Date
                                 </label>
                                 <input
                                     id="completionDate"
@@ -896,7 +896,7 @@ export default function GlobeResidencyForm() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <input
                                             id="name"
-                                            placeholder="Name"
+                                            placeholder="Floor Name"
                                             className="p-2 border rounded"
                                             value={floor.name}
                                             onChange={(e) => handleFloorChange(idx, e)}
@@ -1069,11 +1069,11 @@ export default function GlobeResidencyForm() {
                             </div>
                             <div className="md:col-span-2 space-y-2">
                                 <label htmlFor="walletAddress" className="text-sm font-semibold">
-                                    Wallet Address
+                                    Contract Address
                                 </label>
                                 <input
                                     id="walletAddress"
-                                    placeholder="User's Phantom Wallet Address"
+                                    placeholder="Contract Address"
                                     className="w-full p-2 border border-gray-200 rounded focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 outline-none"
                                     value={form.walletAddress}
                                     onChange={handleChange}
