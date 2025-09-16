@@ -8,6 +8,8 @@ import { BiSupport } from "react-icons/bi";
 import { SiPolymerproject } from "react-icons/si";
 import { GrTransaction } from "react-icons/gr";
 import { MdOutlineTravelExplore } from "react-icons/md";
+import { title } from "process";
+import { Icon } from "lucide-react";
 
 export const USER_NAV_DATA = [
   {
@@ -138,11 +140,31 @@ export const ADMIN_NAV_DATA = [
         icon: Icons.User,
         items: [],
       },
+      // {
+      //   title: "Manage Properties",
+      //   url: "/admin/Add-project",
+      //   icon: SiPolymerproject,
+      //   items: [],
+      // },
+      // add sub item
       {
         title: "Manage Properties",
-        url: "/admin/Add-project",
-        icon: SiPolymerproject,
-        items: [],
+        Icon: SiPolymerproject,
+        items: [
+          {
+            title: "Manage Properties",
+            url: "/admin/Add-project",
+            icon: SiPolymerproject,
+            items: [],
+          },
+          {
+            title: "Properties",
+            url: "/project-pages",
+            icon: SiPolymerproject,
+            items: [],
+          }
+        ]
+
       },
       {
         title: "Add Customers",
