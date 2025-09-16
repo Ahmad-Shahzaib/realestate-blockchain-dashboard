@@ -77,11 +77,11 @@ const ProjectDetailsPage = ({ project }: ProjectDetailsPageProps) => {
             </div>
 
             {/* Area Details */}
-            <AreaDetailPage />
+            <AreaDetailPage project={project} />
 
             {/* Selected Area */}
             {/* <SelectedAreaPage /> */}
-            <FloorAreaSelectionPage />
+            <FloorAreaSelectionPage project={project} />
         </div>
     )
 }

@@ -5,7 +5,11 @@ import { FileText } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import Button from "@/common/Button";
 
-export default function TransactionPage() {
+interface TransactionPageProps {
+    project: any
+}
+
+export default function TransactionPage({ project }: TransactionPageProps) {
     const [activeStep, setActiveStep] = useState<"guide" | "confirm" | "completed">("guide");
     const [subTab, setSubTab] = useState<"crypto" | "cash" | "bank">("crypto");
 
@@ -73,10 +77,8 @@ export default function TransactionPage() {
                                     {/* From */}
                                     <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl">
                                         <p className="font-semibold text-gray-800 dark:text-white">FROM</p>
-                                        <p className="text-gray-700 dark:text-gray-200 mt-1">FractProp Tech</p>
-                                        <p className="text-blue-600 dark:text-blue-400 text-sm mt-1 break-words">
-                                            investors@fractproptech.com
-                                        </p>
+                                        <p className="text-gray-700 dark:text-gray-200 mt-1">{project.bankDetails.accountTitle}</p>
+
                                     </div>
 
                                     {/* To */}
@@ -96,18 +98,6 @@ export default function TransactionPage() {
                                         </p>
                                     </div>
                                 </div>
-
-                                <div className="flex justify-between items-center">
-                                    <div className="flex items-center space-x-3">
-                                        <FileText className="w-5 h-5 text-red-500 dark:text-red-400" />
-                                        <span className="text-sm text-gray-600 dark:text-gray-300">
-                                            Area Pledged Receipt (166.2 KB)
-                                        </span>
-                                    </div>
-                                    <button className="text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                                        View All Attachments
-                                    </button>
-                                </div>
                             </div>
 
                             {/* Bank Account Info */}
@@ -118,16 +108,12 @@ export default function TransactionPage() {
 
                                 <div className="space-y-4">
                                     <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl">
-                                        <p className="font-semibold text-gray-800 dark:text-white">JS Bank</p>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">0001533435</p>
+                                        <p className="font-semibold text-gray-800 dark:text-white">{project.bankDetails.bankName}</p>
+                                        <span>Acc No</span>   <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{project.bankDetails.accountNumber}</p>
+                                        <span>IBAN</span> <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{project.bankDetails.iban}</p>
                                     </div>
 
-                                    <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl">
-                                        <p className="font-semibold text-gray-800 dark:text-white">Bank Islami</p>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                            301200394620001
-                                        </p>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>

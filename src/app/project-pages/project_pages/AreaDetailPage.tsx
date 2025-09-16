@@ -1,14 +1,12 @@
-
 import React from "react";
 import { Info, TrendingUp, Building2, Lock, Unlock } from "lucide-react";
 import { motion } from "framer-motion";
 
-const AreaDetailPage = () => {
-    const totalArea = 624000;
-    const lockedArea = 163933;
-    const availableArea = totalArea - lockedArea;
-    const pricePerSqFt = 16000;
+interface AreaDetailPageeProps {
+    project: any;
+}
 
+const AreaDetailPage = ({ project }: AreaDetailPageeProps) => {
     // Animation variants for cards
     const cardVariants = {
         hidden: { opacity: 0, y: 20 },
@@ -37,7 +35,8 @@ const AreaDetailPage = () => {
                     <Info className="w-4 h-4 text-[#00D2B6]" />
                 </div>
                 <div className="text-3xl font-bold text-[#003049] dark:text-white">
-                    {pricePerSqFt.toLocaleString()}
+                    {project.floors?.[0]?.pricePerSqFt}
+
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">PKR / sq. ft.</div>
             </motion.div>
@@ -54,7 +53,7 @@ const AreaDetailPage = () => {
                     </span>
                 </div>
                 <div className="text-3xl font-bold text-[#003049] dark:text-white">
-                    {totalArea.toLocaleString()}
+                    {project.totalArea}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">sq. ft.</div>
             </motion.div>
@@ -71,7 +70,7 @@ const AreaDetailPage = () => {
                     </span>
                 </div>
                 <div className="text-3xl font-bold text-[#003049] dark:text-white">
-                    {lockedArea.toLocaleString()}
+
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">sq. ft.</div>
             </motion.div>
@@ -88,12 +87,11 @@ const AreaDetailPage = () => {
                     </span>
                 </div>
                 <div className="text-3xl font-bold text-[#003049] dark:text-white">
-                    {availableArea.toLocaleString()}
+                    {project.sellableArea}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">sq. ft.</div>
             </motion.div>
         </motion.div>
-
     );
 };
 

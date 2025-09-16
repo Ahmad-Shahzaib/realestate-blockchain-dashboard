@@ -4,8 +4,12 @@ import React from 'react';
 import { useRouter } from "next/navigation";
 import Button from '@/common/Button';
 
+interface InvestmentInterfaceProps {
+    project: any
+}
 
-export default function InvestmentInterface() {
+
+export default function InvestmentInterface({ project }: InvestmentInterfaceProps) {
     const router = useRouter();
 
     const handleClick = () => {
