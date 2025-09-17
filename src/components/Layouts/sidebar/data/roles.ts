@@ -204,7 +204,7 @@ export const ADMIN_NAV_DATA = [
       },
       {
         title: "Support Center",
-        url: "/admin/manage-support",
+        url: "/admin/support",
         icon: BiSupport,
         items: [],
       },
