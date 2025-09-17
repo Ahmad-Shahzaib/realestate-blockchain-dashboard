@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 
 
 interface CustomerState {
-  customers: Customer[];
+  customers: any[];
   loading: boolean;
   error: string | null;
 }
