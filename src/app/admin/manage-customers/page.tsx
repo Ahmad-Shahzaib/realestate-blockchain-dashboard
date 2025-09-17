@@ -49,6 +49,8 @@ interface InputFieldProps {
   value?: any;
   onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   options?: { label: string; value: string }[];
+  error?: string | null;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
 }
 
 const FormSection: React.FC<FormSectionProps> = ({ title, icon: Icon, children, className }) => (
@@ -61,7 +63,7 @@ const FormSection: React.FC<FormSectionProps> = ({ title, icon: Icon, children, 
   </div>
 );
 
-const InputFieldInner: React.FC<InputFieldProps> = ({ label, name, type = "text", required = false, placeholder, icon: Icon, value, onChange, options }) => (
+const InputFieldInner: React.FC<InputFieldProps> = ({ label, name, type = "text", required = false, placeholder, icon: Icon, value, onChange, options, error, inputRef }) => (
   <div className="space-y-2">
     <label className="text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2">
       {Icon && <Icon className="w-4 h-4" iconNode={[]} />}
@@ -113,6 +115,7 @@ const InputFieldInner: React.FC<InputFieldProps> = ({ label, name, type = "text"
           accept="image/*"
           className="hidden"
           id={name}
+          ref={inputRef}
           onChange={onChange}
         />
         <label
@@ -143,6 +146,7 @@ const InputFieldInner: React.FC<InputFieldProps> = ({ label, name, type = "text"
         focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
       />
     )}
+    {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
   </div>
 );
 
@@ -182,26 +186,79 @@ const initialFormState = {
 
 const SuperAdminAddCustomerFormUI: React.FC = () => {
   const [form, setForm] = useState(initialFormState);
+  const [errors, setErrors] = useState<Record<string, string | null>>({});
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector(state => state.customer || { loading: false, error: null });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  // Basic validators
+  const validators = useMemo(() => ({
+    firstName: (v: string) => v.trim() ? null : 'First name is required',
+    lastName: (v: string) => v.trim() ? null : 'Last name is required',
+    email: (v: string) => /\S+@\S+\.\S+/.test(v) ? null : 'Enter a valid email',
+    phone: (v: string) => v.trim().length >= 7 ? null : 'Enter a valid phone number',
+    dateOfBirth: (v: string) => v ? null : 'Date of birth is required',
+    gender: (v: string) => v ? null : 'Gender is required',
+    nationality: (v: string) => v ? null : 'Nationality is required',
+    primaryAddress: (v: string) => v ? null : 'Primary address is required',
+    nationalId: (v: string) => v ? null : 'National ID or Passport number is required',
+    password: (v: string) => v && v.length >= 6 ? null : 'Password must be at least 6 characters',
+    secondaryAddress: (v: string) => v ? null : 'Secondary address is required',
+    profilePicture: (v: File | null) => v ? null : 'Profile picture is required',
+    accountStatus: (v: string) => v ? null : 'Account status is required',
+    dateOfRegistration: (v: string) => v ? null : 'Registration date is required',
+    preferredContactMethod: (v: string) => v ? null : 'Preferred contact method is required',
+    occupation: (v: string) => v ? null : 'Occupation is required',
+    annualIncome: (v: string) => v ? null : 'Annual income is required',
+    investmentExperience: (v: string) => v ? null : 'Investment experience is required',
+    riskTolerance: (v: string) => v ? null : 'Risk tolerance is required',
+    kycStatus: (v: string) => v ? null : 'KYC status is required',
+    amlStatus: (v: string) => v ? null : 'AML status is required',
+    walletAddress: (v: string) => v ? null : 'Wallet address is required',
+    referralCode: (v: string) => v ? null : 'Referral code is required',
+    emergencyContactName: (v: string) => v ? null : 'Emergency contact name is required',
+    emergencyContactPhone: (v: string) => v ? null : 'Emergency contact phone is required',
+    emergencyContactRelation: (v: string) => v ? null : 'Emergency contact relation is required',
+    notes: (v: string) => v ? null : 'Notes are required',
+  }), []);
+
+  const validateField = useCallback((name: string, value: any) => {
+    const validator = (validators as any)[name];
+    if (!validator) return null;
+    return validator(value);
+  }, [validators]);
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type, files } = e.target as any;
     if (type === 'file') {
-      setForm(prev => ({ ...prev, [name]: files[0] }));
+      const file = files?.[0] ?? null;
+      setForm(prev => ({ ...prev, [name]: file }));
+      setErrors(prev => ({ ...prev, [name]: file ? null : prev[name] }));
     } else {
       setForm(prev => ({ ...prev, [name]: value }));
+      const fieldError = validateField(name, value);
+      setErrors(prev => ({ ...prev, [name]: fieldError }));
     }
-  };
+  }, [validateField]);
 
   const resetForm = useCallback(() => {
     setForm(initialFormState);
+    setErrors({});
     // clear file input if present
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   }, []);
+
+  const isFormValid = useMemo(() => {
+    // run through required validators
+    for (const key of Object.keys(validators)) {
+      const val = (form as any)[key];
+      const err = (validators as any)[key](val);
+      if (err) return false;
+    }
+    return true;
+  }, [form, validators]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -232,6 +289,18 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
     }
 
     try {
+      // final validation before submit
+      const newErrors: Record<string, string | null> = {};
+      for (const key of Object.keys(validators)) {
+        const val = (form as any)[key];
+        const err = (validators as any)[key](val);
+        if (err) newErrors[key] = err;
+      }
+      setErrors(prev => ({ ...prev, ...newErrors }));
+      if (Object.keys(newErrors).length > 0) {
+        toast.error('Please fix validation errors before submitting');
+        return;
+      }
       // dispatch and unwrap to get thrown error on rejection
       // @ts-ignore
       await dispatch(addCustomer(payload)).unwrap();
@@ -287,6 +356,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                     icon={User}
                     value={form.firstName}
                     onChange={handleChange}
+                    error={errors.firstName}
                   />
 
                   <InputField
@@ -297,30 +367,31 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                     icon={User}
                     value={form.lastName}
                     onChange={handleChange}
+                    error={errors.lastName}
                   />
 
                   {/* password  */}
-                  <InputField label="Password" name="password" type="password" required placeholder="Enter password" icon={User} value={form.password} onChange={handleChange} />
+                  <InputField label="Password" name="password" type="password" required placeholder="Enter password" icon={User} value={form.password} onChange={handleChange} error={errors.password} />
 
-                  <InputField label="Email Address" name="email" type="email" required placeholder="Enter email address" icon={Mail} value={form.email} onChange={handleChange} />
-                  <InputField label="Phone Number" name="phone" type="tel" required placeholder="+1 (555) 123-4567" icon={Phone} value={form.phone} onChange={handleChange} />
-                  <InputField label="Date of Birth" name="dateOfBirth" type="date" required icon={Calendar} value={form.dateOfBirth} onChange={handleChange} />
-                  <InputField label="Gender" name="gender" type="select" required value={form.gender} onChange={handleChange} options={[
+                  <InputField label="Email Address" name="email" type="email" required placeholder="Enter email address" icon={Mail} value={form.email} onChange={handleChange} error={errors.email} />
+                  <InputField label="Phone Number" name="phone" type="tel" required placeholder="+1 (555) 123-4567" icon={Phone} value={form.phone} onChange={handleChange} error={errors.phone} />
+                  <InputField label="Date of Birth" name="dateOfBirth" type="date" required icon={Calendar} value={form.dateOfBirth} onChange={handleChange} error={errors.dateOfBirth} />
+                  <InputField label="Gender" name="gender" type="select" required value={form.gender} onChange={handleChange} error={errors.gender} options={[
                     { label: 'Male', value: 'male' },
                     { label: 'Female', value: 'female' },
                     { label: 'Other', value: 'other' },
                   ]} />
-                  <InputField label="Nationality" name="nationality" required placeholder="Enter nationality" icon={Globe} value={form.nationality} onChange={handleChange} />
+                  <InputField label="Nationality" name="nationality" required placeholder="Enter nationality" icon={Globe} value={form.nationality} onChange={handleChange} error={errors.nationality} />
                 </div>
               </FormSection>
 
               {/* Contact & Address Information */}
               <FormSection title="Contact & Address Information" icon={MapPin}>
                 <div className="grid grid-cols-1 gap-6">
-                  <InputField label="Primary Address" name="primaryAddress" type="textarea" required placeholder="Enter complete primary address" icon={MapPin} value={form.primaryAddress} onChange={handleChange} />
-                  <InputField label="Secondary Address (Optional)" name="secondaryAddress" type="textarea" placeholder="Enter secondary address if applicable" icon={MapPin} value={form.secondaryAddress} onChange={handleChange} />
+                  <InputField label="Primary Address" name="primaryAddress" type="textarea" required placeholder="Enter complete primary address" icon={MapPin} value={form.primaryAddress} onChange={handleChange} error={errors.primaryAddress} />
+                  <InputField label="Secondary Address" name="secondaryAddress" type="textarea" required placeholder="Enter secondary address if applicable" icon={MapPin} value={form.secondaryAddress} onChange={handleChange} error={errors.secondaryAddress} />
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <InputField label="Preferred Contact Method" name="preferredContactMethod" type="select" value={form.preferredContactMethod} onChange={handleChange} options={[
+                    <InputField label="Preferred Contact Method" name="preferredContactMethod" type="select" required value={form.preferredContactMethod} onChange={handleChange} error={errors.preferredContactMethod} options={[
                       { label: 'Email', value: 'email' },
                       { label: 'Phone', value: 'phone' },
                       { label: 'SMS', value: 'sms' },
@@ -332,10 +403,10 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
               {/* Identity & Documentation */}
               <FormSection title="Identity & Documentation" icon={CreditCard}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <InputField label="National ID / Passport Number" name="nationalId" required placeholder="Enter ID or passport number" icon={CreditCard} value={form.nationalId} onChange={handleChange} />
-                  <InputField label="Profile Picture" name="profilePicture" type="file" onChange={handleChange} />
-                  <InputField label="Occupation" name="occupation" placeholder="Enter occupation" icon={Building2} value={form.occupation} onChange={handleChange} />
-                  <InputField label="Annual Income (USD)" name="annualIncome" type="select" value={form.annualIncome} onChange={handleChange} icon={DollarSign} options={[
+                  <InputField label="National ID / Passport Number" name="nationalId" required placeholder="Enter ID or passport number" icon={CreditCard} value={form.nationalId} onChange={handleChange} error={errors.nationalId} />
+                  <InputField label="Profile Picture" name="profilePicture" type="file" required onChange={handleChange} inputRef={fileInputRef} error={errors.profilePicture} />
+                  <InputField label="Occupation" name="occupation" required placeholder="Enter occupation" icon={Building2} value={form.occupation} onChange={handleChange} error={errors.occupation} />
+                  <InputField label="Annual Income (USD)" name="annualIncome" type="select" required value={form.annualIncome} onChange={handleChange} icon={DollarSign} error={errors.annualIncome} options={[
                     { label: '< $50,000', value: '<50000' },
                     { label: '$50,000 - $100,000', value: '50000-100000' },
                     { label: '$100,000 - $250,000', value: '100000-250000' },
@@ -347,56 +418,56 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
               {/* Investment Profile */}
               <FormSection title="Investment Profile" icon={TrendingUp}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <InputField label="Investment Experience" name="investmentExperience" type="select" value={form.investmentExperience} onChange={handleChange} options={[
+                  <InputField label="Investment Experience" name="investmentExperience" type="select" required value={form.investmentExperience} onChange={handleChange} error={errors.investmentExperience} options={[
                     { label: 'None', value: 'none' },
                     { label: 'Beginner', value: 'beginner' },
                     { label: 'Intermediate', value: 'intermediate' },
                     { label: 'Expert', value: 'expert' },
                   ]} />
-                  <InputField label="Risk Tolerance" name="riskTolerance" type="select" value={form.riskTolerance} onChange={handleChange} options={[
+                  <InputField label="Risk Tolerance" name="riskTolerance" type="select" required value={form.riskTolerance} onChange={handleChange} error={errors.riskTolerance} options={[
                     { label: 'Low', value: 'low' },
                     { label: 'Medium', value: 'medium' },
                     { label: 'High', value: 'high' },
                   ]} />
-                  <InputField label="Wallet Address (Optional)" name="walletAddress" placeholder="Enter blockchain wallet address" icon={Wallet} value={form.walletAddress} onChange={handleChange} />
-                  <InputField label="Referral Code (Optional)" name="referralCode" placeholder="Enter referral code if any" value={form.referralCode} onChange={handleChange} />
+                  <InputField label="Wallet Address" name="walletAddress" required placeholder="Enter blockchain wallet address" icon={Wallet} value={form.walletAddress} onChange={handleChange} error={errors.walletAddress} />
+                  <InputField label="Referral Code" name="referralCode" required placeholder="Enter referral code if any" value={form.referralCode} onChange={handleChange} error={errors.referralCode} />
                 </div>
               </FormSection>
 
               {/* Emergency Contact */}
               <FormSection title="Emergency Contact" icon={Users}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <InputField label="Emergency Contact Name" name="emergencyContactName" placeholder="Enter emergency contact name" icon={User} value={form.emergencyContactName} onChange={handleChange} />
-                  <InputField label="Emergency Contact Phone" name="emergencyContactPhone" type="tel" placeholder="Enter emergency contact phone" icon={Phone} value={form.emergencyContactPhone} onChange={handleChange} />
-                  <InputField label="Relationship" name="emergencyContactRelation" placeholder="e.g., Spouse, Parent, Sibling" value={form.emergencyContactRelation} onChange={handleChange} />
+                  <InputField label="Emergency Contact Name" name="emergencyContactName" required placeholder="Enter emergency contact name" icon={User} value={form.emergencyContactName} onChange={handleChange} error={errors.emergencyContactName} />
+                  <InputField label="Emergency Contact Phone" name="emergencyContactPhone" type="tel" required placeholder="Enter emergency contact phone" icon={Phone} value={form.emergencyContactPhone} onChange={handleChange} error={errors.emergencyContactPhone} />
+                  <InputField label="Relationship" name="emergencyContactRelation" required placeholder="e.g., Spouse, Parent, Sibling" value={form.emergencyContactRelation} onChange={handleChange} error={errors.emergencyContactRelation} />
                 </div>
               </FormSection>
 
               {/* Account Settings */}
               <FormSection title="Account Settings" icon={Shield}>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <InputField label="Account Status" name="accountStatus" type="select" value={form.accountStatus} onChange={handleChange} options={[
+                  <InputField label="Account Status" name="accountStatus" type="select" required value={form.accountStatus} onChange={handleChange} error={errors.accountStatus} options={[
                     { label: 'Active', value: 'active' },
                     { label: 'Inactive', value: 'inactive' },
                     { label: 'Suspended', value: 'suspended' },
                   ]} />
-                  <InputField label="KYC Status" name="kycStatus" type="select" value={form.kycStatus} onChange={handleChange} options={[
+                  <InputField label="KYC Status" name="kycStatus" type="select" required value={form.kycStatus} onChange={handleChange} error={errors.kycStatus} options={[
                     { label: 'Pending', value: 'pending' },
                     { label: 'Verified', value: 'verified' },
                     { label: 'Rejected', value: 'rejected' },
                   ]} />
-                  <InputField label="AML Status" name="amlStatus" type="select" value={form.amlStatus} onChange={handleChange} options={[
+                  <InputField label="AML Status" name="amlStatus" type="select" required value={form.amlStatus} onChange={handleChange} error={errors.amlStatus} options={[
                     { label: 'Pending', value: 'pending' },
                     { label: 'Cleared', value: 'cleared' },
                     { label: 'Flagged', value: 'flagged' },
                   ]} />
-                  <InputField label="Registration Date" name="dateOfRegistration" type="date" icon={Calendar} value={form.dateOfRegistration} onChange={handleChange} />
+                  <InputField label="Registration Date" name="dateOfRegistration" type="date" required icon={Calendar} value={form.dateOfRegistration} onChange={handleChange} error={errors.dateOfRegistration} />
                 </div>
               </FormSection>
 
               {/* Additional Information */}
               <FormSection title="Additional Information" icon={FileText}>
-                <InputField label="Notes" name="notes" type="textarea" placeholder="Enter any additional notes or comments about the customer" icon={FileText} value={form.notes} onChange={handleChange} />
+                <InputField label="Notes" name="notes" type="textarea" required placeholder="Enter any additional notes or comments about the customer" icon={FileText} value={form.notes} onChange={handleChange} error={errors.notes} />
               </FormSection>
 
               {/* Submit Buttons */}
@@ -404,14 +475,14 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                 <button
                   type="button"
                   className="px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700/50 dark:hover:bg-slate-700/70 text-slate-800 dark:text-gray-2 rounded-xl transition-all duration-300 flex items-center gap-2 justify-center"
-                  onClick={() => setForm(initialFormState)}
+                  onClick={() => resetForm()}
                   disabled={loading}
                 >
                   <X className="w-5 h-5" />
                   Cancel
                 </button>
                 <Button type="submit"
-                  disabled={loading}>
+                  disabled={loading || !isFormValid}>
                   {loading ? 'Adding...' : 'Add Customer'}
                 </Button>
               </div>
