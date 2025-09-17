@@ -10,15 +10,13 @@ export const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     const router = useRouter();
     const pathname = usePathname();
     const isAuthenticatedUser = isAuthenticated();
-        const dispatch = useAppDispatch();
+   
 
     console.log("isAuthenticatedUser", isAuthenticatedUser);
     
     useEffect(() => {
         const isAuthPage = pathname?.includes("/auth/");
-   useEffect(() => {
-            dispatch(fetchCustomers());
-        }, [dispatch]);
+
         if (isAuthenticatedUser && isAuthPage) {
             router.push("/");
         } else if (!isAuthenticatedUser && !isAuthPage) {

@@ -10,8 +10,6 @@ import { AuthWrapper } from "@/components/Layouts/auth-wrapper";
 import { metadata } from "./metadata";
 import { isAuthenticated } from "@/redux/auth/handler";
 import dynamic from 'next/dynamic';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { fetchCustomers } from '@/redux/reducers/customerslice/customerSlice';
 
 // Dynamically import the RoleSwitcher component
 

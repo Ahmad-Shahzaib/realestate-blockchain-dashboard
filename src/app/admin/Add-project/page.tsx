@@ -1,14 +1,22 @@
-import React from 'react'
+"use client";
+import React, { useEffect } from 'react'
 import GlobeResidencyPage from '../../globe-residency/page'
 import { Metadata } from "next";
-export const metadata: Metadata = {
-    title: "Add Project",
-};
+import { useAppDispatch } from '@/redux/hooks';
+import { fetchCustomers } from '@/redux/reducers/customerslice/customerSlice';
+
+// export const metadata: Metadata = {
+//   title: "Add Project",
+// };
 
 const page = () => {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchCustomers());
+  }, [dispatch]);
   return (
     <div>
-      <GlobeResidencyPage/>
+      <GlobeResidencyPage />
     </div>
   )
 }
