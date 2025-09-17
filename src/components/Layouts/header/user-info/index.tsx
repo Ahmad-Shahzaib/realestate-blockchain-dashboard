@@ -11,30 +11,16 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { LogOutIcon, SettingsIcon, UserIcon } from "./icons";
 import { handleLogout } from "@/redux/auth/handler";
-import { getUserProfile, UserProfile } from "@/services/user.services";
+import { useAppSelector } from "@/redux/hooks";
 
 export function UserInfo() {
   const [isOpen, setIsOpen] = useState(false);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const userProfile = useAppSelector(state => state.userInfo.user);
+  console.log("User profile from Redux:", userProfile);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        setIsLoading(true);
-        const response = await getUserProfile();
-        if (response?.data?.user) {
-          setUserProfile(response.data.user);
-        }
-      } catch (error) {
-        console.error("Failed to fetch user profile:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserProfile();
-  }, []);
+    console.log(userProfile);
+  }, [userProfile]);
 
   // Default user info if profile not loaded
   const defaultUser = {
@@ -56,20 +42,16 @@ export function UserInfo() {
         <span className="sr-only">My Account</span>
 
         <figure className="flex items-center gap-3">
-          {isLoading ? (
-            <div className="size-12 rounded-full bg-gray-200 animate-pulse"></div>
-          ) : (
-            <Image
-              src={userImage}
-              className="size-12"
-              alt={`Avatar of ${displayName}`}
-              role="presentation"
-              width={200}
-              height={200}
-            />
-          )}
+          <Image
+            src={userImage}
+            className="size-12"
+            alt={`Avatar of ${displayName}`}
+            role="presentation"
+            width={200}
+            height={200}
+          />
           <figcaption className="flex items-center gap-1 font-medium text-dark dark:text-dark-6 max-[1024px]:sr-only">
-            <span>{isLoading ? "Loading..." : displayName}</span>
+            <span>{displayName}</span>
 
             <ChevronUpIcon
               aria-hidden
@@ -88,26 +70,22 @@ export function UserInfo() {
         <h2 className="sr-only">User information</h2>
 
         <figure className="flex items-center gap-2.5 px-5 py-3.5">
-          {isLoading ? (
-            <div className="size-12 rounded-full bg-gray-200 animate-pulse"></div>
-          ) : (
-            <Image
-              src={userImage}
-              className="size-12"
-              alt={`Avatar for ${displayName}`}
-              role="presentation"
-              width={200}
-              height={200}
-            />
-          )}
+          <Image
+            src={userImage}
+            className="size-12"
+            alt={`Avatar for ${displayName}`}
+            role="presentation"
+            width={200}
+            height={200}
+          />
 
           <figcaption className="space-y-1 text-base font-medium">
             <div className="mb-2 leading-none text-dark dark:text-white">
-              {isLoading ? "Loading..." : displayName}
+              {displayName}
             </div>
 
             <div className="leading-none text-gray-6">
-              {isLoading ? "..." : userEmail}
+              {userEmail}
             </div>
           </figcaption>
         </figure>
@@ -115,7 +93,9 @@ export function UserInfo() {
         <hr className="border-[#E8E8E8] dark:border-dark-3" />
 
         <div className="p-2 text-base text-[#4B5563] dark:text-dark-6 [&>*]:cursor-pointer">
-          <Link
+         {/* {
+          userProfile?.role === "user" && (
+   <Link
             href={"/profile"}
             onClick={() => setIsOpen(false)}
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
@@ -126,8 +106,12 @@ export function UserInfo() {
               Active Investments
             </span>
           </Link>
-
-          <Link
+          )
+         } */}
+       
+          {
+          userProfile?.role !== "admin" && (
+   <Link
             href={"/pages/settings"}
             onClick={() => setIsOpen(false)}
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
@@ -138,6 +122,9 @@ export function UserInfo() {
               Account Settings
             </span>
           </Link>
+          )
+          }
+       
         </div>
 
         <hr className="border-[#E8E8E8] dark:border-dark-3" />
