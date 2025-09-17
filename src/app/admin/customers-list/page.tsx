@@ -1,95 +1,28 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Filter, MoreVertical, Mail, Phone, MapPin, Star, Plus, Edit, Trash2 } from 'lucide-react';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { fetchCustomers } from '@/redux/reducers/customerslice/customerSlice';
 
 const CustomerList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
 
-  // Sample customer data
-  const customers = [
-    {
-      id: 1,
-      name: 'John Smith',
-      email: 'john.smith@email.com',
-      phone: '+1 (555) 123-4567',
-      location: 'New York, NY',
-      status: 'active',
-      orders: 24,
-      totalSpent: '$3,240',
-      joinDate: '2023-01-15',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
-    },
-    {
-      id: 2,
-      name: 'Sarah Johnson',
-      email: 'sarah.j@email.com',
-      phone: '+1 (555) 987-6543',
-      location: 'Los Angeles, CA',
-      status: 'active',
-      orders: 18,
-      totalSpent: '$2,890',
-      joinDate: '2023-03-22',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
-    },
-    {
-      id: 3,
-      name: 'Michael Chen',
-      email: 'm.chen@email.com',
-      phone: '+1 (555) 456-7890',
-      location: 'San Francisco, CA',
-      status: 'inactive',
-      orders: 7,
-      totalSpent: '$1,120',
-      joinDate: '2023-06-08',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face'
-    },
-    {
-      id: 4,
-      name: 'Emily Davis',
-      email: 'emily.davis@email.com',
-      phone: '+1 (555) 321-0987',
-      location: 'Chicago, IL',
-      status: 'active',
-      orders: 31,
-      totalSpent: '$4,560',
-      joinDate: '2022-11-12',
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face'
-    },
-    {
-      id: 5,
-      name: 'David Wilson',
-      email: 'david.w@email.com',
-      phone: '+1 (555) 654-3210',
-      location: 'Miami, FL',
-      status: 'pending',
-      orders: 2,
-      totalSpent: '$340',
-      joinDate: '2024-01-05',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face'
-    },
-    {
-      id: 6,
-      name: 'Lisa Anderson',
-      email: 'lisa.anderson@email.com',
-      phone: '+1 (555) 789-0123',
-      location: 'Seattle, WA',
-      status: 'active',
-      orders: 15,
-      totalSpent: '$2,180',
-      joinDate: '2023-08-30',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face'
-    }
-  ];
+  const dispatch = useAppDispatch();
+  const { customers, loading, error } = useAppSelector((state) => state.customer || { customers: [], loading: false, error: null });
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const filteredCustomers = customers.filter(customer => {
-    const matchesSearch = customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterStatus === 'all' || customer.status === filterStatus;
+  // derived customers list from store
+  const filteredCustomers = (customers || []).filter((customer: any) => {
+    const name = (customer.name || '') as string;
+    const email = (customer.email || '') as string;
+    const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      email.toLowerCase().includes(searchTerm.toLowerCase());
+    const status = customer.status || customer.accountStatus || 'inactive';
+    const matchesFilter = filterStatus === 'all' || status === filterStatus;
     return matchesSearch && matchesFilter;
   });
 
@@ -105,7 +38,12 @@ const CustomerList = () => {
     setCurrentPage(1);
   }, [searchTerm, filterStatus]);
 
-  const getStatusColor = (status) => {
+  // fetch customers on mount
+  useEffect(() => {
+    dispatch(fetchCustomers());
+  }, [dispatch]);
+
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'bg-green-100 text-green-800';
       case 'inactive': return 'bg-gray-100 text-gray-800';
@@ -189,22 +127,20 @@ const CustomerList = () => {
                   <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Contact</th>
                   <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Location</th>
                   <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Status</th>
-                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Orders</th>
-                  <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Total Spent</th>
                   <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Join Date</th>
                   <th className="text-left py-4 px-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {paginatedCustomers.map((customer) => (
-                  <tr key={customer.id} className="hover:bg-gray-50 transition-colors">
+                {(paginatedCustomers as any).map((customer: any) => (
+                  <tr key={customer._id || customer.id} className="hover:bg-gray-50 transition-colors">
                     <td className="py-4 px-2">
                       <div className="flex items-center space-x-3">
-                        <img
-                          src={customer.avatar}
-                          alt={customer.name}
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
+                          <img
+                            src={customer.profilePicture ? (typeof customer.profilePicture === 'string' ? customer.profilePicture : URL.createObjectURL(customer.profilePicture)) : (customer.avatar || '/images/user.png')}
+                            alt={customer.name || 'User'}
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
                         <div>
                           <p className="font-semibold text-gray-900">{customer.name}</p>
                           <p className="text-sm text-gray-500">{customer.email}</p>
@@ -226,22 +162,18 @@ const CustomerList = () => {
                     <td className="py-4 px-2">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <MapPin size={14} className="text-gray-400" />
-                        <span>{customer.location}</span>
+                        <span>{customer.location || customer.primaryAddress || '—'}</span>
                       </div>
                     </td>
                     <td className="py-4 px-2">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(customer.status)}`}>
-                        {customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor((customer.status || customer.accountStatus || 'inactive'))}`}>
+                        {((customer.status || customer.accountStatus || 'inactive') as string).charAt(0).toUpperCase() + ((customer.status || customer.accountStatus || 'inactive') as string).slice(1)}
                       </span>
                     </td>
+                   
+                    
                     <td className="py-4 px-2">
-                      <span className="text-sm font-medium text-gray-900">{customer.orders}</span>
-                    </td>
-                    <td className="py-4 px-2">
-                      <span className="text-sm font-medium text-gray-900">{customer.totalSpent}</span>
-                    </td>
-                    <td className="py-4 px-2">
-                      <span className="text-sm text-gray-600">{new Date(customer.joinDate).toLocaleDateString()}</span>
+                      <span className="text-sm text-gray-600">{customer.createdAt ? new Date(customer.createdAt).toLocaleDateString() : (customer.dateOfRegistration ? new Date(customer.dateOfRegistration).toLocaleDateString() : '—')}</span>
                     </td>
                     <td className="py-4 px-2">
                       <div className="flex items-center gap-1">

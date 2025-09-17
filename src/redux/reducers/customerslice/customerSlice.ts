@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { API_URLS } from '../../../config/apiUrls';
+import { BASE_URL } from '../../../config/apiUrls';
 import { getAxiosInstance } from '@/lib/axios';
 import toast from 'react-hot-toast';
 
@@ -49,9 +49,13 @@ export const fetchCustomers = createAsyncThunk(
   'customer/fetchCustomers',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(API_URLS.CUSTOMER);
-      console.log('Fetched customers:', response.data); // Debugging line
-      return response.data.data;
+      const base = process.env.API_BASE_URL || BASE_URL || '';
+      const url = `${base.replace(/\/$/, '')}/api/users/customers`;
+      const response = await axios.get(url);
+      // expected response shape: { status: 'success', data: [...] }
+      // prefer response.data.data when present, otherwise response.data
+      const payload = response.data?.data ?? response.data;
+      return payload;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch customers');
     }
