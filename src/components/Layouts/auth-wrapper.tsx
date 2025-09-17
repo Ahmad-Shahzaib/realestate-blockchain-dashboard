@@ -2,18 +2,23 @@
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { isAuthenticated } from "@/redux/auth/handler";
+import { useAppDispatch } from "@/redux/hooks";
+import { fetchCustomers } from "@/redux/reducers/customerslice/customerSlice";
 // import { canAccessRoute } from "@/utils/route-access";
 
 export const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     const router = useRouter();
     const pathname = usePathname();
     const isAuthenticatedUser = isAuthenticated();
-    
+        const dispatch = useAppDispatch();
+
     console.log("isAuthenticatedUser", isAuthenticatedUser);
     
     useEffect(() => {
         const isAuthPage = pathname?.includes("/auth/");
-
+   useEffect(() => {
+            dispatch(fetchCustomers());
+        }, [dispatch]);
         if (isAuthenticatedUser && isAuthPage) {
             router.push("/");
         } else if (!isAuthenticatedUser && !isAuthPage) {

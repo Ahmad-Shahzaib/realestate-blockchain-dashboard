@@ -19,12 +19,9 @@ import { fetchCustomers } from '@/redux/reducers/customerslice/customerSlice';
 const ClientLayout = ({ children }: any) => {
     const [isAuthenticatedUser, setIsAuthenticatedUser] = useState(false);
     const isDev = process.env.NODE_ENV === 'development';
-    const dispatch = useAppDispatch();
 
     useEffect(() => {
-        useEffect(() => {
-            dispatch(fetchCustomers());
-        }, [dispatch]);
+     
 
         const checkAuth = () => {
             const authStatus = isAuthenticated();
