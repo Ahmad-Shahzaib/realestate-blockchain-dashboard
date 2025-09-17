@@ -63,8 +63,8 @@ const FloorAreaSelectionPage: NextPage<FloorAreaSelectionPageProps> = ({ project
             };
 
             // Call the TransactionService.createTransaction API
-            const response = await TransactionService.createTransaction(payload);
-            console.log("Transaction created successfully:", response);
+            // const response = await TransactionService.createTransaction(payload);
+            // console.log("Transaction created successfully:", response);
 
             // Navigate to the investment details page
             router.push(`/project-pages/project_pages/${project._id}/investment-details`);
