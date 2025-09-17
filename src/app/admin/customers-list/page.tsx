@@ -103,64 +103,9 @@ const CustomerList = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-r from-purple-500 to-pink-600 p-2 rounded-lg">
-                <Star className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Customers</h1>
-                <p className="text-gray-600 mt-1">Manage your customer relationships</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <button className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 transition-colors flex items-center gap-2">
-                <Plus size={20} />
-                Add Customer
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Search and Filter */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex-1 max-w-md">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search customers by name or email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Filter className="h-5 w-5 text-gray-400" />
-              <div className="flex bg-gray-100 rounded-lg p-1">
-                {['all', 'active', 'inactive', 'pending'].map((status) => (
-                  <button
-                    key={status}
-                    onClick={() => setFilterStatus(status)}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${filterStatus === status
-                      ? 'bg-white text-blue-600 shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
-                      }`}
-                  >
-                    {status === 'all' ? 'All' : status.charAt(0).toUpperCase() + status.slice(1)}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+  
 
         {/* Customer Table */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
