@@ -276,7 +276,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
             <Toaster position="top-right" />
             <div className="space-y-8">
               {/* Basic Information */}
-              <FormSection title="Basic Information" icon={User}>
+              <FormSection title="Authorized Representative Details" icon={User}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* <InputField label="Full Name" name="name" required placeholder="Enter full name" icon={User} value={form.name} onChange={handleChange} /> */}
                   <InputField
