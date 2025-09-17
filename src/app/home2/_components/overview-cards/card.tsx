@@ -155,7 +155,7 @@ export function OverviewCard({
     ((mockTotalUnits - mockAvailableUnits) / mockTotalUnits) * 100
   );
   const mockROI = (Math.random() * 10 + 8).toFixed(1);
-  const mockInvestmentAmount = `$${(Math.random() * 5 + 1).toFixed(1)}M`;
+  const mockInvestmentAmount = `PKR ${(Math.random() * 5 + 1).toFixed(1)}M`;
 
   return (
     <div

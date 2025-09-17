@@ -175,7 +175,7 @@ export default function PersonalDetails() {
                             <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Photo</label>
                             <div className="flex items-center gap-3">
                                 <Image
-                                    src="/profile.jpg"
+                                    src="/images/user.png"
                                     alt="Profile"
                                     width={40}
                                     height={40}

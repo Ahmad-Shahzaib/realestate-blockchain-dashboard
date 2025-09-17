@@ -37,8 +37,8 @@ export const USER_NAV_DATA = [
         icon: FaDashcube,
         items: [
           { title: "Portfolio", url: "/portfolio" },
-          { title: "Active Investments", url: "/my-assets" },
-          { title: "Income Stream", url: "/my-nfts" },
+          // { title: "Active Investments", url: "/my-assets" },
+          // { title: "Income Stream", url: "/my-nfts" },
         ],
       },
       {
