@@ -71,7 +71,7 @@ interface FormState {
     tokenSupply: string;
     pricePerToken: string;
     walletAddress: string;
-    customer?: string;
+    customer: string;
     bankDetails?: {
         bankName: string;
         accountNumber: string;
@@ -117,7 +117,7 @@ const initialFormState: FormState = {
     tokenSupply: "",
     pricePerToken: "",
     walletAddress: "",
-    customer: "68b7f3511ff5d34a6c9d723b",
+    customer: "",
     bankDetails: {
         bankName: "",
         accountNumber: "",
@@ -164,6 +164,7 @@ function useGlobeResidencyForm() {
         if (!form.category) errs.category = "Category is required.";
         if (!form.subcategory) errs.subcategory = "Subcategory is required.";
         if (!form.description) errs.description = "Description is required.";
+        if (!form.customer) errs.customer = "Customer is required.";
         if (!form.address) errs.address = "Address is required.";
         if (!form.city) errs.city = "City is required.";
         if (!form.state) errs.state = "State is required.";
@@ -413,7 +414,7 @@ function useGlobeResidencyForm() {
                     token: { name: form.tokenName, symbol: form.tokenSymbol, supply: Number(form.tokenSupply) || 0, pricePerToken: Number(form.pricePerToken) || 0, walletAddress: form.walletAddress },
                     faqs: faqs.filter((f) => f.question && f.answer),
                     documents: documents.filter((d) => d),
-                    customerId: "68c3b12ee63636836f38076e",
+                    customerId: form.customer,
                     bankDetails: { bankName: form.bankDetails?.bankName || "", accountNumber: form.bankDetails?.accountNumber || "", accountTitle: form.bankDetails?.accountTitle || "", iban: form.bankDetails?.iban || null },
                     roi: 0,
                 };
@@ -500,16 +501,17 @@ export default function GlobeResidencyForm() {
 
     const dispatch = useDispatch();
     // Select customers and their status from Redux store
-    const { customers, status: customerStatus, error: customerError } = useSelector(
-        (state: any) => state.customer || { customers: [], status: "", error: null }
+    const { customers, loading: customerLoading, error: customerError } = useSelector(
+        (state: any) => state.customer || { customers: [], loading: false, error: null }
     );
+    console.log("Customers from Redux:", customers, "Loading:", customerLoading, "Error:", customerError);
 
     // Fetch customers when component mounts
-    // useEffect(() => {
-    //     if (customerStatus === "") {
-    //         dispatch(fetchCustomers());
-    //     }
-    // }, [customerStatus, dispatch]);
+    useEffect(() => {
+        if (!customerLoading && customers.length === 0) {
+            (dispatch as any)(fetchCustomers());
+        }
+    }, [customerLoading, customers.length, dispatch]);
 
     // Placeholder for banks API
     const [banks, setBanks] = useState<{ name: string; code: string }[]>([]);
@@ -596,6 +598,31 @@ export default function GlobeResidencyForm() {
                                 {touched.subcategory && validationErrors.subcategory && (
                                     <div className="text-sm text-red-600 mt-1">{validationErrors.subcategory}</div>
                                 )}
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="customer" className="text-sm font-semibold">
+                                    * Customer
+                                </label>
+                                <select
+                                    id="customer"
+                                    className={`w-full p-2 border rounded outline-none ${touched.customer && validationErrors.customer ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
+                                    value={form.customer}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    disabled={customerLoading}
+                                >
+                                    <option value="">Select customer</option>
+                                    {customers.customers?.map((customer: any) => (
+                                        <option key={customer._id} value={customer._id}>
+                                            {customer.name || customer.email || customer._id}
+                                        </option>
+                                    ))}
+                                </select>
+                                {touched.customer && validationErrors.customer && (
+                                    <div className="text-sm text-red-600 mt-1">{validationErrors.customer}</div>
+                                )}
+                                {customerLoading && <div className="text-sm text-gray-500 mt-1">Loading customers...</div>}
+                                {/* {customerError && <div className="text-sm text-red-600 mt-1">{customerError}</div>} */}
                             </div>
                             <div className="md:col-span-2 space-y-2">
                                 <label htmlFor="description" className="text-sm font-semibold">
