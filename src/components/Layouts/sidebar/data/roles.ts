@@ -185,14 +185,12 @@ export const ADMIN_NAV_DATA = [
         ]
 
       },
-
-
-      {
-        title: "Role Management",
-        url: "/admin/role-management",
-        icon: Icons.Table,
-        items: [],
-      },
+      // {
+      //   title: "Role Management",
+      //   url: "/admin/role-management",
+      //   icon: Icons.Table,
+      //   items: [],
+      // },
       {
         title: "Refrerals",
         url: "/admin/referals",
