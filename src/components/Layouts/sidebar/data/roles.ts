@@ -152,13 +152,13 @@ export const ADMIN_NAV_DATA = [
         Icon: SiPolymerproject,
         items: [
           {
-            title: "Manage Properties",
+            title: "Add Property",
             url: "/admin/Add-project",
             icon: SiPolymerproject,
             items: [],
           },
           {
-            title: "Properties",
+            title: "Manage Properties",
             url: "/project-pages",
             icon: SiPolymerproject,
             items: [],
