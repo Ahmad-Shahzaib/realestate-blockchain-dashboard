@@ -2,7 +2,7 @@ const API_BASE = process.env.API_BASE_URL || 'https://api.fractprop.com/api';
 
 export async function fetchCustomersFromApi(): Promise<any> {
   const base = API_BASE.replace(/\/$/, '');
-  const url = `${base}/api/users/customers`;
+  const url = `${base}/users/customers`;
 
   const res = await fetch(url, {
     method: 'GET',

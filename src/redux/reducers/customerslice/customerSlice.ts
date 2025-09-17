@@ -50,7 +50,7 @@ export const fetchCustomers = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const base = process.env.API_BASE_URL || BASE_URL || '';
-      const url = `${base.replace(/\/$/, '')}/api/users/customers`;
+      const url = `${base.replace(/\/$/, '')}/users/customers`;
       const response = await axios.get(url);
       // expected response shape: { status: 'success', data: [...] }
       // prefer response.data.data when present, otherwise response.data
