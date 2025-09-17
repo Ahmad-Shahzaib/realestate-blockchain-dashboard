@@ -53,16 +53,25 @@ export function OverviewCardsGroup() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(1);
+  const [limit] = useState<number>(10);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const [projectImages, setProjectImages] = useState<string[]>([]);
 
   useEffect(() => {
-    const fetchProjects = async () => {
+    const fetchProjects = async (pageNum: number = 1) => {
       try {
         setLoading(true);
-        const response = await ProjectService.getAllProjects();
+        const response = await ProjectService.getAllProjects(pageNum, limit);
 
-        if (response && response.data && response.data.length > 0) {
-          setProjects(response.data);
+        if (response && response.data) {
+          if (pageNum === 1) {
+            setProjects(response.data);
+          } else {
+            setProjects(prev => [...prev, ...response.data]);
+          }
+          setTotalPages(response.pagination?.pages || 1);
+          setPage(response.pagination?.page || pageNum);
           console.log("Projects fetched successfully:", response.data);
 
         } else {
@@ -79,7 +88,7 @@ export function OverviewCardsGroup() {
       }
     };
 
-    fetchProjects();
+    fetchProjects(1);
   }, []);
 
   const renderCards = () => {
@@ -136,10 +145,27 @@ export function OverviewCardsGroup() {
       {/* load more page  button */}
       <div className="w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-4 mt-6">
         <button
-          onClick={() => console.log("Load more projects")}
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          onClick={async () => {
+            if (page >= totalPages) return;
+            setLoading(true);
+            try {
+              const nextPage = page + 1;
+              const res = await ProjectService.getAllProjects(nextPage, limit);
+              if (res && res.data) {
+                setProjects(prev => [...prev, ...res.data]);
+                setPage(res.pagination?.page || nextPage);
+                setTotalPages(res.pagination?.pages || totalPages);
+              }
+            } catch (err) {
+              console.error(err);
+            } finally {
+              setLoading(false);
+            }
+          }}
+          disabled={page >= totalPages}
+          className={`w-full py-2 rounded-lg transition-colors ${page >= totalPages ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
         >
-          Load More Projects
+          {page >= totalPages ? 'No more projects' : 'Load More Projects'}
         </button>
       </div>
 

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Filter, MoreVertical, Mail, Phone, MapPin, Star, Plus, Edit, Trash2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { fetchCustomers } from '@/redux/reducers/customerslice/customerSlice';
@@ -15,23 +15,72 @@ const CustomerList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // derived customers list from store
-  const filteredCustomers = (customers || []).filter((customer: any) => {
-    const name = (customer.name || '') as string;
-    const email = (customer.email || '') as string;
-    const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      email.toLowerCase().includes(searchTerm.toLowerCase());
-    const status = customer.status || customer.accountStatus || 'inactive';
-    const matchesFilter = filterStatus === 'all' || status === filterStatus;
-    return matchesSearch && matchesFilter;
-  });
+  // // derived customers list from store
+  // Normalize incoming customers to a predictable shape and memoize
+  const normalizedCustomers = useMemo(() => {
+    // customers from the store might be an array or an object wrapper { data: { customers: [] } } or { customers: [] }
+    const src: any = customers as any;
+    const listSource = Array.isArray(src)
+      ? src
+      : (src && Array.isArray(src.customers))
+      ? src.customers
+      : (src && src.data && Array.isArray(src.data.customers))
+      ? src.data.customers
+      : [];
+
+    return (listSource || []).map((c: any) => {
+      const name = c.name || [c.firstName, c.lastName].filter(Boolean).join(' ') || c.email || '';
+      const email = c.email || c.emailAddress || '';
+      const phone = c.phone || c.phoneNumber || c.contact || '';
+      const location = c.location || c.primaryAddress || [c.city, c.state, c.country].filter(Boolean).join(', ') || '';
+      const statusRaw = (c.status || c.accountStatus || 'inactive');
+      const status = typeof statusRaw === 'string' ? statusRaw.toLowerCase() : String(statusRaw).toLowerCase();
+      const createdAt = c.createdAt || c.dateOfRegistration || c.date || null;
+      return {
+        ...c,
+        id: c._id || c.id,
+        name,
+        email,
+        phone,
+        location,
+        status,
+        createdAt,
+        profilePicture: c.profilePicture || c.profileImage || c.avatar || c.profileImageUrl || null,
+      };
+    });
+  }, [customers]);
+
+  // derived customers list from store (search + filter)
+  const filteredCustomers = useMemo(() => {
+    const term = (searchTerm || '').toLowerCase().trim();
+    return normalizedCustomers.filter((customer: any) => {
+      const name = (customer.name || '').toLowerCase();
+      const email = (customer.email || '').toLowerCase();
+      const matchesSearch = !term || name.includes(term) || email.includes(term);
+      const matchesFilter = filterStatus === 'all' || (customer.status || 'inactive') === filterStatus.toLowerCase();
+      return matchesSearch && matchesFilter;
+    });
+  }, [normalizedCustomers, searchTerm, filterStatus]);
 
   // Pagination logic
   const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
-  const paginatedCustomers = filteredCustomers.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  
+  // Ensure currentPage is within bounds when filtered data changes
+  useEffect(() => {
+    if (totalPages === 0) {
+      setCurrentPage(1);
+    } else if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+  const paginatedCustomers = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredCustomers.slice(start, start + itemsPerPage);
+  }, [filteredCustomers, currentPage]);
+
+  // Compute display indices for "Showing X to Y of Z"
+  const startIndex = filteredCustomers.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = Math.min(currentPage * itemsPerPage, filteredCustomers.length);
 
   // Reset to first page when filter/search changes
   React.useEffect(() => {
@@ -133,16 +182,16 @@ const CustomerList = () => {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {(paginatedCustomers as any).map((customer: any) => (
-                  <tr key={customer._id || customer.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={customer.id} className="hover:bg-gray-50 transition-colors">
                     <td className="py-4 px-2">
                       <div className="flex items-center space-x-3">
                           <img
-                            src={customer.profilePicture ? (typeof customer.profilePicture === 'string' ? customer.profilePicture : URL.createObjectURL(customer.profilePicture)) : (customer.avatar || '/images/user.png')}
+                            src={customer.profilePicture ? (typeof customer.profilePicture === 'string' ? customer.profilePicture : '/images/user.png') : '/images/user.png'}
                             alt={customer.name || 'User'}
                             className="w-10 h-10 rounded-full object-cover"
                           />
                         <div>
-                          <p className="font-semibold text-gray-900">{customer.name}</p>
+                          <p className="font-semibold text-gray-900">{customer.name || customer.email}</p>
                           <p className="text-sm text-gray-500">{customer.email}</p>
                         </div>
                       </div>
@@ -151,29 +200,29 @@ const CustomerList = () => {
                       <div className="space-y-1">
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <Mail size={14} className="text-gray-400" />
-                          <span className="truncate max-w-48">{customer.email}</span>
+                            <span className="truncate max-w-48">{customer.email}</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <Phone size={14} className="text-gray-400" />
-                          <span>{customer.phone}</span>
+                            <span>{customer.phone || '—'}</span>
                         </div>
                       </div>
                     </td>
                     <td className="py-4 px-2">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <MapPin size={14} className="text-gray-400" />
-                        <span>{customer.location || customer.primaryAddress || '—'}</span>
+                        <span>{customer.location || '—'}</span>
                       </div>
                     </td>
                     <td className="py-4 px-2">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor((customer.status || customer.accountStatus || 'inactive'))}`}>
-                        {((customer.status || customer.accountStatus || 'inactive') as string).charAt(0).toUpperCase() + ((customer.status || customer.accountStatus || 'inactive') as string).slice(1)}
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(customer.status)}`}>
+                        {(customer.status || 'inactive').charAt(0).toUpperCase() + (customer.status || 'inactive').slice(1)}
                       </span>
                     </td>
                    
                     
                     <td className="py-4 px-2">
-                      <span className="text-sm text-gray-600">{customer.createdAt ? new Date(customer.createdAt).toLocaleDateString() : (customer.dateOfRegistration ? new Date(customer.dateOfRegistration).toLocaleDateString() : '—')}</span>
+                      <span className="text-sm text-gray-600">{customer.createdAt ? new Date(customer.createdAt).toLocaleDateString() : '—'}</span>
                     </td>
                     <td className="py-4 px-2">
                       <div className="flex items-center gap-1">

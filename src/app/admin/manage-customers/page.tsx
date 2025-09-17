@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import {
   User,
@@ -51,6 +51,8 @@ interface InputFieldProps {
   options?: { label: string; value: string }[];
   error?: string | null;
   inputRef?: React.RefObject<HTMLInputElement | null>;
+  inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
+  pattern?: string;
 }
 
 const FormSection: React.FC<FormSectionProps> = ({ title, icon: Icon, children, className }) => (
@@ -63,15 +65,29 @@ const FormSection: React.FC<FormSectionProps> = ({ title, icon: Icon, children, 
   </div>
 );
 
-const InputFieldInner: React.FC<InputFieldProps> = ({ label, name, type = "text", required = false, placeholder, icon: Icon, value, onChange, options, error, inputRef }) => (
-  <div className="space-y-2">
-    <label className="text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2">
-      {Icon && <Icon className="w-4 h-4" iconNode={[]} />}
-      {label}
-      {required && <span className="text-red-500 dark:text-red-400">*</span>}
-    </label>
+const InputFieldInner: React.FC<InputFieldProps> = ({ label, name, type = "text", required = false, placeholder, icon: Icon, value, onChange, options, error, inputRef, inputMode, pattern }) => {
+  // local state for preview URL when handling file inputs
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-    {type === "select" ? (
+  useEffect(() => {
+    if (type === 'file' && value instanceof File) {
+      const url = URL.createObjectURL(value);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url);
+    }
+    setPreviewUrl(null);
+    return;
+  }, [type, value]);
+
+  return (
+    <div className="space-y-2">
+      <label className="text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2">
+        {Icon && <Icon className="w-4 h-4" iconNode={[]} />}
+        {label}
+        {required && <span className="text-red-500 dark:text-red-400">*</span>}
+      </label>
+
+      {type === "select" ? (
       <select
         name={name}
         value={value}
@@ -99,6 +115,7 @@ const InputFieldInner: React.FC<InputFieldProps> = ({ label, name, type = "text"
         onChange={onChange}
         placeholder={placeholder}
         rows={4}
+        inputMode={inputMode}
         className="w-full p-3 
         bg-white dark:bg-slate-800/50 
         text-slate-900 dark:text-white 
@@ -129,6 +146,17 @@ const InputFieldInner: React.FC<InputFieldProps> = ({ label, name, type = "text"
           <Camera className="w-5 h-5" />
           Choose profile picture...
         </label>
+
+        {/* image preview + inline error below preview */}
+        <div className="mt-3 flex items-center gap-4">
+          {previewUrl ? (
+            <img src={previewUrl} alt="preview" className="w-20 h-20 object-cover rounded-full border" />
+          ) : (
+            <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800/40 border flex items-center justify-center text-slate-400">No image</div>
+          )}
+          {/* keep space for error message under image */}
+        </div>
+  {error && <p id={`${name}-error`} className="text-sm text-red-500 mt-2">{error}</p>}
       </div>
     ) : (
       <input
@@ -137,6 +165,10 @@ const InputFieldInner: React.FC<InputFieldProps> = ({ label, name, type = "text"
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        inputMode={inputMode}
+        pattern={pattern}
+        aria-invalid={!!error}
+        aria-describedby={error ? `${name}-error` : undefined}
         className="w-full p-3 
         bg-white dark:bg-slate-800/50 
         text-slate-900 dark:text-white 
@@ -146,9 +178,10 @@ const InputFieldInner: React.FC<InputFieldProps> = ({ label, name, type = "text"
         focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
       />
     )}
-    {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
-  </div>
-);
+  {type !== 'file' && error && <p id={`${name}-error`} className="text-sm text-red-500 mt-1">{error}</p>}
+    </div>
+  );
+};
 
 // memoized wrapper to avoid unnecessary re-renders
 const InputField = React.memo(InputFieldInner);
@@ -196,12 +229,24 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
     firstName: (v: string) => v.trim() ? null : 'First name is required',
     lastName: (v: string) => v.trim() ? null : 'Last name is required',
     email: (v: string) => /\S+@\S+\.\S+/.test(v) ? null : 'Enter a valid email',
-    phone: (v: string) => v.trim().length >= 7 ? null : 'Enter a valid phone number',
+    phone: (v: string) => {
+      if (!v || !String(v).trim()) return 'Phone number is required';
+      const digits = String(v).replace(/\D/g, '');
+      if (digits.length < 10) return 'Enter a valid phone number (at least 10 digits)';
+      if (!/^\d+$/.test(digits)) return 'Phone number must contain only digits';
+      return null;
+    },
     dateOfBirth: (v: string) => v ? null : 'Date of birth is required',
     gender: (v: string) => v ? null : 'Gender is required',
     nationality: (v: string) => v ? null : 'Nationality is required',
     primaryAddress: (v: string) => v ? null : 'Primary address is required',
-    nationalId: (v: string) => v ? null : 'National ID or Passport number is required',
+    nationalId: (v: string) => {
+      if (!v || !String(v).trim()) return 'National ID or Passport number is required';
+      const digits = String(v).replace(/\D/g, '');
+      if (!digits) return 'National ID must contain digits';
+      if (!/^\d+$/.test(digits)) return 'National ID must contain only digits';
+      return null;
+    },
     password: (v: string) => v && v.length >= 6 ? null : 'Password must be at least 6 characters',
     secondaryAddress: (v: string) => v ? null : 'Secondary address is required',
     profilePicture: (v: File | null) => v ? null : 'Profile picture is required',
@@ -267,26 +312,51 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
 
     const { profilePicture, ...rest } = form as any;
 
-    const mappedForm: any = {
+    const payload: any = {
+      firstName: rest.firstName,
+      lastName: rest.lastName,
+      email: rest.email,
+      phoneNumber: rest.phone,
+      dateOfBirth: rest.dateOfBirth,
+      gender: rest.gender,
+      nationality: rest.nationality,
+      primaryAddress: rest.primaryAddress,
+      secondaryAddress: rest.secondaryAddress,
+      nationalId: rest.nationalId,
+      accountStatus: rest.accountStatus,
+      dateOfRegistration: rest.dateOfRegistration,
+      preferredContactMethod: rest.preferredContactMethod,
+      occupation: rest.occupation,
+      annualIncome: rest.annualIncome,
+      investmentExperience: rest.investmentExperience,
+      riskTolerance: rest.riskTolerance,
+      kycStatus: rest.kycStatus,
+      amlStatus: rest.amlStatus,
+      walletAddress: rest.walletAddress,
+      referralCode: rest.referralCode,
+      emergencyContactName: rest.emergencyContactName,
+      emergencyContactPhone: rest.emergencyContactPhone,
+      emergencyContactRelation: rest.emergencyContactRelation,
+      notes: rest.notes,
+      password: rest.password,
       name: fullName,
-      phone: form.phone,
-      preferredContactMethod: form.preferredContactMethod,
       role: 'customer',
-      ...rest,
+      profilePicture:"https://blog.photofeeler.com/wp-content/uploads/2017/09/instagram-profile-picture-maker.jpg"
     };
 
-    let payload: any = mappedForm;
+    let finalPayload: any = payload;
+    console.log("Profile Picture:", finalPayload);
 
-    if (profilePicture) {
-      const formData = new FormData();
-      Object.entries(mappedForm).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          formData.append(key, value as any);
-        }
-      });
-      formData.append('profilePicture', profilePicture as any);
-      payload = formData;
-    }
+    // if (profilePicture) {
+    //   const formData = new FormData();
+    //   Object.entries(payload).forEach(([key, value]) => {
+    //     if (value !== undefined && value !== null && value !== '') {
+    //       formData.append(key, value as any);
+    //     }
+    //   });
+    //   formData.append('profilePicture', profilePicture as any);
+    //   finalPayload = formData;
+    // }
 
     try {
       // final validation before submit
@@ -303,7 +373,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
       }
       // dispatch and unwrap to get thrown error on rejection
       // @ts-ignore
-      await dispatch(addCustomer(payload)).unwrap();
+      await dispatch(addCustomer(finalPayload)).unwrap();
       toast.success('Customer added successfully');
       resetForm();
     } catch (err: any) {
@@ -374,12 +444,11 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                   <InputField label="Password" name="password" type="password" required placeholder="Enter password" icon={User} value={form.password} onChange={handleChange} error={errors.password} />
 
                   <InputField label="Email Address" name="email" type="email" required placeholder="Enter email address" icon={Mail} value={form.email} onChange={handleChange} error={errors.email} />
-                  <InputField label="Phone Number" name="phone" type="tel" required placeholder="+1 (555) 123-4567" icon={Phone} value={form.phone} onChange={handleChange} error={errors.phone} />
                   <InputField label="Date of Birth" name="dateOfBirth" type="date" required icon={Calendar} value={form.dateOfBirth} onChange={handleChange} error={errors.dateOfBirth} />
                   <InputField label="Gender" name="gender" type="select" required value={form.gender} onChange={handleChange} error={errors.gender} options={[
-                    { label: 'Male', value: 'male' },
-                    { label: 'Female', value: 'female' },
-                    { label: 'Other', value: 'other' },
+                    { label: 'Male', value: 'Male' },
+                    { label: 'Female', value: 'Female' },
+                    { label: 'Other', value: 'Other' },
                   ]} />
                   <InputField label="Nationality" name="nationality" required placeholder="Enter nationality" icon={Globe} value={form.nationality} onChange={handleChange} error={errors.nationality} />
                 </div>
@@ -392,9 +461,9 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                   <InputField label="Secondary Address" name="secondaryAddress" type="textarea" required placeholder="Enter secondary address if applicable" icon={MapPin} value={form.secondaryAddress} onChange={handleChange} error={errors.secondaryAddress} />
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <InputField label="Preferred Contact Method" name="preferredContactMethod" type="select" required value={form.preferredContactMethod} onChange={handleChange} error={errors.preferredContactMethod} options={[
-                      { label: 'Email', value: 'email' },
-                      { label: 'Phone', value: 'phone' },
-                      { label: 'SMS', value: 'sms' },
+                      { label: 'Email', value: 'Email' },
+                      { label: 'Phone', value: 'Phone' },
+                      { label: 'WhatsApp', value: 'WhatsApp' },
                     ]} />
                   </div>
                 </div>
@@ -403,8 +472,10 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
               {/* Identity & Documentation */}
               <FormSection title="Identity & Documentation" icon={CreditCard}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <InputField label="National ID / Passport Number" name="nationalId" required placeholder="Enter ID or passport number" icon={CreditCard} value={form.nationalId} onChange={handleChange} error={errors.nationalId} />
-                  <InputField label="Profile Picture" name="profilePicture" type="file" required onChange={handleChange} inputRef={fileInputRef} error={errors.profilePicture} />
+                  <InputField label="Phone Number" name="phone" type="tel" required placeholder="+1 (555) 123-4567" icon={Phone} value={form.phone} onChange={handleChange} error={errors.phone} inputMode="tel" pattern="[0-9]*" />
+                  
+                  <InputField label="National ID / Passport Number" name="nationalId" required placeholder="Enter ID or passport number" icon={CreditCard} value={form.nationalId} onChange={handleChange} error={errors.nationalId} inputMode="numeric" pattern="[0-9]*" />
+                  <InputField label="Profile Picture" name="profilePicture" type="file" required onChange={handleChange} inputRef={fileInputRef} error={errors.profilePicture} value={form.profilePicture} />
                   <InputField label="Occupation" name="occupation" required placeholder="Enter occupation" icon={Building2} value={form.occupation} onChange={handleChange} error={errors.occupation} />
                   <InputField label="Annual Income (USD)" name="annualIncome" type="select" required value={form.annualIncome} onChange={handleChange} icon={DollarSign} error={errors.annualIncome} options={[
                     { label: '< $50,000', value: '<50000' },
@@ -447,13 +518,12 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
               <FormSection title="Account Settings" icon={Shield}>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <InputField label="Account Status" name="accountStatus" type="select" required value={form.accountStatus} onChange={handleChange} error={errors.accountStatus} options={[
-                    { label: 'Active', value: 'active' },
-                    { label: 'Inactive', value: 'inactive' },
-                    { label: 'Suspended', value: 'suspended' },
+                    { label: 'Active', value: 'Active' },
+                    { label: 'Inactive', value: 'Inactive' },
                   ]} />
                   <InputField label="KYC Status" name="kycStatus" type="select" required value={form.kycStatus} onChange={handleChange} error={errors.kycStatus} options={[
                     { label: 'Pending', value: 'pending' },
-                    { label: 'Verified', value: 'verified' },
+                    { label: 'Approved', value: 'approved' },
                     { label: 'Rejected', value: 'rejected' },
                   ]} />
                   <InputField label="AML Status" name="amlStatus" type="select" required value={form.amlStatus} onChange={handleChange} error={errors.amlStatus} options={[
@@ -482,11 +552,10 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                   Cancel
                 </button>
                 <Button type="submit"
-                  disabled={loading || !isFormValid}>
+                  disabled={loading}>
                   {loading ? 'Adding...' : 'Add Customer'}
                 </Button>
               </div>
-              {error && <div className="text-red-500 dark:text-red-400 flex items-center gap-2 mt-2"><AlertCircle className="w-4 h-4" />{error}</div>}
             </div>
           </form>
         </div>

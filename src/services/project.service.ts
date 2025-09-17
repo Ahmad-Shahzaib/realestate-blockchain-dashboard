@@ -99,7 +99,7 @@ export interface ProjectPayload {
 }
 
 
-const API_BASE_URL = 'https://api.fractprop.com/api';
+const API_BASE_URL = 'http://localhost:5000/api';
 
 // Create Axios instance
 const api: AxiosInstance = axios.create({
@@ -167,10 +167,13 @@ export const ProjectService = {
    * @param page Optional page number for pagination
    * @returns Promise with the API response
    */
-  getAllProjects: async (page?: number): Promise<ApiResponse> => {
+  getAllProjects: async (page?: number, limit?: number): Promise<ApiResponse> => {
     try {
-      // const params = page ? { params: { page } } : {};
-      const response = await api.get('/projects');
+      const params: Record<string, any> = {};
+      if (typeof page === 'number') params.page = page;
+      if (typeof limit === 'number') params.limit = limit;
+
+      const response = await api.get('/projects', { params });
       console.log("API Response:", response.data);
       return response.data;
     } catch (error: any) {
