@@ -10,9 +10,9 @@ import ProjectService, { Project } from "@/services/project.service";
 
 // Constants moved outside component to prevent recreation
 const TABS = [
-    { id: "all" as const, label: "Home", icon: IoHome },
-    { id: "residential" as const, label: "Development", icon: FaConnectdevelop },
-    { id: "commercial" as const, label: "Mature", icon: MdOutlineSignalCellularAlt2Bar },
+    { id: "all" as const, label: "All", icon: IoHome },
+    { id: "residential" as const, label: "Residential", icon: FaConnectdevelop },
+    { id: "commercial" as const, label: "Commercial", icon: MdOutlineSignalCellularAlt2Bar },
     { id: "plots" as const, label: "Up Coming", icon: FaCalendarAlt },
 ] as const;
 
@@ -94,7 +94,7 @@ function useProjectsData() {
             }
         } catch (error: any) {
             if (error.name === 'AbortError') return;
-            
+
             setState(prev => ({
                 ...prev,
                 error: error.message || "Failed to load projects. Please try again later.",
@@ -145,7 +145,7 @@ function useInfiniteScroll(loadMore: () => void, canLoadMore: boolean) {
         if (!canLoadMore) return;
 
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-        
+
         if (scrollTop + clientHeight >= scrollHeight - SCROLL_THRESHOLD) {
             loadMore();
         }
@@ -162,10 +162,10 @@ function useInfiniteScroll(loadMore: () => void, canLoadMore: boolean) {
 function throttle<T extends (...args: any[]) => void>(func: T, delay: number): T {
     let timeoutId: NodeJS.Timeout | null = null;
     let lastExecTime = 0;
-    
+
     return ((...args: Parameters<T>) => {
         const currentTime = Date.now();
-        
+
         if (currentTime - lastExecTime > delay) {
             func(...args);
             lastExecTime = currentTime;
@@ -222,26 +222,25 @@ export function OverviewCards() {
     }, []); // Empty dependency array is intentional
 
     // Memoized tab buttons
-    const tabButtons = useMemo(() => 
+    const tabButtons = useMemo(() =>
         TABS.map((tab) => (
             <button
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
-                className={`flex items-center px-4 py-2 text-lg font-medium rounded-lg whitespace-nowrap transition-colors duration-200 ${
-                    activeTab === tab.id
-                        ? "bg-[#00D2B6] dark:bg-[#0971a8] text-white"
-                        : "bg-white text-[#003049] dark:text-white dark:bg-[#003049] hover:bg-gray-100 dark:hover:bg-dark-3"
-                }`}
+                className={`flex items-center px-4 py-2 text-lg font-medium rounded-lg whitespace-nowrap transition-colors duration-200 ${activeTab === tab.id
+                    ? "bg-[#00D2B6] dark:bg-[#0971a8] text-white"
+                    : "bg-white text-[#003049] dark:text-white dark:bg-[#003049] hover:bg-gray-100 dark:hover:bg-dark-3"
+                    }`}
                 aria-pressed={activeTab === tab.id}
             >
                 <tab.icon className="w-6 h-6 mr-2" aria-hidden="true" />
                 {tab.label}
             </button>
         )),
-    [activeTab, handleTabChange]);
+        [activeTab, handleTabChange]);
 
     // Memoized project cards
-    const projectCards = useMemo(() => 
+    const projectCards = useMemo(() =>
         filteredProjects.map((project, index) => (
             <OverviewCard
                 key={project._id || `project-${index}`}
@@ -249,7 +248,7 @@ export function OverviewCards() {
                 item={project}
             />
         )),
-    [filteredProjects]);
+        [filteredProjects]);
 
     return (
         <>

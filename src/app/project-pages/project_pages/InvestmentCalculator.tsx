@@ -77,7 +77,7 @@ export default function InvestmentCalculator() {
             <div className="flex justify-between text-lg font-semibold text-gray-800 dark:text-gray-100">
                 <span>Total return on investment</span>
                 <span>
-                    PKR{totalReturn.toFixed(2)} ({((totalReturn / (investmentAmount * investmentPeriod)) * 100).toFixed(2)}% Return On
+                    PKR {totalReturn.toFixed(2)} ({((totalReturn / (investmentAmount * investmentPeriod)) * 100).toFixed(2)}% Return On
                     Investment)
                 </span>
             </div>
@@ -90,11 +90,11 @@ export default function InvestmentCalculator() {
             <div className="mt-4 grid grid-cols-2 gap-4">
                 <div className="p-4 bg-[#E6FFFA] dark:bg-gray-800 rounded-lg border border-[#00C5A5]/30 dark:border-gray-700">
                     <p className="font-semibold text-gray-700 dark:text-gray-200">Net rental income</p>
-                    <p className="text-xl text-[#00C5A5]">PKR{netRentalIncome.toFixed(2)}</p>
+                    <p className="text-xl text-[#00C5A5]">PKR {netRentalIncome.toFixed(2)}</p>
                 </div>
                 <div className="p-4 bg-[#E6FFFA] dark:bg-gray-800 rounded-lg border border-[#00C5A5]/30 dark:border-gray-700">
                     <p className="font-semibold text-gray-700 dark:text-gray-200">Expected capital appreciation</p>
-                    <p className="text-xl text-[#00C5A5]">PKR{capitalAppreciation.toFixed(2)}</p>
+                    <p className="text-xl text-[#00C5A5]">PKR {capitalAppreciation.toFixed(2)}</p>
                 </div>
             </div>
         </div>

@@ -4,7 +4,7 @@ import React from "react"
 
 export default function Notifications() {
     return (
-        <div className="rounded-2xl border border-gray-100 bg-white dark:bg-dark dark:border-gray-700 p-6 shadow-md hover:shadow-lg transition">
+        <div className=" bg-white dark:bg-dark dark:border-gray-700 p-6 transition">
             {/* Header */}
             <h2 className="text-2xl font-bold text-[#003049] dark:text-white">Notifications</h2>
             <p className="mt-1 text-dark dark:text-gray-300">

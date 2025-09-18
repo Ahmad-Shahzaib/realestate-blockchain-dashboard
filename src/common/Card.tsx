@@ -25,10 +25,9 @@ const StatCard: React.FC<StatCardProps> = ({
         border border-gray-200 dark:border-gray-700
         rounded-2xl
         p-6
-        hover:border-[#00B894]/50
-        transition-all duration-300
+       
         group
-        bg-white dark:bg-dark-2
+        bg-white dark:bg-dark
       "
         >
 
@@ -38,11 +37,9 @@ const StatCard: React.FC<StatCardProps> = ({
                     <div
                         className="
               p-2
-              bg-gradient-to-br from-[#00B894]/20 to-[#00D2B6]/20
+         
               rounded-2xl
-              border border-[#00B894]/30
-              group-hover:border-[#00B894]/50
-              transition-colors
+              border 
               text-[#003049] dark:text-gray-2
             "
                     >
@@ -59,7 +56,7 @@ const StatCard: React.FC<StatCardProps> = ({
             <div
                 className="
           absolute inset-0
-          bg-gradient-to-r from-[#00B894]/5 to-[#00D2B6]/5
+         
           rounded-2xl
           opacity-0 group-hover:opacity-100
           transition-opacity duration-300

@@ -258,15 +258,15 @@ const ProjectTable = ({ project }: { project: any }) => {
     return (
         <div className="space-y-6">
             {/* Tab Navigation */}
-            <div className="p-6 rounded-2xl shadow-md dark:text-white dark:border-gray-700  border border-gray-100 hover:shadow-xl transition">
-                <div className="border-b border-gray-100">
+            <div className="p-6 bg-white dark:bg-dark rounded-2xl shadow-md dark:text-white dark:border-gray-700  border border-gray-100 hover:shadow-xl transition">
+                <div className="border-b border-gray-100 ">
                     <nav className="flex overflow-x-auto scrollbar-hide" aria-label="Tabs dark:bg-dark dark:text-white">
                         {tabs.map((tab) => (
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`py-1 px-4 lg:px-6 border-b-2 font-medium text-sm whitespace-nowrap  dark:text-white transition-colors ${activeTab === tab.id
-                                    ? 'border-[#00B894] text-[#003049] bg-gradient-to-r from-[#00B894]/20 to-[#00D2B6]/20'
+                                    ? 'border-[#00B894] text-[#003049]  bg-gradient-to-r from-[#00B894]/20 to-[#00D2B6]/20'
                                     : 'border-transparent dark:text-white  hover:border-[#0277BD] hover:bg-gradient-to-r from-[#00B894]/20 to-[#00D2B6]/20 hover:text-black'
                                     }`}
                             >

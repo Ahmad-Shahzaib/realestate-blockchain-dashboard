@@ -7,7 +7,7 @@ export default function LegalInformation() {
     const [isEditing, setIsEditing] = useState(false)
 
     return (
-        <div className="rounded-2xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-md hover:shadow-lg transition">
+        <div className=" bg-white dark:bg-gray-900 p-6  transition">
             {/* Header */}
             <div className="flex items-start justify-between">
                 <div>
@@ -57,6 +57,36 @@ export default function LegalInformation() {
                     ) : (
                         <p className="mt-1 text-gray-600 dark:text-gray-400">Not Provided</p>
                     )}
+                </div>
+            </div>
+            <div className="mt-8">
+                <h3 className="text-lg font-semibold text-[#003049] dark:text-white">
+                    Passport{" "}
+                    <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                        (PNG, JPG, PDF - less than 5 mb)
+                    </span>
+                </h3>
+                <div className="mt-4">
+                    <div
+                        className="rounded-xl border border-gray-200 dark:border-gray-700 
+            bg-[#F5F7FA] dark:bg-gray-800 hover:border-[#00B894] transition"
+                    >
+                        <input type="file" id="passport" className="hidden" />
+                        <label
+                            htmlFor="passport"
+                            className="flex cursor-pointer flex-col items-center justify-center p-6"
+                        >
+                            <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white shadow-md">
+                                <Upload className="h-5 w-5" />
+                            </div>
+                            <p className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                {isEditing ? "Upload new Passport" : "Uploaded Passport"}
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                Click to browse files
+                            </p>
+                        </label>
+                    </div>
                 </div>
             </div>
 

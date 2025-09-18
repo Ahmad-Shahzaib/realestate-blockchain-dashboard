@@ -54,20 +54,20 @@ export default function Page() {
             <section className="mb-8">
                 <h2 className="text-lg font-bold mb-4">Referral Stats</h2>
                 <div className="grid gap-4 sm:grid-cols-3">
-                    <div className="border shadow-md p-4 rounded-xl ">
+                    <div className="border shadow-md p-4 rounded-xl bg-white dark:bg-dark dark:text-white ">
                         <Users className="w-5 h-5 text-[#00B894]" />
                         <p className="font-semibold">{stats.totalReferrals}</p>
-                        <p className="text-sm text-gray-500">Total Referrals</p>
+                        <p className="text-sm text-gray-500 dark:text-white">Total Referrals</p>
                     </div>
-                    <div className="border shadow-md p-4 rounded-xl ">
+                    <div className="border shadow-md p-4 rounded-xl bg-white dark:bg-dark dark:text-white ">
                         <Gift className="w-5 h-5 text-[#00B894]" />
                         <p className="font-semibold">{stats.directReferrals}</p>
-                        <p className="text-sm text-gray-500">Direct Referrals</p>
+                        <p className="text-sm text-gray-500 dark:text-white">Direct Referrals</p>
                     </div>
-                    <div className="border shadow-md p-4 rounded-xl ">
+                    <div className="border shadow-md p-4 rounded-xl bg-white dark:bg-dark dark:text-white ">
                         <CheckCircle className="w-5 h-5 text-[#00B894]" />
                         <p className="font-semibold">{stats.indirectReferrals}</p>
-                        <p className="text-sm text-gray-500">Indirect Referrals</p>
+                        <p className="text-sm text-gray-500 dark:text-white">Indirect Referrals</p>
                     </div>
                 </div>
             </section>
@@ -76,7 +76,8 @@ export default function Page() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Invite Form Section */}
                     <section>
-                        <div className="border shadow-md dark:bg-gray-800 rounded-2xl  border-gray-100 dark:border-gray-700 p-6">
+                        <div className="border shadow-md dark:bg-dark bg-white rounded-2xl  
+                         p-6">
                             <h2 className="text-[#003049] dark:text-[#E0E7FF] font-bold text-lg mb-4">
                                 Invite Friends
                             </h2>
@@ -99,7 +100,8 @@ export default function Page() {
 
                     {/* Referral Link Section */}
                     <section>
-                        <div className="border shadow-md dark:bg-gray-800 rounded-2xl  border-gray-100 dark:border-gray-700 p-6">
+                        <div className="border shadow-md dark:bg-dark bg-white rounded-2xl  
+                         p-6">
                             <h2 className="text-[#003049] dark:text-[#E0E7FF] font-bold text-lg mb-4">
                                 Your Referral Link
                             </h2>

@@ -6,7 +6,7 @@ export default function SetPasswordSection() {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     return (
-        <div className="mt-5 p-6 rounded-2xl border border-gray-100 bg-white shadow-md hover:shadow-lg transition dark:bg-dark dark:border-dark-3 dark:text-white">
+        <div className="mt-5 p-6 bg-white  transition dark:bg-dark dark:text-white">
             {/* Section Header */}
             <h2 className="text-2xl font-bold text-[#003049] dark:text-white">Set up Password</h2>
             <p className="mt-2 font-medium text-gray-700 dark:text-gray-300">

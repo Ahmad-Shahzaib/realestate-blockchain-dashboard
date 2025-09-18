@@ -116,7 +116,7 @@ export default function PersonalDetails() {
     };
 
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-100 dark:border-gray-700 transition-colors">
+        <div className="bg-white dark:bg-dark p-6  transition-colors">
             <div className="flex justify-between items-start mb-6">
                 <div>
                     <h2 className="text-2xl font-bold text-[#003049] dark:text-white">Personal Details</h2>

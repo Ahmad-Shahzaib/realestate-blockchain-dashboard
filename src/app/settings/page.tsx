@@ -44,7 +44,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Tab Content */}
-      <div className="mt-6 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 transition-colors">
+      <div className="mt-6 bg-white dark:bg-dark p-6 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 transition-colors">
         {activeTab === 0 && <PersonalDetails />}
         {activeTab === 1 && <MyAddresses />}
         {activeTab === 2 && <BankDetails />}

@@ -91,7 +91,7 @@ const BankDetails = () => {
     };
 
     return (
-        <div className="p-6 rounded-2xl shadow-md bg-white dark:bg-dark border border-gray-100 dark:border-gray-700 hover:shadow-xl transition">
+        <div className="p-6  bg-white dark:bg-dark   ">
             {/* Header */}
             <h2 className="text-2xl font-bold text-[#003049] dark:text-white mb-2">Bank Details</h2>
             <p className="text-gray-700 dark:text-gray-300 mb-6">

@@ -77,7 +77,7 @@ const MyAddresses = () => {
     };
 
     return (
-        <div className="bg-white dark:bg-dark p-6 rounded-xl shadow-md border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-dark p-6 ">
             {/* Header */}
             <h2 className="text-2xl font-bold text-[#003049] dark:text-white mb-2">My Addresses</h2>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
