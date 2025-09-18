@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import ProjectService, { Project } from "@/services/project.service";
-import InvestmentInterface from "@/app/project-pages/investment-details/TransactionPage";
-import TransactionPage from "@/app/project-pages/investment-details/InvestmentInterface";
+import InvestmentInterface from "@/app/projects/investment-details/TransactionPage";
+import TransactionPage from "@/app/projects/investment-details/InvestmentInterface";
 
 const Page = ({ params }: { params: { id: string } }) => {
     const { id } = params;

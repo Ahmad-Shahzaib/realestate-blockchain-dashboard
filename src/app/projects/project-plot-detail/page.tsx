@@ -1,6 +1,6 @@
 import React from 'react'
 import { Metadata } from 'next'
-import ProjectDetailsPage from '../project_pages/ProjectDetailsPage';
+import ProjectDetailsPage from '../project-detail/ProjectDetailsPage';
 
 export const metadata: Metadata = {
     title: "Project Plot Detail"

@@ -263,6 +263,9 @@ export function OverviewCards() {
                 {/* Navigation Tabs */}
                 <nav className="flex space-x-4 mb-6 overflow-x-auto" role="tablist">
                     {tabButtons}
+                    <div className="w-1/2 float-end ">
+                        <input type="search" placeholder="Search..." className="w-1/2 dark:bg-dark-2 float-end p-2 border border-gray-300 rounded-md  " />
+                    </div>
                 </nav>
 
                 {/* Project Grid */}

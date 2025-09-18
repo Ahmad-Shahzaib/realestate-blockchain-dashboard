@@ -278,7 +278,7 @@ function useGlobeResidencyForm() {
         t['accountTitle'] = true;
         // floors/faqs/documents
         floors.forEach((_, i) => {
-            ['name','floorNumber','totalUnits','pricePerSqFt','minPrice','maxPrice','totalSquareFootage'].forEach((f) => (t[`floor-${i}-${f}`] = true));
+            ['name', 'floorNumber', 'totalUnits', 'pricePerSqFt', 'minPrice', 'maxPrice', 'totalSquareFootage'].forEach((f) => (t[`floor-${i}-${f}`] = true));
         });
         faqs.forEach((_, i) => {
             t[`faq-${i}-question`] = true;
@@ -1466,7 +1466,7 @@ export default function GlobeResidencyForm() {
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border mt-8">
                         <div className="dark:text-white rounded-t-lg p-4">
 
-                                <h2 className="flex items-center gap-2 text-lg font-semibold">
+                            <h2 className="flex items-center gap-2 text-lg font-semibold">
                                 * FAQs
                             </h2>
                         </div>

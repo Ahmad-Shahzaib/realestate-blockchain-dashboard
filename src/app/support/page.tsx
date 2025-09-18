@@ -102,7 +102,7 @@ const SupportClient = () => {
                                 href="https://softsuite.com"
                                 className="text-[#0277BD] hover:text-[#00B894] font-medium transition"
                             >
-                                helpdesk@softsuite.com
+                                helpdesk@fractprop@.com
                             </a>
                         </div>
                         <div className="p-6 rounded-2xl shadow-md bg-white dark:bg-dark border border-gray-100 dark:border-gray-700 hover:shadow-xl transition">
@@ -128,9 +128,10 @@ const SupportClient = () => {
                 {/* Contact Form */}
                 <div className="p-8 rounded-2xl shadow-md bg-gradient-to-r from-[#00B894]/10 to-[#00D2B6]/10 dark:from-[#00B894]/10 dark:bg-dark border border-gray-100 dark:border-gray-700">
                     <h2 className="text-2xl font-semibold text-[#003049] dark:text-white mb-6">
-                        Send Us a Message
+                        Submit a Support Request
                     </h2>
                     <div className="space-y-6">
+                        {/* Name */}
                         <div>
                             <label
                                 htmlFor="name"
@@ -148,6 +149,8 @@ const SupportClient = () => {
                                 placeholder="Your Name"
                             />
                         </div>
+
+                        {/* Email */}
                         <div>
                             <label
                                 htmlFor="email"
@@ -162,37 +165,84 @@ const SupportClient = () => {
                                 value={formData.email}
                                 onChange={handleInputChange}
                                 className="mt-1 w-full p-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-[#2A2A2A] focus:ring-[#00B894] focus:border-[#00B894] text-gray-700 dark:text-gray-200"
-                                placeholder="softsuite@gmail.com"
+                                placeholder="you@example.com"
                             />
                         </div>
+
+                        {/* Category */}
                         <div>
                             <label
-                                htmlFor="message"
+                                htmlFor="category"
                                 className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                             >
-                                Message
+                                Category
                             </label>
-                            <textarea
-                                name="message"
-                                id="message"
-                                value={formData.message}
+                            <select
+                                name="category"
+                                id="category"
+                                value={formData.category}
                                 onChange={handleInputChange}
-                                rows="4"
                                 className="mt-1 w-full p-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-[#2A2A2A] focus:ring-[#00B894] focus:border-[#00B894] text-gray-700 dark:text-gray-200"
-                                placeholder="Describe your issue or question..."
+                            >
+                                <option value="">Select a category</option>
+                                <option value="technical">Technical Issue</option>
+                                <option value="billing">Billing</option>
+                                <option value="account">Account</option>
+                                <option value="general">General Inquiry</option>
+                            </select>
+                        </div>
+
+                        {/* Subject */}
+                        <div>
+                            <label
+                                htmlFor="subject"
+                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                            >
+                                Subject
+                            </label>
+                            <input
+                                type="text"
+                                name="subject"
+                                id="subject"
+                                value={formData.subject}
+                                onChange={handleInputChange}
+                                className="mt-1 w-full p-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-[#2A2A2A] focus:ring-[#00B894] focus:border-[#00B894] text-gray-700 dark:text-gray-200"
+                                placeholder="Enter subject..."
                             />
                         </div>
+
+                        {/* Description */}
+                        <div>
+                            <label
+                                htmlFor="description"
+                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                            >
+                                Description
+                            </label>
+                            <textarea
+                                name="description"
+                                id="description"
+                                value={formData.description}
+                                onChange={handleInputChange}
+                                rows={4}
+                                className="mt-1 w-full p-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-[#2A2A2A] focus:ring-[#00B894] focus:border-[#00B894] text-gray-700 dark:text-gray-200"
+                                placeholder="Describe your issue in detail..."
+                            />
+                        </div>
+
+                        {/* Submit */}
                         <button
                             onClick={handleSubmit}
                             className="px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white shadow-lg hover:opacity-90 transition"
                         >
                             <div className="flex items-center justify-center gap-2">
                                 <Send className="w-5 h-5" />
-                                <span>Send Message</span>
+                                <span>Submit Request</span>
                             </div>
                         </button>
                     </div>
                 </div>
+
 
                 {/* Footer Note */}
                 <div className="mt-12 text-center">
@@ -209,7 +259,7 @@ const SupportClient = () => {
                             href="https://softsuite.com"
                             className="text-[#0277BD] hover:text-[#00B894] font-medium transition"
                         >
-                            @SoftsuiteCare
+                            @fractprop@.com
                         </a>
                         .
                     </p>

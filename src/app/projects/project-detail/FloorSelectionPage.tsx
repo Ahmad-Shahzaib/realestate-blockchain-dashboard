@@ -67,7 +67,7 @@ const FloorAreaSelectionPage: NextPage<FloorAreaSelectionPageProps> = ({ project
             // console.log("Transaction created successfully:", response);
 
             // Navigate to the investment details page
-            router.push(`/project-pages/project_pages/${project._id}/investment-details`);
+            router.push(`/projects/project-detail/${project._id}/investment-details`);
         } catch (error) {
             console.error("Failed to create transaction:", error);
         }

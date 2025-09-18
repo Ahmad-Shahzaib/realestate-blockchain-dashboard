@@ -166,7 +166,7 @@ const Dashboard = () => {
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#003049] dark:text-gray-2">BlockEstate Dashboard</h1>
               <p className="mt-2 text-lg text-gray-700 dark:text-gray-4">Manage your tokenized real estate investments</p>
             </div>
-            <div className="relative">
+            <div className="relative ">
               <SearchInput
                 placeholder="Search by property name or location"
                 value={searchTerm}
@@ -194,10 +194,10 @@ const Dashboard = () => {
           {/* 🟢 commit: portfolio performance chart + asset distribution */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
             {/* Line chart */}
-            <div className="xl:col-span-2 border border-gray-200  rounded-2xl p-6 bg-white dark:bg-dark">
+            <div className="xl:col-span-2 border border-gray-200  rounded-2xl p-6 bg-white dark:bg-dark-2">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold text-[#003049] dark:text-gray-2">Portfolio Performance</h2>
-                <div className="flex rounded-xl p-1 bg-[#F5F7FA] dark:bg-dark-3">
+                <div className="flex rounded-xl p-1 bg-[#F5F7FA] dark:bg-dark-2">
                   {['1M', '6M', '1Y', 'All'].map(period => (
                     <button
                       key={period}
@@ -214,7 +214,7 @@ const Dashboard = () => {
 
             {/* Doughnut chart */}
             <div className="border border-gray-200 
-            rounded-2xl p-6 bg-white dark:bg-dark">
+            rounded-2xl p-6 bg-white dark:bg-dark-2">
               <h2 className="text-xl font-bold text-[#003049] dark:text-gray-2 mb-6">Asset Distribution</h2>
               <div className="h-64 mb-6"><Doughnut data={propertyTypeData} /></div>
               <div className="space-y-3">
@@ -235,14 +235,14 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
             {/* Bar chart */}
             <div className="xl:col-span-2 border border-gray-200 
-            rounded-2xl p-6 bg-white dark:bg-dark">
+            rounded-2xl p-6 bg-white dark:bg-dark-2">
               <h2 className="text-xl font-bold text-[#003049] dark:text-gray-2 mb-6">Regional Investment Distribution</h2>
               <div className="h-80"><Bar data={regionalData} /></div>
             </div>
 
             {/* Quick Actions */}
             <div className="border border-gray-200 
-            rounded-2xl p-6 bg-white dark:bg-dark">
+            rounded-2xl p-6 bg-white dark:bg-dark-2">
               <h2 className="text-xl font-bold text-[#003049] dark:text-gray-2 mb-6">Quick Actions</h2>
               <div className="space-y-4">
                 <button className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-[#00B894]/10 to-[#00D2B6]/10 border border-[#00B894]/20 rounded-xl hover:bg-opacity-20 text-[#003049] dark:text-gray-2">
@@ -261,7 +261,7 @@ const Dashboard = () => {
           </div>
 
           {/* 🟢 commit: recent blockchain activity list */}
-          <div className="border border-[#00B894] rounded-2xl p-6 bg-[#F5F7FA] dark:bg-dark">
+          <div className="border border-[#00B894] rounded-2xl p-6 bg-[#F5F7FA] dark:bg-dark-2">
             <h2 className="text-xl font-bold text-[#003049] dark:text-gray-2 mb-6">Recent Blockchain Activity</h2>
             <div className="space-y-4">
               {recentActivities.map((a, i) => (

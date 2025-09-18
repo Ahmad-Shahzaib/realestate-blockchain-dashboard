@@ -140,7 +140,7 @@ const Page = () => {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-[#003049] to-[#00B894] bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-[#003049] to-[#00B894] bg-clip-text text-transparent dark:text-white">
                 Alex Rodriguez
               </h1>
             </div>

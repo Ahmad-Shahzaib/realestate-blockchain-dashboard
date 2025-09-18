@@ -13,7 +13,7 @@ export default function DocumentsSummary() {
     const router = useRouter();
 
     const handleClick = () => {
-        router.push("/project-pages/investment-details/document-verification");
+        router.push("/projects/investment-details/document-verification");
     };
 
     return (

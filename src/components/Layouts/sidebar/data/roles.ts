@@ -28,7 +28,7 @@ export const USER_NAV_DATA = [
       },
       {
         title: "Projects",
-        url: "/project-pages",
+        url: "/projects",
         icon: SiPolymerproject,
         items: [],
       },
@@ -147,7 +147,7 @@ export const ADMIN_NAV_DATA = [
       // },
       // add sub item
       {
-        title: "Manage Properties",
+        title: "Properties",
         Icon: SiPolymerproject,
         items: [
           {

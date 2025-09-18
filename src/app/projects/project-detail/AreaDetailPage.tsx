@@ -25,7 +25,7 @@ const AreaDetailPage = ({ project }: AreaDetailPageeProps) => {
             {/* Current Price */}
             <motion.div
                 variants={cardVariants}
-                className="bg-white dark:bg-gray-900 rounded-xl p-2 lg:p-3 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-transform transform hover:-translate-y-1"
+                className="bg-white dark:bg-dark-2 rounded-xl p-2 lg:p-3 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-transform transform hover:-translate-y-1"
             >
                 <div className="flex items-center gap-2 mb-3">
                     <TrendingUp className="w-5 h-5 text-[#00B894]" />
@@ -44,7 +44,7 @@ const AreaDetailPage = ({ project }: AreaDetailPageeProps) => {
             {/* Total Area */}
             <motion.div
                 variants={cardVariants}
-                className="bg-white dark:bg-gray-900 rounded-xl p-6 lg:p-8 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-transform transform hover:-translate-y-1"
+                className="bg-white dark:bg-dark-2 rounded-xl p-6 lg:p-8 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-transform transform hover:-translate-y-1"
             >
                 <div className="flex items-center gap-2 mb-3">
                     <Building2 className="w-5 h-5 text-[#00B894]" />
@@ -61,7 +61,7 @@ const AreaDetailPage = ({ project }: AreaDetailPageeProps) => {
             {/* Area Locked */}
             <motion.div
                 variants={cardVariants}
-                className="bg-white dark:bg-gray-900 rounded-xl p-6 lg:p-8 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-transform transform hover:-translate-y-1"
+                className="bg-white dark:bg-dark-2 rounded-xl p-6 lg:p-8 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-transform transform hover:-translate-y-1"
             >
                 <div className="flex items-center gap-2 mb-3">
                     <Lock className="w-5 h-5 text-[#00B894]" />
@@ -78,7 +78,7 @@ const AreaDetailPage = ({ project }: AreaDetailPageeProps) => {
             {/* Area Left */}
             <motion.div
                 variants={cardVariants}
-                className="bg-white dark:bg-gray-900 rounded-xl p-6 lg:p-8 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-transform transform hover:-translate-y-1"
+                className="bg-white dark:bg-dark-2 rounded-xl p-6 lg:p-8 shadow-lg border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-transform transform hover:-translate-y-1"
             >
                 <div className="flex items-center gap-2 mb-3">
                     <Unlock className="w-5 h-5 text-[#00B894]" />

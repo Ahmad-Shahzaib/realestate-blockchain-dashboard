@@ -13,7 +13,7 @@ export default function InvestmentInterface({ project }: InvestmentInterfaceProp
     const router = useRouter();
 
     const handleClick = () => {
-        router.push("/project-pages/investment-details/explore-investment");
+        router.push("/projects/investment-details/explore-investment");
     };
 
     return (
@@ -64,10 +64,7 @@ export default function InvestmentInterface({ project }: InvestmentInterfaceProp
                         </div>
 
                         {/* Mode */}
-                        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                            <h3 className="text-gray-500 dark:text-gray-300 text-sm font-medium uppercase tracking-wide mb-2">Mode</h3>
-                            <p className="text-gray-800 dark:text-white font-semibold text-lg">N/A</p>
-                        </div>
+
                     </div>
 
                     {/* Bottom Section */}
@@ -96,14 +93,7 @@ export default function InvestmentInterface({ project }: InvestmentInterfaceProp
                             <p className="text-gray-800 dark:text-white font-semibold text-lg">22,000 PKR</p>
                         </div>
 
-                        {/* Discount */}
-                        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                            <h3 className="text-gray-500 dark:text-gray-300 text-sm font-medium uppercase tracking-wide mb-2">Discount</h3>
-                            <p className="text-gray-800 dark:text-white font-semibold text-lg">0 PKR</p>
-                        </div>
 
-                        {/* Empty column for alignment */}
-                        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"></div>
                     </div>
                 </div>
             </div>

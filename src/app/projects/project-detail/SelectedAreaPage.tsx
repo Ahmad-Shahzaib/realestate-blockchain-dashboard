@@ -39,14 +39,14 @@ const SelectedAreaPage: NextPage = () => {
 
     return (
         <>
-            <FloorSelectionPage />
+
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8 max-w-7xl mx-auto pt-4">
                 {/* Left Panel - Area Selection */}
                 <motion.div
                     variants={panelVariants}
                     initial="hidden"
                     animate="visible"
-                    className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 lg:p-8 h-[500px]"
+                    className="bg-white dark:bg-dark-2 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 lg:p-8 h-[500px]"
                 >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4 ">
                         <div className="flex items-center gap-2">
@@ -127,7 +127,7 @@ const SelectedAreaPage: NextPage = () => {
                     variants={panelVariants}
                     initial="hidden"
                     animate="visible"
-                    className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 lg:p-8"
+                    className="bg-white dark:bg-dark-2 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 lg:p-8"
                 >
                     <h3 className="text-xl lg:text-2xl font-bold text-[#003049] dark:text-white mb-6">
                         Investment Summary

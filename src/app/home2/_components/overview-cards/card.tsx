@@ -81,7 +81,7 @@ export function OverviewCard({
   const router = useRouter();
   const handleCardClick = () => {
     if (item && item._id) {
-      router.push(`/project-pages/project_pages/${item._id}`);
+      router.push(`/projects/project-detail/${item._id}`);
     }
   };
 
@@ -154,7 +154,7 @@ export function OverviewCard({
   const occupancyRate = Math.round(
     ((mockTotalUnits - mockAvailableUnits) / mockTotalUnits) * 100
   );
-  const mockROI = (Math.random() * 10 + 8).toFixed(1);
+  // const mockROI = (Math.random() * 10 + 2).toFixed(1);
   const mockInvestmentAmount = `PKR ${(Math.random() * 5 + 1).toFixed(1)}M`;
 
   return (
@@ -301,7 +301,7 @@ export function OverviewCard({
             <div className="text-gray-700 dark:text-gray-300 text-xs mb-0.5">
               EXPECTED ROI
             </div>
-            <div className="text-[#00B894] font-bold text-xs">{mockROI}%</div>
+            <div className="text-[#00B894] font-bold text-xs">12%</div>
           </div>
           <div className="bg-white dark:bg-dark-2 rounded-lg p-1.5">
             <div className="text-gray-700 dark:text-gray-300 text-xs mb-0.5">

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaGlobe } from 'react-icons/fa';
 import { ArrowRight, MapPin, Calendar, CheckCircle } from "lucide-react";
-import ProjectSlider from "@/app/project-pages/project_pages/ProjectSlider";
+import ProjectSlider from "@/app/projects/project-detail/ProjectSlider";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ProjectService, { Project } from "@/services/project.service";
@@ -16,6 +16,7 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
     const [error, setError] = useState<string | null>(null);
     const [projects, setProjects] = useState<Project[]>([]);
     const [userRole, setUserRole] = useState<string | null>(null); // State for user role
+    const [isRedirecting, setIsRedirecting] = useState(false);
 
     useEffect(() => {
         const fetchProjectDetails = async () => {
@@ -47,8 +48,10 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
 
     const router = useRouter();
     const handleCardClick = () => {
-        router.push(`/project-pages/project_pages/${projectId}/project-plot-detail`);
+        setIsRedirecting(true);
+        router.push(`/projects/project-detail/${projectId}/project-plot-detail`);
     };
+
 
     if (loading) {
         return (
@@ -96,14 +99,23 @@ const ProjectDetailPlot = ({ params }: { params: { id: string } }) => {
                                 </div>
                                 <div className="text-sm text-gray-500 dark:text-white">Total Area</div>
                             </div>
-                            {userRole === "user" && ( // Show button only if userRole is "user"
+                            {userRole === "user" && (
                                 <button
                                     onClick={handleCardClick}
-                                    className="bg-[#00D2B6] text-white px-6 py-3 rounded-lg transition-colors font-medium"
+                                    disabled={isRedirecting}
+                                    className={`flex items-center justify-center gap-2 bg-[#00D2B6] text-white px-6 py-3 rounded-lg transition-colors font-medium ${isRedirecting ? "opacity-70 cursor-not-allowed" : ""}`}
                                 >
-                                    Invest Now
+                                    {isRedirecting ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                            Redirecting...
+                                        </>
+                                    ) : (
+                                        "Invest Now"
+                                    )}
                                 </button>
                             )}
+
                         </div>
                     </div>
                 </div>

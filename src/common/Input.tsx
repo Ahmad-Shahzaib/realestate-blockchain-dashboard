@@ -54,7 +54,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           focus:border-[#3498DB]
           text-[#34495E]
           dark:border-dark-4
-          dark:bg-dark-3
+          dark:bg-dark-2
           dark:text-gray-2
         "
             />

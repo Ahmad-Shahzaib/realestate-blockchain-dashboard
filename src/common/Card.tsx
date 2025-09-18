@@ -27,7 +27,7 @@ const StatCard: React.FC<StatCardProps> = ({
         p-6
        
         group
-        bg-white dark:bg-dark
+        bg-white dark:bg-dark-2
       "
         >
 

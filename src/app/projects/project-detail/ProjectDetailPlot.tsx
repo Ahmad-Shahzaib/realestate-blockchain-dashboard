@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaGlobe } from 'react-icons/fa';
 import { ArrowRight } from "lucide-react"
-import ProjectSlider from "@/app/project-pages/project_pages/ProjectSlider";
+import ProjectSlider from "@/app/projects/project-detail/ProjectSlider";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import ProjectService, { Project } from "@/services/project.service";
@@ -110,7 +110,7 @@ const ProjectDetailPlot = () => {
                         <span className="  text-xs sm:text-sm px-2 py-1 rounded-full">Mature</span>
                     </div>
                     <div className=" font-semibold text-sm sm:text-base">{project?.totalArea ? `${project.totalArea.toLocaleString()} sq. ft.` : ""}</div>
-                    <button onClick={handleCardClick} className="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded">Invest Now</button>
+                    <button onClick={handleCardClick} className="w-full sm:w-auto  text-white px-4 py-2 rounded">Invest Now</button>
                 </div>
             </div>
 
