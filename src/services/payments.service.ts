@@ -27,7 +27,7 @@ export interface PaymentResponse {
     };
 }
 
-const API_BASE_URL = "https://dev.fractprop.com/api";
+const API_BASE_URL = "http://api.fractprop.com/api";
 
 // Create Axios instance
 const api: AxiosInstance = axios.create({
