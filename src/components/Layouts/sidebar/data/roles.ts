@@ -9,7 +9,7 @@ import { SiPolymerproject } from "react-icons/si";
 import { GrTransaction } from "react-icons/gr";
 import { MdOutlineTravelExplore } from "react-icons/md";
 
-
+// User navigation data
 export const USER_NAV_DATA = [
   {
     label: "USER MENU",
@@ -37,8 +37,6 @@ export const USER_NAV_DATA = [
         icon: FaDashcube,
         items: [
           { title: "Portfolio", url: "/portfolio" },
-          // { title: "Active Investments", url: "/my-assets" },
-          // { title: "Income Stream", url: "/my-nfts" },
         ],
       },
       {
@@ -87,20 +85,20 @@ export const USER_NAV_DATA = [
   },
 ];
 
-// Super Admin specific navigation items
+// Super Admin navigation data
 export const SUPER_ADMIN_NAV_DATA = [
   {
     label: "SUPER ADMIN MENU",
     items: [
       { title: "Dashboard", url: "/", icon: Icons.HomeIcon, items: [] },
-      { title: "Projects", url: "/project-pages", icon: Icons.PieChart, items: [] },
-      { title: "Add Projects ", url: "/admin/Add-project", icon: Icons.Authentication, items: [] },
+      { title: "Projects", url: "/projects", icon: Icons.PieChart, items: [] },
+      { title: "Add Projects", url: "/admin/add-project", icon: Icons.Authentication, items: [] },
       {
         title: "Customers",
         icon: Icons.User,
         items: [
           { title: "Manage Customers", url: "/admin/manage-customers" },
-          { title: "Customers List ", url: "/admin/customers-list" },
+          { title: "Customers List", url: "/admin/customers-list" },
         ],
       },
       { title: "Manage Admin", url: "/admin/manage-admin", icon: Icons.Table, items: [] },
@@ -109,7 +107,7 @@ export const SUPER_ADMIN_NAV_DATA = [
         icon: Icons.User,
         items: [
           { title: "Manage Users", url: "/admin/manage-users" },
-          { title: "Users List ", url: "/admin/users-list" },
+          { title: "Users List", url: "/admin/users-list" },
         ],
       },
     ],
@@ -158,7 +156,7 @@ export const ADMIN_NAV_DATA = [
           },
           {
             title: "Manage Properties",
-            url: "/project-pages",
+            url: "/projects",
             icon: SiPolymerproject,
             items: [],
           }
@@ -213,19 +211,49 @@ export const ADMIN_NAV_DATA = [
 
 ];
 
-export const ADMIN_NAV_DATA_WITH_CUSTOMERS = [
+// Customer navigation data
+export const CUSTOMER_NAV_DATA = [
   {
-    label: "Customer MENU",
+    label: "CUSTOMER MENU",
     items: [
-      { title: "Dashboard", url: "/customer/customer-dashboard", icon: Icons.HomeIcon, items: [] },
-      { title: "Properties", url: "/customer/project-pages", icon: Icons.PieChart, items: [] },
-      { title: "Investments", url: "/customer/investments", icon: Icons.PieChart, items: [] },
-      { title: "Users", url: "/customer/users", icon: Icons.User, items: [] },
       {
-        items: [
-          { title: "Support", url: "/support", icon: BiSupport, items: [] },
-        ],
+        title: "Dashboard",
+        url: "/",
+        icon: LuLayoutDashboard,
+        items: [],
       },
+      // {
+      //   title: "My Investments",
+      //   url: "/customer/investments",
+      //   icon: FaFileInvoiceDollar,
+      //   items: [],
+      // },
+      {
+        title: "Projects",
+        url: "/customer/projects",
+        icon: SiPolymerproject,
+        items: [],
+      },
+      {
+        title: "Transactions",
+        url: "/customer/transactions",
+        icon: GrTransaction,
+        items: [],
+      },
+      {
+        title: "Referrals",
+        url: "/customer/referrals",
+        icon: FaFirefoxBrowser,
+        items: [],
+      },
+
+      {
+        title: "Settings",
+        url: "/customer/settings",
+        icon: Icons.Authentication,
+        items: [],
+      },
+
     ],
   },
 ];
@@ -236,10 +264,10 @@ export const getNavDataByRole = () => {
     return SUPER_ADMIN_NAV_DATA;
   } else if (isAdmin()) {
     return ADMIN_NAV_DATA;
+  } else if (isCustomer()) {
+    return CUSTOMER_NAV_DATA;
   } else if (isUser()) {
     return USER_NAV_DATA;
-  } else if (isCustomer()) {
-    return ADMIN_NAV_DATA_WITH_CUSTOMERS;
   }
   return USER_NAV_DATA;
 };

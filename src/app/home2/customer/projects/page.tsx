@@ -1,14 +1,15 @@
 import React from 'react'
 import { Metadata } from "next";
-import { OverviewCardsGroup } from '../../_components/overview-cards';
+
+import { OverviewCard } from '../../_components/overview-cards/card';
 export const metadata: Metadata = {
-    title: "Customer Projects",
+  title: "Customer Projects",
 };
 
 const page = () => {
   return (
     <div>
-              <OverviewCardsGroup/>
+      <OverviewCard />
 
     </div>
   )

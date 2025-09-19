@@ -38,6 +38,7 @@ export interface Project {
   stats?: { availableUnits: number };
   featured?: boolean;
   totalArea?: number;
+  roi?: any
   galleryImages?: any[];
 }
 
@@ -301,14 +302,14 @@ export function OverviewCard({
             <div className="text-gray-700 dark:text-gray-300 text-xs mb-0.5">
               EXPECTED ROI
             </div>
-            <div className="text-[#00B894] font-bold text-xs">12%</div>
+            <div className="text-[#00B894] font-bold text-xs">{item.roi}%</div>
           </div>
           <div className="bg-white dark:bg-dark-2 rounded-lg p-1.5">
             <div className="text-gray-700 dark:text-gray-300 text-xs mb-0.5">
               INVESTMENT
             </div>
             <div className="text-[#0277BD] font-bold text-xs">
-              {mockInvestmentAmount}
+              {item.totalInvestment}
             </div>
           </div>
         </div>

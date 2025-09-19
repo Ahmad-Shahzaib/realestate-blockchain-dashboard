@@ -86,6 +86,8 @@ export interface ProjectPayload {
     pricePerSqFt: number;
     minPrice: number;
     maxPrice: number;
+    roi: any;
+    totalInvestment: any;
     specifications: string[];
     features: string[];
   }>;
@@ -99,7 +101,7 @@ export interface ProjectPayload {
 }
 
 
-const API_BASE_URL = 'https://api.fractprop.com/api';
+const API_BASE_URL = 'http://localhost:5000/api';
 
 // Create Axios instance
 const api: AxiosInstance = axios.create({

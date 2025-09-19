@@ -1,4 +1,4 @@
-const API_BASE = process.env.API_BASE_URL || 'https://api.fractprop.com/api';
+const API_BASE = process.env.API_BASE_URL || 'http://localhost:5000/api';
 
 export async function fetchCustomersFromApi(): Promise<any> {
   const base = API_BASE.replace(/\/$/, '');

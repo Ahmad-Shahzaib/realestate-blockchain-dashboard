@@ -33,13 +33,13 @@ type PropsType = {
 
 const tabs = [
   {
-    id: "all", label: "Home", icon: IoHome
+    id: "all", label: "All", icon: IoHome
   },
   {
-    id: "residential", label: "Development", icon: FaConnectdevelop
+    id: "residential", label: "Residential", icon: FaConnectdevelop
   },
   {
-    id: "commercial", label: "Mature", icon: MdOutlineSignalCellularAlt2Bar
+    id: "commercial", label: "Commercial", icon: MdOutlineSignalCellularAlt2Bar
   },
   {
     id: "plots", label: "Up Comming", icon: FaCalendarAlt
@@ -163,7 +163,7 @@ export function OverviewCardsGroup() {
             }
           }}
           disabled={page >= totalPages}
-          className={`w-full py-2 rounded-lg transition-colors ${page >= totalPages ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          className={`w-full py-2 rounded-lg transition-colors ${page >= totalPages ? '' : ' text-white '}`}
         >
           {page >= totalPages ? 'No more projects' : 'Load More Projects'}
         </button>
