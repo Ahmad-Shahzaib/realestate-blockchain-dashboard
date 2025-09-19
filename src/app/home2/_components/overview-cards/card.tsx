@@ -38,7 +38,8 @@ export interface Project {
   stats?: { availableUnits: number };
   featured?: boolean;
   totalArea?: number;
-  roi?: any
+  roi?: any;
+  totalInvestment: any;
   galleryImages?: any[];
 }
 
