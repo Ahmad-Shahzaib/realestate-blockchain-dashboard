@@ -1,11 +1,11 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import logo from "../../../assets/logos/fractprop.png";
 import { handleRegister } from "@/redux/auth/handler";
 import {
@@ -34,6 +34,7 @@ const RegisterSchema = Yup.object().shape({
     password: Yup.string()
         .required("Password is required")
         .min(6, "Password must be at least 6 characters"),
+    referralCode: Yup.string().optional(),
 });
 
 export default function SignUp() {
@@ -49,10 +50,12 @@ export default function SignUp() {
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     const {
         control,
         handleSubmit,
+        setValue,
         formState: { errors },
     } = useForm({
         resolver: yupResolver(RegisterSchema),
@@ -62,14 +65,25 @@ export default function SignUp() {
             lastName: "",
             email: "",
             password: "",
+            referralCode: "",
         },
     });
+
+    // Extract referral code from URL and set it in the form
+    useEffect(() => {
+        const refCode = searchParams.get('ref');
+        console.log("Referral code from URL:", refCode);
+        if (refCode) {
+            setValue('referralCode', refCode);
+        }
+    }, [searchParams, setValue]);
 
     const onSubmit = async (data: {
         firstName: string;
         lastName: string;
         email: string;
         password: string;
+        referralCode?: string;
     }) => {
         try {
 
@@ -80,6 +94,7 @@ export default function SignUp() {
                 lastName: data.lastName.trim(),
                 email: data.email.trim().toLowerCase(),
                 password: data.password,
+                referralCode: data.referralCode?.trim() || undefined,
             });
             toast.success("Account created successfully! Please sign in.");
             // On success, redirect to login
@@ -325,25 +340,45 @@ export default function SignUp() {
                                             )}
                                         </button>
                                     </div>
-                                    {/* resferal code  */}
-                                    <div className="space-y-2">
-                                        <label className="text-white text-sm font-medium">
-                                            Referal Code
-                                        </label>
-                                        <div>
-                                            <input type="text"
-                                                required
-                                                className="w-full pl-12 pr-12 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
-                                                placeholder="Enter Referal Code" />
-                                        </div>
-
-                                    </div>
-
-
-
                                     {errors.password && (
                                         <p className="text-red-300 text-sm">
                                             {errors.password.message}
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* Referral Code Input */}
+                                <div className="space-y-2">
+                                    <label className="text-white text-sm font-medium">
+                                        Referral Code (Optional)
+                                    </label>
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <User className="w-5 h-5 text-blue-300" />
+                                        </div>
+                                        <Controller
+                                            name="referralCode"
+                                            control={control}
+                                            render={({ field: { onChange, value } }) => (
+                                                <input
+                                                    type="text"
+                                                    value={value || ""}
+                                                    onChange={onChange}
+                                                    readOnly={!!searchParams.get('ref')}
+                                                    className={`w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 ${!!searchParams.get('ref') ? 'opacity-75 cursor-not-allowed' : ''}`}
+                                                    placeholder="Enter Referral Code (Optional)"
+                                                />
+                                            )}
+                                        />
+                                    </div>
+                                    {errors.referralCode && (
+                                        <p className="text-red-300 text-sm">
+                                            {errors.referralCode.message}
+                                        </p>
+                                    )}
+                                    {searchParams.get('ref') && (
+                                        <p className="text-green-300 text-sm">
+                                            Referral code automatically applied from invitation link
                                         </p>
                                     )}
                                 </div>

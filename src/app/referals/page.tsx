@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Copy, Mail, Users, Gift, CheckCircle, Facebook, Twitter, Linkedin } from "lucide-react";
 import { toast } from "react-hot-toast";
 import ReferralService from "@/services/referal.service"; // <-- your API service
+import { useAppSelector } from "@/redux/hooks";
 
 type Referral = {
     id: string;
@@ -14,6 +15,8 @@ type Referral = {
 
 export default function Page() {
     const [referrals, setReferrals] = useState<Referral[]>([]);
+      const userProfile = useAppSelector(state => state.userInfo.user);
+    
     const [stats, setStats] = useState({
         totalReferrals: 0,
         directReferrals: 0,
@@ -111,7 +114,7 @@ export default function Page() {
                                 <div className="relative flex-1">
                                     <input
                                         type="text"
-                                        value="https://example.com/referral/abcd1234"
+                                        value={`https://dev.fractprop.com/auth/sign-in?ref=${userProfile?.referralCode}`}
                                         readOnly
                                         className="w-full p-3 pr-12 rounded-lg border border-[#00B894] dark:border-gray-600 text-gray-700 dark:text-gray-200 bg-[#F5F7FA] dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-[#00B894]"
                                     />
@@ -119,6 +122,14 @@ export default function Page() {
                                         type="button"
                                         aria-label="Copy Referral Link"
                                         className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#00B894] transition"
+                                        onClick={() => {
+                                            const referralLink = `https://dev.fractprop.com/auth/sign-up?ref=${userProfile?.referralCode}`;
+                                            navigator.clipboard.writeText(referralLink).then(() => {
+                                                toast.success('Referral link copied to clipboard!');
+                                            }).catch(() => {
+                                                toast.error('Failed to copy link');
+                                            });
+                                        }}
                                     >
                                         <Copy className="w-5 h-5" />
                                     </button>

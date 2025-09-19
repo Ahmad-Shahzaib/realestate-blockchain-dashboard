@@ -50,7 +50,7 @@ export const handleRegister = async (credentials: {
     lastName: string;
     email: string;
     password: string;
-
+    referralCode?: string;
 }) => {
     try {
         const response = await getAxiosInstance('/api/auth').post("/api/auth/register", {
