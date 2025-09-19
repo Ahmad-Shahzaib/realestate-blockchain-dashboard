@@ -25,7 +25,7 @@ export interface TransactionResponse {
     };
 }
 
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://dev.fractprop.com/api";
 
 // Create Axios instance
 const api: AxiosInstance = axios.create({
