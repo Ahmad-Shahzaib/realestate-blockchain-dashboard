@@ -87,10 +87,10 @@ const PledgeStatus = () => {
                                 +92 314 3267727
                             </a>
                             <a
-                                href="mailto:support@daoproptech.com"
+                                href="mailto:support@FracProp.com"
                                 className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
                             >
-                                support@daoproptech.com
+                                support@FracProp.com
                             </a>
                         </div>
                     </div>

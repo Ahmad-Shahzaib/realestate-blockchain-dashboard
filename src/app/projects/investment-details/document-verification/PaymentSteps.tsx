@@ -97,10 +97,10 @@ const PaymentSteps = () => {
                                         <li>
                                             Email proof of payment to{" "}
                                             <a
-                                                href="mailto:support@daoproptech.com"
+                                                href="mailto:support@FracProp.com"
                                                 className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-semibold"
                                             >
-                                                support@daoproptech.com
+                                                support@FracProp.com
                                             </a>.
                                         </li>
                                     </ol>
