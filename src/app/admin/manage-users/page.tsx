@@ -234,7 +234,7 @@ const ManageUsers = () => {
             {editUser && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="bg-white dark:bg-dark-2 rounded-lg p-6 w-1/2">
-                        <h2 className="text-xl font-semibold mb-4">Edit User</h2>
+                        <h2 className="text-xl font-semibold mb-4">View User</h2>
                         {editError && <div className="text-red-600 mb-4">{editError}</div>}
 
                         <div className="space-y-4">

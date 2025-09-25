@@ -159,6 +159,24 @@ export const TransactionService = {
     },
 
     /**
+     * Get transactions for the authenticated user
+     * @param page Optional page number for pagination
+     * @returns Promise with the API response containing user's transactions
+     */
+    getUserTransactions: async (page?: number): Promise<TransactionResponse> => {
+        try {
+            const params = page ? { params: { page } } : {};
+            const response: AxiosResponse<TransactionResponse> = await api.get(
+                "/transactions/user/my",
+                params
+            );
+            return response.data;
+        } catch (error: any) {
+            throw error; // Error already handled by interceptor
+        }
+    },
+
+    /**
      * Find a transaction by ID from a list of transactions
      * @param transactions List of transactions
      * @param id Transaction ID to find

@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react'
-import { Building2, MapPin, Calendar, Filter, Search } from 'lucide-react'
+import { Building2, MapPin, Calendar, Filter, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import SearchInput from '@/common/Input';
 
 const investments = [
@@ -47,7 +47,8 @@ const investments = [
     type: 'Commercial',
     duration: '36 months',
     image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=300&h=200&fit=crop'
-  }
+  },
+
 ]
 
 type Investment = typeof investments[number];
@@ -56,6 +57,8 @@ const InvestmentDashboardTable = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('All')
   const [selectedInvestment, setSelectedInvestment] = useState<Investment | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const recordsPerPage = 8;
 
   const filteredInvestments = investments.filter(inv => {
     const matchesSearch = inv.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -64,6 +67,16 @@ const InvestmentDashboardTable = () => {
     return matchesSearch && matchesStatus
   })
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredInvestments.length / recordsPerPage);
+  const startIndex = (currentPage - 1) * recordsPerPage;
+  const paginatedInvestments = filteredInvestments.slice(startIndex, startIndex + recordsPerPage);
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#F5F7FA] dark:bg-dark">
@@ -154,51 +167,102 @@ const InvestmentDashboardTable = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#ECF0F1] dark:divide-dark-4">
-                {filteredInvestments.map((inv) => (
-                  <tr
-                    key={inv.id}
-                    className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3 transition-colors"
-                  >
-                    <td className="py-4 px-2">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-[#00B894] rounded-lg flex items-center justify-center text-white font-semibold text-sm">
-                          {inv.name[0]}
+                {paginatedInvestments.length > 0 ? (
+                  paginatedInvestments.map((inv) => (
+                    <tr
+                      key={inv.id}
+                      className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3 transition-colors"
+                    >
+                      <td className="py-4 px-2">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-[#00B894] rounded-lg flex items-center justify-center text-white font-semibold text-sm">
+                            {inv.name[0]}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-[#2C3E50] dark:text-gray-2">{inv.name}</p>
+                            <p className="text-sm text-[#34495E] dark:text-gray-4">{inv.type}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-semibold text-[#2C3E50] dark:text-gray-2">{inv.name}</p>
-                          <p className="text-sm text-[#34495E] dark:text-gray-4">{inv.type}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{inv.location}</td>
-                    <td className="py-4 px-2 font-semibold text-[#2C3E50] dark:text-gray-2">
-                      ${inv.amount.toLocaleString()}
-                    </td>
-                    <td className="py-4 px-2 font-semibold text-[#27AE60]">{inv.returns}</td>
-                    <td className="py-4 px-2">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${inv.status === 'Active'
-                          ? 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
-                          : 'bg-[#F5F7FA] text-[#34495E] dark:bg-dark-3 dark:text-gray-3'
-                          }`}
-                      >
-                        {inv.status}
-                      </span>
-                    </td>
-                    <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{inv.duration}</td>
-                    <td className="py-4 px-2">
-                      <button
-                        onClick={() => setSelectedInvestment(inv)}
-                        className="bg-[#E8F8F5] dark:bg-dark-3 dark:text-white text-[#3498DB] px-3 py-1 rounded-lg text-sm hover:bg-[#D1F2EB] dark:hover:bg-dark-4 transition-colors"
-                      >
-                        View Details
-                      </button>
+                      </td>
+                      <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{inv.location}</td>
+                      <td className="py-4 px-2 font-semibold text-[#2C3E50] dark:text-gray-2">
+                        ${inv.amount.toLocaleString()}
+                      </td>
+                      <td className="py-4 px-2 font-semibold text-[#27AE60]">{inv.returns}</td>
+                      <td className="py-4 px-2">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-semibold ${inv.status === 'Active'
+                            ? 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
+                            : 'bg-[#F5F7FA] text-[#34495E] dark:bg-dark-3 dark:text-gray-3'
+                            }`}
+                        >
+                          {inv.status}
+                        </span>
+                      </td>
+                      <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{inv.duration}</td>
+                      <td className="py-4 px-2">
+                        <button
+                          onClick={() => setSelectedInvestment(inv)}
+                          className="bg-[#E8F8F5] dark:bg-dark-3 dark:text-white text-[#3498DB] px-3 py-1 rounded-lg text-sm hover:bg-[#D1F2EB] dark:hover:bg-dark-4 transition-colors"
+                        >
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={7} className="py-4 px-2 text-center text-[#34495E] dark:text-gray-4">
+                      No investments found matching your search.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-6">
+              <p className="text-sm text-[#34495E] dark:text-gray-4">
+                Showing {startIndex + 1} to {Math.min(startIndex + recordsPerPage, filteredInvestments.length)} of {filteredInvestments.length} investments
+              </p>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`p-2 rounded-lg ${currentPage === 1
+                    ? 'text-[#A1B1C3] dark:text-gray-5 cursor-not-allowed'
+                    : 'text-[#2C3E50] dark:text-gray-2 hover:bg-[#ECF0F1] dark:hover:bg-dark-3'
+                    }`}
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`px-3 py-1 rounded-md text-sm font-medium ${currentPage === page
+                      ? 'bg-[#3498DB] text-white'
+                      : 'text-[#34495E] dark:text-gray-3 hover:bg-[#ECF0F1] dark:hover:bg-dark-3'
+                      }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`p-2 rounded-lg ${currentPage === totalPages
+                    ? 'text-[#A1B1C3] dark:text-gray-5 cursor-not-allowed'
+                    : 'text-[#2C3E50] dark:text-gray-2 hover:bg-[#ECF0F1] dark:hover:bg-dark-3'
+                    }`}
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Investment Detail Modal */}
@@ -279,7 +343,6 @@ const InvestmentDashboardTable = () => {
         )}
       </div>
     </div>
-
   )
 }
 

@@ -23,8 +23,8 @@ export default function DocumentsSummary() {
     const totalArea = searchParams.get("totalArea");
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex justify-center items-start py-16">
-            <div className="w-full max-w-7xl px-6">
+        <div className="min-h-screen   flex justify-center items-start">
+            <div className="w-full  px-3">
                 {/* Page Header */}
                 <div className="mb-12 text-center">
                     <h2 className="text-3xl font-bold text-gray-800 dark:text-white tracking-tight">
@@ -35,9 +35,9 @@ export default function DocumentsSummary() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
                     {/* Left Side - Details */}
-                    <div className="lg:col-span-2 space-y-8">
+                    <div className="lg:col-span-3 space-y-8">
                         {/* Billing Address */}
                         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8 transition-all hover:shadow-xl">
                             <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
@@ -133,7 +133,7 @@ export default function DocumentsSummary() {
                     </div>
 
                     {/* Right Side - Order Summary */}
-                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8 sticky top-8 h-[450px]">
+                    <div className="bg-white w-90 dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 sticky top-8 h-[450px] ">
                         <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-6">
                             {from === "explore" ? "Explore Investments" : "Order Summary"}
                         </h3>
@@ -147,9 +147,9 @@ export default function DocumentsSummary() {
                                 <input
                                     type="text"
                                     placeholder="Enter Voucher Code"
-                                    className="flex-1 border rounded-l-lg px-4 py-2 text-sm text-gray-800 dark:text-white bg-gray-50 dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 transition-all"
+                                    className="flex-1 border border-r-0 rounded-l-lg px-4 py-2 text-sm text-gray-800 dark:text-white bg-gray-50 dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 transition-all"
                                 />
-                                <Button className="ml-2 text-white px-4 py-2 rounded-r-lg font-semibold  transition-all">
+                                <Button className="">
                                     Apply
                                 </Button>
                             </div>

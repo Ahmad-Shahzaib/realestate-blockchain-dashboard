@@ -32,6 +32,8 @@ interface Floor {
     features: string;
     minSqftBuy?: string;
     maxSqftBuy?: string;
+    roi?: number;
+    totalInvestment?: number;
 }
 
 interface FormState {
@@ -41,6 +43,8 @@ interface FormState {
     description: string;
     address: string;
     city: string;
+    roi: number | null;
+    totalInvestment: number | null;
     state: string;
     country: string;
     latitude: string;
@@ -86,6 +90,8 @@ const initialFormState: FormState = {
     subcategory: "",
     description: "",
     address: "",
+    roi: null,
+    totalInvestment: null,
     city: "",
     state: "",
     country: "",
@@ -171,6 +177,9 @@ function useGlobeResidencyForm() {
         if (!form.country) errs.country = "Country is required.";
         if (!form.latitude) errs.latitude = "Latitude is required.";
         if (!form.longitude) errs.longitude = "Longitude is required.";
+        if (form.roi === null || form.roi === undefined) errs.roi = "ROI is required.";
+        if (form.totalInvestment === null || form.totalInvestment === undefined) errs.totalInvestment = "Total investment is required.";
+
 
         // developer
         if (!form.developerName) errs.developerName = "Developer name is required.";
@@ -246,7 +255,15 @@ function useGlobeResidencyForm() {
     const handleChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
             const { id, value, type } = e.target;
-            setForm((prev) => ({ ...prev, [id]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value }));
+            setForm((prev) => ({
+                ...prev,
+                [id]:
+                    id === "roi" || id === "totalInvestment"
+                        ? value === "" ? null : Number(value)
+                        : type === "checkbox"
+                            ? (e.target as HTMLInputElement).checked
+                            : value,
+            }));
         },
         []
     );
@@ -377,6 +394,8 @@ function useGlobeResidencyForm() {
                         city: form.city,
                         state: form.state,
                         country: form.country,
+                        roi: Number(form.roi) || 0,
+                        totalInvestment: Number(form.totalInvestment) || 0,
                         coordinates: { latitude: Number(form.latitude) || 0, longitude: Number(form.longitude) || 0 },
                     },
                     developer: { name: form.developerName, description: form.developerDescription, logoUrl: form.developerLogo, website: form.developerWebsite },
@@ -576,6 +595,47 @@ export default function GlobeResidencyForm() {
                                     <option value="residential">Residential</option>
                                     <option value="commercial">Commercial</option>
                                 </select>
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="roi" className="text-sm font-semibold dark:text-white">
+                                    * ROI (%)
+                                </label>
+                                <input
+                                    id="roi"
+                                    type="number"
+                                    step="0.1"
+                                    placeholder="5.5"
+                                    className={`w-full p-2 border rounded outline-none ${touched.roi && validationErrors.roi
+                                        ? "border-red-500 focus:border-red-500 focus:ring-red-200"
+                                        : "border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                                        }`}
+                                    value={form.roi ?? ""}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                />
+                                {touched.roi && validationErrors.roi && (
+                                    <div className="text-sm text-red-600 mt-1">{validationErrors.roi}</div>
+                                )}
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="totalInvestment" className="text-sm font-semibold dark:text-white">
+                                    * Total Investment ($)
+                                </label>
+                                <input
+                                    id="totalInvestment"
+                                    type="number"
+                                    placeholder="1000000"
+                                    className={`w-full p-2 border rounded outline-none ${touched.totalInvestment && validationErrors.totalInvestment
+                                        ? "border-red-500 focus:border-red-500 focus:ring-red-200"
+                                        : "border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                                        }`}
+                                    value={form.totalInvestment ?? ""}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                />
+                                {touched.totalInvestment && validationErrors.totalInvestment && (
+                                    <div className="text-sm text-red-600 mt-1">{validationErrors.totalInvestment}</div>
+                                )}
                             </div>
                             <div className="space-y-2">
                                 <label htmlFor="subcategory" className="text-sm font-semibold dark:text-white">

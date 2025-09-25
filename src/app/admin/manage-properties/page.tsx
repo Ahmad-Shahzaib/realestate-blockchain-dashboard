@@ -137,7 +137,7 @@ const Page = () => {
                                             >
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{project.title}</td>
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">
-                                                    {project.investment ? `$${project.investment.toLocaleString()}` : 'N/A'}
+                                                    {project.investment ? `$${project.investment.toLocaleString()}` : '0'}
                                                 </td>
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{project.toUnit}</td>
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">

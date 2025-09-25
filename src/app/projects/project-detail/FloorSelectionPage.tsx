@@ -56,21 +56,22 @@ const FloorAreaSelectionPage: NextPage<FloorAreaSelectionPageProps> = ({ project
             // Construct the transaction payload
             const payload = {
                 propertyId: project._id,
-                customerId: project.customerId,
+                customerId: project.customerId, // Replace with actual customer ID (e.g., from auth context or state)
                 totalPrice: totalInvestment,
                 totalSquareFeet: totalArea,
-                type: "chosen",
+                type: "chosen", // Adjust based on your API requirements
             };
 
-            // Navigate with query params ✅
-            router.push(
-                `/projects/project-detail/${project._id}/investment-details?totalInvestment=${totalInvestment}&totalArea=${totalArea}`
-            );
+            // Call the TransactionService.createTransaction API
+            const response = await TransactionService.createTransaction(payload);
+            console.log("Transaction created successfully:", response);
+
+            // Navigate to the investment details page
+            router.push(`/projects/project-detail/${project._id}/investment-details?totalInvestment=${totalInvestment}&totalArea=${totalArea}`);
         } catch (error) {
             console.error("Failed to create transaction:", error);
         }
     };
-
 
     return (
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8 max-w-7xl mx-auto">
