@@ -2,7 +2,7 @@ import axios from "axios";
 import type { AxiosInstance } from "axios";
 import { getCookie, deleteCookie } from "cookies-next";
 
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://api.fractprop.com";
 const instanceCache: { [key: string]: AxiosInstance } = {};
 
 export function getAxiosInstance(serviceName: string, version = "1.0.0") {
