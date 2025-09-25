@@ -1,119 +1,217 @@
 "use client";
 
-import React from 'react'
-import Table from '@/common/Table';
+import React, { useState, useMemo, useEffect } from "react";
+import { Building2, Search } from "lucide-react";
+import Table from "@/common/Table";
+import SearchInput from "@/common/Input";
+import TransactionService from "@/services/transaction.service";
 
-interface Transaction {
-    id: string;
-    propertyId: string;
-    userId: string;
-    customerId: string;
+interface Property {
+    name?: string;
+    location?: {
+        coordinates?: {
+            latitude: number;
+            longitude: number;
+        };
+        address?: string;
+    };
+    address?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+}
+
+interface TransactionWithProperty {
+    _id: string;
+    propertyId: Property | null;
+    customerId: string | null;
+    userId: string | null;
     totalPrice: number;
     totalSquareFeet: number;
-    status: string;
     type: string;
+    status: string;
     paymentSuccess: boolean;
     createdAt: string;
     updatedAt: string;
     __v: number;
-    customerName: string;
-    projectName: string;
-    userName: string;
 }
-
-const dummyTransactions: Transaction[] = [
-    {
-        id: "68c3b2cfcf7bbd74a9dced61",
-        propertyId: "68c3af8d544d6d2c0d5116be",
-        userId: "68c00f19e793efdf89b70ea4",
-        customerId: "68c3b12ee63636836f38076e",
-        totalPrice: 175000,
-        totalSquareFeet: 200,
-        status: "pending",
-        type: "chosen",
-        paymentSuccess: false,
-        createdAt: "2025-09-12T05:42:40.007+00:00",
-        updatedAt: "2025-09-12T05:42:40.007+00:00",
-        __v: 0,
-        customerName: "John Doe",
-        projectName: "Luxury Apartments",
-        userName: "Admin User"
-    },
-    {
-        id: "68c3b2cfcf7bbd74a9dced62",
-        propertyId: "68c3af8d544d6d2c0d5116bf",
-        userId: "68c00f19e793efdf89b70ea5",
-        customerId: "68c3b12ee63636836f38076f",
-        totalPrice: 250000,
-        totalSquareFeet: 300,
-        status: "completed",
-        type: "auction",
-        paymentSuccess: true,
-        createdAt: "2025-09-10T10:30:00.000+00:00",
-        updatedAt: "2025-09-11T14:20:00.000+00:00",
-        __v: 0,
-        customerName: "Jane Smith",
-        projectName: "Commercial Plaza",
-        userName: "Manager Bob"
-    },
-    {
-        id: "68c3b2cfcf7bbd74a9dced63",
-        propertyId: "68c3af8d544d6d2c0d5116c0",
-        userId: "68c00f19e793efdf89b70ea6",
-        customerId: "68c3b12ee63636836f380770",
-        totalPrice: 320000,
-        totalSquareFeet: 400,
-        status: "processing",
-        type: "direct",
-        paymentSuccess: false,
-        createdAt: "2025-09-08T08:15:00.000+00:00",
-        updatedAt: "2025-09-09T12:45:00.000+00:00",
-        __v: 0,
-        customerName: "Alice Johnson",
-        projectName: "Residential Complex",
-        userName: "Agent Carol"
-    }
-];
 
 const columns = [
-    { key: 'id' as keyof Transaction, label: 'Transaction ID' },
-    { key: 'customerName' as keyof Transaction, label: 'Customer Name' },
-    { key: 'projectName' as keyof Transaction, label: 'Project Name' },
-    { key: 'userName' as keyof Transaction, label: 'User Name' },
-    { key: 'totalPrice' as keyof Transaction, label: 'Total Price', render: (row: Transaction) => `$${row.totalPrice.toLocaleString()}` },
-    { key: 'totalSquareFeet' as keyof Transaction, label: 'Square Feet', render: (row: Transaction) => `${row.totalSquareFeet} sq ft` },
-    { key: 'status' as keyof Transaction, label: 'Status', render: (row: Transaction) => (
-        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-            row.status === 'completed' ? 'bg-green-100 text-green-800' :
-            row.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-            'bg-blue-100 text-blue-800'
-        }`}>
-            {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
-        </span>
-    ) },
-    { key: 'type' as keyof Transaction, label: 'Type' },
-    { key: 'paymentSuccess' as keyof Transaction, label: 'Payment', render: (row: Transaction) => (
-        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-            row.paymentSuccess ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-        }`}>
-            {row.paymentSuccess ? 'Success' : 'Failed'}
-        </span>
-    ) },
-    { key: 'createdAt' as keyof Transaction, label: 'Created At', render: (row: Transaction) => new Date(row.createdAt).toLocaleDateString() }
+    {
+        key: "name",
+        label: "Project Name",
+        render: (row: TransactionWithProperty) =>
+            row.propertyId?.name ??
+            row.propertyId?.location?.address ??
+            "N/A",
+    },
+    {
+        key: "address",
+        label: "Address",
+        render: (row: TransactionWithProperty) =>
+            row.propertyId?.address ??
+            row.propertyId?.location?.address ??
+            "N/A",
+    },
+    {
+        key: "totalPrice",
+        label: "Total Price",
+        render: (row: TransactionWithProperty) => `${row.totalPrice?.toLocaleString() ?? 0}`,
+    },
+    {
+        key: "totalSquareFeet",
+        label: "Square Feet",
+        render: (row: TransactionWithProperty) => `${row.totalSquareFeet ?? 0} sq ft`,
+    },
+    {
+        key: "type",
+        label: "Type",
+        render: (row: TransactionWithProperty) => row.type ?? "N/A",
+    },
+    {
+        key: "status",
+        label: "Status",
+        render: (row: TransactionWithProperty) => (
+            <span className={`px-2 py-1 rounded-full text-xs font-medium ${row.status === 'pending'
+                ? 'bg-yellow-100 text-yellow-800'
+                : row.status === 'completed'
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-gray-100 text-gray-800'
+                }`}>
+                {row.status ?? 'N/A'}
+            </span>
+        ),
+    },
 ];
 
-const page = () => {
+const TransactionManagement = () => {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [transactions, setTransactions] = useState<TransactionWithProperty[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchTransactions = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const response = await TransactionService.getAllTransactions();
+
+                // Extract transactions from API response
+                const transactionData = response?.data?.transactions || [];
+                setTransactions(transactionData);
+
+            } catch (err: any) {
+                console.error("API Error:", err);
+                setError(err.message || "Failed to fetch transactions");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTransactions();
+    }, []);
+
+    const filteredTransactions = useMemo(() => {
+        if (!searchTerm.trim()) return transactions;
+
+        const term = searchTerm.toLowerCase();
+        return transactions.filter((transaction) => {
+            const searchableText = [
+                transaction.propertyId?.name,
+                transaction.propertyId?.address,
+                transaction.propertyId?.location?.address,
+                transaction.type,
+                transaction.status,
+                transaction.totalPrice?.toString(),
+                transaction.totalSquareFeet?.toString(),
+            ].filter(Boolean).join(' ').toLowerCase();
+
+            return searchableText.includes(term);
+        });
+    }, [searchTerm, transactions]);
+
     return (
-        <div className='py-4 px-6'>
-            <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Transactions</h1>
-                <p className="text-gray-600 dark:text-gray-400 mt-2">Manage and view all transaction records</p>
+        <div className="min-h-screen bg-[#F5F7FA] dark:bg-dark">
+            {/* Header */}
+            <div className="bg-white shadow-sm border-b border-[#ECF0F1] dark:bg-dark-2 dark:border-dark-4">
+                <div className="mx-auto px-6 py-6">
+                    <div className="flex items-center space-x-3">
+                        <div className="bg-[#00B894] p-2 rounded-lg">
+                            <Building2 className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-bold text-[#2C3E50] dark:text-gray-2">
+                                Transaction Management
+                            </h1>
+                            <p className="text-[#34495E] dark:text-gray-4 mt-1">
+                                Manage and view all transaction records
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                <Table data={dummyTransactions} columns={columns} />
+
+            <div className="max-w-7xl mx-auto px-6 py-8">
+                {/* Search */}
+                <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 dark:bg-dark-2">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div className="flex-1 max-w-md">
+                            <SearchInput
+                                placeholder="Search by project, address, price, type, or status..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                icon={
+                                    <Search className="h-5 w-5 text-[#34495E] dark:text-gray-3" />
+                                }
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Transaction Table */}
+                <div className="bg-white rounded-2xl shadow-lg p-6 dark:bg-dark-2">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-xl font-semibold text-[#2C3E50] dark:text-gray-2">
+                            Transactions ({filteredTransactions.length})
+                        </h2>
+                    </div>
+
+                    {loading && (
+                        <div className="flex items-center justify-center py-8">
+                            <p className="text-[#34495E] dark:text-gray-4">Loading transactions...</p>
+                        </div>
+                    )}
+
+                    {error && (
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                            <p className="text-red-600 font-medium">Error: {error}</p>
+                        </div>
+                    )}
+
+                    {!loading && !error && transactions.length === 0 && (
+                        <div className="text-center py-8">
+                            <p className="text-[#34495E] dark:text-gray-4">No transactions found.</p>
+                        </div>
+                    )}
+
+                    {!loading && !error && transactions.length > 0 && filteredTransactions.length === 0 && searchTerm && (
+                        <div className="text-center py-8">
+                            <p className="text-[#34495E] dark:text-gray-4">
+                                No transactions match your search criteria.
+                            </p>
+                        </div>
+                    )}
+
+                    {!loading && !error && filteredTransactions.length > 0 && (
+                        <div className="overflow-x-auto">
+                            <Table data={filteredTransactions} columns={columns} />
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default page
+export default TransactionManagement;

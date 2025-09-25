@@ -1,5 +1,5 @@
 import { getAxiosInstance } from "@/lib/axios";
-import { getRequest, putRequest } from "@/app/utils/requests";
+import { deleteRequest, getRequest, putRequest } from "@/app/utils/requests";
 
 // Define BankDetail interface to match server response
 export interface BankDetail {
@@ -47,7 +47,7 @@ export interface UserProfile {
 
 // Define UserDetails interface for admin users endpoint
 export interface UserDetails {
-    id?: number;
+    id?: string | number;
     firstName?: string;
     lastName?: string;
     email?: string;
@@ -56,15 +56,16 @@ export interface UserDetails {
     city?: string;
     country?: string;
     walletAddress?: string;
+    createdAt?: string;
     [key: string]: any;
 }
 
+// ✅ Get logged-in user profile
 export async function getUserProfile(): Promise<{
     status: string;
     data: { user: UserProfile };
 }> {
     try {
-        // Add cache-busting query parameter to prevent stale data
         return await getRequest(getAxiosInstance('/api'), `/api/users/profile?_=${Date.now()}`);
     } catch (error) {
         console.error("Error fetching user profile:", error);
@@ -72,6 +73,7 @@ export async function getUserProfile(): Promise<{
     }
 }
 
+// ✅ Update logged-in user profile
 export async function updateUserProfile(userData: UserProfile): Promise<{
     status: string;
     data: { user: UserProfile };
@@ -84,6 +86,7 @@ export async function updateUserProfile(userData: UserProfile): Promise<{
     }
 }
 
+// ✅ Get all users (admin only)
 export async function getUsersInfo(): Promise<{
     status: string;
     data: { users: UserDetails[] };
@@ -92,6 +95,32 @@ export async function getUsersInfo(): Promise<{
         return await getRequest(getAxiosInstance('/api'), "/api/admin/users");
     } catch (error) {
         console.error("Error fetching users info:", error);
+        throw error;
+    }
+}
+
+// ✅ Update specific user by Admin
+export async function updateUserByAdmin(userId: string, userData: Partial<UserProfile>): Promise<{
+    status: string;
+    data: { user: UserProfile };
+}> {
+    try {
+        return await putRequest(getAxiosInstance('/api'), `/api/admin/users/${userId}`, userData);
+    } catch (error) {
+        console.error("Error updating user:", error);
+        throw error;
+    }
+}
+
+// ✅ Delete user by Admin
+export async function deleteUser(userId: string): Promise<{
+    status: string;
+    message: string;
+}> {
+    try {
+        return await deleteRequest(getAxiosInstance('/api'), `/api/admin/users/${userId}`);
+    } catch (error) {
+        console.error("Error deleting user:", error);
         throw error;
     }
 }

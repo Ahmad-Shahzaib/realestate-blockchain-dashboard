@@ -221,7 +221,7 @@ const BankDetails = () => {
                                 <input
                                     type="text"
                                     name="accountTitle"
-                                    placeholder="Muhammad Shakeel"
+                                    placeholder="Account Title here"
                                     value={bankForm.accountTitle}
                                     onChange={handleBankChange}
                                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#00B894] dark:bg-dark dark:text-white dark:border-gray-700"

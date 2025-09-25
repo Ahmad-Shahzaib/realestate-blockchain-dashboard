@@ -22,6 +22,8 @@ export interface ProjectStats {
 }
 
 export interface Project {
+  totalInvestment: number;
+  availableUnits: number;
   _id: string;
   name: string;
   status: string;
@@ -218,5 +220,9 @@ export const ProjectService = {
     }
   },
 };
+
+
+
+
 
 export default ProjectService;

@@ -189,7 +189,7 @@ const InvestmentDashboardTable = () => {
                     <td className="py-4 px-2">
                       <button
                         onClick={() => setSelectedInvestment(inv)}
-                        className="bg-[#E8F8F5] dark:bg-dark-3 text-[#3498DB] px-3 py-1 rounded-lg text-sm hover:bg-[#D1F2EB] dark:hover:bg-dark-4 transition-colors"
+                        className="bg-[#E8F8F5] dark:bg-dark-3 dark:text-white text-[#3498DB] px-3 py-1 rounded-lg text-sm hover:bg-[#D1F2EB] dark:hover:bg-dark-4 transition-colors"
                       >
                         View Details
                       </button>

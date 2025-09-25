@@ -526,7 +526,7 @@ export default function GlobeResidencyForm() {
     }, []);
 
     return (
-        <div className="min-h-screen shadow-lg rounded-md py-8 px-4">
+        <div className="min-h-screen shadow-lg rounded-md py-8 px-4 ">
             <Toaster position="top-right" />
             <div className="max-w-6xl mx-auto">
                 <div className="text-left mb-8">
@@ -546,7 +546,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label htmlFor="propertyName" className="text-sm font-semibold">
+                                <label htmlFor="propertyName" className="text-sm font-semibold dark:text-white">
                                     * Property Name
                                 </label>
                                 <input
@@ -562,7 +562,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="category" className="text-sm font-semibold">
+                                <label htmlFor="category" className="text-sm font-semibold dark:text-white">
                                     * Category
                                 </label>
                                 <select
@@ -578,7 +578,7 @@ export default function GlobeResidencyForm() {
                                 </select>
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="subcategory" className="text-sm font-semibold">
+                                <label htmlFor="subcategory" className="text-sm font-semibold dark:text-white">
                                     * Subcategory
                                 </label>
                                 <select
@@ -600,7 +600,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="customer" className="text-sm font-semibold">
+                                <label htmlFor="customer" className="text-sm font-semibold dark:text-white">
                                     * Customer
                                 </label>
                                 <select
@@ -625,7 +625,7 @@ export default function GlobeResidencyForm() {
                                 {/* {customerError && <div className="text-sm text-red-600 mt-1">{customerError}</div>} */}
                             </div>
                             <div className="md:col-span-2 space-y-2">
-                                <label htmlFor="description" className="text-sm font-semibold">
+                                <label htmlFor="description" className="text-sm font-semibold dark:text-white">
                                     * Description
                                 </label>
                                 <textarea
@@ -654,7 +654,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             <div className="space-y-2">
-                                <label htmlFor="address" className="text-sm font-semibold">
+                                <label htmlFor="address" className="text-sm font-semibold dark:text-white">
                                     * Address
                                 </label>
                                 <input
@@ -670,7 +670,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="city" className="text-sm font-semibold">
+                                <label htmlFor="city" className="text-sm font-semibold dark:text-white">
                                     * City
                                 </label>
                                 <input
@@ -686,7 +686,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="state" className="text-sm font-semibold">
+                                <label htmlFor="state" className="text-sm font-semibold dark:text-white">
                                     * State
                                 </label>
                                 <input
@@ -702,7 +702,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="country" className="text-sm font-semibold">
+                                <label htmlFor="country" className="text-sm font-semibold dark:text-white">
                                     * Country
                                 </label>
                                 <input
@@ -718,7 +718,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="latitude" className="text-sm font-semibold">
+                                <label htmlFor="latitude" className="text-sm font-semibold dark:text-white">
                                     * Latitude
                                 </label>
                                 <input
@@ -736,7 +736,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="longitude" className="text-sm font-semibold">
+                                <label htmlFor="longitude" className="text-sm font-semibold dark:text-white">
                                     * Longitude
                                 </label>
                                 <input
@@ -766,7 +766,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label htmlFor="developerName" className="text-sm font-semibold">
+                                <label htmlFor="developerName" className="text-sm font-semibold dark:text-white">
                                     * Developer Name
                                 </label>
                                 <input
@@ -782,7 +782,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="developerWebsite" className="text-sm font-semibold">
+                                <label htmlFor="developerWebsite" className="text-sm font-semibold dark:text-white">
                                     * Website
                                 </label>
                                 <input
@@ -799,7 +799,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="developerDescription" className="text-sm font-semibold">
+                                <label htmlFor="developerDescription" className="text-sm font-semibold dark:text-white">
                                     * Description
                                 </label>
                                 <textarea
@@ -816,7 +816,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="developerLogo" className="text-sm font-semibold">
+                                <label htmlFor="developerLogo" className="text-sm font-semibold dark:text-white">
                                     * Logo URL
                                 </label>
                                 <input
@@ -845,7 +845,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             <div className="space-y-2">
-                                <label htmlFor="projectStatus" className="text-sm font-semibold">
+                                <label htmlFor="projectStatus" className="text-sm font-semibold dark:text-white">
                                     * Project Status
                                 </label>
                                 <select
@@ -865,7 +865,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="startDate" className="text-sm font-semibold">
+                                <label htmlFor="startDate" className="text-sm font-semibold dark:text-white">
                                     * Start Date
                                 </label>
                                 <input
@@ -881,7 +881,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="completionDate" className="text-sm font-semibold">
+                                <label htmlFor="completionDate" className="text-sm font-semibold dark:text-white">
                                     * Expected Completion Date
                                 </label>
                                 <input
@@ -897,7 +897,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-semibold">Featured Property</label>
+                                <label className="text-sm font-semibold dark:text-white">Featured Property</label>
                                 <div className="flex items-center gap-2">
                                     <input
                                         id="featured"
@@ -924,7 +924,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             <div className="space-y-2">
-                                <label htmlFor="totalArea" className="text-sm font-semibold">
+                                <label htmlFor="totalArea" className="text-sm font-semibold dark:text-white">
                                     * Total Area (sq.ft)
                                 </label>
                                 <input
@@ -941,7 +941,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="sellableArea" className="text-sm font-semibold">
+                                <label htmlFor="sellableArea" className="text-sm font-semibold dark:text-white">
                                     * Sellable Area (sq.ft)
                                 </label>
                                 <input
@@ -958,7 +958,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="priceMin" className="text-sm font-semibold">
+                                <label htmlFor="priceMin" className="text-sm font-semibold dark:text-white">
                                     * Min Price
                                 </label>
                                 <input
@@ -975,7 +975,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="priceMax" className="text-sm font-semibold">
+                                <label htmlFor="priceMax" className="text-sm font-semibold dark:text-white">
                                     * Max Price
                                 </label>
                                 <input
@@ -1004,7 +1004,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
                             <div className="space-y-2">
-                                <label htmlFor="totalUnits" className="text-sm font-semibold">
+                                <label htmlFor="totalUnits" className="text-sm font-semibold dark:text-white">
                                     * Total Units
                                 </label>
                                 <input
@@ -1021,7 +1021,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="soldUnits" className="text-sm font-semibold">
+                                <label htmlFor="soldUnits" className="text-sm font-semibold dark:text-white">
                                     * Sold Units
                                 </label>
                                 <input
@@ -1038,7 +1038,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="reservedUnits" className="text-sm font-semibold">
+                                <label htmlFor="reservedUnits" className="text-sm font-semibold dark:text-white">
                                     * Reserved
                                 </label>
                                 <input
@@ -1055,7 +1055,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="availableUnits" className="text-sm font-semibold">
+                                <label htmlFor="availableUnits" className="text-sm font-semibold dark:text-white">
                                     * Available
                                 </label>
                                 <input
@@ -1072,7 +1072,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             {/* <div className="space-y-2">
-                                <label htmlFor="views" className="text-sm font-semibold">
+                                <label htmlFor="views" className="text-sm font-semibold dark:text-white">
                                     Views
                                 </label>
                                 <input
@@ -1085,7 +1085,7 @@ export default function GlobeResidencyForm() {
                                 />
                             </div> */}
                             {/* <div className="space-y-2">
-                                <label htmlFor="inquiries" className="text-sm font-semibold">
+                                <label htmlFor="inquiries" className="text-sm font-semibold dark:text-white">
                                     Inquiries
                                 </label>
                                 <input
@@ -1110,7 +1110,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 space-y-6">
                             <div className="space-y-2">
-                                <label htmlFor="mainImageUrl" className="text-sm font-semibold">
+                                <label htmlFor="mainImageUrl" className="text-sm font-semibold dark:text-white">
                                     * Main Image URL
                                 </label>
                                 <input
@@ -1127,7 +1127,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="galleryImages" className="text-sm font-semibold">
+                                <label htmlFor="galleryImages" className="text-sm font-semibold dark:text-white">
                                     * Gallery Images (comma separated URLs)
                                 </label>
                                 <textarea
@@ -1159,7 +1159,7 @@ export default function GlobeResidencyForm() {
                                 <div key={idx} className="border p-4 rounded-lg mb-4">
                                     <div className="p-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label htmlFor={`floor-${idx}-name`} className="text-sm font-semibold">* Floor Name</label>
+                                            <label htmlFor={`floor-${idx}-name`} className="text-sm font-semibold dark:text-white">* Floor Name</label>
                                             <input
                                                 id={`floor-${idx}-name`}
                                                 data-field="name"
@@ -1175,7 +1175,7 @@ export default function GlobeResidencyForm() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label htmlFor={`floor-${idx}-floorNumber`} className="text-sm font-semibold">* Floor Number</label>
+                                            <label htmlFor={`floor-${idx}-floorNumber`} className="text-sm font-semibold dark:text-white">* Floor Number</label>
                                             <input
                                                 id={`floor-${idx}-floorNumber`}
                                                 data-field="floorNumber"
@@ -1192,7 +1192,7 @@ export default function GlobeResidencyForm() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label htmlFor={`floor-${idx}-floorPlanUrl`} className="text-sm font-semibold">Floor Plan URL</label>
+                                            <label htmlFor={`floor-${idx}-floorPlanUrl`} className="text-sm font-semibold dark:text-white">Floor Plan URL</label>
                                             <input
                                                 id={`floor-${idx}-floorPlanUrl`}
                                                 data-field="floorPlanUrl"
@@ -1208,7 +1208,7 @@ export default function GlobeResidencyForm() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label htmlFor={`floor-${idx}-totalUnits`} className="text-sm font-semibold">* Total Units</label>
+                                            <label htmlFor={`floor-${idx}-totalUnits`} className="text-sm font-semibold dark:text-white">* Total Units</label>
                                             <input
                                                 id={`floor-${idx}-totalUnits`}
                                                 data-field="totalUnits"
@@ -1225,7 +1225,7 @@ export default function GlobeResidencyForm() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label htmlFor={`floor-${idx}-minPrice`} className="text-sm font-semibold">Min Price</label>
+                                            <label htmlFor={`floor-${idx}-minPrice`} className="text-sm font-semibold dark:text-white">Min Price</label>
                                             <input
                                                 id={`floor-${idx}-minPrice`}
                                                 data-field="minPrice"
@@ -1238,7 +1238,7 @@ export default function GlobeResidencyForm() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label htmlFor={`floor-${idx}-maxPrice`} className="text-sm font-semibold">Max Price</label>
+                                            <label htmlFor={`floor-${idx}-maxPrice`} className="text-sm font-semibold dark:text-white">Max Price</label>
                                             <input
                                                 id={`floor-${idx}-maxPrice`}
                                                 data-field="maxPrice"
@@ -1251,7 +1251,7 @@ export default function GlobeResidencyForm() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label htmlFor={`floor-${idx}-pricePerSqFt`} className="text-sm font-semibold">Price Per SqFt</label>
+                                            <label htmlFor={`floor-${idx}-pricePerSqFt`} className="text-sm font-semibold dark:text-white">Price Per SqFt</label>
                                             <input
                                                 id={`floor-${idx}-pricePerSqFt`}
                                                 data-field="pricePerSqFt"
@@ -1268,7 +1268,7 @@ export default function GlobeResidencyForm() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label htmlFor={`floor-${idx}-totalSquareFootage`} className="text-sm font-semibold">* Total Sqft</label>
+                                            <label htmlFor={`floor-${idx}-totalSquareFootage`} className="text-sm font-semibold dark:text-white">* Total Sqft</label>
                                             <input
                                                 id={`floor-${idx}-totalSquareFootage`}
                                                 data-field="totalSquareFootage"
@@ -1285,7 +1285,7 @@ export default function GlobeResidencyForm() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label htmlFor={`floor-${idx}-minSqftBuy`} className="text-sm font-semibold">Minimum Buy Sqft</label>
+                                            <label htmlFor={`floor-${idx}-minSqftBuy`} className="text-sm font-semibold dark:text-white">Minimum Buy Sqft</label>
                                             <input
                                                 id={`floor-${idx}-minSqftBuy`}
                                                 data-field="minSqftBuy"
@@ -1299,7 +1299,7 @@ export default function GlobeResidencyForm() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label htmlFor={`floor-${idx}-maxSqftBuy`} className="text-sm font-semibold">Maximum Buy Sqft</label>
+                                            <label htmlFor={`floor-${idx}-maxSqftBuy`} className="text-sm font-semibold dark:text-white">Maximum Buy Sqft</label>
                                             <input
                                                 id={`floor-${idx}-maxSqftBuy`}
                                                 data-field="maxSqftBuy"
@@ -1313,7 +1313,7 @@ export default function GlobeResidencyForm() {
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                         <div className="space-y-2">
-                                            <label htmlFor={`floor-${idx}-description`} className="text-sm font-semibold">Description</label>
+                                            <label htmlFor={`floor-${idx}-description`} className="text-sm font-semibold dark:text-white">Description</label>
                                             <textarea
                                                 id={`floor-${idx}-description`}
                                                 data-field="description"
@@ -1328,7 +1328,7 @@ export default function GlobeResidencyForm() {
                                             )}
                                         </div>
                                         <div className="space-y-2">
-                                            <label htmlFor={`floor-${idx}-specifications`} className="text-sm font-semibold">Specifications (comma separated)</label>
+                                            <label htmlFor={`floor-${idx}-specifications`} className="text-sm font-semibold dark:text-white">Specifications (comma separated)</label>
                                             <textarea
                                                 id={`floor-${idx}-specifications`}
                                                 data-field="specifications"
@@ -1341,7 +1341,7 @@ export default function GlobeResidencyForm() {
                                             {touched[`floor-${idx}-specifications`] && validationErrors[`floor-${idx}-specifications`] && (
                                                 <div className="text-sm text-red-600 mt-1">{validationErrors[`floor-${idx}-specifications`]}</div>
                                             )}
-                                            <label htmlFor={`floor-${idx}-features`} className="text-sm font-semibold mt-2">Features (comma separated)</label>
+                                            <label htmlFor={`floor-${idx}-features`} className="text-sm font-semibold dark:text-white mt-2">Features (comma separated)</label>
                                             <textarea
                                                 id={`floor-${idx}-features`}
                                                 data-field="features"
@@ -1378,7 +1378,7 @@ export default function GlobeResidencyForm() {
                         </div>
                         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <div className="space-y-2">
-                                <label htmlFor="tokenName" className="text-sm font-semibold">
+                                <label htmlFor="tokenName" className="text-sm font-semibold dark:text-white">
                                     * Token Name
                                 </label>
                                 <input
@@ -1394,7 +1394,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="tokenSymbol" className="text-sm font-semibold">
+                                <label htmlFor="tokenSymbol" className="text-sm font-semibold dark:text-white">
                                     * Token Symbol
                                 </label>
                                 <input
@@ -1410,7 +1410,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="tokenSupply" className="text-sm font-semibold">
+                                <label htmlFor="tokenSupply" className="text-sm font-semibold dark:text-white">
                                     * Token Supply
                                 </label>
                                 <input
@@ -1427,7 +1427,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="pricePerToken" className="text-sm font-semibold">
+                                <label htmlFor="pricePerToken" className="text-sm font-semibold dark:text-white">
                                     * Price Per Token (PKR)
                                 </label>
                                 <input
@@ -1444,7 +1444,7 @@ export default function GlobeResidencyForm() {
                                 )}
                             </div>
                             <div className="md:col-span-2 space-y-2">
-                                <label htmlFor="walletAddress" className="text-sm font-semibold">
+                                <label htmlFor="walletAddress" className="text-sm font-semibold dark:text-white">
                                     * Contract Address
                                 </label>
                                 <input
@@ -1474,7 +1474,7 @@ export default function GlobeResidencyForm() {
                             {faqs.map((faq, idx) => (
                                 <div key={idx} className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
                                     <div className="flex-1 space-y-2">
-                                        <label className="text-sm font-semibold">* Question</label>
+                                        <label className="text-sm font-semibold dark:text-white">* Question</label>
                                         <input
                                             placeholder="Enter FAQ question"
                                             className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
@@ -1487,7 +1487,7 @@ export default function GlobeResidencyForm() {
                                         )}
                                     </div>
                                     <div className="flex-1 space-y-2">
-                                        <label className="text-sm font-semibold">* Answer</label>
+                                        <label className="text-sm font-semibold dark:text-white">* Answer</label>
                                         <textarea
                                             placeholder="Enter FAQ answer"
                                             rows={2}
@@ -1566,7 +1566,7 @@ export default function GlobeResidencyForm() {
                                 <input
                                     id="accountTitle"
                                     type="text"
-                                    placeholder="Muhammad Shakeel"
+                                    placeholder="Account Title here"
                                     className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                     value={form.bankDetails?.accountTitle || ""}
                                     onChange={handleBankDetailsChange}
@@ -1612,7 +1612,7 @@ export default function GlobeResidencyForm() {
                             {documents.map((doc, idx) => (
                                 <div key={idx} className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
                                     <div className="flex-1 space-y-2">
-                                        <label className="text-sm font-semibold">* Document URL or Upload</label>
+                                        <label className="text-sm font-semibold dark:text-white">* Document URL or Upload</label>
                                         <input
                                             type="text"
                                             placeholder="Enter document URL"

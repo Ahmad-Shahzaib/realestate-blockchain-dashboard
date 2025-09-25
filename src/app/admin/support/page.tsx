@@ -1,9 +1,12 @@
 "use client";
 
-import React from 'react'
+import React, { useState, useMemo, useEffect } from 'react';
+import { Building2, Filter, Search } from 'lucide-react';
 import Table from '@/common/Table';
+import SearchInput from '@/common/Input';
+import SupportService, { SupportTicket } from '@/services/support.service'; // Adjust path to your SupportService file
 
-interface SupportTicket {
+interface ComponentSupportTicket {
     id: string;
     title: string;
     description: string;
@@ -15,82 +18,179 @@ interface SupportTicket {
     updatedAt: string;
 }
 
-
 const columns = [
-    { key: 'id' as keyof SupportTicket, label: 'Ticket ID' },
-    { key: 'title' as keyof SupportTicket, label: 'Title' },
-    { key: 'description' as keyof SupportTicket, label: 'Description' },
-    { key: 'userName' as keyof SupportTicket, label: 'User Name' },
-    { key: 'category' as keyof SupportTicket, label: 'Category' },
-    { key: 'priority' as keyof SupportTicket, label: 'Priority', render: (row: SupportTicket) => (
-        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-            row.priority === 'high' ? 'bg-red-100 text-red-800' :
-            row.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-            'bg-green-100 text-green-800'
-        }`}>
-            {row.priority.charAt(0).toUpperCase() + row.priority.slice(1)}
-        </span>
-    ) },
-    { key: 'status' as keyof SupportTicket, label: 'Status', render: (row: SupportTicket) => (
-        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-            row.status === 'closed' ? 'bg-green-100 text-green-800' :
-            row.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
-            'bg-blue-100 text-blue-800'
-        }`}>
-            {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
-        </span>
-    ) },
-    { key: 'createdAt' as keyof SupportTicket, label: 'Created At', render: (row: SupportTicket) => new Date(row.createdAt).toLocaleDateString() }
-];
-
-const dummySupportTickets: SupportTicket[] = [
+    { key: 'id' as keyof ComponentSupportTicket, label: 'Ticket ID' },
+    { key: 'title' as keyof ComponentSupportTicket, label: 'Title' },
+    { key: 'description' as keyof ComponentSupportTicket, label: 'Description' },
+    { key: 'userName' as keyof ComponentSupportTicket, label: 'User Name' },
+    { key: 'category' as keyof ComponentSupportTicket, label: 'Category' },
     {
-        id: '1',
-        title: 'Login Issue',
-        description: 'User unable to log in to the platform',
-        status: 'open',
-        priority: 'high',
-        category: 'Technical',
-        userName: 'John Doe',
-        createdAt: '2023-09-01T10:00:00Z',
-        updatedAt: '2023-09-01T10:00:00Z'
+        key: 'priority' as keyof ComponentSupportTicket,
+        label: 'Priority',
+        render: (row: ComponentSupportTicket) => (
+            <span
+                className={`px-3 py-1 rounded-full text-xs font-semibold ${row.priority === 'high'
+                    ? 'bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400'
+                    : row.priority === 'medium'
+                        ? 'bg-[#F5F7FA] text-yellow-600 dark:bg-dark-3 dark:text-yellow-400'
+                        : 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
+                    }`}
+            >
+                {row.priority.charAt(0).toUpperCase() + row.priority.slice(1)}
+            </span>
+        ),
     },
     {
-        id: '2',
-        title: 'Billing Question',
-        description: 'Inquiry about monthly charges',
-        status: 'in-progress',
-        priority: 'medium',
-        category: 'Billing',
-        userName: 'Jane Smith',
-        createdAt: '2023-09-02T11:00:00Z',
-        updatedAt: '2023-09-02T11:00:00Z'
+        key: 'status' as keyof ComponentSupportTicket,
+        label: 'Status',
+        render: (row: ComponentSupportTicket) => (
+            <span
+                className={`px-3 py-1 rounded-full text-xs font-semibold ${row.status === 'closed'
+                    ? 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
+                    : row.status === 'in-progress'
+                        ? 'bg-[#F5F7FA] text-yellow-600 dark:bg-dark-3 dark:text-yellow-400'
+                        : 'bg-[#F5F7FA] text-[#3498DB] dark:bg-dark-3 dark:text-blue-400'
+                    }`}
+            >
+                {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
+            </span>
+        ),
     },
     {
-        id: '3',
-        title: 'Feature Request',
-        description: 'Request for new dashboard feature',
-        status: 'closed',
-        priority: 'low',
-        category: 'General',
-        userName: 'Bob Johnson',
-        createdAt: '2023-09-03T12:00:00Z',
-        updatedAt: '2023-09-03T12:00:00Z'
-    }
+        key: 'createdAt' as keyof ComponentSupportTicket,
+        label: 'Created At',
+        render: (row: ComponentSupportTicket) => new Date(row.createdAt).toLocaleDateString(),
+    },
 ];
 
-const page = () => {
+const SupportTicketManagement = () => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterStatus, setFilterStatus] = useState('all');
+    const [tickets, setTickets] = useState<ComponentSupportTicket[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    // Fetch support tickets on component mount
+    useEffect(() => {
+        const fetchTickets = async () => {
+            try {
+                setLoading(true);
+                const apiTickets = await SupportService.getSupportTickets();
+
+                // Map API response to component's expected ticket format
+                const formattedTickets: ComponentSupportTicket[] = apiTickets.map((ticket) => ({
+                    id: ticket._id,
+                    title: ticket.title,
+                    description: ticket.description,
+                    status: ticket.status,
+                    priority: ticket.priority || 'low', // Default priority if not provided
+                    category: ticket.category,
+                    userName: ticket.userId, // Assuming userId is used as userName; adjust if needed
+                    createdAt: ticket.createdAt,
+                    updatedAt: ticket.updatedAt,
+                }));
+
+                setTickets(formattedTickets);
+                setError(null);
+            } catch (err: any) {
+                setError('Failed to fetch support tickets. Please try again later.');
+                console.error('Error fetching tickets:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTickets();
+    }, []);
+
+    const filteredTickets = useMemo(() => {
+        const term = searchTerm.toLowerCase().trim();
+        return tickets.filter((ticket) => {
+            const matchesSearch =
+                ticket.title.toLowerCase().includes(term) ||
+                ticket.description.toLowerCase().includes(term) ||
+                ticket.userName.toLowerCase().includes(term) ||
+                ticket.id.toLowerCase().includes(term) ||
+                ticket.category.toLowerCase().includes(term);
+            const matchesFilter =
+                filterStatus === 'all' || ticket.status.toLowerCase() === filterStatus.toLowerCase();
+            return matchesSearch && matchesFilter;
+        });
+    }, [searchTerm, filterStatus, tickets]);
+
     return (
-        <div className='py-4 px-6'>
-            <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Support Tickets</h1>
-                <p className="text-gray-600 dark:text-gray-400 mt-2">Manage and view all support ticket records</p>
+        <div className="min-h-screen bg-[#F5F7FA] dark:bg-dark">
+            {/* Header */}
+            <div className="bg-white shadow-sm border-b border-[#ECF0F1] dark:bg-dark-2 dark:border-dark-4">
+                <div className="mx-auto px-6 py-6">
+                    <div className="flex items-center space-x-3">
+                        <div className="bg-[#00B894] p-2 rounded-lg">
+                            <Building2 className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-bold text-[#2C3E50] dark:text-gray-2">
+                                Support Ticket Management
+                            </h1>
+                            <p className="text-[#34495E] dark:text-gray-4 mt-1">
+                                Manage and view all support ticket records
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                <Table data={dummySupportTickets} columns={columns} />
+
+            <div className="max-w-7xl mx-auto px-6 py-8">
+                {/* Search and Filter */}
+                <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 dark:bg-dark-2">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div className="flex-1 max-w-md">
+                            <SearchInput
+                                placeholder="Search by title, description, user, ID, or category..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                icon={<Search className="h-5 w-5 text-[#34495E] dark:text-gray-3" />}
+                            />
+                        </div>
+                        <div className="flex items-center space-x-4">
+                            <Filter className="h-5 w-5 text-[#34495E] dark:text-gray-3" />
+                            <div className="flex bg-[#ECF0F1] dark:bg-dark-3 rounded-lg p-1">
+                                {['All', 'Open', 'In-progress', 'Closed'].map((status) => (
+                                    <button
+                                        key={status}
+                                        onClick={() => setFilterStatus(status.toLowerCase())}
+                                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${filterStatus === status.toLowerCase()
+                                            ? 'bg-white dark:bg-dark-4 text-[#3498DB] shadow-sm'
+                                            : 'text-[#34495E] dark:text-gray-3 hover:text-[#2C3E50] dark:hover:text-gray-2'
+                                            }`}
+                                    >
+                                        {status}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Support Ticket Table */}
+                <div className="bg-white rounded-2xl shadow-lg p-6 dark:bg-dark-2">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-xl font-semibold text-[#2C3E50] dark:text-gray-2">
+                            Support Tickets ({filteredTickets.length})
+                        </h2>
+                    </div>
+                    {loading ? (
+                        <div className="text-center text-[#34495E] dark:text-gray-3">Loading...</div>
+                    ) : error ? (
+                        <div className="text-center text-red-600 dark:text-red-400">{error}</div>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <Table data={filteredTickets} columns={columns} />
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default page
+export default SupportTicketManagement;

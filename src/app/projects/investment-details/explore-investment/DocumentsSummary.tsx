@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { CheckCircle, Upload } from "lucide-react";
 import Button from "@/common/Button";
@@ -11,10 +11,16 @@ export default function DocumentsSummary() {
     const [cnic, setCnic] = useState("");
     const [editingCnic, setEditingCnic] = useState(false);
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     const handleClick = () => {
         router.push("/projects/investment-details/document-verification");
     };
+
+    // ✅ Read context from query params
+    const from = searchParams.get("from");
+    const totalInvestment = searchParams.get("totalInvestment");
+    const totalArea = searchParams.get("totalArea");
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex justify-center items-start py-16">
@@ -127,8 +133,10 @@ export default function DocumentsSummary() {
                     </div>
 
                     {/* Right Side - Order Summary */}
-                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8 sticky top-8">
-                        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-6">Order Summary</h3>
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8 sticky top-8 h-[450px]">
+                        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-6">
+                            {from === "explore" ? "Explore Investments" : "Order Summary"}
+                        </h3>
 
                         {/* Discount Voucher */}
                         <div className="mb-6">
@@ -151,15 +159,19 @@ export default function DocumentsSummary() {
                         <div className="text-sm text-gray-600 dark:text-gray-300 space-y-3 mb-6">
                             <div className="flex justify-between">
                                 <span className="font-medium text-gray-800 dark:text-white">Total Area Pledged</span>
-                                <span className="font-semibold text-gray-800 dark:text-white">1,005 sq.ft.</span>
+                                <span className="font-semibold text-gray-800 dark:text-white">
+                                    {totalArea ? `${Number(totalArea).toLocaleString()} sq.ft.` : "1,005 sq.ft."}
+                                </span>
                             </div>
-                            <div className="flex justify-between">
+                            {/* <div className="flex justify-between">
                                 <span className="font-medium text-gray-800 dark:text-white">Retail Price</span>
                                 <span className="font-semibold text-gray-800 dark:text-white">22,000 PKR/sq.ft</span>
-                            </div>
+                            </div> */}
                             <div className="flex justify-between font-semibold text-lg">
                                 <span className="text-gray-800 dark:text-white">Payable Amount</span>
-                                <span className="text-gray-800 dark:text-white">22,110,000 PKR</span>
+                                <span className="text-gray-800 dark:text-white">
+                                    {totalInvestment ? `${Number(totalInvestment).toLocaleString()} PKR` : "22,110,000 PKR"}
+                                </span>
                             </div>
                         </div>
 

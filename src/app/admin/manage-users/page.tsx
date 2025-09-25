@@ -1,272 +1,328 @@
-import { Metadata } from 'next';
-import React from 'react';
-import { Pencil, Trash2, Shield, Users, Crown, UserCheck } from 'lucide-react';
+"use client";
 
-export const metadata: Metadata = {
-    title: "Manage Users",
-};
+import React, { useState, useEffect } from 'react';
+import { EyeIcon, Pencil, Trash2, Users } from 'lucide-react';
+import SearchInput from '@/common/Input';
+import {
+    getUsersInfo,
+    updateUserByAdmin,
+    deleteUser,
+    UserDetails,
+    UserProfile,
+} from '@/services/user.services';
 
-// Mock user data for DAO members (replace with your actual data source)
-const users = [
-    { id: 1, name: 'Alice Johnson', email: 'alice@dao.org', role: 'Admin', status: 'Active', joinDate: '2023-01-15' },
-    { id: 2, name: 'Bob Smith', email: 'bob@dao.org', role: 'Member', status: 'Active', joinDate: '2023-02-20' },
-    { id: 3, name: 'Carol Williams', email: 'carol@dao.org', role: 'Moderator', status: 'Active', joinDate: '2023-01-28' },
-    { id: 4, name: 'David Brown', email: 'david@dao.org', role: 'Member', status: 'Inactive', joinDate: '2023-03-10' },
-];
+interface ComponentUser {
+    kycStatus: string;
+    id: number | string;
+    name: string;
+    email: string;
+    joinDate: string;
+}
 
-const Page = () => {
-    const getRoleIcon = (role: string) => {
-        switch (role.toLowerCase()) {
-            case 'admin':
-                return <Crown className="w-4 h-4" />;
-            case 'moderator':
-                return <Shield className="w-4 h-4" />;
-            case 'member':
-                return <UserCheck className="w-4 h-4" />;
-            default:
-                return <Users className="w-4 h-4" />;
+const ManageUsers = () => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [users, setUsers] = useState<ComponentUser[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const [editUser, setEditUser] = useState<ComponentUser | null>(null);
+    const [editForm, setEditForm] = useState({ firstName: '', lastName: '', email: '' });
+    const [editLoading, setEditLoading] = useState(false);
+    const [editError, setEditError] = useState<string | null>(null);
+
+    const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
+
+    // ✅ Fetch users
+    const fetchUsers = async () => {
+        try {
+            setLoading(true);
+            const response = await getUsersInfo();
+
+            const formattedUsers: ComponentUser[] = response.data.users.map((user: UserDetails) => ({
+                id: user.id || user._id || `user-${Math.random()}`,
+                name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Unknown User',
+                email: user.email || 'N/A',
+                joinDate: user.createdAt || new Date().toISOString(),
+                kycStatus: user.kycStatus || 'N/A',
+
+
+            }));
+
+            setUsers(formattedUsers);
+            setError(null);
+        } catch (err) {
+            setError('Failed to fetch users. Please try again later.');
+            console.error('Error fetching users:', err);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const getRoleColor = (role: string) => {
-        switch (role.toLowerCase()) {
-            case 'admin':
-                return 'bg-purple-50 text-purple-700 border-purple-200';
-            case 'moderator':
-                return 'bg-blue-50 text-blue-700 border-blue-200';
-            case 'member':
-                return 'bg-green-50 text-green-700 border-green-200';
-            default:
-                return 'bg-gray-50 text-gray-700 border-gray-200';
-        }
-    };
+    useEffect(() => {
+        fetchUsers();
+    }, []);
 
-    const getStatusColor = (status: string) => {
-        return status.toLowerCase() === 'active' 
-            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-            : 'bg-red-50 text-red-700 border-red-200';
-    };
-
-    const getInitials = (name: string) => {
-        return name
-            ?.split(' ')
-            .map(word => word.charAt(0))
-            .join('')
-            .toUpperCase()
-            .slice(0, 2) || '??';
-    };
-
-    const formatDate = (dateString: string | number | Date) => {
-        return new Date(dateString).toLocaleDateString('en-US', { 
-            month: 'short', 
-            day: 'numeric', 
-            year: 'numeric' 
+    // ✅ Open edit modal
+    const handleEdit = (user: ComponentUser) => {
+        setEditUser(user);
+        const [firstName, ...lastNameParts] = user.name.split(' ');
+        setEditForm({
+            firstName: firstName || '',
+            lastName: lastNameParts.join(' ') || '',
+            email: user.email || '',
         });
     };
 
-    const getAvatarColor = (role: string) => {
-        switch (role.toLowerCase()) {
-            case 'admin':
-                return 'from-purple-500 to-indigo-600';
-            case 'moderator':
-                return 'from-blue-500 to-cyan-600';
-            case 'member':
-                return 'from-green-500 to-emerald-600';
-            default:
-                return 'from-gray-500 to-gray-600';
+    // ✅ Update user
+    const handleUpdate = async () => {
+        if (!editUser) return;
+        try {
+            setEditLoading(true);
+            setEditError(null);
+
+            const userData: Partial<UserProfile> = {
+                firstName: editForm.firstName,
+                lastName: editForm.lastName,
+                email: editForm.email,
+            };
+
+            await updateUserByAdmin(editUser.id.toString(), userData);
+
+            setUsers(users.map(u =>
+                u.id === editUser.id
+                    ? { ...u, name: `${editForm.firstName} ${editForm.lastName}`.trim(), email: editForm.email }
+                    : u
+            ));
+
+            setEditUser(null);
+        } catch (err) {
+            setEditError('Failed to update user. Please try again.');
+            console.error('Error updating user:', err);
+        } finally {
+            setEditLoading(false);
         }
     };
 
-    const roleStats = {
-        admin: users.filter(u => u.role.toLowerCase() === 'admin').length,
-        moderator: users.filter(u => u.role.toLowerCase() === 'moderator').length,
-        member: users.filter(u => u.role.toLowerCase() === 'member').length,
+    // ✅ Delete user
+    const handleDelete = async (userId: string | number) => {
+        if (!confirm(`Are you sure you want to delete user with ID ${userId}?`)) return;
+        try {
+            setDeleteLoading(userId.toString());
+            await deleteUser(userId.toString());
+            setUsers(users.filter(u => u.id !== userId));
+            setError(null);
+        } catch (err) {
+            setError('Failed to delete user. Please try again later.');
+            console.error('Error deleting user:', err);
+        } finally {
+            setDeleteLoading(null);
+        }
     };
 
+    const formatDate = (dateString: string | number | Date) =>
+        new Date(dateString).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+    const filteredUsers = users.filter(user =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Header Section */}
-                <div className="mb-8">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                        <div className="mb-6 lg:mb-0">
-                            <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                                DAO User Management
-                            </h1>
-                            <p className="text-gray-600 mt-2">Manage your DAO members, roles, and permissions</p>
+        <div className="min-h-screen bg-[#F5F7FA] dark:bg-dark">
+            {/* Header */}
+            <div className="bg-white shadow-sm border-b border-[#ECF0F1] dark:bg-dark-2 dark:border-dark-4">
+                <div className="mx-auto px-6 py-6">
+                    <div className="flex items-center space-x-3">
+                        <div className="bg-[#00B894] p-2 rounded-lg">
+                            <Users className="h-6 w-6 text-white" />
                         </div>
-                        
-                        {/* Stats Cards */}
-                        <div className="flex flex-wrap gap-4">
-                            <div className="bg-white rounded-lg px-4 py-3 shadow-sm border border-gray-200 min-w-[120px]">
-                                <div className="flex items-center space-x-2">
-                                    <Crown className="w-5 h-5 text-purple-600" />
-                                    <div>
-                                        <div className="text-sm text-gray-500">Admins</div>
-                                        <div className="text-xl font-bold text-gray-900">{roleStats.admin}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="bg-white rounded-lg px-4 py-3 shadow-sm border border-gray-200 min-w-[120px]">
-                                <div className="flex items-center space-x-2">
-                                    <Shield className="w-5 h-5 text-blue-600" />
-                                    <div>
-                                        <div className="text-sm text-gray-500">Moderators</div>
-                                        <div className="text-xl font-bold text-gray-900">{roleStats.moderator}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="bg-white rounded-lg px-4 py-3 shadow-sm border border-gray-200 min-w-[120px]">
-                                <div className="flex items-center space-x-2">
-                                    <UserCheck className="w-5 h-5 text-green-600" />
-                                    <div>
-                                        <div className="text-sm text-gray-500">Members</div>
-                                        <div className="text-xl font-bold text-gray-900">{roleStats.member}</div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div>
+                            <h1 className="text-3xl font-bold text-[#2C3E50] dark:text-gray-2">FracProp User Management</h1>
+                            <p className="text-[#34495E] dark:text-gray-4 mt-1">
+                                Manage your FracProp members and permissions
+                            </p>
                         </div>
                     </div>
-                </div>
-
-                {/* Desktop Table View */}
-                <div className="hidden lg:block">
-                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-                        <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
-                            <div className="grid grid-cols-12 gap-4 text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                                <div className="col-span-1">ID</div>
-                                <div className="col-span-3">User</div>
-                                <div className="col-span-3">Email</div>
-                                <div className="col-span-2">Role</div>
-                                <div className="col-span-1">Status</div>
-                                <div className="col-span-2">Actions</div>
-                            </div>
-                        </div>
-                        <div className="divide-y divide-gray-100">
-                            {users.map((user) => (
-                                <div
-                                    key={user.id}
-                                    className="grid grid-cols-12 gap-4 p-6 hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 transition-all duration-200 group"
-                                >
-                                    <div className="col-span-1 flex items-center">
-                                        <span className="text-gray-500 font-mono text-sm">
-                                            #{String(user.id).padStart(3, '0')}
-                                        </span>
-                                    </div>
-                                    <div className="col-span-3 flex items-center space-x-3">
-                                        <div className={`w-10 h-10 bg-gradient-to-br ${getAvatarColor(user.role)} rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-lg`}>
-                                            {getInitials(user.name)}
-                                        </div>
-                                        <div>
-                                            <div className="font-semibold text-gray-900 group-hover:text-purple-700 transition-colors">
-                                                {user.name}
-                                            </div>
-                                            <div className="text-xs text-gray-500">
-                                                Joined {formatDate(user.joinDate)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-3 flex items-center">
-                                        <span className="text-gray-600">{user.email}</span>
-                                    </div>
-                                    <div className="col-span-2 flex items-center">
-                                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${getRoleColor(user.role)}`}>
-                                            {getRoleIcon(user.role)}
-                                            <span className="ml-1">{user.role}</span>
-                                        </span>
-                                    </div>
-                                    <div className="col-span-1 flex items-center">
-                                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold border ${getStatusColor(user.status)}`}>
-                                            <div className={`w-1.5 h-1.5 rounded-full mr-1 ${
-                                                user.status.toLowerCase() === 'active' ? 'bg-emerald-500' : 'bg-red-500'
-                                            }`}></div>
-                                            {user.status}
-                                        </span>
-                                    </div>
-                                    <div className="col-span-2 flex items-center space-x-2">
-                                        <button
-                                            className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200 group/btn"
-                                            aria-label={`Edit user ${user.name}`}
-                                        >
-                                            <Pencil className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
-                                        </button>
-                                        <button
-                                            className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 group/btn"
-                                            aria-label={`Remove user ${user.name}`}
-                                        >
-                                            <Trash2 className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Mobile Card View */}
-                <div className="lg:hidden space-y-4">
-                    {users.map((user) => (
-                        <div
-                            key={user.id}
-                            className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-                        >
-                            <div className="flex items-start justify-between mb-4">
-                                <div className="flex items-center space-x-3">
-                                    <div className={`w-12 h-12 bg-gradient-to-br ${getAvatarColor(user.role)} rounded-full flex items-center justify-center text-white font-semibold shadow-lg`}>
-                                        {getInitials(user.name)}
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold text-gray-900 text-lg">{user.name}</h3>
-                                        <p className="text-gray-500 text-sm">
-                                            ID: #{String(user.id).padStart(3, '0')} • Joined {formatDate(user.joinDate)}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col space-y-2">
-                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${getRoleColor(user.role)}`}>
-                                        {getRoleIcon(user.role)}
-                                        <span className="ml-1">{user.role}</span>
-                                    </span>
-                                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold border ${getStatusColor(user.status)}`}>
-                                        <div className={`w-1.5 h-1.5 rounded-full mr-1 ${
-                                            user.status.toLowerCase() === 'active' ? 'bg-emerald-500' : 'bg-red-500'
-                                        }`}></div>
-                                        {user.status}
-                                    </span>
-                                </div>
-                            </div>
-                            
-                            <div className="mb-4">
-                                <div className="flex items-center text-gray-600 mb-2">
-                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                    </svg>
-                                    <span className="text-sm">{user.email}</span>
-                                </div>
-                            </div>
-
-                            <div className="flex space-x-2 pt-4 border-t border-gray-100">
-                                <button
-                                    className="flex-1 flex items-center justify-center px-4 py-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all duration-200 group/btn"
-                                    aria-label={`Edit user ${user.name}`}
-                                >
-                                    <Pencil className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" />
-                                    <span className="text-sm font-medium">Edit</span>
-                                </button>
-                                <button
-                                    className="flex-1 flex items-center justify-center px-4 py-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-all duration-200 group/btn"
-                                    aria-label={`Remove user ${user.name}`}
-                                >
-                                    <Trash2 className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" />
-                                    <span className="text-sm font-medium">Remove</span>
-                                </button>
-                            </div>
-                        </div>
-                    ))}
                 </div>
             </div>
+
+            <div className="max-w-7xl mx-auto px-6 py-8">
+                {/* Search */}
+                <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 dark:bg-dark-2">
+                    <SearchInput
+                        placeholder="Search by name or email..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        icon={<Users className="h-5 w-5 text-[#34495E] dark:text-gray-3" />}
+                    />
+                </div>
+
+                {/* Table */}
+                <div className="bg-white rounded-2xl shadow-lg p-6 dark:bg-dark-2">
+                    <h2 className="text-xl font-semibold text-[#2C3E50] dark:text-gray-2 mb-6">
+                        Users ({filteredUsers.length})
+                    </h2>
+
+                    <div className="overflow-x-auto">
+                        {loading ? (
+                            <div className="text-center text-[#34495E] dark:text-gray-3">Loading...</div>
+                        ) : error ? (
+                            <div className="text-center text-red-600 dark:text-red-400">
+                                {error}
+                                <button onClick={fetchUsers} className="ml-4 px-4 py-2 bg-[#3498DB] text-white rounded-md">
+                                    Retry
+                                </button>
+                            </div>
+                        ) : (
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b border-[#ECF0F1] dark:border-dark-4">
+                                        <th className="text-left py-4 px-2">ID</th>
+                                        <th className="text-left py-4 px-2">Name</th>
+                                        <th className="text-left py-4 px-2">Email</th>
+                                        <th className="text-left py-4 px-2">Join Date</th>
+                                        <th className="text-left py-4 px-2">Kyc</th>
+                                        <th className="text-left py-4 px-2">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-[#ECF0F1] dark:divide-dark-4">
+                                    {filteredUsers.length > 0 ? (
+                                        filteredUsers.map((user) => (
+                                            <tr key={user.id} className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3">
+                                                <td className="py-4 px-2">#{String(user.id).padStart(3, '0')}</td>
+                                                <td className="py-4 px-2">{user.name}</td>
+                                                <td className="py-4 px-2">{user.email}</td>
+                                                <td className="py-4 px-2">{formatDate(user.joinDate)}</td>
+                                                <td className="py-4 px-2">{user.kycStatus}</td>
+                                                <td className="py-4 px-2 flex space-x-2">
+                                                    <button
+                                                        onClick={() => handleEdit(user)}
+                                                        className="p-2 text-blue-500 hover:text-blue-700"
+                                                        disabled={deleteLoading === user.id}
+                                                    >
+                                                        <EyeIcon className="w-5 h-5" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(user.id)}
+                                                        className="p-2 text-red-500 hover:text-red-700"
+                                                        disabled={deleteLoading === user.id}
+                                                    >
+                                                        {deleteLoading === user.id ? (
+                                                            <span className="animate-pulse">Deleting...</span>
+                                                        ) : (
+                                                            <Trash2 className="w-4 h-4" />
+                                                        )}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={5} className="py-4 text-center text-gray-500">
+                                                No users found.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Edit Modal */}
+            {editUser && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-white dark:bg-dark-2 rounded-lg p-6 w-1/2">
+                        <h2 className="text-xl font-semibold mb-4">Edit User</h2>
+                        {editError && <div className="text-red-600 mb-4">{editError}</div>}
+
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <input
+                                        type="text"
+                                        placeholder="First Name"
+                                        value={editForm.firstName}
+                                        onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
+                                        className="w-full p-2 border rounded-md"
+                                        disabled={editLoading}
+                                    />
+                                </div>
+                                <div>
+                                    <input
+                                        type="text"
+                                        placeholder="Last Name"
+                                        value={editForm.lastName}
+                                        onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
+                                        className="w-full p-2 border rounded-md"
+                                        disabled={editLoading}
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <input
+                                        type="email"
+                                        placeholder="Email"
+                                        value={editForm.email}
+                                        onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                                        className="w-full p-2 border rounded-md"
+                                        disabled={editLoading}
+                                    />
+                                </div>
+                                <div>
+                                    <select
+                                        value={editForm.verification}
+                                        onChange={(e) => setEditForm({ ...editForm, verification: e.target.value })}
+                                        className="w-full p-2 border rounded-md"
+                                        disabled={editLoading}
+                                    >
+                                        <option value="verified">Verified</option>
+                                        <option value="not_verified">Not Verified</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <textarea
+                                        placeholder="Reason"
+                                        value={editForm.reason}
+                                        onChange={(e) => setEditForm({ ...editForm, reason: e.target.value })}
+                                        className="w-full p-2 border rounded-md"
+                                        disabled={editLoading}
+                                    />
+                                </div>
+                                <div>
+                                    <input
+                                        type="text"
+                                        placeholder="KYC Status"
+                                        value={editForm.kycStatus}
+                                        onChange={(e) => setEditForm({ ...editForm, kycStatus: e.target.value })}
+                                        className="w-full p-2 border rounded-md"
+                                        disabled={editLoading}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 flex justify-end space-x-2">
+                            <button onClick={() => setEditUser(null)} className="px-4 py-2 bg-gray-200 rounded-md">
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleUpdate}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-md"
+                                disabled={editLoading}
+                            >
+                                {editLoading ? 'Updating...' : 'Save'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
 
-export default Page;
+export default ManageUsers;

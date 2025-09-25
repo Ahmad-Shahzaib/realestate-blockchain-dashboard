@@ -1,11 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp, Mail, Phone, Send } from "lucide-react";
+import { SupportService } from "@/services/support.service";
 
 const SupportClient = () => {
-    const [expandedFAQ, setExpandedFAQ] = useState(null);
-    const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+    const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
+    const [formData, setFormData] = useState({
+        title: "",
+        description: "",
+        category: "",
+        userId: "64a8d4f2c8a9a3f1b2c3d4e5", // Hardcoded for now; replace with actual userId from auth context
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
     const faqs = [
         {
@@ -22,23 +30,55 @@ const SupportClient = () => {
         },
     ];
 
-    const handleFAQToggle = (index) => {
+    // Auto-dismiss toast after 3 seconds
+    useEffect(() => {
+        if (toast) {
+            const timer = setTimeout(() => {
+                setToast(null);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [toast]);
+
+    const handleFAQToggle = (index: number) => {
         setExpandedFAQ(expandedFAQ === index ? null : index);
     };
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = () => {
-        // Simulate form submission (replace with API call in production)
-        console.log("Form submitted:", formData);
-        alert("Your message has been sent! We'll get back to you soon.");
-        setFormData({ name: "", email: "", message: "" });
+    const handleSubmit = async () => {
+        setIsSubmitting(true);
+        setToast(null);
+
+        try {
+            // Call the createSupportTicket API
+            const response = await SupportService.createSupportTicket({
+                title: formData.title,
+                description: formData.description,
+                userId: formData.userId,
+                category: formData.category,
+            });
+
+            // Show success toast
+            setToast({ message: `Support ticket created successfully! Ticket Code: ${response.ticketCode}`, type: "success" });
+            setFormData({
+                title: "",
+                description: "",
+                category: "",
+                userId: formData.userId, // Preserve userId
+            });
+        } catch (error: any) {
+            // Show error toast
+            setToast({ message: error.message || "Failed to submit support request. Please try again.", type: "error" });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
-        <div className="min-h-screen  dark:bg-dark py-12 px-4 sm:px-6 lg:px-8 transition-colors">
+        <div className="min-h-screen dark:bg-dark py-12 px-4 sm:px-6 lg:px-8 transition-colors">
             <div className="max-w-5xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-12">
@@ -99,10 +139,10 @@ const SupportClient = () => {
                                 Reach out to our support team for quick assistance.
                             </p>
                             <a
-                                href="https://softsuite.com"
+                                href="mailto:helpdesk@fractprop.com"
                                 className="text-[#0277BD] hover:text-[#00B894] font-medium transition"
                             >
-                                helpdesk@fractprop@.com
+                                helpdesk@fractprop.com
                             </a>
                         </div>
                         <div className="p-6 rounded-2xl shadow-md bg-white dark:bg-dark border border-gray-100 dark:border-gray-700 hover:shadow-xl transition">
@@ -116,7 +156,7 @@ const SupportClient = () => {
                                 Call our helpline for immediate help.
                             </p>
                             <a
-                                href="0315 1012287"
+                                href="tel:03151012287"
                                 className="text-[#0277BD] hover:text-[#00B894] font-medium transition"
                             >
                                 0315 1012287
@@ -126,46 +166,36 @@ const SupportClient = () => {
                 </div>
 
                 {/* Contact Form */}
-                <div className="p-8 rounded-2xl shadow-md bg-gradient-to-r from-[#00B894]/10 to-[#00D2B6]/10 dark:from-[#00B894]/10 dark:bg-dark border border-gray-100 dark:border-gray-700">
+                <div className="p-8 rounded-2xl shadow-md bg-gradient-to-r from-[#00B894]/10 to-[#00D2B6]/10 dark:from-[#00B894]/10 dark:bg-dark border border-gray-100 dark:border-gray-700 relative">
                     <h2 className="text-2xl font-semibold text-[#003049] dark:text-white mb-6">
                         Submit a Support Request
                     </h2>
+                    {/* Toast Message */}
+                    {toast && (
+                        <div
+                            className={`absolute top-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg shadow-lg text-white text-sm font-medium animate-slide-down ${toast.type === "success" ? "bg-[#00B894]" : "bg-red-500"
+                                }`}
+                        >
+                            {toast.message}
+                        </div>
+                    )}
                     <div className="space-y-6">
-                        {/* Name */}
+                        {/* Title */}
                         <div>
                             <label
-                                htmlFor="name"
+                                htmlFor="title"
                                 className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                             >
-                                Name
+                                Subject
                             </label>
                             <input
                                 type="text"
-                                name="name"
-                                id="name"
-                                value={formData.name}
+                                name="title"
+                                id="title"
+                                value={formData.title}
                                 onChange={handleInputChange}
                                 className="mt-1 w-full p-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-[#2A2A2A] focus:ring-[#00B894] focus:border-[#00B894] text-gray-700 dark:text-gray-200"
-                                placeholder="Your Name"
-                            />
-                        </div>
-
-                        {/* Email */}
-                        <div>
-                            <label
-                                htmlFor="email"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                            >
-                                Email
-                            </label>
-                            <input
-                                type="email"
-                                name="email"
-                                id="email"
-                                value={formData.email}
-                                onChange={handleInputChange}
-                                className="mt-1 w-full p-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-[#2A2A2A] focus:ring-[#00B894] focus:border-[#00B894] text-gray-700 dark:text-gray-200"
-                                placeholder="you@example.com"
+                                placeholder="Enter subject..."
                             />
                         </div>
 
@@ -185,30 +215,10 @@ const SupportClient = () => {
                                 className="mt-1 w-full p-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-[#2A2A2A] focus:ring-[#00B894] focus:border-[#00B894] text-gray-700 dark:text-gray-200"
                             >
                                 <option value="">Select a category</option>
-                                <option value="technical">Technical Issue</option>
-                                <option value="billing">Billing</option>
-                                <option value="account">Account</option>
-                                <option value="general">General Inquiry</option>
+                                <option value="Technical">Technical Issue</option>
+                                <option value="Billing">Billing</option>
+                                <option value="General">General Inquiry</option>
                             </select>
-                        </div>
-
-                        {/* Subject */}
-                        <div>
-                            <label
-                                htmlFor="subject"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                            >
-                                Subject
-                            </label>
-                            <input
-                                type="text"
-                                name="subject"
-                                id="subject"
-                                value={formData.subject}
-                                onChange={handleInputChange}
-                                className="mt-1 w-full p-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-[#2A2A2A] focus:ring-[#00B894] focus:border-[#00B894] text-gray-700 dark:text-gray-200"
-                                placeholder="Enter subject..."
-                            />
                         </div>
 
                         {/* Description */}
@@ -233,16 +243,17 @@ const SupportClient = () => {
                         {/* Submit */}
                         <button
                             onClick={handleSubmit}
-                            className="px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white shadow-lg hover:opacity-90 transition"
+                            disabled={isSubmitting}
+                            className={`px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-[#00B894] to-[#00D2B6] text-white shadow-lg hover:opacity-90 transition ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                                }`}
                         >
                             <div className="flex items-center justify-center gap-2">
                                 <Send className="w-5 h-5" />
-                                <span>Submit Request</span>
+                                <span>{isSubmitting ? "Submitting..." : "Submit Request"}</span>
                             </div>
                         </button>
                     </div>
                 </div>
-
 
                 {/* Footer Note */}
                 <div className="mt-12 text-center">
@@ -256,17 +267,33 @@ const SupportClient = () => {
                         </a>{" "}
                         or reach out via{" "}
                         <a
-                            href="https://softsuite.com"
+                            href="mailto:helpdesk@fractprop.com"
                             className="text-[#0277BD] hover:text-[#00B894] font-medium transition"
                         >
-                            @fractprop@.com
+                            helpdesk@fractprop.com
                         </a>
                         .
                     </p>
                 </div>
             </div>
-        </div>
 
+            {/* Tailwind Animation for Toast */}
+            <style jsx>{`
+                @keyframes slide-down {
+                    0% {
+                        opacity: 0;
+                        transform: translate(-50%, -20px);
+                    }
+                    100% {
+                        opacity: 1;
+                        transform: translate(-50%, 0);
+                    }
+                }
+                .animate-slide-down {
+                    animation: slide-down 0.3s ease-out;
+                }
+            `}</style>
+        </div>
     );
 };
 

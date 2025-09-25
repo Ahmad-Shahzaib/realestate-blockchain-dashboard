@@ -156,7 +156,7 @@ export const ADMIN_NAV_DATA = [
           },
           {
             title: "Manage Properties",
-            url: "/projects",
+            url: "/admin/manage-properties",
             icon: SiPolymerproject,
             items: [],
           }
@@ -200,6 +200,7 @@ export const ADMIN_NAV_DATA = [
         icon: GrTransaction,
         items: [],
       },
+
       {
         title: "Support Center",
         url: "/admin/support",
