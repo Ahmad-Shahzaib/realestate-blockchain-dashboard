@@ -56,7 +56,7 @@ interface InputFieldProps {
 }
 
 const FormSection: React.FC<FormSectionProps> = ({ title, icon: Icon, children, className }) => (
-  <div className={` border text-black border-slate-700/50 rounded-2xl p-6 ${className}`}>
+  <div className={` border text-black dark:text-white border-slate-700/50 rounded-2xl p-6 ${className}`}>
     <div className="flex items-center gap-3 mb-6">
 
       <h3 className="text-lg font-semibold">{title}</h3>
@@ -88,97 +88,97 @@ const InputFieldInner: React.FC<InputFieldProps> = ({ label, name, type = "text"
       </label>
 
       {type === "select" ? (
-      <select
-        name={name}
-        value={value}
-        onChange={onChange}
-        className="w-full p-3 
+        <select
+          name={name}
+          value={value}
+          onChange={onChange}
+          className="w-full p-3 
         bg-white dark:bg-slate-800/50 
         text-slate-900 dark:text-white 
         placeholder-slate-500 dark:placeholder-slate-400
         backdrop-blur-sm border border-slate-300 dark:border-slate-600/50 
         rounded-xl focus:outline-none focus:ring-2 
         focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
-      >
-        <option value="">Select {label}</option>
-        {options &&
-          options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-      </select>
-    ) : type === "textarea" ? (
-      <textarea
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        rows={4}
-        inputMode={inputMode}
-        className="w-full p-3 
+        >
+          <option value="">Select {label}</option>
+          {options &&
+            options.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+        </select>
+      ) : type === "textarea" ? (
+        <textarea
+          name={name}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          rows={4}
+          inputMode={inputMode}
+          className="w-full p-3 
         bg-white dark:bg-slate-800/50 
         text-slate-900 dark:text-white 
         placeholder-slate-500 dark:placeholder-slate-400
         backdrop-blur-sm border border-slate-300 dark:border-slate-600/50 
         rounded-xl focus:outline-none focus:ring-2 
         focus:ring-blue-500/50 focus:border-blue-500/50 transition-all resize-vertical"
-      />
-    ) : type === "file" ? (
-      <div className="relative">
-        <input
-          type="file"
-          name={name}
-          accept="image/*"
-          className="hidden"
-          id={name}
-          ref={inputRef}
-          onChange={onChange}
         />
-        <label
-          htmlFor={name}
-          className="w-full p-3 
+      ) : type === "file" ? (
+        <div className="relative">
+          <input
+            type="file"
+            name={name}
+            accept="image/*"
+            className="hidden"
+            id={name}
+            ref={inputRef}
+            onChange={onChange}
+          />
+          <label
+            htmlFor={name}
+            className="w-full p-3 
           bg-white dark:bg-transparent
           text-slate-900 dark:text-white 
           backdrop-blur-sm border border-slate-300 dark:border-slate-600/50 
           rounded-xl hover:border-blue-500/50 transition-all cursor-pointer flex items-center gap-3"
-        >
-          <Camera className="w-5 h-5" />
-          Choose profile picture...
-        </label>
+          >
+            <Camera className="w-5 h-5" />
+            Choose profile picture...
+          </label>
 
-        {/* image preview + inline error below preview */}
-        <div className="mt-3 flex items-center gap-4">
-          {previewUrl ? (
-            <img src={previewUrl} alt="preview" className="w-20 h-20 object-cover rounded-full border" />
-          ) : (
-            <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800/40 border flex items-center justify-center text-slate-400">No image</div>
-          )}
-          {/* keep space for error message under image */}
+          {/* image preview + inline error below preview */}
+          <div className="mt-3 flex items-center gap-4">
+            {previewUrl ? (
+              <img src={previewUrl} alt="preview" className="w-20 h-20 object-cover rounded-full border" />
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800/40 border flex items-center justify-center text-slate-400">No image</div>
+            )}
+            {/* keep space for error message under image */}
+          </div>
+          {error && <p id={`${name}-error`} className="text-sm text-red-500 mt-2">{error}</p>}
         </div>
-  {error && <p id={`${name}-error`} className="text-sm text-red-500 mt-2">{error}</p>}
-      </div>
-    ) : (
-      <input
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        inputMode={inputMode}
-        pattern={pattern}
-        aria-invalid={!!error}
-        aria-describedby={error ? `${name}-error` : undefined}
-        className="w-full p-3 
+      ) : (
+        <input
+          type={type}
+          name={name}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          inputMode={inputMode}
+          pattern={pattern}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${name}-error` : undefined}
+          className="w-full p-3 
         bg-white dark:bg-slate-800/50 
         text-slate-900 dark:text-white 
         placeholder-slate-500 dark:placeholder-slate-400
         backdrop-blur-sm border border-slate-300 dark:border-slate-600/50 
         rounded-xl focus:outline-none focus:ring-2 
         focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
-      />
-    )}
-  {type !== 'file' && error && <p id={`${name}-error`} className="text-sm text-red-500 mt-1">{error}</p>}
+        />
+      )}
+      {type !== 'file' && error && <p id={`${name}-error`} className="text-sm text-red-500 mt-1">{error}</p>}
     </div>
   );
 };
@@ -341,7 +341,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
       password: rest.password,
       name: fullName,
       role: 'customer',
-      profilePicture:"https://blog.photofeeler.com/wp-content/uploads/2017/09/instagram-profile-picture-maker.jpg"
+      profilePicture: "https://blog.photofeeler.com/wp-content/uploads/2017/09/instagram-profile-picture-maker.jpg"
     };
 
     let finalPayload: any = payload;
@@ -384,16 +384,16 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
 
 
   return (
-    <div className="min-h-screen relative overflow-hidden rounded-lg dark:from-slate-950 dark:via-blue-950 dark:to-slate-900 text-slate-900 dark:text-gray-2">
+    <div className="min-h-screen bg-white dark:bg-dark relative overflow-hidden rounded-lg dark:text-white  ">
       {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
+      {/* <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse bg-blue-500/10 dark:bg-blue-500/5"></div>
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full blur-3xl animate-pulse delay-1000 bg-purple-500/10 dark:bg-purple-500/5"></div>
         <div className="absolute top-1/2 right-1/3 w-48 h-48 rounded-full blur-3xl animate-pulse delay-500 bg-cyan-500/10 dark:bg-cyan-500/5"></div>
-      </div>
+      </div> */}
 
       {/* Grid Pattern Overlay */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwiiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDIpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30 dark:opacity-40"></div>
+      {/* <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwiiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDIpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30 dark:opacity-40"></div> */}
 
       <div className="relative z-10 p-6 lg:p-8">
         <div className="max-w-6xl mx-auto">
@@ -473,7 +473,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
               <FormSection title="Identity & Documentation" icon={CreditCard}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <InputField label="Phone Number" name="phone" type="tel" required placeholder="+1 (555) 123-4567" icon={Phone} value={form.phone} onChange={handleChange} error={errors.phone} inputMode="tel" pattern="[0-9]*" />
-                  
+
                   <InputField label="National ID / Passport Number" name="nationalId" required placeholder="Enter ID or passport number" icon={CreditCard} value={form.nationalId} onChange={handleChange} error={errors.nationalId} inputMode="numeric" pattern="[0-9]*" />
                   <InputField label="Profile Picture" name="profilePicture" type="file" required onChange={handleChange} inputRef={fileInputRef} error={errors.profilePicture} value={form.profilePicture} />
                   <InputField label="Occupation" name="occupation" required placeholder="Enter occupation" icon={Building2} value={form.occupation} onChange={handleChange} error={errors.occupation} />

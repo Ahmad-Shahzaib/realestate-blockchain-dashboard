@@ -131,12 +131,7 @@ export const ADMIN_NAV_DATA = [
         icon: LuLayoutDashboard,
         items: [],
       },
-      {
-        title: "Manage Users",
-        url: "/admin/manage-users",
-        icon: Icons.User,
-        items: [],
-      },
+
       // {
       //   title: "Manage Properties",
       //   url: "/admin/Add-project",
@@ -182,6 +177,18 @@ export const ADMIN_NAV_DATA = [
         ]
 
       },
+      {
+        title: "Manage Users",
+        url: "/admin/manage-users",
+        icon: Icons.User,
+        items: [],
+      },
+      {
+        title: "Transaction",
+        url: "/admin/transactions",
+        icon: GrTransaction,
+        items: [],
+      },
       // {
       //   title: "Role Management",
       //   url: "/admin/role-management",
@@ -194,12 +201,7 @@ export const ADMIN_NAV_DATA = [
         icon: FaFirefoxBrowser,
         items: [],
       },
-      {
-        title: "Transaction",
-        url: "/admin/transactions",
-        icon: GrTransaction,
-        items: [],
-      },
+
 
       {
         title: "Support Center",
