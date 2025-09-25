@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-
-import { FaEye, FaEdit, } from "react-icons/fa";
-
+import { Building2, MapPin, Calendar, Filter, Search, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
+import SearchInput from '@/common/Input';
 
 type Transaction = {
     id: number;
@@ -18,7 +17,12 @@ type Transaction = {
 
 const Page = () => {
     const [searchQuery, setSearchQuery] = useState("");
-    const [transactions, setTransactions] = useState<Transaction[]>([
+    const [statusFilter, setStatusFilter] = useState("All");
+    const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const recordsPerPage = 8;
+
+    const transactions: Transaction[] = [
         {
             id: 1,
             propertyName: "Sunset Villa",
@@ -49,143 +53,173 @@ const Page = () => {
             status: "Cancelled",
             date: "2025-07-20",
         },
-    ]);
-    const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
-    const [isEditMode, setIsEditMode] = useState(false);
-    const [editedTransaction, setEditedTransaction] = useState<Transaction | null>(null);
+    ];
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
-    };
-
-    const handleDelete = (id: number) => {
-        setTransactions(transactions.filter((transaction) => transaction.id !== id));
-        setSelectedTransaction(null); // Close modal if open
-    };
-
-    const handleView = (transaction: Transaction) => {
-        setSelectedTransaction(transaction);
-        setIsEditMode(false);
-    };
-
-    const handleEdit = (transaction: Transaction) => {
-        setSelectedTransaction(transaction);
-        setEditedTransaction({ ...transaction });
-        setIsEditMode(true);
-    };
-
-    const handleSave = () => {
-        if (editedTransaction) {
-            setTransactions(
-                transactions.map((transaction) =>
-                    transaction.id === editedTransaction.id ? editedTransaction : transaction
-                )
-            );
-            setSelectedTransaction(null); // Close modal after saving
-        }
-    };
-
-    const handleInputChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-    ) => {
-        if (editedTransaction) {
-            setEditedTransaction({
-                ...editedTransaction,
-                [e.target.name]:
-                    e.target.name === "price" ? parseFloat(e.target.value) || 0 : e.target.value,
-            });
-        }
+        setCurrentPage(1);
     };
 
     const filteredTransactions = transactions.filter(
         (transaction) =>
-            transaction.propertyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            transaction.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            transaction.buyer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            transaction.seller.toLowerCase().includes(searchQuery.toLowerCase())
+            (transaction.propertyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                transaction.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                transaction.buyer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                transaction.seller.toLowerCase().includes(searchQuery.toLowerCase())) &&
+            (statusFilter === "All" || transaction.status === statusFilter)
     );
 
+    // Pagination logic
+    const totalPages = Math.ceil(filteredTransactions.length / recordsPerPage);
+    const startIndex = (currentPage - 1) * recordsPerPage;
+    const paginatedTransactions = filteredTransactions.slice(startIndex, startIndex + recordsPerPage);
+
+    const handlePageChange = (page: number) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-[#F5F7FA] dark:bg-dark-2 p-6">
-            <div className="rounded-2xl shadow-md bg-white dark:bg-dark-2 border border-gray-100 dark:border-gray-700">
-                {/* Header */}
-                <div className="p-6 bg-[#00D2B6] dark:bg-dark-2 rounded-t-2xl">
-                    <h1 className="text-2xl font-bold text-white">Transaction Details</h1>
-                    <p className="text-gray-200">View and manage transaction records</p>
+        <div className="min-h-screen bg-[#F5F7FA] dark:bg-dark">
+            {/* Header */}
+            <div className="bg-white shadow-sm border-b border-[#ECF0F1] dark:bg-dark-2 dark:border-dark-4">
+                <div className="mx-auto px-6 py-6">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                            <div className="bg-[#00B894] p-2 rounded-lg">
+                                <Building2 className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                                <h1 className="text-3xl font-bold text-[#2C3E50] dark:text-gray-2">Transaction Details</h1>
+                                <p className="text-[#34495E] dark:text-gray-4 mt-1">
+                                    View and manage transaction records
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-6 py-8">
+                {/* Search and Filter */}
+                <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 dark:bg-dark-2">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div className="flex-1 max-w-md">
+                            <SearchInput
+                                placeholder="Search by property, address, buyer, or seller"
+                                value={searchQuery}
+                                onChange={handleSearch}
+                                icon={<Search className="h-5 w-5 text-[#34495E] dark:text-gray-3" />}
+                            />
+                        </div>
+                        <div className="flex items-center space-x-4">
+                            <Filter className="h-5 w-5 text-[#34495E] dark:text-gray-3" />
+                            <div className="flex bg-[#ECF0F1] dark:bg-dark-3 rounded-lg p-1">
+                                {["All", "Completed", "Pending", "Cancelled"].map((status) => (
+                                    <button
+                                        key={status}
+                                        onClick={() => setStatusFilter(status)}
+                                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${statusFilter === status
+                                            ? "bg-white dark:bg-dark-4 text-[#3498DB] shadow-sm"
+                                            : "text-[#34495E] dark:text-gray-3 hover:text-[#2C3E50] dark:hover:text-gray-2"
+                                            }`}
+                                    >
+                                        {status}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Search Input */}
-                <div className="p-6">
-                    <div className="mb-4">
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={handleSearch}
-                            placeholder="Search by property, address, buyer, or seller..."
-                            className="w-1/4 float-end p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-2 text-[#003049] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#00D2B6]"
-                        />
+                {/* Transaction Table */}
+                <div className="bg-white rounded-2xl shadow-lg p-6 dark:bg-dark-2">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-xl font-semibold text-[#2C3E50] dark:text-gray-2">
+                            Transaction Information ({filteredTransactions.length})
+                        </h2>
                     </div>
 
-                    {/* Transaction Table */}
-                    <h2 className="text-xl font-bold text-[#003049] dark:text-white mb-4">Transaction Information</h2>
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
+                        <table className="w-full">
                             <thead>
-                                <tr className="bg-[#F5F7FA] dark:bg-dark-2 text-[#003049] dark:text-gray-200">
-                                    <th className="px-4 py-2 font-medium border-b border-gray-200 dark:border-gray-700">Property</th>
-                                    <th className="px-4 py-2 font-medium border-b border-gray-200 dark:border-gray-700">Address</th>
-                                    <th className="px-4 py-2 font-medium border-b border-gray-200 dark:border-gray-700">Price</th>
-                                    <th className="px-4 py-2 font-medium border-b border-gray-200 dark:border-gray-700">Buyer</th>
-                                    <th className="px-4 py-2 font-medium border-b border-gray-200 dark:border-gray-700">Seller</th>
-                                    <th className="px-4 py-2 font-medium border-b border-gray-200 dark:border-gray-700">Status</th>
-                                    <th className="px-4 py-2 font-medium border-b border-gray-200 dark:border-gray-700">Date</th>
-                                    <th className="px-4 py-2 font-medium border-b border-gray-200 dark:border-gray-700">Actions</th>
+                                <tr className="border-b border-[#ECF0F1] dark:border-dark-4">
+                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                        Property
+                                    </th>
+                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                        Address
+                                    </th>
+                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                        Price
+                                    </th>
+                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                        Buyer
+                                    </th>
+                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                        Seller
+                                    </th>
+                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                        Status
+                                    </th>
+                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                        Date
+                                    </th>
+                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                        Actions
+                                    </th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {filteredTransactions.length > 0 ? (
-                                    filteredTransactions.map((transaction) => (
-                                        <tr key={transaction.id} className="hover:bg-gray-50 dark:hover:bg-dark-2">
-                                            <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">{transaction.propertyName}</td>
-                                            <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">{transaction.address}</td>
-                                            <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">${transaction.price.toLocaleString()}</td>
-                                            <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">{transaction.buyer}</td>
-                                            <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">{transaction.seller}</td>
-                                            <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+                            <tbody className="divide-y divide-[#ECF0F1] dark:divide-dark-4">
+                                {paginatedTransactions.length > 0 ? (
+                                    paginatedTransactions.map((transaction) => (
+                                        <tr
+                                            key={transaction.id}
+                                            className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3 transition-colors"
+                                        >
+                                            <td className="py-4 px-2">
+                                                <div className="flex items-center space-x-3">
+                                                    <div className="w-10 h-10 bg-[#00B894] rounded-lg flex items-center justify-center text-white font-semibold text-sm">
+                                                        {transaction.propertyName[0]}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-semibold text-[#2C3E50] dark:text-gray-2">{transaction.propertyName}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.address}</td>
+                                            <td className="py-4 px-2 font-semibold text-[#2C3E50] dark:text-gray-2">
+                                                ${transaction.price.toLocaleString()}
+                                            </td>
+                                            <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.buyer}</td>
+                                            <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.seller}</td>
+                                            <td className="py-4 px-2">
                                                 <span
-                                                    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${transaction.status === "Completed"
-                                                        ? "bg-[#F5F7FA] dark:bg-dark-2 text-[#00B894]"
+                                                    className={`px-3 py-1 rounded-full text-xs font-semibold ${transaction.status === "Completed"
+                                                        ? "bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400"
                                                         : transaction.status === "Pending"
-                                                            ? "bg-[#F5F7FA] dark:bg-dark-2 text-[#00D2B6]"
-                                                            : "bg-[#F5F7FA] dark:bg-dark-2 text-red-600"
+                                                            ? "bg-[#E8F8F5] text-[#3498DB] dark:bg-blue-600/20 dark:text-blue-400"
+                                                            : "bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400"
                                                         }`}
                                                 >
-                                                    {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
+                                                    {transaction.status}
                                                 </span>
                                             </td>
-                                            <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">{transaction.date}</td>
-                                            <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+                                            <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.date}</td>
+                                            <td className="py-4 px-2">
                                                 <button
-                                                    onClick={() => handleView(transaction)}
-                                                    className="text-[#00D2B6] hover:text-[#00D2B6] mr-3"
-                                                    title="View"
+                                                    onClick={() => setSelectedTransaction(transaction)}
+                                                    className="bg-[#E8F8F5] dark:bg-dark-3 dark:text-white text-[#3498DB] px-3 py-1 rounded-lg text-sm hover:bg-[#D1F2EB] dark:hover:bg-dark-4 transition-colors"
                                                 >
-                                                    <FaEye className="w-5 h-5" />
+                                                    <Eye className="h-4 w-4 inline mr-1" /> View
                                                 </button>
-                                                <button
-                                                    onClick={() => handleEdit(transaction)}
-                                                    className="text-[#00D2B6] hover:text-[#00D2B6] mr-3"
-                                                    title="Edit"
-                                                >
-                                                    <FaEdit className="w-5 h-5" />
-                                                </button>
-
                                             </td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={8} className="px-4 py-2 text-center text-gray-500 dark:text-gray-400">
+                                        <td colSpan={8} className="py-4 px-2 text-center text-[#34495E] dark:text-gray-4">
                                             No transactions found matching your search.
                                         </td>
                                     </tr>
@@ -193,163 +227,143 @@ const Page = () => {
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Pagination Controls */}
+                    {totalPages > 1 && (
+                        <div className="flex items-center justify-between mt-6">
+                            <p className="text-sm text-[#34495E] dark:text-gray-4">
+                                Showing {startIndex + 1} to {Math.min(startIndex + recordsPerPage, filteredTransactions.length)} of {filteredTransactions.length} transactions
+                            </p>
+                            <div className="flex items-center space-x-2">
+                                <button
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                    className={`p-2 rounded-lg ${currentPage === 1
+                                        ? "text-[#A1B1C3] dark:text-gray-5 cursor-not-allowed"
+                                        : "text-[#2C3E50] dark:text-gray-2 hover:bg-[#ECF0F1] dark:hover:bg-dark-3"
+                                        }`}
+                                >
+                                    <ChevronLeft className="h-5 w-5" />
+                                </button>
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                    <button
+                                        key={page}
+                                        onClick={() => handlePageChange(page)}
+                                        className={`px-3 py-1 rounded-md text-sm font-medium ${currentPage === page
+                                            ? "bg-[#3498DB] text-white"
+                                            : "text-[#34495E] dark:text-gray-3 hover:bg-[#ECF0F1] dark:hover:bg-dark-3"
+                                            }`}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
+                                <button
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                    className={`p-2 rounded-lg ${currentPage === totalPages
+                                        ? "text-[#A1B1C3] dark:text-gray-5 cursor-not-allowed"
+                                        : "text-[#2C3E50] dark:text-gray-2 hover:bg-[#ECF0F1] dark:hover:bg-dark-3"
+                                        }`}
+                                >
+                                    <ChevronRight className="h-5 w-5" />
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            </div>
 
-            {/* Transaction Detail Modal */}
-            {selectedTransaction && (
-                <div className="fixed inset-0 flex items-center justify-center p-4   bg-opacity-50">
-                    <div className="bg-white dark:bg-dark-2 rounded-2xl max-w-2xl w-full max-h-[65vh] overflow-y-auto border border-gray-100 dark:border-gray-700">
-                        <div className="p-6 bg-[#F5F7FA] dark:bg-dark-2 rounded-t-2xl">
-                            <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-2xl font-bold text-[#003049] dark:text-white">
-                                    {isEditMode ? "Edit Transaction" : "Transaction Details"}
-                                </h2>
-
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4 mb-6">
-                                <div className="bg-white dark:bg-dark-2 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Property Name</p>
-                                    {isEditMode ? (
-                                        <input
-                                            type="text"
-                                            name="propertyName"
-                                            value={editedTransaction?.propertyName || ""}
-                                            onChange={handleInputChange}
-                                            className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-2 text-[#003049] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#00D2B6]"
-                                        />
-                                    ) : (
-                                        <p className="text-lg font-semibold text-[#003049] dark:text-white">{selectedTransaction.propertyName}</p>
-                                    )}
-                                </div>
-                                <div className="bg-white dark:bg-dark-2 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Address</p>
-                                    {isEditMode ? (
-                                        <input
-                                            type="text"
-                                            name="address"
-                                            value={editedTransaction?.address || ""}
-                                            onChange={handleInputChange}
-                                            className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-2 text-[#003049] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#00D2B6]"
-                                        />
-                                    ) : (
-                                        <p className="text-lg font-semibold text-[#003049] dark:text-white">{selectedTransaction.address}</p>
-                                    )}
-                                </div>
-                                <div className="bg-white dark:bg-dark-2 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Price</p>
-                                    {isEditMode ? (
-                                        <input
-                                            type="number"
-                                            name="price"
-                                            value={editedTransaction?.price || ""}
-                                            onChange={handleInputChange}
-                                            className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-2 text-[#003049] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#00D2B6]"
-                                        />
-                                    ) : (
-                                        <p className="text-lg font-semibold text-[#003049] dark:text-white">${selectedTransaction.price.toLocaleString()}</p>
-                                    )}
-                                </div>
-                                <div className="bg-white dark:bg-dark-2 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Buyer</p>
-                                    {isEditMode ? (
-                                        <input
-                                            type="text"
-                                            name="buyer"
-                                            value={editedTransaction?.buyer || ""}
-                                            onChange={handleInputChange}
-                                            className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-2 text-[#003049] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#00D2B6]"
-                                        />
-                                    ) : (
-                                        <p className="text-lg font-semibold text-[#003049] dark:text-white">{selectedTransaction.buyer}</p>
-                                    )}
-                                </div>
-                                <div className="bg-white dark:bg-dark-2 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Seller</p>
-                                    {isEditMode ? (
-                                        <input
-                                            type="text"
-                                            name="seller"
-                                            value={editedTransaction?.seller || ""}
-                                            onChange={handleInputChange}
-                                            className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-2 text-[#003049] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#00D2B6]"
-                                        />
-                                    ) : (
-                                        <p className="text-lg font-semibold text-[#003049] dark:text-white">{selectedTransaction.seller}</p>
-                                    )}
-                                </div>
-                                <div className="bg-white dark:bg-dark-2 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Status</p>
-                                    {isEditMode ? (
-                                        <select
-                                            name="status"
-                                            value={editedTransaction?.status || ""}
-                                            onChange={handleInputChange}
-                                            className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-2 text-[#003049] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#00D2B6]"
-                                        >
-                                            <option value="Completed">Completed</option>
-                                            <option value="Pending">Pending</option>
-                                            <option value="Cancelled">Cancelled</option>
-                                        </select>
-                                    ) : (
-                                        <span
-                                            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${selectedTransaction.status === "Completed"
-                                                ? "bg-[#F5F7FA] dark:bg-dark-2 text-[#00B894]"
-                                                : selectedTransaction.status === "Pending"
-                                                    ? "bg-[#F5F7FA] dark:bg-dark-2 text-[#00D2B6]"
-                                                    : "bg-[#F5F7FA] dark:bg-dark-2 text-red-600"
-                                                }`}
-                                        >
-                                            {selectedTransaction.status.charAt(0).toUpperCase() + selectedTransaction.status.slice(1)}
-                                        </span>
-                                    )}
-                                </div>
-                                <div className="bg-white dark:bg-dark-2 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Date</p>
-                                    {isEditMode ? (
-                                        <input
-                                            type="date"
-                                            name="date"
-                                            value={editedTransaction?.date || ""}
-                                            onChange={handleInputChange}
-                                            className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-2 text-[#003049] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#00D2B6]"
-                                        />
-                                    ) : (
-                                        <p className="text-lg font-semibold text-[#003049] dark:text-white">{selectedTransaction.date}</p>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-end space-x-4">
-                                {isEditMode ? (
-                                    <>
-                                        <button
-                                            onClick={handleSave}
-                                            className="bg-[#00D2B6] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#00B894] transition-colors"
-                                        >
-                                            Save
-                                        </button>
-                                        <button
-                                            onClick={() => setSelectedTransaction(null)}
-                                            className="bg-gray-300 text-[#003049] px-6 py-2 rounded-lg font-medium hover:bg-gray-400 transition-colors"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </>
-                                ) : (
+                {/* Transaction Detail Modal */}
+                {selectedTransaction && (
+                    <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
+                        <div className="bg-white dark:bg-dark-2 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                            <div className="p-6 rounded-t-2xl">
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="flex items-center space-x-3">
+                                        <div className="w-16 h-16 bg-[#00B894] rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                                            {selectedTransaction.propertyName[0]}
+                                        </div>
+                                        <div>
+                                            <h2 className="text-2xl font-bold text-[#2C3E50] dark:text-gray-2">{selectedTransaction.propertyName}</h2>
+                                        </div>
+                                    </div>
                                     <button
                                         onClick={() => setSelectedTransaction(null)}
-                                        className="bg-[#00D2B6] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#00B894] transition-colors"
+                                        className="text-[#34495E] dark:text-gray-3 hover:text-[#2C3E50] dark:hover:text-gray-2 text-xl"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4 mb-6">
+                                    <div className="bg-[#F5F7FA] dark:bg-dark-3 rounded-lg p-4">
+                                        <p className="text-sm text-[#34495E] dark:text-gray-3 mb-1">Price</p>
+                                        <p className="text-2xl font-bold text-[#2C3E50] dark:text-gray-2">
+                                            ${selectedTransaction.price.toLocaleString()}
+                                        </p>
+                                    </div>
+                                    <div className="bg-[#F5F7FA] dark:bg-dark-3 rounded-lg p-4">
+                                        <p className="text-sm text-[#34495E] dark:text-gray-3 mb-1">Status</p>
+                                        <p className={`text-2xl font-bold ${selectedTransaction.status === "Completed"
+                                            ? "text-[#27AE60]"
+                                            : selectedTransaction.status === "Pending"
+                                                ? "text-[#3498DB]"
+                                                : "text-red-600"
+                                            }`}>
+                                            {selectedTransaction.status}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="mb-6">
+                                    <h3 className="text-lg font-semibold text-[#2C3E50] dark:text-gray-2 mb-4">Transaction Details</h3>
+                                    <div className="space-y-3">
+                                        <div className="bg-[#F5F7FA] dark:bg-dark-3 rounded-lg p-4">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <h4 className="font-semibold text-[#2C3E50] dark:text-gray-2">{selectedTransaction.propertyName}</h4>
+                                                <span
+                                                    className={`px-2 py-1 rounded-full text-xs font-semibold ${selectedTransaction.status === "Completed"
+                                                        ? "bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400"
+                                                        : selectedTransaction.status === "Pending"
+                                                            ? "bg-[#E8F8F5] text-[#3498DB] dark:bg-blue-600/20 dark:text-blue-400"
+                                                            : "bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400"
+                                                        }`}
+                                                >
+                                                    {selectedTransaction.status}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <p className="text-[#34495E] dark:text-gray-3">
+                                                    Address: <span className="font-semibold">{selectedTransaction.address}</span>
+                                                </p>
+                                                <p className="text-[#34495E] dark:text-gray-3">
+                                                    Date: <span className="font-semibold">{selectedTransaction.date}</span>
+                                                </p>
+                                            </div>
+                                            <div className="flex items-center justify-between mt-2">
+                                                <p className="text-[#34495E] dark:text-gray-3">
+                                                    Buyer: <span className="font-semibold">{selectedTransaction.buyer}</span>
+                                                </p>
+                                                <p className="text-[#34495E] dark:text-gray-3">
+                                                    Seller: <span className="font-semibold">{selectedTransaction.seller}</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center justify-end space-x-4">
+                                    <button
+                                        onClick={() => setSelectedTransaction(null)}
+                                        className="bg-[#00B894] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#009c7d] transition-colors"
                                     >
                                         Close
                                     </button>
-                                )}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 };
