@@ -134,7 +134,7 @@ export default function TransactionPage({ project }: TransactionPageProps) {
             <div className="w-full max-w-6xl px-6 grid grid-cols-1 gap-4">
                 <div className="mb-6">
                     <div className="flex items-center justify-between relative">
-                        {["Payment Guide", "Invoice", "Payment Method", "Payment Details", "Completed"].map((step, index) => (
+                        {["Explore investment", "Review Invoice", "Choose Payment", "Proof Submit", "Completed"].map((step, index) => (
                             <div key={step} className="flex-1 flex flex-col items-center">
                                 <div
                                     className={`w-10 h-10 rounded-full flex items-center justify-center z-10 ${index <= currentStepIndex

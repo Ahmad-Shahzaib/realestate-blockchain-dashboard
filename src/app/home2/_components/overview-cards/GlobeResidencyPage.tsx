@@ -571,7 +571,7 @@ export default function GlobeResidencyForm() {
                                 <input
                                     id="propertyName"
                                     placeholder="Luxury Towers"
-                                    className={`w-full p-2 border rounded outline-none ${touched.propertyName && validationErrors.propertyName ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
+                                    className={`w-full p-2 border rounded outline-none  dark:bg-dark ${touched.propertyName && validationErrors.propertyName ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
                                     value={form.propertyName}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -586,7 +586,7 @@ export default function GlobeResidencyForm() {
                                 </label>
                                 <select
                                     id="category"
-                                    className={`w-full p-2.5 rounded outline-none ${touched.category && validationErrors.category ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.category && validationErrors.category ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
                                     value={form.category}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -605,7 +605,7 @@ export default function GlobeResidencyForm() {
                                     type="number"
                                     step="0.1"
                                     placeholder="5.5"
-                                    className={`w-full p-2 border rounded outline-none ${touched.roi && validationErrors.roi
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark  ${touched.roi && validationErrors.roi
                                         ? "border-red-500 focus:border-red-500 focus:ring-red-200"
                                         : "border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                                         }`}
@@ -625,7 +625,7 @@ export default function GlobeResidencyForm() {
                                     id="totalInvestment"
                                     type="number"
                                     placeholder="1000000"
-                                    className={`w-full p-2 border rounded outline-none ${touched.totalInvestment && validationErrors.totalInvestment
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark  ${touched.totalInvestment && validationErrors.totalInvestment
                                         ? "border-red-500 focus:border-red-500 focus:ring-red-200"
                                         : "border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                                         }`}
@@ -643,7 +643,7 @@ export default function GlobeResidencyForm() {
                                 </label>
                                 <select
                                     id="subcategory"
-                                    className={`w-full p-2 border rounded outline-none ${touched.subcategory && validationErrors.subcategory ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark  ${touched.subcategory && validationErrors.subcategory ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500'}`}
                                     value={form.subcategory}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -665,7 +665,7 @@ export default function GlobeResidencyForm() {
                                 </label>
                                 <select
                                     id="customer"
-                                    className={`w-full p-2 border rounded outline-none ${touched.customer && validationErrors.customer ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark  ${touched.customer && validationErrors.customer ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
                                     value={form.customer}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -692,7 +692,7 @@ export default function GlobeResidencyForm() {
                                     id="description"
                                     placeholder="Premium residential towers with world-class amenities..."
                                     rows={3}
-                                    className={`w-full p-2 rounded outline-none ${touched.description && validationErrors.description ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark  ${touched.description && validationErrors.description ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
                                     value={form.description}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -720,7 +720,7 @@ export default function GlobeResidencyForm() {
                                 <input
                                     id="address"
                                     placeholder="123 Main Street"
-                                    className={`w-full p-2 rounded outline-none ${touched.address && validationErrors.address ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.address && validationErrors.address ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500'}`}
                                     value={form.address}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -736,7 +736,7 @@ export default function GlobeResidencyForm() {
                                 <input
                                     id="city"
                                     placeholder="New York"
-                                    className={`w-full p-2 rounded outline-none ${touched.city && validationErrors.city ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.city && validationErrors.city ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500'}`}
                                     value={form.city}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -752,7 +752,7 @@ export default function GlobeResidencyForm() {
                                 <input
                                     id="state"
                                     placeholder="NY"
-                                    className={`w-full p-2 rounded outline-none ${touched.state && validationErrors.state ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.state && validationErrors.state ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500'}`}
                                     value={form.state}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -768,7 +768,7 @@ export default function GlobeResidencyForm() {
                                 <input
                                     id="country"
                                     placeholder="USA"
-                                    className={`w-full p-2 rounded outline-none ${touched.country && validationErrors.country ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.country && validationErrors.country ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500'}`}
                                     value={form.country}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -786,7 +786,7 @@ export default function GlobeResidencyForm() {
                                     type="number"
                                     step="any"
                                     placeholder="40.7128"
-                                    className={`w-full p-2 rounded outline-none ${touched.latitude && validationErrors.latitude ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.latitude && validationErrors.latitude ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500'}`}
                                     value={form.latitude}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -804,7 +804,7 @@ export default function GlobeResidencyForm() {
                                     type="number"
                                     step="any"
                                     placeholder="-74.0060"
-                                    className={`w-full p-2 rounded outline-none ${touched.longitude && validationErrors.longitude ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.longitude && validationErrors.longitude ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500'}`}
                                     value={form.longitude}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -832,7 +832,7 @@ export default function GlobeResidencyForm() {
                                 <input
                                     id="developerName"
                                     placeholder="Prestige Developers"
-                                    className={`w-full p-2 rounded outline-none ${touched.developerName && validationErrors.developerName ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.developerName && validationErrors.developerName ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500'}`}
                                     value={form.developerName}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -849,7 +849,7 @@ export default function GlobeResidencyForm() {
                                     id="developerWebsite"
                                     type="url"
                                     placeholder="https://prestigedevelopers.com"
-                                    className={`w-full p-2 rounded outline-none ${touched.developerWebsite && validationErrors.developerWebsite ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.developerWebsite && validationErrors.developerWebsite ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500'}`}
                                     value={form.developerWebsite}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -866,7 +866,7 @@ export default function GlobeResidencyForm() {
                                     id="developerDescription"
                                     placeholder="Leading luxury real estate developer..."
                                     rows={3}
-                                    className={`w-full p-2 rounded outline-none ${touched.developerDescription && validationErrors.developerDescription ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.developerDescription && validationErrors.developerDescription ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500'}`}
                                     value={form.developerDescription}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -883,7 +883,7 @@ export default function GlobeResidencyForm() {
                                     id="developerLogo"
                                     type="url"
                                     placeholder="https://example.com/logo.png"
-                                    className={`w-full p-2 rounded outline-none ${touched.developerLogo && validationErrors.developerLogo ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.developerLogo && validationErrors.developerLogo ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500'}`}
                                     value={form.developerLogo}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -910,7 +910,7 @@ export default function GlobeResidencyForm() {
                                 </label>
                                 <select
                                     id="projectStatus"
-                                    className={`w-full p-2 rounded outline-none ${touched.projectStatus && validationErrors.projectStatus ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.projectStatus && validationErrors.projectStatus ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500'}`}
                                     value={form.projectStatus}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -931,7 +931,7 @@ export default function GlobeResidencyForm() {
                                 <input
                                     id="startDate"
                                     type="date"
-                                    className={`w-full p-2 rounded outline-none ${touched.startDate && validationErrors.startDate ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.startDate && validationErrors.startDate ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500'}`}
                                     value={form.startDate}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -947,7 +947,7 @@ export default function GlobeResidencyForm() {
                                 <input
                                     id="completionDate"
                                     type="date"
-                                    className={`w-full p-2 rounded outline-none ${touched.completionDate && validationErrors.completionDate ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.completionDate && validationErrors.completionDate ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500'}`}
                                     value={form.completionDate}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -991,7 +991,7 @@ export default function GlobeResidencyForm() {
                                     id="totalArea"
                                     type="number"
                                     placeholder="100,000"
-                                    className={`w-full p-2 rounded outline-none ${touched.totalArea && validationErrors.totalArea ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.totalArea && validationErrors.totalArea ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500'}`}
                                     value={form.totalArea}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -1008,7 +1008,7 @@ export default function GlobeResidencyForm() {
                                     id="sellableArea"
                                     type="number"
                                     placeholder="80,000"
-                                    className={`w-full p-2 rounded outline-none ${touched.sellableArea && validationErrors.sellableArea ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.sellableArea && validationErrors.sellableArea ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500'}`}
                                     value={form.sellableArea}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -1025,7 +1025,7 @@ export default function GlobeResidencyForm() {
                                     id="priceMin"
                                     type="number"
                                     placeholder="800,000"
-                                    className={`w-full p-2 rounded outline-none ${touched.priceMin && validationErrors.priceMin ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.priceMin && validationErrors.priceMin ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500'}`}
                                     value={form.priceMin}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -1042,7 +1042,7 @@ export default function GlobeResidencyForm() {
                                     id="priceMax"
                                     type="number"
                                     placeholder="2,500,000"
-                                    className={`w-full p-2 rounded outline-none ${touched.priceMax && validationErrors.priceMax ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.priceMax && validationErrors.priceMax ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500'}`}
                                     value={form.priceMax}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -1071,7 +1071,7 @@ export default function GlobeResidencyForm() {
                                     id="totalUnits"
                                     type="number"
                                     placeholder="50"
-                                    className={`w-full p-2 rounded outline-none ${touched.totalUnits && validationErrors.totalUnits ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.totalUnits && validationErrors.totalUnits ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500'}`}
                                     value={form.totalUnits}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -1088,7 +1088,7 @@ export default function GlobeResidencyForm() {
                                     id="soldUnits"
                                     type="number"
                                     placeholder="30"
-                                    className={`w-full p-2 rounded outline-none ${touched.soldUnits && validationErrors.soldUnits ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.soldUnits && validationErrors.soldUnits ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500'}`}
                                     value={form.soldUnits}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -1105,7 +1105,7 @@ export default function GlobeResidencyForm() {
                                     id="reservedUnits"
                                     type="number"
                                     placeholder="5"
-                                    className={`w-full p-2 rounded outline-none ${touched.reservedUnits && validationErrors.reservedUnits ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.reservedUnits && validationErrors.reservedUnits ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500'}`}
                                     value={form.reservedUnits}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -1122,7 +1122,7 @@ export default function GlobeResidencyForm() {
                                     id="availableUnits"
                                     type="number"
                                     placeholder="15"
-                                    className={`w-full p-2 rounded outline-none ${touched.availableUnits && validationErrors.availableUnits ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.availableUnits && validationErrors.availableUnits ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500'}`}
                                     value={form.availableUnits}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -1177,7 +1177,7 @@ export default function GlobeResidencyForm() {
                                     id="mainImageUrl"
                                     type="url"
                                     placeholder="https://example.com/main-image.jpg"
-                                    className={`w-full p-2 rounded outline-none ${touched.mainImageUrl && validationErrors.mainImageUrl ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.mainImageUrl && validationErrors.mainImageUrl ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-500'}`}
                                     value={form.mainImageUrl}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -1194,7 +1194,7 @@ export default function GlobeResidencyForm() {
                                     id="galleryImages"
                                     placeholder="https://example.com/img1.jpg, https://example.com/img2.jpg, https://example.com/img3.jpg"
                                     rows={3}
-                                    className={`w-full p-2 rounded outline-none ${touched.galleryImages && validationErrors.galleryImages ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.galleryImages && validationErrors.galleryImages ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-500'}`}
                                     value={form.galleryImages}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -1224,7 +1224,7 @@ export default function GlobeResidencyForm() {
                                                 id={`floor-${idx}-name`}
                                                 data-field="name"
                                                 placeholder="Floor Name"
-                                                className={`w-full p-2 rounded outline-none ${touched[`floor-${idx}-name`] && validationErrors[`floor-${idx}-name`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
+                                                className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched[`floor-${idx}-name`] && validationErrors[`floor-${idx}-name`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
                                                 value={floor.name}
                                                 onChange={(e) => handleFloorChange(idx, e)}
                                                 onBlur={() => handleFloorBlur(idx, 'name')}
@@ -1241,7 +1241,7 @@ export default function GlobeResidencyForm() {
                                                 data-field="floorNumber"
                                                 type="number"
                                                 placeholder="Floor Number"
-                                                className={`w-full p-2 rounded outline-none ${touched[`floor-${idx}-floorNumber`] && validationErrors[`floor-${idx}-floorNumber`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
+                                                className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched[`floor-${idx}-floorNumber`] && validationErrors[`floor-${idx}-floorNumber`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
                                                 value={floor.floorNumber}
                                                 onChange={(e) => handleFloorChange(idx, e)}
                                                 onBlur={() => handleFloorBlur(idx, 'floorNumber')}
@@ -1257,7 +1257,7 @@ export default function GlobeResidencyForm() {
                                                 id={`floor-${idx}-floorPlanUrl`}
                                                 data-field="floorPlanUrl"
                                                 placeholder="Floor Plan URL"
-                                                className={`w-full p-2 rounded outline-none ${touched[`floor-${idx}-floorPlanUrl`] && validationErrors[`floor-${idx}-floorPlanUrl`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
+                                                className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched[`floor-${idx}-floorPlanUrl`] && validationErrors[`floor-${idx}-floorPlanUrl`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
                                                 value={floor.floorPlanUrl}
                                                 onChange={(e) => handleFloorChange(idx, e)}
                                                 onBlur={() => handleFloorBlur(idx, 'floorPlanUrl')}
@@ -1274,7 +1274,7 @@ export default function GlobeResidencyForm() {
                                                 data-field="totalUnits"
                                                 type="number"
                                                 placeholder="Total Units"
-                                                className={`w-full p-2 rounded outline-none ${touched[`floor-${idx}-totalUnits`] && validationErrors[`floor-${idx}-totalUnits`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
+                                                className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched[`floor-${idx}-totalUnits`] && validationErrors[`floor-${idx}-totalUnits`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
                                                 value={floor.totalUnits}
                                                 onChange={(e) => handleFloorChange(idx, e)}
                                                 onBlur={() => handleFloorBlur(idx, 'totalUnits')}
@@ -1291,7 +1291,7 @@ export default function GlobeResidencyForm() {
                                                 data-field="minPrice"
                                                 type="number"
                                                 placeholder="Min Price"
-                                                className="w-full p-2 rounded outline-none border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                                                className="w-full p-2 border rounded outline-none dark:bg-dark   border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                                                 value={floor.minPrice}
                                                 onChange={(e) => handleFloorChange(idx, e)}
                                             />
@@ -1304,7 +1304,7 @@ export default function GlobeResidencyForm() {
                                                 data-field="maxPrice"
                                                 type="number"
                                                 placeholder="Max Price"
-                                                className="w-full p-2 rounded outline-none border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                                                className="w-full p-2 border rounded outline-none dark:bg-dark   border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                                                 value={floor.maxPrice}
                                                 onChange={(e) => handleFloorChange(idx, e)}
                                             />
@@ -1317,7 +1317,7 @@ export default function GlobeResidencyForm() {
                                                 data-field="pricePerSqFt"
                                                 type="number"
                                                 placeholder="Price Per SqFt"
-                                                className={`w-full p-2 rounded outline-none ${touched[`floor-${idx}-pricePerSqFt`] && validationErrors[`floor-${idx}-pricePerSqFt`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
+                                                className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched[`floor-${idx}-pricePerSqFt`] && validationErrors[`floor-${idx}-pricePerSqFt`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
                                                 value={floor.pricePerSqFt}
                                                 onChange={(e) => handleFloorChange(idx, e)}
                                                 onBlur={() => handleFloorBlur(idx, 'pricePerSqFt')}
@@ -1334,7 +1334,7 @@ export default function GlobeResidencyForm() {
                                                 data-field="totalSquareFootage"
                                                 type="number"
                                                 placeholder="Total Sqft"
-                                                className={`w-full p-2 rounded outline-none ${touched[`floor-${idx}-totalSquareFootage`] && validationErrors[`floor-${idx}-totalSquareFootage`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
+                                                className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched[`floor-${idx}-totalSquareFootage`] && validationErrors[`floor-${idx}-totalSquareFootage`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
                                                 value={floor.totalSquareFootage}
                                                 onChange={(e) => handleFloorChange(idx, e)}
                                                 onBlur={() => handleFloorBlur(idx, 'totalSquareFootage')}
@@ -1351,7 +1351,7 @@ export default function GlobeResidencyForm() {
                                                 data-field="minSqftBuy"
                                                 type="number"
                                                 placeholder="Minimum Buy Sqft"
-                                                className="w-full p-2 rounded outline-none border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                                                className="w-full p-2 border rounded outline-none dark:bg-dark   border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                                                 value={floor.minSqftBuy || ""}
                                                 onChange={(e) => handleFloorChange(idx, e)}
                                                 onBlur={() => handleFloorBlur(idx, 'minSqftBuy')}
@@ -1365,7 +1365,7 @@ export default function GlobeResidencyForm() {
                                                 data-field="maxSqftBuy"
                                                 type="number"
                                                 placeholder="Maximum Buy Sqft"
-                                                className="w-full p-2 rounded outline-none border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                                                className="w-full p-2 border rounded outline-none dark:bg-dark   border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                                                 value={floor.maxSqftBuy || ""}
                                                 onChange={(e) => handleFloorChange(idx, e)}
                                             />
@@ -1378,7 +1378,7 @@ export default function GlobeResidencyForm() {
                                                 id={`floor-${idx}-description`}
                                                 data-field="description"
                                                 placeholder="Description"
-                                                className={`w-full p-2 rounded outline-none ${touched[`floor-${idx}-description`] && validationErrors[`floor-${idx}-description`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
+                                                className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched[`floor-${idx}-description`] && validationErrors[`floor-${idx}-description`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
                                                 value={floor.description}
                                                 onChange={(e) => handleFloorChange(idx, e)}
                                                 onBlur={() => handleFloorBlur(idx, 'description')}
@@ -1393,7 +1393,7 @@ export default function GlobeResidencyForm() {
                                                 id={`floor-${idx}-specifications`}
                                                 data-field="specifications"
                                                 placeholder="Specifications (comma separated)"
-                                                className={`w-full p-2 rounded outline-none ${touched[`floor-${idx}-specifications`] && validationErrors[`floor-${idx}-specifications`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
+                                                className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched[`floor-${idx}-specifications`] && validationErrors[`floor-${idx}-specifications`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
                                                 value={floor.specifications}
                                                 onChange={(e) => handleFloorSpecChange(idx, "specifications", e.target.value)}
                                                 onBlur={() => handleFloorBlur(idx, 'specifications')}
@@ -1406,7 +1406,7 @@ export default function GlobeResidencyForm() {
                                                 id={`floor-${idx}-features`}
                                                 data-field="features"
                                                 placeholder="Features (comma separated)"
-                                                className={`w-full p-2 rounded outline-none ${touched[`floor-${idx}-features`] && validationErrors[`floor-${idx}-features`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
+                                                className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched[`floor-${idx}-features`] && validationErrors[`floor-${idx}-features`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
                                                 value={floor.features}
                                                 onChange={(e) => handleFloorSpecChange(idx, "features", e.target.value)}
                                                 onBlur={() => handleFloorBlur(idx, 'features')}
@@ -1444,7 +1444,7 @@ export default function GlobeResidencyForm() {
                                 <input
                                     id="tokenName"
                                     placeholder="GlobeHouseToken"
-                                    className={`w-full p-2 rounded outline-none ${touched.tokenName && validationErrors.tokenName ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.tokenName && validationErrors.tokenName ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500'}`}
                                     value={form.tokenName}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -1460,7 +1460,7 @@ export default function GlobeResidencyForm() {
                                 <input
                                     id="tokenSymbol"
                                     placeholder="GHT"
-                                    className={`w-full p-2 rounded outline-none ${touched.tokenSymbol && validationErrors.tokenSymbol ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.tokenSymbol && validationErrors.tokenSymbol ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500'}`}
                                     value={form.tokenSymbol}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -1477,7 +1477,7 @@ export default function GlobeResidencyForm() {
                                     id="tokenSupply"
                                     type="number"
                                     placeholder="1"
-                                    className={`w-full p-2 rounded outline-none ${touched.tokenSupply && validationErrors.tokenSupply ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.tokenSupply && validationErrors.tokenSupply ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500'}`}
                                     value={form.tokenSupply}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -1494,7 +1494,7 @@ export default function GlobeResidencyForm() {
                                     id="pricePerToken"
                                     type="number"
                                     placeholder="120,000,000"
-                                    className={`w-full p-2 rounded outline-none ${touched.pricePerToken && validationErrors.pricePerToken ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.pricePerToken && validationErrors.pricePerToken ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500'}`}
                                     value={form.pricePerToken}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -1510,7 +1510,7 @@ export default function GlobeResidencyForm() {
                                 <input
                                     id="walletAddress"
                                     placeholder="Contract Address"
-                                    className={`w-full p-2 rounded outline-none ${touched.walletAddress && validationErrors.walletAddress ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500'}`}
+                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.walletAddress && validationErrors.walletAddress ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500'}`}
                                     value={form.walletAddress}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -1537,7 +1537,7 @@ export default function GlobeResidencyForm() {
                                         <label className="text-sm font-semibold dark:text-white">* Question</label>
                                         <input
                                             placeholder="Enter FAQ question"
-                                            className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
+                                            className="w-full p-2 border border-gray-200 rounded dark:bg-dark focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
                                             value={faq.question}
                                             onChange={(e) => handleFaqChange(idx, "question", e.target.value)}
                                             onBlur={() => handleFaqBlur(idx, 'question')}
@@ -1551,7 +1551,7 @@ export default function GlobeResidencyForm() {
                                         <textarea
                                             placeholder="Enter FAQ answer"
                                             rows={2}
-                                            className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
+                                            className="w-full p-2 border border-gray-200 rounded dark:bg-dark focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
                                             value={faq.answer}
                                             onChange={(e) => handleFaqChange(idx, "answer", e.target.value)}
                                             onBlur={() => handleFaqBlur(idx, 'answer')}
@@ -1591,7 +1591,7 @@ export default function GlobeResidencyForm() {
                                 </label>
                                 <select
                                     id="bankName"
-                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-dark "
                                     value={form.bankDetails?.bankName || ""}
                                     onChange={handleBankDetailsChange}
                                     onBlur={() => handleBlur({ target: { id: 'bankName' } } as any)}
@@ -1610,7 +1610,7 @@ export default function GlobeResidencyForm() {
                                     id="accountNumber"
                                     type="text"
                                     placeholder="1234567890123456"
-                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-dark "
                                     value={form.bankDetails?.accountNumber || ""}
                                     onChange={handleBankDetailsChange}
                                     onBlur={() => handleBlur({ target: { id: 'accountNumber' } } as any)}
@@ -1627,7 +1627,7 @@ export default function GlobeResidencyForm() {
                                     id="accountTitle"
                                     type="text"
                                     placeholder="Account Title here"
-                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-dark "
                                     value={form.bankDetails?.accountTitle || ""}
                                     onChange={handleBankDetailsChange}
                                     onBlur={() => handleBlur({ target: { id: 'accountTitle' } } as any)}
@@ -1646,7 +1646,7 @@ export default function GlobeResidencyForm() {
                                     id="iban"
                                     type="text"
                                     placeholder="PK36SCBL000000123456702"
-                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none dark:bg-dark "
                                     value={form.bankDetails?.iban || ""}
                                     onChange={handleBankDetailsChange}
                                     onBlur={() => handleBlur({ target: { id: 'iban' } } as any)}
@@ -1676,7 +1676,7 @@ export default function GlobeResidencyForm() {
                                         <input
                                             type="text"
                                             placeholder="Enter document URL"
-                                            className="w-full p-2 border border-gray-200 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
+                                            className="w-full p-2 border border-gray-200 rounded dark:bg-dark  focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
                                             value={doc}
                                             onChange={(e) => handleDocumentChange(idx, e.target.value)}
                                             onBlur={() => handleDocumentBlur(idx)}

@@ -37,6 +37,7 @@ export default function PersonalDetails() {
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [profileImage, setProfileImage] = useState("/images/user.png");
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -78,6 +79,14 @@ export default function PersonalDetails() {
 
     const handleGenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, gender: e.target.value });
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setProfileImage(imageUrl);
+        }
     };
 
     const handleSubmit = async () => {
@@ -175,16 +184,28 @@ export default function PersonalDetails() {
                             <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Photo</label>
                             <div className="flex items-center gap-3">
                                 <Image
-                                    src="/images/user.png"
+                                    src={profileImage}
                                     alt="Profile"
                                     width={40}
                                     height={40}
                                     className="rounded-full"
                                 />
                                 {isEditing && (
-                                    <a href="#" className="text-[#0277BD] hover:text-[#00B894] underline text-sm transition dark:text-[#00D2B6]">
-                                        Change
-                                    </a>
+                                    <>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageChange}
+                                            className="hidden"
+                                            id="profileImageInput"
+                                        />
+                                        <label
+                                            htmlFor="profileImageInput"
+                                            className="text-[#0277BD] hover:text-[#00B894] underline text-sm transition dark:text-[#00D2B6] cursor-pointer"
+                                        >
+                                            Change
+                                        </label>
+                                    </>
                                 )}
                             </div>
                         </div>

@@ -136,13 +136,13 @@ export default function DocumentsSummary() {
                     </div>
 
                     {/* Right Side - Order Summary */}
-                    <div className="bg-white w-90 dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 sticky top-8 h-[450px] ">
+                    <div className="bg-white w-90 dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 sticky top-8 h-[170px] ">
                         <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-6">
                             {from === "explore" ? "Explore Investments" : "Order Summary"}
                         </h3>
 
                         {/* Discount Voucher */}
-                        <div className="mb-6">
+                        {/* <div className="mb-6">
                             <label className="text-sm font-semibold text-gray-800 dark:text-white">
                                 Apply Discount Voucher
                             </label>
@@ -156,7 +156,7 @@ export default function DocumentsSummary() {
                                     Apply
                                 </Button>
                             </div>
-                        </div>
+                        </div> */}
 
                         {/* Summary */}
                         <div className="text-sm text-gray-600 dark:text-gray-300 space-y-3 mb-6">
@@ -179,7 +179,7 @@ export default function DocumentsSummary() {
                         </div>
 
                         {/* Confirm Checkbox */}
-                        <div className="flex items-center mb-6">
+                        {/* <div className="flex items-center mb-6">
                             <input
                                 type="checkbox"
                                 id="confirm"
@@ -188,19 +188,19 @@ export default function DocumentsSummary() {
                             <label htmlFor="confirm" className="ml-2 text-sm text-gray-800 dark:text-white">
                                 I confirm the information provided is accurate
                             </label>
-                        </div>
+                        </div> */}
 
                         {/* Checkout Button */}
-                        <Button
+                        {/* <Button
                             onClick={handleClick}
                             className="w-full text-white py-3 rounded-lg font-semibold text-lg transition-all shadow-md hover:shadow-lg"
                         >
                             Proceed to Checkout
-                        </Button>
+                        </Button> */}
 
-                        <div className="mt-4 text-sm text-blue-600 dark:text-blue-400 text-center cursor-pointer hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
+                        {/* <div className="mt-4 text-sm text-blue-600 dark:text-blue-400 text-center cursor-pointer hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
                             Go Back
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
