@@ -186,7 +186,7 @@ const InvestmentDashboardTable = () => {
                       </td>
                       <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{inv.location}</td>
                       <td className="py-4 px-2 font-semibold text-[#2C3E50] dark:text-gray-2">
-                        ${inv.amount.toLocaleString()}
+                        PKR {inv.amount.toLocaleString()}
                       </td>
                       <td className="py-4 px-2 font-semibold text-[#27AE60]">{inv.returns}</td>
                       <td className="py-4 px-2">
@@ -292,7 +292,7 @@ const InvestmentDashboardTable = () => {
                   <div className="bg-[#F5F7FA] dark:bg-dark-3 rounded-lg p-4">
                     <p className="text-sm text-[#34495E] dark:text-gray-3 mb-1">Investment Amount</p>
                     <p className="text-2xl font-bold text-[#2C3E50] dark:text-gray-2">
-                      ${selectedInvestment.amount.toLocaleString()}
+                      PKR {selectedInvestment.amount.toLocaleString()}
                     </p>
                   </div>
                   <div className="bg-[#F5F7FA] dark:bg-dark-3 rounded-lg p-4">

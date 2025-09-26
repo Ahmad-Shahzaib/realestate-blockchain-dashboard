@@ -56,7 +56,7 @@ const columns = [
     {
         key: "totalPrice",
         label: "Total Price",
-        render: (row: TransactionWithProperty) => `${row.totalPrice?.toLocaleString() ?? 0}`,
+        render: (row: TransactionWithProperty) => `PKR ${row.totalPrice?.toLocaleString() ?? 0}`,
     },
     {
         key: "totalSquareFeet",

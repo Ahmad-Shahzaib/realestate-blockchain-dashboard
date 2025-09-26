@@ -121,11 +121,11 @@ const Dashboard = () => {
 
   // 🟢 commit: static blockchain activity log
   const recentActivities = [
-    { activity: 'Smart Contract Executed - NYC Property', timestamp: '2025-06-20', icon: 'fa-shield-alt', amount: '$1,250,000', type: 'purchase', hash: '0x1a2b3c...' },
-    { activity: 'Token Sale Completed - LA Commercial', timestamp: '2025-06-18', icon: 'fa-coins', amount: '$850,000', type: 'sale', hash: '0x4d5e6f...' },
-    { activity: 'Rental Income Distributed', timestamp: '2025-06-15', icon: 'fa-money-bill-wave', amount: '$25,600', type: 'income', hash: '0x7g8h9i...' },
+    { activity: 'Smart Contract Executed - NYC Property', timestamp: '2025-06-20', icon: 'fa-shield-alt', amount: ' PKR 1,250,000', type: 'purchase', hash: '0x1a2b3c...' },
+    { activity: 'Token Sale Completed - LA Commercial', timestamp: '2025-06-18', icon: 'fa-coins', amount: ' PKR 850,000', type: 'sale', hash: '0x4d5e6f...' },
+    { activity: 'Rental Income Distributed', timestamp: '2025-06-15', icon: 'fa-money-bill-wave', amount: ' PKR 25,600', type: 'income', hash: '0x7g8h9i...' },
     { activity: 'Portfolio Rebalanced', timestamp: '2025-06-10', icon: 'fa-chart-line', amount: '', type: 'update', hash: '0xjklmno...' },
-    { activity: 'New Asset Tokenized - Miami Villa', timestamp: '2025-06-05', icon: 'fa-plus-circle', amount: '$950,000', type: 'tokenize', hash: '0xpqrstu...' },
+    { activity: 'New Asset Tokenized - Miami Villa', timestamp: '2025-06-05', icon: 'fa-plus-circle', amount: ' PKR 950,000', type: 'tokenize', hash: '0xpqrstu...' },
   ];
 
   // 🟢 commit: property types for legend in doughnut chart
@@ -224,7 +224,7 @@ const Dashboard = () => {
                       <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
                       <span className="text-sm text-gray-700 dark:text-gray-3">{item.type}</span>
                     </div>
-                    <span className="font-medium text-[#003049] dark:text-gray-2">{item.value}%</span>
+                    <span className=" text-[#003049] dark:text-gray-2">{item.value}%</span>
                   </div>
                 ))}
               </div>

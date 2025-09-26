@@ -310,7 +310,7 @@ export function OverviewCard({
               INVESTMENT
             </div>
             <div className="text-[#0277BD] font-bold text-xs">
-              {item.totalInvestment}
+              PKR {item.totalInvestment}
             </div>
           </div>
         </div>

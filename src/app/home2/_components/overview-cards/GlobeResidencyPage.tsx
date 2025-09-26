@@ -619,7 +619,7 @@ export default function GlobeResidencyForm() {
                             </div>
                             <div className="space-y-2">
                                 <label htmlFor="totalInvestment" className="text-sm font-semibold dark:text-white">
-                                    * Total Investment ($)
+                                    * Total Investment
                                 </label>
                                 <input
                                     id="totalInvestment"

@@ -189,8 +189,8 @@ const Page = () => {
                                                 </div>
                                             </td>
                                             <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.address}</td>
-                                            <td className="py-4 px-2 font-semibold text-[#2C3E50] dark:text-gray-2">
-                                                ${transaction.price.toLocaleString()}
+                                            <td className="py-4 px-2 font-medium text-[#2C3E50] dark:text-gray-2">
+                                                PKR {transaction.price.toLocaleString()}
                                             </td>
                                             <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.buyer}</td>
                                             <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.seller}</td>
@@ -298,7 +298,7 @@ const Page = () => {
                                     <div className="bg-[#F5F7FA] dark:bg-dark-3 rounded-lg p-4">
                                         <p className="text-sm text-[#34495E] dark:text-gray-3 mb-1">Price</p>
                                         <p className="text-2xl font-bold text-[#2C3E50] dark:text-gray-2">
-                                            ${selectedTransaction.price.toLocaleString()}
+                                            PKR {selectedTransaction.price.toLocaleString()}
                                         </p>
                                     </div>
                                     <div className="bg-[#F5F7FA] dark:bg-dark-3 rounded-lg p-4">

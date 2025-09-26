@@ -233,7 +233,7 @@ const TransactionDetailPage = () => {
                                                 </td>
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.address}</td>
                                                 <td className="py-4 px-2 font-semibold text-[#2C3E50] dark:text-gray-2">
-                                                    ${transaction.price.toLocaleString()}
+                                                    PKR {transaction.price.toLocaleString()}
                                                 </td>
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.buyer}</td>
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.seller}</td>

@@ -3,7 +3,7 @@
 import * as Icons from "../icons";
 import { isAdmin, isUser, isSuperAdmin, isCustomer } from "@/redux/auth/handler";
 import { LuLayoutDashboard } from "@/components/Layouts/sidebar/icons";
-import { FaFileInvoiceDollar, FaDashcube, FaFirefoxBrowser } from "react-icons/fa";
+import { FaFileInvoiceDollar, FaDashcube, FaFirefoxBrowser, FaClipboardList } from "react-icons/fa";
 import { BiSupport } from "react-icons/bi";
 import { SiPolymerproject } from "react-icons/si";
 import { GrTransaction } from "react-icons/gr";
@@ -247,6 +247,12 @@ export const CUSTOMER_NAV_DATA = [
         title: "Referrals",
         url: "/customer/referrals",
         icon: FaFirefoxBrowser,
+        items: [],
+      },
+      {
+        title: "Leads",
+        url: "/customer/leads",
+        icon: FaClipboardList,
         items: [],
       },
 

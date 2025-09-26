@@ -477,11 +477,11 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                   <InputField label="National ID / Passport Number" name="nationalId" required placeholder="Enter ID or passport number" icon={CreditCard} value={form.nationalId} onChange={handleChange} error={errors.nationalId} inputMode="numeric" pattern="[0-9]*" />
                   <InputField label="Profile Picture" name="profilePicture" type="file" required onChange={handleChange} inputRef={fileInputRef} error={errors.profilePicture} value={form.profilePicture} />
                   <InputField label="Occupation" name="occupation" required placeholder="Enter occupation" icon={Building2} value={form.occupation} onChange={handleChange} error={errors.occupation} />
-                  <InputField label="Annual Income (USD)" name="annualIncome" type="select" required value={form.annualIncome} onChange={handleChange} icon={DollarSign} error={errors.annualIncome} options={[
-                    { label: '< $50,000', value: '<50000' },
-                    { label: '$50,000 - $100,000', value: '50000-100000' },
-                    { label: '$100,000 - $250,000', value: '100000-250000' },
-                    { label: '> $250,000', value: '>250000' },
+                  <InputField label="Annual Income" name="annualIncome" type="select" required value={form.annualIncome} onChange={handleChange} icon={DollarSign} error={errors.annualIncome} options={[
+                    { label: '< PKR 50,000', value: '<50000' },
+                    { label: 'PKR 50,000 - PKR 100,000', value: '50000-100000' },
+                    { label: 'PKR 100,000 - PKR 250,000', value: '100000-250000' },
+                    { label: '> PKR 250,000', value: '>250000' },
                   ]} />
                 </div>
               </FormSection>

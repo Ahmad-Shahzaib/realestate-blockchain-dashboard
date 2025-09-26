@@ -74,7 +74,7 @@ const Page = () => {
       status: "Completed",
       client: "Urban Properties",
       duration: "12 months",
-      value: "$120,000"
+      value: "PKR 120,000"
     },
     {
       id: 2,
@@ -84,7 +84,7 @@ const Page = () => {
       status: "In Progress",
       client: "MetroRentals",
       duration: "8 months",
-      value: "$75,000"
+      value: "PKR 75,000"
     },
     {
       id: 3,
@@ -94,7 +94,7 @@ const Page = () => {
       status: "Completed",
       client: "BizEstate",
       duration: "7 months",
-      value: "$90,000"
+      value: "PKR 90,000"
     },
     {
       id: 4,
@@ -104,7 +104,7 @@ const Page = () => {
       status: "Completed",
       client: "GreenValley Housing",
       duration: "6 months",
-      value: "$65,000"
+      value: "PKR 65,000"
     },
     {
       id: 5,
@@ -114,7 +114,7 @@ const Page = () => {
       status: "Completed",
       client: "EstateAnalytics",
       duration: "5 months",
-      value: "$80,000"
+      value: "PKR 80,000"
     }
   ];
 
