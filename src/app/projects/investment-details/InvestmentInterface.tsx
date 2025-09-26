@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import Button from "@/common/Button";
 import DocumentsSummary from "./explore-investment/DocumentsSummary";
+import { TransactionService, Transaction } from "@/services/transaction.service"; // Adjust the import path as needed
 
 interface BankDetails {
     accountTitle: string;
@@ -18,6 +20,16 @@ interface Project {
 
 interface TransactionPageProps {
     project: Project;
+    transactionId?: string;
+    transaction?: Transaction;
+    transactionPayload?: {
+        propertyId: string;
+        customerId: string;
+        totalPrice: number;
+        totalSquareFeet: number;
+        type: string;
+    };
+
 }
 
 export default function TransactionPage({ project }: TransactionPageProps) {
@@ -26,6 +38,50 @@ export default function TransactionPage({ project }: TransactionPageProps) {
     const [activeStep, setActiveStep] = useState<Step>("guide");
     const [subTab, setSubTab] = useState<"crypto" | "cash" | "bank">("crypto");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [transaction, setTransaction] = useState<Transaction | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const searchParams = useSearchParams();
+
+    // Read query params
+    const _id = searchParams.get("_id") || " "; // Fallback to payload transaction ID
+    const totalInvestment = searchParams.get("totalInvestment");
+
+    // Helper to get displayPrice (same logic as DocumentsSummary)
+    const getDisplayPrice = () => {
+        if (transaction && !isNaN(Number(transaction.totalPrice))) {
+            return Number(transaction.totalPrice).toLocaleString();
+        }
+        if (totalInvestment && !isNaN(Number(totalInvestment))) {
+            return Number(totalInvestment).toLocaleString();
+        }
+        return "";
+    };
+
+    // Fetch transaction data by ID
+    useEffect(() => {
+        const fetchTransaction = async () => {
+            if (!_id) {
+                setError("No transaction ID provided");
+                setLoading(false);
+                return;
+            }
+
+            try {
+                setLoading(true);
+                const transactionData = await TransactionService.getTransactionById(_id);
+                setTransaction(transactionData);
+                setError(null);
+            } catch (err: any) {
+                setError("Failed to fetch transaction details. Please try again.");
+                console.error("Error fetching transaction:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTransaction();
+    }, [_id]);
 
     const currentStepIndex = steps.indexOf(activeStep);
 
@@ -125,7 +181,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
 
     const banks = [
         { name: "FracProp", accountNumber: "1234567890", iban: "AB12345678901234567890" },
-
     ];
 
     return (
@@ -164,7 +219,7 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                 {/* STEP 1: Payment Guide */}
                 {activeStep === "guide" && (
                     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
-                        <DocumentsSummary />
+                        <DocumentsSummary transaction={transaction} loading={loading} error={error} />
                         <div className="flex justify-end mt-6">
                             <Button
                                 onClick={handleNext}
@@ -183,8 +238,8 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                         <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-6 mb-6">
                             <div>
                                 <h2 className="font-bold text-3xl text-gray-800 dark:text-white">INVOICE</h2>
-                                <p className="text-gray-500 dark:text-gray-400 text-sm">Invoice #INV-2025-001</p>
-                                <p className="text-gray-500 dark:text-gray-400 text-sm">Date: {new Date().toLocaleDateString()}</p>
+
+                                <p className="text-gray-500 dark:text-gray-400 text-sm">Date: {project.createdAt}</p>
                             </div>
                             <div className="text-right">
                                 <h3 className="font-semibold text-lg text-gray-800 dark:text-white">{project.bankDetails.accountTitle}</h3>
@@ -198,7 +253,10 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8">
                             <div>
                                 <h3 className="font-semibold text-lg text-gray-800 dark:text-white mb-2">Billed From</h3>
-                                <p className="text-gray-700 dark:text-gray-300">{project.bankDetails.accountTitle}</p>
+                                <p className="text-gray-700 dark:text-gray-300">Title: {project.bankDetails.accountTitle}</p>
+                                <p className="text-gray-500 dark:text-gray-400 text-sm">Name:{project.bankDetails.bankName}</p>
+                                <p className="text-gray-500 dark:text-gray-400 text-sm">Acc No: {project.bankDetails.accountNumber}</p>
+                                <p className="text-gray-500 dark:text-gray-400 text-sm">IBAN: {project.bankDetails.iban}</p>
                             </div>
                             <div>
                                 <h3 className="font-semibold text-lg text-gray-800 dark:text-white mb-2">Billed To</h3>
@@ -220,20 +278,16 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                                 </thead>
                                 <tbody>
                                     <tr className="border-t border-gray-200 dark:border-gray-700">
-                                        <td className="p-3 text-gray-700 dark:text-gray-300">Project Investment</td>
-                                        <td className="p-3 text-right text-gray-700 dark:text-gray-300">PKR10,000</td>
+                                        <td className="p-3 text-gray-700 dark:text-gray-300">Project name</td>
+                                        <td className="p-3 text-right text-gray-700 dark:text-gray-300">{project.name}</td>
                                     </tr>
                                     <tr className="border-t border-gray-200 dark:border-gray-700">
-                                        <td className="p-3 text-gray-700 dark:text-gray-300">Transaction Fee</td>
-                                        <td className="p-3 text-right text-gray-700 dark:text-gray-300">PKR100</td>
+                                        <td className="p-3 text-gray-700 dark:text-gray-300">Total Investment</td>
+                                        <td className="p-3 text-right text-gray-700 dark:text-gray-300">{getDisplayPrice()} PKR</td>
                                     </tr>
+
                                 </tbody>
-                                <tfoot>
-                                    <tr className="border-t border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
-                                        <td className="p-3 font-bold text-gray-800 dark:text-white">Total</td>
-                                        <td className="p-3 text-right font-bold text-gray-800 dark:text-white">PKR10,100</td>
-                                    </tr>
-                                </tfoot>
+
                             </table>
                         </div>
 
@@ -254,7 +308,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                         </div>
                     </div>
                 )}
-
 
                 {/* STEP 3: Payment Method */}
                 {activeStep === "payment-method" && (

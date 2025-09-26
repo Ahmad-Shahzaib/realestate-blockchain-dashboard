@@ -32,13 +32,13 @@ export default function InvestmentInterface({ project }: InvestmentInterfaceProp
         <div className=" dark:bg-gray-900  flex justify-center items-start py-6">
             <div className="w-full max-w-7xl px-4">
                 {/* Header */}
-                <div className="flex justify-end items-center mb-10 gap-6">
+                {/* <div className="flex justify-end items-center mb-10 gap-6">
                     <Button
                         onClick={handleClick}
                         className=" text-white px-8 py-3 rounded-full font-semibold text-lg transition-all shadow-md hover:shadow-lg">
                         Explore Investments
                     </Button>
-                </div>
+                </div> */}
 
                 {/* Main Card */}
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
@@ -96,7 +96,8 @@ export default function InvestmentInterface({ project }: InvestmentInterfaceProp
                             <h3 className="text-gray-500 dark:text-gray-400 text-xs font-medium uppercase tracking-wide mb-1">
                                 Price/SQFT
                             </h3>
-                            <p className="text-gray-900 dark:text-white font-semibold text-base">22,000 PKR</p>
+                            <p className="text-gray-900 dark:text-white font-semibold text-base">{project.floors[0]?.pricePerSqFt}</p>
+
                         </div>
                     </div>
                 </div>

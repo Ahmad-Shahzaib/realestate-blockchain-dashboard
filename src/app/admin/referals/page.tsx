@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -54,7 +53,8 @@ const ReferralManagement = () => {
     const handleDelete = async (id: string) => {
         try {
             await ReferralService.deleteReferral(id);
-            setReferrals(referrals.filter((ref: any) => ref._id !== id));
+            // Refresh the table after successful deletion
+            await fetchReferrals();
         } catch (err: any) {
             console.error("Delete failed:", err);
             setError("Failed to delete referral");
@@ -63,15 +63,27 @@ const ReferralManagement = () => {
 
     const handleUpdate = async (id: string, data: Partial<Referral>) => {
         try {
-            const updated = await ReferralService.updateReferral(id, data);
-            setReferrals(referrals.map((ref: any) =>
-                ref._id === id ? { ...ref, ...updated } : ref
-            ));
+            await ReferralService.updateReferral(id, data);
+            // Close the modal first
             setEditingReferral(null);
+            // Then refresh the table
+            await fetchReferrals();
         } catch (err: any) {
             console.error("Update failed:", err);
             setError("Failed to update referral");
         }
+    };
+
+    const handleModalClose = async () => {
+        setOpenModal(false);
+        // Refresh the table when add modal closes
+        await fetchReferrals();
+    };
+
+    const handleEditModalClose = async () => {
+        setEditingReferral(null);
+        // Refresh the table when edit modal closes
+        await fetchReferrals();
     };
 
     const filteredReferrals = referrals.filter((ref) =>
@@ -166,10 +178,10 @@ const ReferralManagement = () => {
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{ref.description}</td>
                                                 <td className="py-4 px-2">
                                                     <span
-                                                        className={`px - 3 py - 1 rounded - full text - xs font - semibold ${ref.status
+                                                        className={`px-3 py-1 rounded-full text-xs font-semibold ${ref.status
                                                             ? 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
                                                             : 'bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400'
-                                                            } `}
+                                                            }`}
                                                     >
                                                         {ref.status ? 'Active' : 'Inactive'}
                                                     </span>
@@ -208,12 +220,17 @@ const ReferralManagement = () => {
                 </div>
 
                 {/* Modals */}
-                {openModal && <ReferralModal onClose={() => setOpenModal(false)} refreshTable={fetchReferrals} />}
+                {openModal && (
+                    <ReferralModal
+                        onClose={handleModalClose}
+                        refreshTable={fetchReferrals}
+                    />
+                )}
                 {editingReferral && (
                     <ReferralModal
-                        onClose={() => setEditingReferral(null)}
+                        onClose={handleEditModalClose}
                         referral={editingReferral}
-                        onSave={(data: Partial<Referral>) => handleUpdate(editingReferral._id, data)}
+                        onSave={(data: Partial<Referral>) => handleUpdate(editingReferral._id!, data)}
                         refreshTable={fetchReferrals}
                     />
                 )}

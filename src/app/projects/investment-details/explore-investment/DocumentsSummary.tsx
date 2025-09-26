@@ -4,8 +4,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { CheckCircle, Upload } from "lucide-react";
 import Button from "@/common/Button";
+import { Transaction } from "@/services/transaction.service"; // Adjust the import path as needed
 
-export default function DocumentsSummary() {
+interface DocumentsSummaryProps {
+    transaction: Transaction | null;
+    loading: boolean;
+    error: string | null;
+}
+
+export default function DocumentsSummary({ transaction, loading, error }: DocumentsSummaryProps) {
     const [address, setAddress] = useState("");
     const [editingAddress, setEditingAddress] = useState(false);
     const [cnic, setCnic] = useState("");
@@ -13,34 +20,49 @@ export default function DocumentsSummary() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const handleClick = () => {
-        router.push("/projects/investment-details/document-verification");
-    };
-
-    // ✅ Read context from query params
+    // Read query params
     const from = searchParams.get("from");
     const totalInvestment = searchParams.get("totalInvestment");
     const totalArea = searchParams.get("totalArea");
 
+    const handleClick = () => {
+        router.push("/projects/investment-details/document-verification");
+    };
+
+    // Ensure values are numbers to avoid NaN
+    const displaySquareFeet = transaction && !isNaN(Number(transaction.totalSquareFeet))
+        ? Number(transaction.totalSquareFeet).toLocaleString()
+        : totalArea && !isNaN(Number(totalArea))
+            ? Number(totalArea).toLocaleString()
+            : "";
+
+    const displayPrice = transaction && !isNaN(Number(transaction.totalPrice))
+        ? Number(transaction.totalPrice).toLocaleString()
+        : totalInvestment && !isNaN(Number(totalInvestment))
+            ? Number(totalInvestment).toLocaleString()
+            : "";
+
     return (
-        <div className="min-h-screen   flex justify-center items-start">
-            <div className="w-full  px-3">
+        <div className="min-h-screen flex justify-center items-start">
+            <div className="w-full px-3">
                 {/* Page Header */}
                 <div className="mb-12 text-center">
-                    <h2 className="text-3xl font-bold text-gray-800 dark:text-white tracking-tight">
+                    <h3 className="text-3xl font-bold text-gray-800 dark:text-white tracking-tight">
                         Documents & Summary
-                    </h2>
+                    </h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-2xl mx-auto">
                         Provide the required documents and details to ensure a seamless investment process.
                     </p>
                 </div>
+
+                {loading && <p className="text-center text-gray-600 dark:text-gray-400">Loading transaction...</p>}
+                {error && <p className="text-center text-red-600 dark:text-red-400">{error}</p>}
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
                     {/* Left Side - Details */}
                     <div className="lg:col-span-3 space-y-8">
                         {/* Billing Address */}
                         <div className="flex flex-col md:flex-row gap-6">
-                            {/* Billing Address */}
                             <div className="flex-1 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8 transition-all hover:shadow-xl">
                                 <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
                                     <span className="mr-2 text-blue-600 dark:text-blue-400">1.</span> Billing Address
@@ -135,72 +157,28 @@ export default function DocumentsSummary() {
                         </div>
                     </div>
 
-                    {/* Right Side - Order Summary */}
-                    <div className="bg-white w-90 dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 sticky top-8 h-[170px] ">
-                        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-6">
-                            {from === "explore" ? "Explore Investments" : "Order Summary"}
-                        </h3>
 
-                        {/* Discount Voucher */}
-                        {/* <div className="mb-6">
-                            <label className="text-sm font-semibold text-gray-800 dark:text-white">
-                                Apply Discount Voucher
-                            </label>
-                            <div className="flex mt-2">
-                                <input
-                                    type="text"
-                                    placeholder="Enter Voucher Code"
-                                    className="flex-1 border border-r-0 rounded-l-lg px-4 py-2 text-sm text-gray-800 dark:text-white bg-gray-50 dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 transition-all"
-                                />
-                                <Button className="">
-                                    Apply
-                                </Button>
-                            </div>
-                        </div> */}
+                </div>
+                {/* Right Side - Order Summary */}
+                <div className="bg-white w-full mt-4 dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 sticky top-8 h-[170px]">
+                    <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-6">
+                        {from === "explore" ? "Explore Investments" : "Order Summary"}
+                    </h3>
 
-                        {/* Summary */}
-                        <div className="text-sm text-gray-600 dark:text-gray-300 space-y-3 mb-6">
-                            <div className="flex justify-between">
-                                <span className="font-medium text-gray-800 dark:text-white">Total Area Pledged</span>
-                                <span className="font-semibold text-gray-800 dark:text-white">
-                                    {totalArea ? `${Number(totalArea).toLocaleString()} sq.ft.` : "1,005 sq.ft."}
-                                </span>
-                            </div>
-                            {/* <div className="flex justify-between">
-                                <span className="font-medium text-gray-800 dark:text-white">Retail Price</span>
-                                <span className="font-semibold text-gray-800 dark:text-white">22,000 PKR/sq.ft</span>
-                            </div> */}
-                            <div className="flex justify-between font-semibold text-lg">
-                                <span className="text-gray-800 dark:text-white">Payable Amount</span>
-                                <span className="text-gray-800 dark:text-white">
-                                    {totalInvestment ? `${Number(totalInvestment).toLocaleString()} PKR` : "22,110,000 PKR"}
-                                </span>
-                            </div>
+                    {/* Summary */}
+                    <div className="flex flex-row items-center justify-between text-sm text-gray-600 dark:text-gray-300 mb-6 space-x-4">
+                        <div className="flex justify-between w-full">
+                            <span className="font-medium text-gray-800 dark:text-white">Total Area Pledged</span>
+                            <span className="font-semibold text-gray-800 dark:text-white">
+                                {displaySquareFeet} sq.ft.
+                            </span>
                         </div>
-
-                        {/* Confirm Checkbox */}
-                        {/* <div className="flex items-center mb-6">
-                            <input
-                                type="checkbox"
-                                id="confirm"
-                                className="w-5 h-5 text-blue-600 dark:text-blue-400 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-600 dark:focus:ring-blue-400"
-                            />
-                            <label htmlFor="confirm" className="ml-2 text-sm text-gray-800 dark:text-white">
-                                I confirm the information provided is accurate
-                            </label>
-                        </div> */}
-
-                        {/* Checkout Button */}
-                        {/* <Button
-                            onClick={handleClick}
-                            className="w-full text-white py-3 rounded-lg font-semibold text-lg transition-all shadow-md hover:shadow-lg"
-                        >
-                            Proceed to Checkout
-                        </Button> */}
-
-                        {/* <div className="mt-4 text-sm text-blue-600 dark:text-blue-400 text-center cursor-pointer hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
-                            Go Back
-                        </div> */}
+                        <div className="flex justify-between w-full font-semibold text-lg">
+                            <span className="text-gray-800 dark:text-white">Payable Amount</span>
+                            <span className="text-gray-800 dark:text-white">
+                                {displayPrice} PKR
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>

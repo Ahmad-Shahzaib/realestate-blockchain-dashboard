@@ -131,19 +131,19 @@ const FloorAreaSelectionPage: NextPage<FloorAreaSelectionPageProps> = ({ project
                             <input
                                 type="range"
                                 min="0"
-                                max={currentFloor.totalSquareFootage}
+                                max={TOTAL_AREA}
                                 value={sliderArea}
                                 onChange={handleSliderChange}
                                 className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
                                 style={{
-                                    background: `linear-gradient(to right, #00B894 0%, #00B894 ${(sliderArea / currentFloor.totalSquareFootage) * 100
-                                        }%, #e5e7eb ${(sliderArea / currentFloor.totalSquareFootage) * 100}%, #e5e7eb 100%)`,
+                                    background: `linear-gradient(to right, #00B894 0%, #00B894 ${(sliderArea / TOTAL_AREA) * 100
+                                        }%, #e5e7eb ${(sliderArea / TOTAL_AREA) * 100}%, #e5e7eb 100%)`,
                                 }}
                             />
                             <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mt-2">
-                                <span>{totalArea.toLocaleString()} Sq. ft.</span>
+                                <span>0 Sq. ft.</span>
                                 <span className="text-right">
-                                    {currentFloor.totalSquareFootage.toLocaleString()} Sq. ft.
+                                    {TOTAL_AREA.toLocaleString()} Sq. ft.
                                 </span>
                             </div>
                         </div>
@@ -224,7 +224,7 @@ const FloorAreaSelectionPage: NextPage<FloorAreaSelectionPageProps> = ({ project
                                 {Array.from({ length: 400 }, (_, i) => (
                                     <div
                                         key={i}
-                                        className={`rounded-sm ${i < Math.floor((totalArea / (currentFloor?.totalSquareFootage || 1)) * 400)
+                                        className={`rounded-sm ${i < Math.floor((totalArea / TOTAL_AREA) * 400)
                                             ? "bg-[#00B894]"
                                             : "bg-gray-200 dark:bg-gray-600"
                                             }`}
@@ -234,7 +234,7 @@ const FloorAreaSelectionPage: NextPage<FloorAreaSelectionPageProps> = ({ project
                         </div>
                         <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
                             <span>{totalArea.toLocaleString()} sq. ft.</span>
-                            <span>{currentFloor?.totalSquareFootage.toLocaleString()} sq. ft.</span>
+                            <span>{TOTAL_AREA.toLocaleString()} sq. ft.</span>
                         </div>
                     </motion.div>
                 </div>
