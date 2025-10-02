@@ -56,7 +56,7 @@ interface InputFieldProps {
 }
 
 const FormSection: React.FC<FormSectionProps> = ({ title, icon: Icon, children, className }) => (
-  <div className={` border text-black dark:text-white border-slate-700/50 rounded-2xl p-6 ${className}`}>
+  <div className={`  text-black dark:text-white border-slate-700/50 shadow-md rounded-2xl p-6 ${className}`}>
     <div className="flex items-center gap-3 mb-6">
 
       <h3 className="text-lg font-semibold">{title}</h3>
@@ -220,6 +220,7 @@ const initialFormState = {
 const SuperAdminAddCustomerFormUI: React.FC = () => {
   const [form, setForm] = useState(initialFormState);
   const [errors, setErrors] = useState<Record<string, string | null>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false); // Local submitting state
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector(state => state.customer || { loading: false, error: null });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -287,9 +288,39 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
   }, [validateField]);
 
   const resetForm = useCallback(() => {
-    setForm(initialFormState);
+    // Create a completely new object to ensure state update
+    setForm({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      dateOfBirth: '',
+      gender: '',
+      nationality: '',
+      primaryAddress: '',
+      secondaryAddress: '',
+      nationalId: '',
+      profilePicture: null,
+      accountStatus: '',
+      dateOfRegistration: '',
+      preferredContactMethod: '',
+      occupation: '',
+      annualIncome: '',
+      investmentExperience: '',
+      riskTolerance: '',
+      kycStatus: '',
+      amlStatus: '',
+      walletAddress: '',
+      referralCode: '',
+      emergencyContactName: '',
+      emergencyContactPhone: '',
+      emergencyContactRelation: '',
+      notes: '',
+      password: '',
+    });
     setErrors({});
-    // clear file input if present
+
+    // Clear file input if present
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -307,6 +338,8 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true); // Set local submitting state
+
     // Build full name from first and last
     const fullName = `${form.firstName || ''} ${form.lastName || ''}`.trim();
 
@@ -347,17 +380,6 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
     let finalPayload: any = payload;
     console.log("Profile Picture:", finalPayload);
 
-    // if (profilePicture) {
-    //   const formData = new FormData();
-    //   Object.entries(payload).forEach(([key, value]) => {
-    //     if (value !== undefined && value !== null && value !== '') {
-    //       formData.append(key, value as any);
-    //     }
-    //   });
-    //   formData.append('profilePicture', profilePicture as any);
-    //   finalPayload = formData;
-    // }
-
     try {
       // final validation before submit
       const newErrors: Record<string, string | null> = {};
@@ -369,16 +391,20 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
       setErrors(prev => ({ ...prev, ...newErrors }));
       if (Object.keys(newErrors).length > 0) {
         toast.error('Please fix validation errors before submitting');
+        setIsSubmitting(false);
         return;
       }
+
       // dispatch and unwrap to get thrown error on rejection
       // @ts-ignore
       await dispatch(addCustomer(finalPayload)).unwrap();
       toast.success('Customer added successfully');
-      resetForm();
+      resetForm(); // Reset form after successful submission
     } catch (err: any) {
       const msg = err?.message || String(err) || 'Failed to add customer';
       toast.error(msg);
+    } finally {
+      setIsSubmitting(false); // Reset local submitting state
     }
   };
 
@@ -546,14 +572,14 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                   type="button"
                   className="px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700/50 dark:hover:bg-slate-700/70 text-slate-800 dark:text-gray-2 rounded-xl transition-all duration-300 flex items-center gap-2 justify-center"
                   onClick={() => resetForm()}
-                  disabled={loading}
+                  disabled={isSubmitting}
                 >
                   <X className="w-5 h-5" />
                   Cancel
                 </button>
                 <Button type="submit"
-                  disabled={loading}>
-                  {loading ? 'Adding...' : 'Add Customer'}
+                  disabled={isSubmitting}>
+                  {isSubmitting ? 'Adding...' : 'Add Customer'}
                 </Button>
               </div>
             </div>

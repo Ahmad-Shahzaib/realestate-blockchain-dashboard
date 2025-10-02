@@ -1,9 +1,10 @@
+
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { Building2, Filter, Search, Edit, Trash2 } from "lucide-react";
 import Button from "@/common/Button";
-import SearchInput from "@/common/Input"; // Assuming the same SearchInput component as in TransactionDetailPage
+import SearchInput from "@/common/Input";
 import ReferralModal from "./ReferralModal";
 import { ReferralService } from "@/services/referal.service";
 
@@ -23,6 +24,8 @@ const ReferralManagement = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
     const [editingReferral, setEditingReferral] = useState<Referral | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 8;
 
     useEffect(() => {
         fetchReferrals();
@@ -91,6 +94,26 @@ const ReferralManagement = () => {
         (filterStatus === 'all' || (filterStatus === 'active' && ref.status) || (filterStatus === 'inactive' && !ref.status))
     );
 
+    // Pagination logic
+    const totalPages = Math.ceil(filteredReferrals.length / itemsPerPage);
+    const startIndex = filteredReferrals.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+    const endIndex = Math.min(currentPage * itemsPerPage, filteredReferrals.length);
+    const paginatedReferrals = filteredReferrals.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    // Ensure currentPage is within bounds
+    useEffect(() => {
+        if (totalPages === 0) {
+            setCurrentPage(1);
+        } else if (currentPage > totalPages) {
+            setCurrentPage(totalPages);
+        }
+    }, [totalPages, currentPage]);
+
+    // Reset to first page when search or filter changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, filterStatus]);
+
     return (
         <div className="min-h-screen bg-[#F5F7FA] dark:bg-dark">
             {/* Header */}
@@ -131,7 +154,6 @@ const ReferralManagement = () => {
                                 icon={<Search className="h-5 w-5 text-[#34495E] dark:text-gray-3" />}
                             />
                         </div>
-
                     </div>
                 </div>
 
@@ -167,8 +189,8 @@ const ReferralManagement = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-[#ECF0F1] dark:divide-dark-4">
-                                    {filteredReferrals.length > 0 ? (
-                                        filteredReferrals.map((ref: any) => (
+                                    {paginatedReferrals.length > 0 ? (
+                                        paginatedReferrals.map((ref: any) => (
                                             <tr
                                                 key={ref._id}
                                                 className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3 transition-colors"
@@ -178,10 +200,10 @@ const ReferralManagement = () => {
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{ref.description}</td>
                                                 <td className="py-4 px-2">
                                                     <span
-                                                        className={`px-3 py-1 rounded-full text-xs font-semibold ${ref.status
+                                                        className={`px - 3 py - 1 rounded - full text - xs font - semibold ${ref.status
                                                             ? 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
                                                             : 'bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400'
-                                                            }`}
+                                                            } `}
                                                     >
                                                         {ref.status ? 'Active' : 'Inactive'}
                                                     </span>
@@ -215,6 +237,43 @@ const ReferralManagement = () => {
                                     )}
                                 </tbody>
                             </table>
+                            {/* Pagination */}
+                            {paginatedReferrals.length > 0 && (
+                                <div className="flex items-center justify-between mt-6">
+                                    <p className="text-sm text-[#34495E] dark:text-gray-3">
+                                        Showing <span className="font-medium">{startIndex}</span> to <span className="font-medium">{endIndex}</span> of{' '}
+                                        <span className="font-medium">{filteredReferrals.length}</span> results
+                                    </p>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            className="px-3 py-2 text-sm border border-[#ECF0F1] dark:border-dark-4 rounded-lg hover:bg-[#ECF0F1] dark:hover:bg-dark-3 disabled:opacity-50 text-[#34495E] dark:text-gray-3"
+                                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                                            disabled={currentPage === 1}
+                                        >
+                                            Previous
+                                        </button>
+                                        {Array.from({ length: totalPages }, (_, i) => (
+                                            <button
+                                                key={i + 1}
+                                                className={`px-3 py-2 text - sm rounded - lg ${currentPage === i + 1
+                                                    ? 'bg-[#00B894] text-white'
+                                                    : 'border border-[#ECF0F1] dark:border-dark-4 hover:bg-[#ECF0F1] dark:hover:bg-dark-3 text-[#34495E] dark:text-gray-3'
+                                                    } `}
+                                                onClick={() => setCurrentPage(i + 1)}
+                                            >
+                                                {i + 1}
+                                            </button>
+                                        ))}
+                                        <button
+                                            className="px-3 py-2 text-sm border border-[#ECF0F1] dark:border-dark-4 rounded-lg hover:bg-[#ECF0F1] dark:hover:bg-dark-3 disabled:opacity-50 text-[#34495E] dark:text-gray-3"
+                                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                                            disabled={currentPage === totalPages || totalPages === 0}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

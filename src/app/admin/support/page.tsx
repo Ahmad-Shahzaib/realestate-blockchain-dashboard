@@ -4,7 +4,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Building2, Filter, Search } from 'lucide-react';
 import Table from '@/common/Table';
 import SearchInput from '@/common/Input';
-import SupportService, { SupportTicket } from '@/services/support.service'; // Adjust path to your SupportService file
+import SupportService, { SupportTicket } from '@/services/support.service';
 
 interface ComponentSupportTicket {
     id: string;
@@ -19,7 +19,11 @@ interface ComponentSupportTicket {
 }
 
 const columns = [
-    { key: 'id' as keyof ComponentSupportTicket, label: 'Ticket ID' },
+    {
+        key: 'displayId' as keyof ComponentSupportTicket,
+        label: 'Ticket ID',
+        render: (row: any) => row.displayId,
+    },
     { key: 'title' as keyof ComponentSupportTicket, label: 'Title' },
     { key: 'description' as keyof ComponentSupportTicket, label: 'Description' },
     { key: 'userName' as keyof ComponentSupportTicket, label: 'User Name' },
@@ -69,6 +73,8 @@ const SupportTicketManagement = () => {
     const [tickets, setTickets] = useState<ComponentSupportTicket[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 8;
 
     // Fetch support tickets on component mount
     useEffect(() => {
@@ -117,6 +123,29 @@ const SupportTicketManagement = () => {
             return matchesSearch && matchesFilter;
         });
     }, [searchTerm, filterStatus, tickets]);
+
+    // Pagination logic
+    const totalPages = Math.ceil(filteredTickets.length / itemsPerPage);
+    const startIndex = filteredTickets.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+    const endIndex = Math.min(currentPage * itemsPerPage, filteredTickets.length);
+    const paginatedTickets = filteredTickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((ticket, index) => ({
+        ...ticket,
+        displayId: startIndex + index, // Add displayId for sequential ID
+    }));
+
+    // Ensure currentPage is within bounds
+    useEffect(() => {
+        if (totalPages === 0) {
+            setCurrentPage(1);
+        } else if (currentPage > totalPages) {
+            setCurrentPage(totalPages);
+        }
+    }, [totalPages, currentPage]);
+
+    // Reset to first page when search or filter changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, filterStatus]);
 
     return (
         <div className="min-h-screen bg-[#F5F7FA] dark:bg-dark">
@@ -184,7 +213,44 @@ const SupportTicketManagement = () => {
                         <div className="text-center text-red-600 dark:text-red-400">{error}</div>
                     ) : (
                         <div className="overflow-x-auto">
-                            <Table data={filteredTickets} columns={columns} />
+                            <Table data={paginatedTickets} columns={columns} />
+                            {/* Pagination */}
+                            {paginatedTickets.length > 0 && (
+                                <div className="flex items-center justify-between mt-6">
+                                    <p className="text-sm text-[#34495E] dark:text-gray-3">
+                                        Showing <span className="font-medium">{startIndex}</span> to <span className="font-medium">{endIndex}</span> of{' '}
+                                        <span className="font-medium">{filteredTickets.length}</span> results
+                                    </p>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            className="px-3 py-2 text-sm border border-[#ECF0F1] dark:border-dark-4 rounded-lg hover:bg-[#ECF0F1] dark:hover:bg-dark-3 disabled:opacity-50 text-[#34495E] dark:text-gray-3"
+                                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                                            disabled={currentPage === 1}
+                                        >
+                                            Previous
+                                        </button>
+                                        {Array.from({ length: totalPages }, (_, i) => (
+                                            <button
+                                                key={i + 1}
+                                                className={`px-3 py-2 text-sm rounded-lg ${currentPage === i + 1
+                                                    ? 'bg-[#00B894] text-white'
+                                                    : 'border border-[#ECF0F1] dark:border-dark-4 hover:bg-[#ECF0F1] dark:hover:bg-dark-3 text-[#34495E] dark:text-gray-3'
+                                                    }`}
+                                                onClick={() => setCurrentPage(i + 1)}
+                                            >
+                                                {i + 1}
+                                            </button>
+                                        ))}
+                                        <button
+                                            className="px-3 py-2 text-sm border border-[#ECF0F1] dark:border-dark-4 rounded-lg hover:bg-[#ECF0F1] dark:hover:bg-dark-3 disabled:opacity-50 text-[#34495E] dark:text-gray-3"
+                                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                                            disabled={currentPage === totalPages || totalPages === 0}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

@@ -33,7 +33,7 @@ interface Floor {
     minSqftBuy?: string;
     maxSqftBuy?: string;
     roi?: number;
-    totalInvestment?: number;
+    // totalInvestment?: number;
 }
 
 interface FormState {
@@ -44,7 +44,7 @@ interface FormState {
     address: string;
     city: string;
     roi: number | null;
-    totalInvestment: number | null;
+    // totalInvestment: number | null;
     state: string;
     country: string;
     latitude: string;
@@ -91,7 +91,7 @@ const initialFormState: FormState = {
     description: "",
     address: "",
     roi: null,
-    totalInvestment: null,
+    // totalInvestment: null,
     city: "",
     state: "",
     country: "",
@@ -178,7 +178,7 @@ function useGlobeResidencyForm() {
         if (!form.latitude) errs.latitude = "Latitude is required.";
         if (!form.longitude) errs.longitude = "Longitude is required.";
         if (form.roi === null || form.roi === undefined) errs.roi = "ROI is required.";
-        if (form.totalInvestment === null || form.totalInvestment === undefined) errs.totalInvestment = "Total investment is required.";
+        // if (form.totalInvestment === null || form.totalInvestment === undefined) errs.totalInvestment = "Total investment is required.";
 
 
         // developer
@@ -258,7 +258,7 @@ function useGlobeResidencyForm() {
             setForm((prev) => ({
                 ...prev,
                 [id]:
-                    id === "roi" || id === "totalInvestment"
+                    id === "roi" || id === ""
                         ? value === "" ? null : Number(value)
                         : type === "checkbox"
                             ? (e.target as HTMLInputElement).checked
@@ -395,7 +395,7 @@ function useGlobeResidencyForm() {
                         state: form.state,
                         country: form.country,
                         roi: Number(form.roi) || 0,
-                        totalInvestment: Number(form.totalInvestment) || 0,
+                        // totalInvestment: Number(form.totalInvestment) || 0,
                         coordinates: { latitude: Number(form.latitude) || 0, longitude: Number(form.longitude) || 0 },
                     },
                     developer: { name: form.developerName, description: form.developerDescription, logoUrl: form.developerLogo, website: form.developerWebsite },
@@ -528,7 +528,7 @@ export default function GlobeResidencyForm() {
     // Fetch customers when component mounts
     useEffect(() => {
         if (!customerLoading && customers.length === 0) {
-            (dispatch as any)(fetchCustomers());
+            (dispatch as any)(fetchCustomers({ page: 1, limit: 10, search: '', status: '' }));
         }
     }, [customerLoading, customers.length, dispatch]);
 
@@ -617,7 +617,7 @@ export default function GlobeResidencyForm() {
                                     <div className="text-sm text-red-600 mt-1">{validationErrors.roi}</div>
                                 )}
                             </div>
-                            <div className="space-y-2">
+                            {/* <div className="space-y-2">
                                 <label htmlFor="totalInvestment" className="text-sm font-semibold dark:text-white">
                                     * Total Investment
                                 </label>
@@ -636,7 +636,7 @@ export default function GlobeResidencyForm() {
                                 {touched.totalInvestment && validationErrors.totalInvestment && (
                                     <div className="text-sm text-red-600 mt-1">{validationErrors.totalInvestment}</div>
                                 )}
-                            </div>
+                            </div> */}
                             <div className="space-y-2">
                                 <label htmlFor="subcategory" className="text-sm font-semibold dark:text-white">
                                     * Subcategory
@@ -672,7 +672,8 @@ export default function GlobeResidencyForm() {
                                     disabled={customerLoading}
                                 >
                                     <option value="">Select customer</option>
-                                    {customers.customers?.map((customer: any) => (
+                                    {/* Fix: support both customers.customers and customers as array */}
+                                    {(Array.isArray(customers?.customers) ? customers.customers : Array.isArray(customers) ? customers : []).map((customer: any) => (
                                         <option key={customer._id} value={customer._id}>
                                             {customer.name || customer.email || customer._id}
                                         </option>
@@ -1510,6 +1511,7 @@ export default function GlobeResidencyForm() {
                                 <input
                                     id="walletAddress"
                                     placeholder="Contract Address"
+
                                     className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.walletAddress && validationErrors.walletAddress ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500'}`}
                                     value={form.walletAddress}
                                     onChange={handleChange}

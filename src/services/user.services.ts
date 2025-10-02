@@ -87,12 +87,14 @@ export async function updateUserProfile(userData: UserProfile): Promise<{
 }
 
 // ✅ Get all users (admin only)
-export async function getUsersInfo(): Promise<{
+// ✅ Get all users (admin only)
+export async function getUsersInfo(page: number = 1, limit: number = 10, searchTerm: string = ''): Promise<{
     status: string;
-    data: { users: UserDetails[] };
+    data: { users: UserDetails[], pagination: { totalUsers: number, totalPages: number, currentPage: number, limit: number } };
 }> {
     try {
-        return await getRequest(getAxiosInstance('/api'), "/api/admin/users");
+        const query = `/api/admin/users?page=${page}&limit=${limit}${searchTerm ? `&search=${encodeURIComponent(searchTerm)}` : ''}&_=${Date.now()}`;
+        return await getRequest(getAxiosInstance('/api'), query);
     } catch (error) {
         console.error("Error fetching users info:", error);
         throw error;

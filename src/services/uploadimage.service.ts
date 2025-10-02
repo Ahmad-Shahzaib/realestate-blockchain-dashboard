@@ -1,6 +1,6 @@
 // services/uploadService.ts
 
-const API_BASE_URL = "https://api.fractprop.com/api";
+const API_BASE_URL = "http://localhost:5000/api";
 
 export interface UploadResponse {
     status: string;

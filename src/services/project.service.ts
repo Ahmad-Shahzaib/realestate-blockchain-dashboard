@@ -22,6 +22,8 @@ export interface ProjectStats {
 }
 
 export interface Project {
+  totalUnits: number;
+  customerId: string;
   totalInvestment: number;
   availableUnits: number;
   _id: string;
@@ -92,6 +94,7 @@ export interface ProjectPayload {
     totalInvestment: any;
     specifications: string[];
     features: string[];
+
   }>;
   mainImageUrl: string;
   galleryImages: string[];
@@ -103,7 +106,7 @@ export interface ProjectPayload {
 }
 
 
-const API_BASE_URL = 'https://api.fractprop.com/api';
+const API_BASE_URL = 'http://localhost:5000/api';
 
 // Create Axios instance
 const api: AxiosInstance = axios.create({
@@ -171,10 +174,17 @@ export const ProjectService = {
    * @param page Optional page number for pagination
    * @returns Promise with the API response
    */
-  getAllProjects: async (page?: number): Promise<ApiResponse> => {
+  getAllProjects: async (page?: number, recordsPerPage?: number, searchQuery?: string, customerId?: string): Promise<ApiResponse> => {
     try {
-      // const params = page ? { params: { page } } : {};
-      const response = await api.get('/projects');
+      // Add customerId as query param if provided
+      let url = '/projects';
+      const params: string[] = [];
+      if (page) params.push(`page=${page}`);
+      if (recordsPerPage) params.push(`limit=${recordsPerPage}`);
+      if (searchQuery) params.push(`search=${encodeURIComponent(searchQuery)}`);
+      if (customerId) params.push(`customerId=${customerId}`);
+      if (params.length) url += '?' + params.join('&');
+      const response = await api.get(url);
       console.log("API Response:", response.data);
       return response.data;
     } catch (error: any) {
@@ -195,6 +205,17 @@ export const ProjectService = {
       throw error; // Error already handled by interceptor
     }
   },
+
+  //  update project 
+  updateProject: async (id: string, payload: Partial<ProjectPayload>): Promise<Project> => {
+    try {
+      const response = await api.put(`/projects/${id}`, payload);
+      return response.data.data;
+    } catch (error: any) {
+      throw error; // Error already handled by interceptor
+    }
+  },
+
 
   /**
    * Find a project by ID from a list of projects

@@ -12,7 +12,7 @@ import { fetchCustomers } from '@/redux/reducers/customerslice/customerSlice';
 const page = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(fetchCustomers());
+    dispatch(fetchCustomers({ page: 1, limit: 10, search: '', status: '' }));
   }, [dispatch]);
   return (
     <div>

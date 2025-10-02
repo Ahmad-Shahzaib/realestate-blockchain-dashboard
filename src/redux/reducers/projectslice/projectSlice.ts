@@ -17,10 +17,10 @@ const initialState: ProjectState = {
 
 export const createProject = createAsyncThunk(
   'project/createProject',
-  async (payload: ProjectPayload, { rejectWithValue }) => {
+  async (payload: ProjectPayload | any, { rejectWithValue }) => {
     try {
       const response = await ProjectService.createProject(payload);
-      if(response.status == 'success') {
+      if (response.status == 'success') {
         toast.success('Project created successfully!');
       }
       return response;

@@ -243,18 +243,19 @@ export const CUSTOMER_NAV_DATA = [
         icon: GrTransaction,
         items: [],
       },
+        {
+        title: "Leads",
+        url: "/customer/leads",
+        icon: FaClipboardList,
+        items: [],
+      },
       {
         title: "Referrals",
         url: "/customer/referrals",
         icon: FaFirefoxBrowser,
         items: [],
       },
-      {
-        title: "Leads",
-        url: "/customer/leads",
-        icon: FaClipboardList,
-        items: [],
-      },
+    
 
       {
         title: "Settings",

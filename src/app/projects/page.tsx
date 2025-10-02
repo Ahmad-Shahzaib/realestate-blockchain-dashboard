@@ -17,7 +17,7 @@ const TABS = [
 ] as const;
 
 const PROJECTS_PER_PAGE = 6;
-const SCROLL_THRESHOLD = 200;
+const SCROLL_THRESHOLD = 12;
 
 type TabId = typeof TABS[number]['id'];
 

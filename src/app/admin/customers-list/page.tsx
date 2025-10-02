@@ -1,39 +1,35 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, Filter, MoreVertical, Mail, Phone, MapPin, Building2, Edit, Trash2 } from 'lucide-react';
+import { Search, Filter, Building2, Edit, Trash2, Mail, Phone, MapPin } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { fetchCustomers } from '@/redux/reducers/customerslice/customerSlice';
-import SearchInput from '@/common/Input'; // Assuming the same SearchInput component as in TransactionDetailPage
+import { fetchCustomers, resetPage } from '@/redux/reducers/customerslice/customerSlice';
+import SearchInput from '@/common/Input';
 
 const CustomerList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const dispatch = useAppDispatch();
-  const { customers, loading, error } = useAppSelector((state) => state.customer || { customers: [], loading: false, error: null });
+  const { customers, pagination, loading, error } = useAppSelector((state) => state.customer || {
+    customers: [],
+    pagination: null,
+    loading: false,
+    error: null,
+  });
 
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 20; // Matches API's default limit
 
   // Normalize incoming customers to a predictable shape and memoize
   const normalizedCustomers = useMemo(() => {
-    const src: any = customers as any;
-    const listSource = Array.isArray(src)
-      ? src
-      : (src && Array.isArray(src.customers))
-        ? src.customers
-        : (src && src.data && Array.isArray(src.data.customers))
-          ? src.data.customers
-          : [];
-
-    return (listSource || []).map((c: any) => {
+    const safeCustomers = Array.isArray(customers) ? customers : [];
+    return safeCustomers.map((c: any) => {
       const name = c.name || [c.firstName, c.lastName].filter(Boolean).join(' ') || c.email || '';
       const email = c.email || c.emailAddress || '';
       const phone = c.phone || c.phoneNumber || c.contact || '';
       const location = c.location || c.primaryAddress || [c.city, c.state, c.country].filter(Boolean).join(', ') || '';
-      const statusRaw = (c.status || c.accountStatus || 'inactive');
+      const statusRaw = c.status || c.accountStatus || c.kycStatus || 'inactive';
       const status = typeof statusRaw === 'string' ? statusRaw.toLowerCase() : String(statusRaw).toLowerCase();
       const createdAt = c.createdAt || c.dateOfRegistration || c.date || null;
       return {
@@ -50,54 +46,31 @@ const CustomerList = () => {
     });
   }, [customers]);
 
-  // Derived customers list from store (search + filter)
-  const filteredCustomers = useMemo(() => {
-    const term = (searchTerm || '').toLowerCase().trim();
-    return normalizedCustomers.filter((customer: any) => {
-      const name = (customer.name || '').toLowerCase();
-      const email = (customer.email || '').toLowerCase();
-      const matchesSearch = !term || name.includes(term) || email.includes(term);
-      const matchesFilter = filterStatus === 'all' || (customer.status || 'inactive') === filterStatus.toLowerCase();
-      return matchesSearch && matchesFilter;
-    });
-  }, [normalizedCustomers, searchTerm, filterStatus]);
-
-  // Pagination logic
-  const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
-
-  // Ensure currentPage is within bounds when filtered data changes
+  // Fetch customers when page, search, or filter changes
   useEffect(() => {
-    if (totalPages === 0) {
-      setCurrentPage(1);
-    } else if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [totalPages, currentPage]);
+    dispatch(fetchCustomers({ page: currentPage, limit: itemsPerPage, search: searchTerm, status: filterStatus }));
+  }, [dispatch, currentPage, searchTerm, filterStatus]);
 
-  const paginatedCustomers = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredCustomers.slice(start, start + itemsPerPage);
-  }, [filteredCustomers, currentPage]);
-
-  // Compute display indices for "Showing X to Y of Z"
-  const startIndex = filteredCustomers.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = Math.min(currentPage * itemsPerPage, filteredCustomers.length);
-
-  // Reset to first page when filter/search changes
+  // Reset page to 1 when search or filter changes
   useEffect(() => {
+    dispatch(resetPage());
     setCurrentPage(1);
-  }, [searchTerm, filterStatus]);
+  }, [searchTerm, filterStatus, dispatch]);
 
-  // Fetch customers on mount
+  // Ensure currentPage is within bounds
   useEffect(() => {
-    dispatch(fetchCustomers());
-  }, [dispatch]);
+    if (pagination && currentPage > pagination.pages && pagination.pages > 0) {
+      setCurrentPage(pagination.pages);
+    }
+  }, [pagination, currentPage]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
+      case 'approved':
         return 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400';
       case 'inactive':
+      case 'rejected':
         return 'bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400';
       case 'pending':
         return 'bg-[#F5F7FA] text-[#3498DB] dark:bg-dark-3 dark:text-blue-400';
@@ -162,7 +135,7 @@ const CustomerList = () => {
         <div className="bg-white rounded-2xl shadow-lg p-6 dark:bg-dark-2">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-[#2C3E50] dark:text-gray-2">
-              Customers ({filteredCustomers.length})
+              Customers ({pagination?.total || 0})
             </h2>
           </div>
           <div className="overflow-x-auto">
@@ -190,77 +163,77 @@ const CustomerList = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#ECF0F1] dark:divide-dark-4">
-                {paginatedCustomers.map((customer: any) => (
-                  <tr key={customer.id} className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3 transition-colors">
-                    <td className="py-4 px-2">
-                      <div className="flex items-center space-x-3">
-                        <img
-                          src={customer.profilePicture ? (typeof customer.profilePicture === 'string' ? customer.profilePicture : '/images/user.png') : '/images/user.png'}
-                          alt={customer.name || 'User'}
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
-                        <div>
-                          <p className="font-semibold text-[#2C3E50] dark:text-gray-2">{customer.name || customer.email}</p>
-                          <p className="text-sm text-[#34495E] dark:text-gray-3">{customer.email}</p>
+                {normalizedCustomers.length > 0 ? (
+                  normalizedCustomers.map((customer: any, index: number) => (
+                    <tr key={customer.id} className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3 transition-colors">
+                      <td className="py-4 px-2">
+                        <div className="flex items-center space-x-3">
+                          <img
+                            src={
+                              customer.profilePicture
+                                ? typeof customer.profilePicture === 'string'
+                                  ? customer.profilePicture
+                                  : '/images/user.png'
+                                : '/images/user.png'
+                            }
+                            alt={customer.name || 'User'}
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
+                          <div>
+                            <p className="font-semibold text-[#2C3E50] dark:text-gray-2">{customer.name || customer.email}</p>
+                            <p className="text-sm text-[#34495E] dark:text-gray-3">{customer.email}</p>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-2">
-                      <div className="space-y-1">
+                      </td>
+                      <td className="py-4 px-2">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-sm text-[#34495E] dark:text-gray-3">
+                            <Mail size={14} className="text-[#34495E] dark:text-gray-3" />
+                            <span className="truncate max-w-48">{customer.email}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-[#34495E] dark:text-gray-3">
+                            <Phone size={14} className="text-[#34495E] dark:text-gray-3" />
+                            <span>{customer.phone || '—'}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-4 px-2">
                         <div className="flex items-center gap-2 text-sm text-[#34495E] dark:text-gray-3">
-                          <Mail size={14} className="text-[#34495E] dark:text-gray-3" />
-                          <span className="truncate max-w-48">{customer.email}</span>
+                          <MapPin size={14} className="text-[#34495E] dark:text-gray-3" />
+                          <span>{customer.location || '—'}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-[#34495E] dark:text-gray-3">
-                          <Phone size={14} className="text-[#34495E] dark:text-gray-3" />
-                          <span>{customer.phone || '—'}</span>
+                      </td>
+                      <td className="py-4 px-2">
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(customer.status)}`}>
+                          {(customer.status || 'inactive').charAt(0).toUpperCase() + (customer.status || 'inactive').slice(1)}
+                        </span>
+                      </td>
+                      <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">
+                        <span>{customer.createdAt ? new Date(customer.createdAt).toLocaleDateString() : '—'}</span>
+                      </td>
+                      <td className="py-4 px-2">
+                        <div className="flex items-center gap-1">
+                          <button
+                            className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-dark-4 rounded-lg transition-all duration-200"
+                            title="Edit"
+                          >
+                            <Edit size={14} />
+                          </button>
+                          {/* Uncomment when delete functionality is implemented */}
+                          {/* <button
+                            className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-dark-4 rounded-lg transition-all duration-200"
+                            title="Delete"
+                          >
+                            <Trash2 size={14} />
+                          </button> */}
                         </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-2">
-                      <div className="flex items-center gap-2 text-sm text-[#34495E] dark:text-gray-3">
-                        <MapPin size={14} className="text-[#34495E] dark:text-gray-3" />
-                        <span>{customer.location || '—'}</span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-2">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(customer.status)}`}
-                      >
-                        {(customer.status || 'inactive').charAt(0).toUpperCase() + (customer.status || 'inactive').slice(1)}
-                      </span>
-                    </td>
-                    <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">
-                      <span>{customer.createdAt ? new Date(customer.createdAt).toLocaleDateString() : '—'}</span>
-                    </td>
-                    <td className="py-4 px-2">
-                      <div className="flex items-center gap-1">
-                        <button
-                          className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-dark-4 rounded-lg transition-all duration-200"
-                          title="Edit"
-                        >
-                          <Edit size={14} />
-                        </button>
-                        <button
-                          className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-dark-4 rounded-lg transition-all duration-200"
-                          title="Delete"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                        <button
-                          className="p-2 text-[#34495E] hover:text-[#2C3E50] hover:bg-[#ECF0F1] dark:hover:bg-dark-4 rounded-lg transition-all duration-200"
-                          title="More"
-                        >
-                          <MoreVertical size={14} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                {paginatedCustomers.length === 0 && (
+                      </td>
+                    </tr>
+                  ))
+                ) : (
                   <tr>
                     <td colSpan={6} className="py-4 px-2 text-center text-[#34495E] dark:text-gray-4">
-                      No customers found matching your search.
+                      No customers found matching your criteria.
                     </td>
                   </tr>
                 )}
@@ -270,11 +243,12 @@ const CustomerList = () => {
         </div>
 
         {/* Pagination */}
-        {filteredCustomers.length > 0 && (
+        {pagination && pagination.total > 0 && (
           <div className="flex items-center justify-between mt-6">
             <p className="text-sm text-[#34495E] dark:text-gray-3">
-              Showing <span className="font-medium">{startIndex}</span> to <span className="font-medium">{endIndex}</span> of{' '}
-              <span className="font-medium">{filteredCustomers.length}</span> results
+              Showing <span className="font-medium">{(pagination.page - 1) * pagination.limit + 1}</span> to{' '}
+              <span className="font-medium">{Math.min(pagination.page * pagination.limit, pagination.total)}</span> of{' '}
+              <span className="font-medium">{pagination.total}</span> results
             </p>
             <div className="flex items-center gap-2">
               <button
@@ -284,7 +258,7 @@ const CustomerList = () => {
               >
                 Previous
               </button>
-              {Array.from({ length: totalPages }, (_, i) => (
+              {Array.from({ length: pagination.pages }, (_, i) => (
                 <button
                   key={i + 1}
                   className={`px-3 py-2 text-sm rounded-lg ${currentPage === i + 1
@@ -298,8 +272,8 @@ const CustomerList = () => {
               ))}
               <button
                 className="px-3 py-2 text-sm border border-[#ECF0F1] dark:border-dark-4 rounded-lg hover:bg-[#ECF0F1] dark:hover:bg-dark-3 disabled:opacity-50 text-[#34495E] dark:text-gray-3"
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages || totalPages === 0}
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, pagination.pages))}
+                disabled={currentPage === pagination.pages || pagination.pages === 0}
               >
                 Next
               </button>

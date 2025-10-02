@@ -1,59 +1,40 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Building2, MapPin, Calendar, Filter, Search, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 import SearchInput from '@/common/Input';
-
-type Transaction = {
-    id: number;
-    propertyName: string;
-    address: string;
-    price: number;
-    buyer: string;
-    seller: string;
-    status: string;
-    date: string;
-};
+import { TransactionService, Transaction } from "@/services/transaction.service";
 
 const Page = () => {
+    const searchParams = useSearchParams();
+    const customerId = searchParams.get("customerId") || ""; // get customerId from URL
+
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const recordsPerPage = 8;
 
-    const transactions: Transaction[] = [
-        {
-            id: 1,
-            propertyName: "Sunset Villa",
-            address: "123 Ocean Dr, Miami, FL",
-            price: 750000,
-            buyer: "Alice Brown",
-            seller: "Bob Wilson",
-            status: "Completed",
-            date: "2025-08-15",
-        },
-        {
-            id: 2,
-            propertyName: "Downtown Loft",
-            address: "456 City Ave, New York, NY",
-            price: 1200000,
-            buyer: "Charlie Davis",
-            seller: "Emma Clark",
-            status: "Pending",
-            date: "2025-09-10",
-        },
-        {
-            id: 3,
-            propertyName: "Countryside Cottage",
-            address: "789 Rural Rd, Austin, TX",
-            price: 450000,
-            buyer: "David Lee",
-            seller: "Fiona Adams",
-            status: "Cancelled",
-            date: "2025-07-20",
-        },
-    ];
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [totalCount, setTotalCount] = useState(0);
+
+    useEffect(() => {
+        if (!customerId) return;
+        setLoading(true);
+        setError(null);
+        TransactionService.getTransactionsByCustomerId(customerId, currentPage, recordsPerPage)
+            .then((res) => {
+                setTransactions(res.data.transactions || []);
+                setTotalCount(res.data.pagination?.total || 0);
+            })
+            .catch((err) => {
+                setError(err.message || "Failed to fetch transactions.");
+            })
+            .finally(() => setLoading(false));
+    }, [customerId, currentPage]);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
@@ -62,17 +43,20 @@ const Page = () => {
 
     const filteredTransactions = transactions.filter(
         (transaction) =>
-            (transaction.propertyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                transaction.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                transaction.buyer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                transaction.seller.toLowerCase().includes(searchQuery.toLowerCase())) &&
+            (
+                (typeof transaction.propertyId === "object" && transaction.propertyId?.name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                (typeof transaction.propertyId === "string" && transaction.propertyId.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                (transaction.status && transaction.status.toLowerCase().includes(searchQuery.toLowerCase()))
+            ) &&
             (statusFilter === "All" || transaction.status === statusFilter)
     );
 
     // Pagination logic
-    const totalPages = Math.ceil(filteredTransactions.length / recordsPerPage);
-    const startIndex = (currentPage - 1) * recordsPerPage;
-    const paginatedTransactions = filteredTransactions.slice(startIndex, startIndex + recordsPerPage);
+    const totalPages = Math.ceil((totalCount || filteredTransactions.length) / recordsPerPage);
+    // const startIndex = (currentPage - 1) * recordsPerPage;
+    // const paginatedTransactions = filteredTransactions.slice(startIndex, startIndex + recordsPerPage);
+    // Since backend paginates, use filteredTransactions directly
+    const paginatedTransactions = filteredTransactions;
 
     const handlePageChange = (page: number) => {
         if (page >= 1 && page <= totalPages) {
@@ -141,98 +125,116 @@ const Page = () => {
                         </h2>
                     </div>
 
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="border-b border-[#ECF0F1] dark:border-dark-4">
-                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                        Property
-                                    </th>
-                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                        Address
-                                    </th>
-                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                        Price
-                                    </th>
-                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                        Buyer
-                                    </th>
-                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                        Seller
-                                    </th>
-                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                        Status
-                                    </th>
-                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                        Date
-                                    </th>
-                                    <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-[#ECF0F1] dark:divide-dark-4">
-                                {paginatedTransactions.length > 0 ? (
-                                    paginatedTransactions.map((transaction) => (
-                                        <tr
-                                            key={transaction.id}
-                                            className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3 transition-colors"
-                                        >
-                                            <td className="py-4 px-2">
-                                                <div className="flex items-center space-x-3">
-                                                    <div className="w-10 h-10 bg-[#00B894] rounded-lg flex items-center justify-center text-white font-semibold text-sm">
-                                                        {transaction.propertyName[0]}
+                    {loading ? (
+                        <div className="py-8 text-center text-[#34495E] dark:text-gray-4">Loading transactions...</div>
+                    ) : error ? (
+                        <div className="py-8 text-center text-red-600 dark:text-red-400">{error}</div>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b border-[#ECF0F1] dark:border-dark-4">
+                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                            Property
+                                        </th>
+                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                            Address
+                                        </th>
+                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                            Price
+                                        </th>
+                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                            Buyer
+                                        </th>
+                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                            Seller
+                                        </th>
+                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                            Status
+                                        </th>
+                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                            Date
+                                        </th>
+                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                            Actions
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-[#ECF0F1] dark:divide-dark-4">
+                                    {paginatedTransactions.length > 0 ? (
+                                        paginatedTransactions.map((transaction) => (
+                                            <tr
+                                                key={transaction._id}
+                                                className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3 transition-colors"
+                                            >
+                                                <td className="py-4 px-2">
+                                                    <div className="flex items-center space-x-3">
+                                                        <div className="w-10 h-10 bg-[#00B894] rounded-lg flex items-center justify-center text-white font-semibold text-sm">
+                                                            {typeof transaction.propertyId === "object"
+                                                                ? transaction.propertyId?.name?.[0] || "?"
+                                                                : transaction.propertyId?.[0] || "?"}
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-semibold text-[#2C3E50] dark:text-gray-2">
+                                                                {typeof transaction.propertyId === "object"
+                                                                    ? transaction.propertyId?.name
+                                                                    : transaction.propertyId}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <p className="font-semibold text-[#2C3E50] dark:text-gray-2">{transaction.propertyName}</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.address}</td>
-                                            <td className="py-4 px-2 font-medium text-[#2C3E50] dark:text-gray-2">
-                                                PKR {transaction.price.toLocaleString()}
-                                            </td>
-                                            <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.buyer}</td>
-                                            <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.seller}</td>
-                                            <td className="py-4 px-2">
-                                                <span
-                                                    className={`px-3 py-1 rounded-full text-xs font-semibold ${transaction.status === "Completed"
-                                                        ? "bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400"
-                                                        : transaction.status === "Pending"
-                                                            ? "bg-[#E8F8F5] text-[#3498DB] dark:bg-blue-600/20 dark:text-blue-400"
-                                                            : "bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400"
-                                                        }`}
-                                                >
-                                                    {transaction.status}
-                                                </span>
-                                            </td>
-                                            <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.date}</td>
-                                            <td className="py-4 px-2">
-                                                <button
-                                                    onClick={() => setSelectedTransaction(transaction)}
-                                                    className="bg-[#E8F8F5] dark:bg-dark-3 dark:text-white text-[#3498DB] px-3 py-1 rounded-lg text-sm hover:bg-[#D1F2EB] dark:hover:bg-dark-4 transition-colors"
-                                                >
-                                                    <Eye className="h-4 w-4 inline mr-1" /> View
-                                                </button>
+                                                </td>
+                                                <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">
+                                                    {typeof transaction.propertyId === "object"
+                                                        ? transaction.propertyId?.address || transaction.propertyId?.location?.address || "-"
+                                                        : "-"}
+                                                </td>
+                                                <td className="py-4 px-2 font-medium text-[#2C3E50] dark:text-gray-2">
+                                                    PKR {transaction.totalPrice?.toLocaleString?.() ?? "-"}
+                                                </td>
+                                                <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.customerId}</td>
+                                                <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.userId || "-"}</td>
+                                                <td className="py-4 px-2">
+                                                    <span
+                                                        className={`px-3 py-1 rounded-full text-xs font-semibold ${transaction.status === "Completed"
+                                                            ? "bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400"
+                                                            : transaction.status === "Pending"
+                                                                ? "bg-[#E8F8F5] text-[#3498DB] dark:bg-blue-600/20 dark:text-blue-400"
+                                                                : "bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400"
+                                                            }`}
+                                                    >
+                                                        {transaction.status}
+                                                    </span>
+                                                </td>
+                                                <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">
+                                                    {transaction.createdAt ? new Date(transaction.createdAt).toLocaleDateString() : "-"}
+                                                </td>
+                                                <td className="py-4 px-2">
+                                                    <button
+                                                        onClick={() => setSelectedTransaction(transaction)}
+                                                        className="bg-[#E8F8F5] dark:bg-dark-3 dark:text-white text-[#3498DB] px-3 py-1 rounded-lg text-sm hover:bg-[#D1F2EB] dark:hover:bg-dark-4 transition-colors"
+                                                    >
+                                                        <Eye className="h-4 w-4 inline mr-1" /> View
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={8} className="py-4 px-2 text-center text-[#34495E] dark:text-gray-4">
+                                                No transactions found matching your search.
                                             </td>
                                         </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={8} className="py-4 px-2 text-center text-[#34495E] dark:text-gray-4">
-                                            No transactions found matching your search.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
 
                     {/* Pagination Controls */}
                     {totalPages > 1 && (
                         <div className="flex items-center justify-between mt-6">
                             <p className="text-sm text-[#34495E] dark:text-gray-4">
-                                Showing {startIndex + 1} to {Math.min(startIndex + recordsPerPage, filteredTransactions.length)} of {filteredTransactions.length} transactions
+                                Showing {(currentPage - 1) * recordsPerPage + 1} to {Math.min(currentPage * recordsPerPage, totalCount)} of {totalCount} transactions
                             </p>
                             <div className="flex items-center space-x-2">
                                 <button
