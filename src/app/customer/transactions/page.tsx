@@ -1,68 +1,73 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Building2, MapPin, Calendar, Filter, Search, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 import SearchInput from '@/common/Input';
-import { TransactionService, Transaction } from "@/services/transaction.service";
+import { TransactionPayment } from "@/redux/transactionPaymentSlice";
+import Table from '@/common/Table';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { fetchTransactionsByCustomer } from '@/redux/reducers/customerslice/customerTransactionsSlice';
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { fetchTransactionPayments } from "@/redux/transactionPaymentSlice";
 
 const Page = () => {
     const searchParams = useSearchParams();
-    const customerId = searchParams.get("customerId") || ""; // get customerId from URL
+    const userInfo: any = useSelector((state: RootState) => state.userInfo);
+    const customerId = userInfo?.user?._id || searchParams.get("customerId") || "";
+
 
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
-    const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+    const [selectedTransaction, setSelectedTransaction] = useState<TransactionPayment | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const recordsPerPage = 8;
+    const { transactions, loading, error, pagination } = useAppSelector((state: any) => state.transactionPayment);
+    const dispatch = useAppDispatch();
+    const totalCount = pagination?.total ?? (Array.isArray(transactions) ? transactions.length : 0);
 
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [totalCount, setTotalCount] = useState(0);
-
+    console.log("Transactions from Redux:", transactions);
     useEffect(() => {
-        if (!customerId) return;
-        setLoading(true);
-        setError(null);
-        TransactionService.getTransactionsByCustomerId(customerId, currentPage, recordsPerPage)
-            .then((res) => {
-                setTransactions(res.data.transactions || []);
-                setTotalCount(res.data.pagination?.total || 0);
-            })
-            .catch((err) => {
-                setError(err.message || "Failed to fetch transactions.");
-            })
-            .finally(() => setLoading(false));
+        dispatch(fetchTransactionPayments({ customerId, page: currentPage, limit: recordsPerPage }));
+        // Only run when customerId or currentPage changes
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [customerId, currentPage]);
 
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
         setCurrentPage(1);
-    };
+    }, []);
 
-    const filteredTransactions = transactions.filter(
-        (transaction) =>
-            (
-                (typeof transaction.propertyId === "object" && transaction.propertyId?.name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
-                (typeof transaction.propertyId === "string" && transaction.propertyId.toLowerCase().includes(searchQuery.toLowerCase())) ||
-                (transaction.status && transaction.status.toLowerCase().includes(searchQuery.toLowerCase()))
-            ) &&
-            (statusFilter === "All" || transaction.status === statusFilter)
-    );
 
-    // Pagination logic
-    const totalPages = Math.ceil((totalCount || filteredTransactions.length) / recordsPerPage);
-    // const startIndex = (currentPage - 1) * recordsPerPage;
-    // const paginatedTransactions = filteredTransactions.slice(startIndex, startIndex + recordsPerPage);
-    // Since backend paginates, use filteredTransactions directly
+    // Defensive: ensure transactions is always an array
+    const safeTransactions = useMemo(() => Array.isArray(transactions) ? transactions : [], [transactions]);
+
+    // Memoized filter logic for new API structure
+    const filteredTransactions = useMemo(() => {
+        const search = searchQuery.trim().toLowerCase();
+        return safeTransactions.filter((transaction) => {
+            const propertyName = transaction?.propertyName || "";
+            const status = transaction?.status || "";
+            const matchesSearch =
+                propertyName.toLowerCase().includes(search) ||
+                status.toLowerCase().includes(search);
+            const matchesStatus = statusFilter === "All" || status === statusFilter;
+            return matchesSearch && matchesStatus;
+        });
+    }, [safeTransactions, searchQuery, statusFilter]);
+
+    // Pagination logic: use backend totalCount and backend-paginated transactions
+    const totalPages = useMemo(() => Math.max(1, Math.ceil(totalCount / recordsPerPage)), [totalCount, recordsPerPage]);
+    // Since backend paginates, filteredTransactions is already paginated
     const paginatedTransactions = filteredTransactions;
 
-    const handlePageChange = (page: number) => {
+    const handlePageChange = useCallback((page: number) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
         }
-    };
+    }, [totalPages]);
 
     return (
         <div className="min-h-screen bg-[#F5F7FA] dark:bg-dark">
@@ -108,6 +113,7 @@ const Page = () => {
                                             ? "bg-white dark:bg-dark-4 text-[#3498DB] shadow-sm"
                                             : "text-[#34495E] dark:text-gray-3 hover:text-[#2C3E50] dark:hover:text-gray-2"
                                             }`}
+                                        type="button"
                                     >
                                         {status}
                                     </button>
@@ -130,111 +136,141 @@ const Page = () => {
                     ) : error ? (
                         <div className="py-8 text-center text-red-600 dark:text-red-400">{error}</div>
                     ) : (
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead>
-                                    <tr className="border-b border-[#ECF0F1] dark:border-dark-4">
-                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                            Property
-                                        </th>
-                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                            Address
-                                        </th>
-                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                            Price
-                                        </th>
-                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                            Buyer
-                                        </th>
-                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                            Seller
-                                        </th>
-                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                            Status
-                                        </th>
-                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                            Date
-                                        </th>
-                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                                            Actions
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-[#ECF0F1] dark:divide-dark-4">
-                                    {paginatedTransactions.length > 0 ? (
-                                        paginatedTransactions.map((transaction) => (
-                                            <tr
-                                                key={transaction._id}
-                                                className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3 transition-colors"
+                        <Table
+                            data={paginatedTransactions.map((transaction: any) => {
+                                const propertyName = transaction.propertyName || "-";
+                                const propertyInitial = propertyName[0] || "?";
+                                const propertyAddress = transaction.propertyLocation?.address || "-";
+                                const seller = transaction.customerName || transaction.customerEmail || transaction.customerId || "-";
+                                const buyer = transaction.userName || transaction.userEmail || transaction.userId || "-";
+                                const totalPrice = transaction.totalPrice ? transaction.totalPrice.toLocaleString() : "-";
+                                const status = transaction.status || "-";
+                                const createdAt = transaction.createdAt ? new Date(transaction.createdAt).toLocaleDateString() : "-";
+                                return {
+                                    id: transaction.transactionId,
+                                    property: { propertyInitial, propertyName },
+                                    propertyAddress,
+                                    totalPrice,
+                                    buyer,
+                                    seller,
+                                    paymentSlip: transaction?.payments?.[0]?.paymentSlip || null,
+                                    status,
+                                    createdAt,
+                                    transaction,
+                                    actions: "",
+                                };
+                            })}
+                            columns={[
+                                {
+                                    key: 'property',
+                                    label: 'Property',
+                                    render: (row: any) => (
+                                        <div className="flex items-center space-x-3">
+                                            <div className="w-10 h-10 bg-[#00B894] rounded-lg flex items-center justify-center text-white font-semibold text-sm">
+                                                {row.property.propertyInitial}
+                                            </div>
+                                            <div>
+                                                <p className="font-semibold text-[#2C3E50] dark:text-gray-2">
+                                                    {row.property.propertyName}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ),
+                                },
+                                {
+                                    key: 'propertyAddress',
+                                    label: 'Address',
+                                },
+                                {
+                                    key: 'totalPrice',
+                                    label: 'Price',
+                                    render: (row: any) => (
+                                        <span className="font-medium text-[#2C3E50] dark:text-gray-2">PKR {row.totalPrice}</span>
+                                    ),
+                                },
+                                {
+                                    key: 'buyer',
+                                    label: 'Buyer',
+                                },
+                                {
+                                    key: 'seller',
+                                    label: 'Seller',
+                                },
+                                // New Payment Slip column
+                                {
+                                    key: 'paymentSlip',
+                                    label: 'Payment Slip',
+                                    render: (row: any) => {
+                                        // Show first payment slip if available
+                                        const slip = row.transaction?.payments?.[0]?.paymentSlip;
+                                        return slip ? (
+                                            <a href={slip} target="_blank" rel="noopener noreferrer">
+                                                <img src={slip} alt="Payment Slip" className="w-16 h-10 object-cover rounded shadow border border-gray-200 dark:border-dark-4" />
+                                            </a>
+                                        ) : (
+                                            <span className="text-gray-400 dark:text-gray-500">-</span>
+                                        );
+                                    },
+                                },
+                                {
+                                    key: 'status',
+                                    label: 'Status',
+                                    render: (row: any) => (
+                                        <span
+                                            className={`px-3 py-1 rounded-full text-xs font-semibold ${row.status === "Completed"
+                                                ? "bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400"
+                                                : row.status === "Pending"
+                                                    ? "bg-[#E8F8F5] text-[#3498DB] dark:bg-blue-600/20 dark:text-blue-400"
+                                                    : "bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400"
+                                                }`}
+                                        >
+                                            {row.status}
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    key: 'createdAt',
+                                    label: 'Date',
+                                },
+                                {
+                                    key: 'actions',
+                                    label: 'Actions',
+                                    render: (row: any) => (
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => setSelectedTransaction(row.transaction)}
+                                                className="bg-[#E8F8F5] dark:bg-dark-3 dark:text-white text-[#3498DB] px-3 py-1 rounded-lg text-sm hover:bg-[#D1F2EB] dark:hover:bg-dark-4 transition-colors"
                                             >
-                                                <td className="py-4 px-2">
-                                                    <div className="flex items-center space-x-3">
-                                                        <div className="w-10 h-10 bg-[#00B894] rounded-lg flex items-center justify-center text-white font-semibold text-sm">
-                                                            {typeof transaction.propertyId === "object"
-                                                                ? transaction.propertyId?.name?.[0] || "?"
-                                                                : transaction.propertyId?.[0] || "?"}
-                                                        </div>
-                                                        <div>
-                                                            <p className="font-semibold text-[#2C3E50] dark:text-gray-2">
-                                                                {typeof transaction.propertyId === "object"
-                                                                    ? transaction.propertyId?.name
-                                                                    : transaction.propertyId}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">
-                                                    {typeof transaction.propertyId === "object"
-                                                        ? transaction.propertyId?.address || transaction.propertyId?.location?.address || "-"
-                                                        : "-"}
-                                                </td>
-                                                <td className="py-4 px-2 font-medium text-[#2C3E50] dark:text-gray-2">
-                                                    PKR {transaction.totalPrice?.toLocaleString?.() ?? "-"}
-                                                </td>
-                                                <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.customerId}</td>
-                                                <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.userId || "-"}</td>
-                                                <td className="py-4 px-2">
-                                                    <span
-                                                        className={`px-3 py-1 rounded-full text-xs font-semibold ${transaction.status === "Completed"
-                                                            ? "bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400"
-                                                            : transaction.status === "Pending"
-                                                                ? "bg-[#E8F8F5] text-[#3498DB] dark:bg-blue-600/20 dark:text-blue-400"
-                                                                : "bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400"
-                                                            }`}
-                                                    >
-                                                        {transaction.status}
-                                                    </span>
-                                                </td>
-                                                <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">
-                                                    {transaction.createdAt ? new Date(transaction.createdAt).toLocaleDateString() : "-"}
-                                                </td>
-                                                <td className="py-4 px-2">
+                                                <Eye className="h-4 w-4 inline mr-1" /> View
+                                            </button>
+                                            {row.status === "pending" && (
+                                                <>
                                                     <button
-                                                        onClick={() => setSelectedTransaction(transaction)}
-                                                        className="bg-[#E8F8F5] dark:bg-dark-3 dark:text-white text-[#3498DB] px-3 py-1 rounded-lg text-sm hover:bg-[#D1F2EB] dark:hover:bg-dark-4 transition-colors"
+                                                        // TODO: Implement approve logic
+                                                        className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-3 py-1 rounded-lg text-sm hover:bg-green-200 dark:hover:bg-green-800 transition-colors"
                                                     >
-                                                        <Eye className="h-4 w-4 inline mr-1" /> View
+                                                        Approve
                                                     </button>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan={8} className="py-4 px-2 text-center text-[#34495E] dark:text-gray-4">
-                                                No transactions found matching your search.
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
+                                                    <button
+                                                        // TODO: Implement decline logic
+                                                        className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-3 py-1 rounded-lg text-sm hover:bg-red-200 dark:hover:bg-red-800 transition-colors"
+                                                    >
+                                                        Decline
+                                                    </button>
+                                                </>
+                                            )}
+                                        </div>
+                                    ),
+                                },
+                            ]}
+                        />
                     )}
 
                     {/* Pagination Controls */}
                     {totalPages > 1 && (
                         <div className="flex items-center justify-between mt-6">
                             <p className="text-sm text-[#34495E] dark:text-gray-4">
-                                Showing {(currentPage - 1) * recordsPerPage + 1} to {Math.min(currentPage * recordsPerPage, totalCount)} of {totalCount} transactions
+                                Showing {totalCount === 0 ? 0 : (currentPage - 1) * recordsPerPage + 1} to {Math.min(currentPage * recordsPerPage, totalCount)} of {totalCount} transactions
                             </p>
                             <div className="flex items-center space-x-2">
                                 <button
@@ -244,6 +280,7 @@ const Page = () => {
                                         ? "text-[#A1B1C3] dark:text-gray-5 cursor-not-allowed"
                                         : "text-[#2C3E50] dark:text-gray-2 hover:bg-[#ECF0F1] dark:hover:bg-dark-3"
                                         }`}
+                                    type="button"
                                 >
                                     <ChevronLeft className="h-5 w-5" />
                                 </button>
@@ -255,6 +292,7 @@ const Page = () => {
                                             ? "bg-[#3498DB] text-white"
                                             : "text-[#34495E] dark:text-gray-3 hover:bg-[#ECF0F1] dark:hover:bg-dark-3"
                                             }`}
+                                        type="button"
                                     >
                                         {page}
                                     </button>
@@ -266,6 +304,7 @@ const Page = () => {
                                         ? "text-[#A1B1C3] dark:text-gray-5 cursor-not-allowed"
                                         : "text-[#2C3E50] dark:text-gray-2 hover:bg-[#ECF0F1] dark:hover:bg-dark-3"
                                         }`}
+                                    type="button"
                                 >
                                     <ChevronRight className="h-5 w-5" />
                                 </button>
@@ -282,10 +321,13 @@ const Page = () => {
                                 <div className="flex items-center justify-between mb-6">
                                     <div className="flex items-center space-x-3">
                                         <div className="w-16 h-16 bg-[#00B894] rounded-lg flex items-center justify-center text-white font-bold text-xl">
-                                            {selectedTransaction.propertyName[0]}
+                                            {selectedTransaction.propertyName?.[0] || '?'}
                                         </div>
                                         <div>
                                             <h2 className="text-2xl font-bold text-[#2C3E50] dark:text-gray-2">{selectedTransaction.propertyName}</h2>
+                                            <p className="text-[#34495E] dark:text-gray-3 mt-1 text-sm">
+                                                <span className="font-semibold">Transaction ID:</span> {selectedTransaction.transactionId || '-'}
+                                            </p>
                                         </div>
                                     </div>
                                     <button
@@ -300,7 +342,7 @@ const Page = () => {
                                     <div className="bg-[#F5F7FA] dark:bg-dark-3 rounded-lg p-4">
                                         <p className="text-sm text-[#34495E] dark:text-gray-3 mb-1">Price</p>
                                         <p className="text-2xl font-bold text-[#2C3E50] dark:text-gray-2">
-                                            PKR {selectedTransaction.price.toLocaleString()}
+                                            PKR {selectedTransaction.totalPrice?.toLocaleString?.() ?? '-'}
                                         </p>
                                     </div>
                                     <div className="bg-[#F5F7FA] dark:bg-dark-3 rounded-lg p-4">
@@ -335,25 +377,63 @@ const Page = () => {
                                             </div>
                                             <div className="flex items-center justify-between">
                                                 <p className="text-[#34495E] dark:text-gray-3">
-                                                    Address: <span className="font-semibold">{selectedTransaction.address}</span>
+                                                    <span className="font-semibold">Address:</span> {selectedTransaction.propertyLocation?.address || '-'}
                                                 </p>
                                                 <p className="text-[#34495E] dark:text-gray-3">
-                                                    Date: <span className="font-semibold">{selectedTransaction.date}</span>
+                                                    <span className="font-semibold">Date:</span> {selectedTransaction.createdAt ? new Date(selectedTransaction.createdAt).toLocaleDateString() : '-'}
                                                 </p>
                                             </div>
                                             <div className="flex items-center justify-between mt-2">
                                                 <p className="text-[#34495E] dark:text-gray-3">
-                                                    Buyer: <span className="font-semibold">{selectedTransaction.buyer}</span>
+                                                    <span className="font-semibold">Buyer:</span> {selectedTransaction.customerName || selectedTransaction.customerEmail || selectedTransaction.customerId || '-'}
                                                 </p>
                                                 <p className="text-[#34495E] dark:text-gray-3">
-                                                    Seller: <span className="font-semibold">{selectedTransaction.seller}</span>
+                                                    <span className="font-semibold">Seller:</span> {selectedTransaction.userName || selectedTransaction.userEmail || selectedTransaction.userId || '-'}
                                                 </p>
                                             </div>
+                                            {/* Payments Section */}
+                                            {selectedTransaction.payments && selectedTransaction.payments.length > 0 && (
+                                                <div className="mt-4">
+                                                    <h5 className="font-semibold mb-2">Payments</h5>
+                                                    <ul className="space-y-2">
+                                                        {selectedTransaction.payments.map((payment: any) => (
+                                                            <li key={payment.paymentId} className="bg-white dark:bg-dark-4 rounded p-3 border border-[#ECF0F1] dark:border-dark-4">
+                                                                <div className="flex justify-between items-center">
+                                                                    <span className="font-medium">{payment.paymentType} - {payment.status}</span>
+                                                                    <span className="text-sm">{payment.amount?.toLocaleString?.()} {payment.currency}</span>
+                                                                </div>
+                                                                <div className="flex justify-between items-center mt-1">
+                                                                    <span className="text-xs text-gray-500">{payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString() : '-'}</span>
+                                                                    {payment.paymentSlip && (
+                                                                        <a href={payment.paymentSlip} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline text-xs">View Slip</a>
+                                                                    )}
+                                                                </div>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="flex items-center justify-end space-x-4">
+                                    {selectedTransaction.status === "pending" && (
+                                        <>
+                                            <button
+                                                // TODO: Implement approve logic for modal
+                                                className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-6 py-2 rounded-lg font-medium hover:bg-green-200 dark:hover:bg-green-800 transition-colors"
+                                            >
+                                                Approve
+                                            </button>
+                                            <button
+                                                // TODO: Implement decline logic for modal
+                                                className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-6 py-2 rounded-lg font-medium hover:bg-red-200 dark:hover:bg-red-800 transition-colors"
+                                            >
+                                                Decline
+                                            </button>
+                                        </>
+                                    )}
                                     <button
                                         onClick={() => setSelectedTransaction(null)}
                                         className="bg-[#00B894] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#009c7d] transition-colors"

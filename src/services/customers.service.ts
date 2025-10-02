@@ -1,7 +1,6 @@
 const API_BASE = process.env.API_BASE_URL || "http://localhost:5000/api";
 
-// ✅ Generic fetch helper with token support
-async function apiRequest(
+export async function apiRequest(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<any> {

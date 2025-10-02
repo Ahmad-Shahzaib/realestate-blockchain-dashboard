@@ -5,7 +5,7 @@ import rootReducer from '../reducers';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['userInfo', 'customer', 'project'], // add slices to persist
+  whitelist: ['userInfo', 'customer', 'project', 'customerTransactions', 'leads', 'transactionPayment'], // add slices to persist
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -1,105 +1,71 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Building2, Search, Filter, ChevronLeft, ChevronRight, Eye, Mail, Phone, Calendar, User } from "lucide-react";
 import SearchInput from "@/common/Input";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { fetchLeads } from "@/redux/leadsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
-type Lead = {
-    id: number;
-    projectName: string;
-    userName: string;
-    email: string;
-    phone: string;
-    joinDate: string;
-    status: string;
-};
+
+import type { Transaction, Pagination } from '@/redux/leadsSlice';
+import Table from '@/common/Table';
 
 const Page = () => {
+
+    const { transactions, loading, error, pagination } = useAppSelector((state) => state.leads);
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
-    const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const recordsPerPage = 8;
+    const [selectedLead, setSelectedLead] = useState<Transaction | null>(null);
+    const dispatch = useAppDispatch();
+    const userInfo: any = useSelector((state: RootState) => state.userInfo);
 
-    const leads: Lead[] = [
-        {
-            id: 1,
-            projectName: "Sunset Villa",
-            userName: "Alice Brown",
-            email: "alice.brown@example.com",
-            phone: "+1 (555) 123-4567",
-            joinDate: "2025-08-15",
-            status: "Active",
-        },
-        {
-            id: 2,
-            projectName: "Downtown Loft",
-            userName: "Charlie Davis",
-            email: "charlie.davis@example.com",
-            phone: "+1 (555) 987-6543",
-            joinDate: "2025-09-10",
-            status: "Pending",
-        },
-        {
-            id: 3,
-            projectName: "Countryside Cottage",
-            userName: "David Lee",
-            email: "david.lee@example.com",
-            phone: "+1 (555) 456-7890",
-            joinDate: "2025-07-20",
-            status: "Inactive",
-        },
-        {
-            id: 4,
-            projectName: "Oceanview Condo",
-            userName: "Emma Wilson",
-            email: "emma.wilson@example.com",
-            phone: "+1 (555) 234-5678",
-            joinDate: "2025-06-12",
-            status: "Active",
-        },
-        {
-            id: 5,
-            projectName: "Mountain Retreat",
-            userName: "Frank Miller",
-            email: "frank.miller@example.com",
-            phone: "+1 (555) 345-6789",
-            joinDate: "2025-05-18",
-            status: "Pending",
-        },
-        {
-            id: 6,
-            projectName: "Urban Penthouse",
-            userName: "Grace Taylor",
-            email: "grace.taylor@example.com",
-            phone: "+1 (555) 456-7890",
-            joinDate: "2025-04-22",
-            status: "Active",
-        },
-    ];
+    console.log("Transactions from Redux:", transactions);
+
+    // Fetch leads with pagination
+    useEffect(() => {
+        if (userInfo?.user?._id) {
+            dispatch(fetchLeads({ customerId: userInfo.user._id, page: pagination?.page || 1 }));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch, userInfo?.user?._id, pagination?.page]);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
-        setCurrentPage(1);
+        // Optionally, reset to first page
+        // dispatch(fetchLeads({ customerId: userInfo.user._id, page: 1 }));
     };
 
-    const filteredLeads = leads.filter(
-        (lead) =>
-            (lead.projectName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                lead.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                lead.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                lead.phone.toLowerCase().includes(searchQuery.toLowerCase())) &&
-            (statusFilter === "All" || lead.status === statusFilter)
-    );
+    // Filter transactions by search and status
+    const filteredTransactions = Array.isArray(transactions)
+        ? transactions.filter((tx) => {
+            const projectName = tx.propertyId?.name || "";
+            const userName = `${tx.userId?.firstName || ''} ${tx.userId?.lastName || ''}`.trim();
+            const email = tx.userId?.email || "";
+            const phone = tx.userId?.phoneNumber || "";
+            const status = tx.status || "";
+            const search = searchQuery.toLowerCase();
+            return (
+                (projectName.toLowerCase().includes(search) ||
+                    userName.toLowerCase().includes(search) ||
+                    email.toLowerCase().includes(search) ||
+                    phone.toLowerCase().includes(search)) &&
+                (statusFilter === "All" || status === statusFilter)
+            );
+        })
+        : [];
 
-    // Pagination logic
-    const totalPages = Math.ceil(filteredLeads.length / recordsPerPage);
-    const startIndex = (currentPage - 1) * recordsPerPage;
-    const paginatedLeads = filteredLeads.slice(startIndex, startIndex + recordsPerPage);
+    // Use API pagination
+    const totalPages = pagination?.pages || 1;
+    const currentPage = pagination?.page || 1;
+    const recordsPerPage = pagination?.limit || 8;
+    // If API paginates, filteredTransactions is already paginated
+    const paginatedLeads = filteredTransactions;
 
     const handlePageChange = (page: number) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
+        if (page >= 1 && page <= totalPages && userInfo?.user?._id) {
+            dispatch(fetchLeads({ customerId: userInfo.user._id, page }));
         }
     };
 
@@ -115,6 +81,97 @@ const Page = () => {
                 return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
         }
     };
+
+    // Define columns for the common Table component
+    const columns = [
+        {
+            key: 'project',
+            label: 'Project',
+            render: (tx: Transaction) => {
+                const projectName = tx.propertyId?.name || "-";
+                return (
+                    <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-[#00B894] rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md">
+                            {projectName.charAt(0)}
+                        </div>
+                        <div>
+                            <p className="font-semibold text-gray-900 dark:text-white">{projectName}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">ID: #{tx.id || tx._id}</p>
+                        </div>
+                    </div>
+                );
+            },
+        },
+        {
+            key: 'contact',
+            label: 'Contact',
+            render: (tx: Transaction) => {
+                const userName = `${tx.userId?.firstName || ''} ${tx.userId?.lastName || ''}`.trim();
+                const email = tx.userId?.email || "-";
+                return (
+                    <div>
+                        <p className="font-medium text-gray-900 dark:text-white">{userName}</p>
+                        <div className="flex items-center space-x-3 mt-1">
+                            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                                <Mail className="h-4 w-4 mr-1" />
+                                <span>{email}</span>
+                            </div>
+                        </div>
+                    </div>
+                );
+            },
+        },
+        {
+            key: 'details',
+            label: 'Details',
+            render: (tx: Transaction) => {
+                const phone = tx.userId?.phoneNumber || "-";
+                return (
+                    <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                        <Phone className="h-4 w-4 mr-2" />
+                        <span>{phone}</span>
+                    </div>
+                );
+            },
+        },
+        {
+            key: 'joinDate',
+            label: 'Join Date',
+            render: (tx: Transaction) => {
+                const joinDate = tx.createdAt ? new Date(tx.createdAt).toLocaleDateString() : "-";
+                return (
+                    <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                        <Calendar className="h-4 w-4 mr-2" />
+                        <span>{joinDate}</span>
+                    </div>
+                );
+            },
+        },
+        {
+            key: 'status',
+            label: 'Status',
+            render: (tx: Transaction) => {
+                const status = tx.status || "-";
+                return (
+                    <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(status)}`}>
+                        {status}
+                    </span>
+                );
+            },
+        },
+        {
+            key: 'actions',
+            label: 'Actions',
+            render: (tx: Transaction) => (
+                <button
+                    onClick={() => setSelectedLead(tx)}
+                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-lg text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-800/50 transition-colors duration-150"
+                >
+                    <Eye className="h-4 w-4 mr-1" /> View
+                </button>
+            ),
+        },
+    ];
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -184,119 +241,40 @@ const Page = () => {
                                 Lead Information
                             </h2>
                             <span className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-3 py-1 rounded-full text-sm font-medium">
-                                {filteredLeads.length} records
+                                {paginatedLeads.length} records
                             </span>
                         </div>
                     </div>
-
                     <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead className="bg-gray-50 dark:bg-gray-700/50">
-                                <tr>
-                                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                                        Project
-                                    </th>
-                                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                                        Contact
-                                    </th>
-                                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                                        Details
-                                    </th>
-                                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                                        Join Date
-                                    </th>
-                                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                                        Status
-                                    </th>
-                                    <th className="text-right py-4 px-6 text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                                {paginatedLeads.length > 0 ? (
-                                    paginatedLeads.map((lead) => (
-                                        <tr
-                                            key={lead.id}
-                                            className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
-                                        >
-                                            <td className="py-4 px-6">
-                                                <div className="flex items-center space-x-4">
-                                                    <div className="w-12 h-12 bg-[#00B894] rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md">
-                                                        {lead.projectName.charAt(0)}
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-semibold text-gray-900 dark:text-white">{lead.projectName}</p>
-                                                        <p className="text-sm text-gray-500 dark:text-gray-400">ID: #{lead.id}</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="py-4 px-6">
-                                                <div>
-                                                    <p className="font-medium text-gray-900 dark:text-white">{lead.userName}</p>
-                                                    <div className="flex items-center space-x-3 mt-1">
-                                                        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                                                            <Mail className="h-4 w-4 mr-1" />
-                                                            <span>{lead.email}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="py-4 px-6">
-                                                <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                                                    <Phone className="h-4 w-4 mr-2" />
-                                                    <span>{lead.phone}</span>
-                                                </div>
-                                            </td>
-                                            <td className="py-4 px-6">
-                                                <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                                                    <Calendar className="h-4 w-4 mr-2" />
-                                                    <span>{lead.joinDate}</span>
-                                                </div>
-                                            </td>
-                                            <td className="py-4 px-6">
-                                                <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(lead.status)}`}>
-                                                    {lead.status}
-                                                </span>
-                                            </td>
-                                            <td className="py-4 px-6 text-right">
-                                                <button
-                                                    onClick={() => setSelectedLead(lead)}
-                                                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-lg text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-800/50 transition-colors duration-150"
-                                                >
-                                                    <Eye className="h-4 w-4 mr-1" /> View
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={6} className="py-12 px-6 text-center">
-                                            <div className="flex flex-col items-center justify-center">
-                                                <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
-                                                    <Search className="h-8 w-8 text-gray-400 dark:text-gray-500" />
-                                                </div>
-                                                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">No leads found</h3>
-                                                <p className="text-gray-500 dark:text-gray-400">
-                                                    Try adjusting your search or filter criteria
-                                                </p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
+                        {paginatedLeads.length > 0 ? (
+                            <Table
+                                data={paginatedLeads.map(tx => ({ ...tx, id: String(tx.id || tx._id) }))}
+                                columns={columns as any}
+                            />
+                        ) : (
+                            <div className="py-12 px-6 text-center">
+                                <div className="flex flex-col items-center justify-center">
+                                    <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
+                                        <Search className="h-8 w-8 text-gray-400 dark:text-gray-500" />
+                                    </div>
+                                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">No leads found</h3>
+                                    <p className="text-gray-500 dark:text-gray-400">
+                                        Try adjusting your search or filter criteria
+                                    </p>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Pagination Controls */}
                     {totalPages > 1 && (
                         <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
                             <p className="text-sm text-gray-700 dark:text-gray-300">
-                                Showing <span className="font-medium">{startIndex + 1}</span> to{" "}
+                                Showing <span className="font-medium">{(currentPage - 1) * recordsPerPage + 1}</span> to{" "}
                                 <span className="font-medium">
-                                    {Math.min(startIndex + recordsPerPage, filteredLeads.length)}
+                                    {Math.min(currentPage * recordsPerPage, pagination?.total || 0)}
                                 </span>{" "}
-                                of <span className="font-medium">{filteredLeads.length}</span> leads
+                                of <span className="font-medium">{pagination?.total || 0}</span> leads
                             </p>
                             <div className="flex items-center space-x-2">
                                 <button
@@ -350,17 +328,17 @@ const Page = () => {
 
                 {/* Lead Detail Modal */}
                 {selectedLead && (
-                    <div className="fixed inset-0  flex items-center justify-center p-4 z-50 ">
+                    <div className="fixed inset-0 flex items-center justify-center p-4 z-50 ">
                         <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200 dark:border-gray-700">
                             <div className="p-6">
                                 <div className="flex items-start justify-between mb-6">
                                     <div className="flex items-center space-x-4">
                                         <div className="w-16 h-16 bg-[#00B894] rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
-                                            {selectedLead.projectName.charAt(0)}
+                                            {selectedLead.propertyId?.name?.charAt(0) || "-"}
                                         </div>
                                         <div>
-                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{selectedLead.projectName}</h2>
-                                            <p className="text-gray-600 dark:text-gray-300">Lead ID: #{selectedLead.id}</p>
+                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{selectedLead.propertyId?.name || "-"}</h2>
+                                            <p className="text-gray-600 dark:text-gray-300">Lead ID: #{selectedLead.id || selectedLead._id}</p>
                                         </div>
                                     </div>
                                     <button
@@ -380,20 +358,20 @@ const Page = () => {
                                         <div className="space-y-3">
                                             <div>
                                                 <p className="text-sm text-gray-500 dark:text-gray-400">Name</p>
-                                                <p className="font-medium text-gray-900 dark:text-white">{selectedLead.userName}</p>
+                                                <p className="font-medium text-gray-900 dark:text-white">{`${selectedLead.userId?.firstName || ''} ${selectedLead.userId?.lastName || ''}`.trim()}</p>
                                             </div>
                                             <div>
                                                 <p className="text-sm text-gray-500 dark:text-gray-400">Email</p>
                                                 <div className="flex items-center">
                                                     <Mail className="h-4 w-4 text-gray-500 dark:text-gray-400 mr-2" />
-                                                    <p className="font-medium text-gray-900 dark:text-white">{selectedLead.email}</p>
+                                                    <p className="font-medium text-gray-900 dark:text-white">{selectedLead.userId?.email || '-'}</p>
                                                 </div>
                                             </div>
                                             <div>
                                                 <p className="text-sm text-gray-500 dark:text-gray-400">Phone</p>
                                                 <div className="flex items-center">
                                                     <Phone className="h-4 w-4 text-gray-500 dark:text-gray-400 mr-2" />
-                                                    <p className="font-medium text-gray-900 dark:text-white">{selectedLead.phone}</p>
+                                                    <p className="font-medium text-gray-900 dark:text-white">{selectedLead.userId?.phoneNumber || '-'}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -407,16 +385,16 @@ const Page = () => {
                                         <div className="space-y-3">
                                             <div>
                                                 <p className="text-sm text-gray-500 dark:text-gray-400">Project Name</p>
-                                                <p className="font-medium text-gray-900 dark:text-white">{selectedLead.projectName}</p>
+                                                <p className="font-medium text-gray-900 dark:text-white">{selectedLead.propertyId?.name || '-'}</p>
                                             </div>
                                             <div>
                                                 <p className="text-sm text-gray-500 dark:text-gray-400">Join Date</p>
-                                                <p className="font-medium text-gray-900 dark:text-white">{selectedLead.joinDate}</p>
+                                                <p className="font-medium text-gray-900 dark:text-white">{selectedLead.createdAt ? new Date(selectedLead.createdAt).toLocaleDateString() : '-'}</p>
                                             </div>
                                             <div>
                                                 <p className="text-sm text-gray-500 dark:text-gray-400">Status</p>
                                                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedLead.status)}`}>
-                                                    {selectedLead.status}
+                                                    {selectedLead.status || '-'}
                                                 </span>
                                             </div>
                                         </div>
@@ -430,7 +408,6 @@ const Page = () => {
                                     >
                                         Close
                                     </button>
-
                                 </div>
                             </div>
                         </div>

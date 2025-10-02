@@ -7,6 +7,7 @@ interface SearchInputProps {
     value: string; // Input value
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // Change event handler
     icon?: React.ReactNode; // Optional custom icon
+    className?: string; // Optional className for input
 }
 
 // Functional component with typed props
@@ -15,6 +16,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
     value,
     onChange,
     icon,
+    className = '',
 }) => {
     return (
         <div className="relative">
@@ -44,7 +46,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
-                className="
+                className={`
           w-full
           pl-10 pr-4 py-2
           border border-[#ECF0F1]
@@ -56,7 +58,8 @@ const SearchInput: React.FC<SearchInputProps> = ({
           dark:border-dark-4
           dark:bg-dark-2
           dark:text-gray-2
-        "
+          ${className}
+        `}
             />
         </div>
     );
