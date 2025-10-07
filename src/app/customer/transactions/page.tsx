@@ -243,7 +243,7 @@ const Page = () => {
                                             >
                                                 <Eye className="h-4 w-4 inline mr-1" /> View
                                             </button>
-                                            {row.status === "pending" && (
+                                            {row.status === "pending" && row.paymentSlip && (
                                                 <>
                                                     <button
                                                         // TODO: Implement approve logic
