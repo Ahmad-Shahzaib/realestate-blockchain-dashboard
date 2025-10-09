@@ -237,7 +237,7 @@ export default function PersonalDetails() {
 
             const publicUrl = presign.url.split('?')[0];
             console.log('Image uploaded to:', publicUrl);
-          const result = await putRequest(getAxiosInstance('/api'), "/api/users/profile", { profileImage: publicUrl, avatar: publicUrl });
+            const result = await putRequest(getAxiosInstance('/api'), "/api/users/profile", { profileImage: publicUrl, avatar: publicUrl });
             if (result && result.status === 'success') {
                 const baseUser = userInfo.user || {};
                 dispatch(setUser({ ...(baseUser as any), profileImage: publicUrl, avatar: publicUrl } as any));

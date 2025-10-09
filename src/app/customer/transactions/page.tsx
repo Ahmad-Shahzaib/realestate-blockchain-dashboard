@@ -1,6 +1,5 @@
 "use client";
 
-
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Building2, MapPin, Calendar, Filter, Search, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
@@ -11,13 +10,13 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { fetchTransactionsByCustomer } from '@/redux/reducers/customerslice/customerTransactionsSlice';
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { fetchTransactionPayments } from "@/redux/transactionPaymentSlice";
+import { fetchTransactionPayments, approveTransaction } from "@/redux/transactionPaymentSlice";
+import { toast } from 'react-toastify'; // Optional: for notifications; replace with your preferred method if needed
 
 const Page = () => {
     const searchParams = useSearchParams();
     const userInfo: any = useSelector((state: RootState) => state.userInfo);
     const customerId = userInfo?.user?._id || searchParams.get("customerId") || "";
-
 
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
@@ -39,7 +38,6 @@ const Page = () => {
         setSearchQuery(e.target.value);
         setCurrentPage(1);
     }, []);
-
 
     // Defensive: ensure transactions is always an array
     const safeTransactions = useMemo(() => Array.isArray(transactions) ? transactions : [], [transactions]);
@@ -68,6 +66,22 @@ const Page = () => {
             setCurrentPage(page);
         }
     }, [totalPages]);
+
+    // Handle Approve button click
+    const handleApprove = useCallback(async (transactionId: string) => {
+        try {
+            await dispatch(approveTransaction({ transactionId })).unwrap();
+            toast.success('Transaction approved successfully!', { position: 'top-right' });
+            // Optionally refetch transactions to ensure UI reflects the latest state
+            dispatch(fetchTransactionPayments({ customerId, page: currentPage, limit: recordsPerPage }));
+            // Close modal if approving from modal
+            if (selectedTransaction?.transactionId === transactionId) {
+                setSelectedTransaction(null);
+            }
+        } catch (error: any) {
+            toast.error(error || 'Failed to approve transaction', { position: 'top-right' });
+        }
+    }, [dispatch, customerId, currentPage, recordsPerPage, selectedTransaction]);
 
     return (
         <div className="min-h-screen bg-[#F5F7FA] dark:bg-dark">
@@ -196,12 +210,10 @@ const Page = () => {
                                     key: 'seller',
                                     label: 'Seller',
                                 },
-                                // New Payment Slip column
                                 {
                                     key: 'paymentSlip',
                                     label: 'Payment Slip',
                                     render: (row: any) => {
-                                        // Show first payment slip if available
                                         const slip = row.transaction?.payments?.[0]?.paymentSlip;
                                         return slip ? (
                                             <a href={slip} target="_blank" rel="noopener noreferrer">
@@ -246,7 +258,7 @@ const Page = () => {
                                             {row.status === "pending" && row.paymentSlip && (
                                                 <>
                                                     <button
-                                                        // TODO: Implement approve logic
+                                                        onClick={() => handleApprove(row.transaction.transactionId)}
                                                         className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-3 py-1 rounded-lg text-sm hover:bg-green-200 dark:hover:bg-green-800 transition-colors"
                                                     >
                                                         Approve
@@ -421,7 +433,7 @@ const Page = () => {
                                     {selectedTransaction.status === "pending" && (
                                         <>
                                             <button
-                                                // TODO: Implement approve logic for modal
+                                                onClick={() => handleApprove(selectedTransaction.transactionId)}
                                                 className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-6 py-2 rounded-lg font-medium hover:bg-green-200 dark:hover:bg-green-800 transition-colors"
                                             >
                                                 Approve
