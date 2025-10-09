@@ -9,7 +9,7 @@ import { fetchCustomers } from '@/redux/reducers/customerslice/customerSlice';
 export default function GlobeResidencyPage() {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(fetchCustomers({ page: 1, limit: 10, search: '', status: '' }));
+    dispatch(fetchCustomers({ page: 1, limit: 50, search: '', status: '' }));
   }, [dispatch]);
   return (
     <div className="container mx-auto py-8 bg-white dark:bg-dark">

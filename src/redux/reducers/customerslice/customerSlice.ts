@@ -24,7 +24,7 @@ const initialState: CustomerState = {
 export const fetchCustomers = createAsyncThunk(
   'customer/fetchCustomers',
   async (
-    { page = 1, limit = 20, search = '', status = 'all' }: { page?: number; limit?: number; search?: string; status?: string },
+    { page = 1, limit = 50, search = '', status = 'all' }: { page?: number; limit?: number; search?: string; status?: string },
     { rejectWithValue }
   ) => {
     try {

@@ -16,8 +16,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { createProject } from "@/redux/reducers/projectslice/projectSlice";
 import { fetchCustomers } from "@/redux/reducers/customerslice/customerSlice";
 import Button from "@/common/Button";
+import { getRequest } from "@/app/utils/requests";
+import { getAxiosInstance } from "@/lib/axios";
 
 // Types for form and floor (unchanged)
+interface FileWithPreview extends File {
+    preview?: string;
+}
+
 interface Floor {
     name: string;
     description: string;
@@ -156,6 +162,89 @@ function useGlobeResidencyForm() {
     const [error, setError] = useState<string | null>(null);
     const [touched, setTouched] = useState<Record<string, boolean>>({});
     const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+    const [selectedGalleryImages, setSelectedGalleryImages] = useState<FileWithPreview[]>([]);
+
+    // Shared function to handle file uploads
+    const handleFileUpload = async (file: File, purpose: string): Promise<string | null> => {
+        const safeFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+        const sanitized = file.type;
+
+        try {
+            const presign = await getRequest(getAxiosInstance('/api'), `/api/upload_images?fileName=${encodeURIComponent(safeFileName)}&contentType=${encodeURIComponent(sanitized)}`);
+            
+            if (!presign || presign.status !== 'success' || !presign.url) {
+                toast.error(`Failed to get upload URL for ${safeFileName}`);
+                return null;
+            }
+
+            const uploadResp = await fetch(presign.url, {
+                method: 'PUT',
+                body: file,
+                headers: { 'Content-Type': sanitized },
+            });
+
+            if (!uploadResp.ok) {
+                toast.error(`Failed to upload ${safeFileName}`);
+                return null;
+            }
+
+            const publicUrl = presign.url.split('?')[0];
+            toast.success(`Successfully uploaded ${purpose}`);
+            return publicUrl;
+        } catch (error) {
+            toast.error(`Error uploading ${purpose}: ${error}`);
+            return null;
+        }
+    };
+
+    // const setFloors = React.useState<Floor[]>([initialFloor])[1];
+    // const [documents, setDocuments] = useState<string[]>([""]);
+
+    const uploadGalleryImages = async () => {
+        if (!selectedGalleryImages.length) return [];
+
+        const uploadedUrls: string[] = [];
+
+        try {
+            // Upload each image in parallel
+            const uploadPromises = selectedGalleryImages.map(async (file) => {
+                // Create safe filename
+                const safeFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+                const sanitized = file.type;
+
+                // Get presigned URL
+                const presign = await getRequest(getAxiosInstance('/api'), `/api/upload_images?fileName=${encodeURIComponent(safeFileName)}&contentType=${encodeURIComponent(sanitized)}`);
+                
+                if (!presign || presign.status !== 'success' || !presign.url) {
+                    throw new Error(`Failed to get upload URL for ${safeFileName}`);
+                }
+
+                // Upload the file
+                const uploadResp = await fetch(presign.url, {
+                    method: 'PUT',
+                    body: file,
+                    headers: { 'Content-Type': sanitized },
+                });
+
+                if (!uploadResp.ok) {
+                    throw new Error(`Failed to upload ${safeFileName} (${uploadResp.status})`);
+                }
+
+                // Get the public URL
+                const publicUrl = presign.url.split('?')[0];
+                return publicUrl;
+            });
+
+            // Wait for all uploads to complete
+            const results = await Promise.all(uploadPromises);
+            uploadedUrls.push(...results);
+            
+            return uploadedUrls;
+        } catch (error) {
+            console.error('Error uploading gallery images:', error);
+            throw new Error('Failed to upload one or more gallery images');
+        }
+    };
     const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>([{ question: "", answer: "" }]);
     const [documents, setDocuments] = useState<string[]>([""]);
     const dispatch = useDispatch();
@@ -380,12 +469,30 @@ function useGlobeResidencyForm() {
             setLoading(true);
             setError(null);
             setSuccess(false);
+            
             if (!isValid) {
                 setError("Please fill all required required fields. See highlighted errors.");
                 setLoading(false);
                 return;
             }
+
             try {
+                // First upload gallery images
+                let galleryUrls: string[] = [];
+                if (selectedGalleryImages.length > 0) {
+                    try {
+                        toast.loading('Uploading gallery images...');
+                        galleryUrls = await uploadGalleryImages();
+                        toast.success('Gallery images uploaded successfully');
+                    } catch (error) {
+                        const msg = error instanceof Error ? error.message : 'Failed to upload gallery images';
+                        toast.error(msg);
+                        setError(msg);
+                        setLoading(false);
+                        return;
+                    }
+                }
+
                 const payload = {
                     name: form.propertyName,
                     description: form.description,
@@ -420,7 +527,7 @@ function useGlobeResidencyForm() {
                         features: floor.features ? floor.features.split(",").map((s) => s.trim()) : [],
                     })),
                     mainImageUrl: form.mainImageUrl,
-                    galleryImages: form.galleryImages ? form.galleryImages.split(",").map((s) => s.trim()) : [],
+                    galleryImages: galleryUrls.length > 0 ? galleryUrls : [],
                     totalArea: Number(form.totalArea) || 0,
                     priceRange: { min: Number(form.priceMin) || 0, max: Number(form.priceMax) || 0 },
                     totalUnits: Number(form.totalUnits) || 0,
@@ -453,11 +560,12 @@ function useGlobeResidencyForm() {
                 setLoading(false);
             }
         },
-        [dispatch, form, floors, faqs, documents, isValid, resetAll, loading]
+        [dispatch, form, floors, faqs, documents, isValid, resetAll, loading, uploadGalleryImages, selectedGalleryImages]
     );
 
     return {
         form,
+        setForm,
         floors,
         loading,
         success,
@@ -479,17 +587,23 @@ function useGlobeResidencyForm() {
         addFaq,
         removeFaq,
         documents,
+        setDocuments,
         handleDocumentChange,
         handleDocumentFileChange,
         addDocument,
         removeDocument,
         handleBankDetailsChange,
+        selectedGalleryImages,
+        setSelectedGalleryImages,
+        handleFileUpload,
+        setFloors,
     };
 }
 
 export default function GlobeResidencyForm() {
     const {
         form,
+        setForm,
         floors,
         loading,
         success,
@@ -516,6 +630,11 @@ export default function GlobeResidencyForm() {
         addDocument,
         removeDocument,
         handleBankDetailsChange,
+        selectedGalleryImages,
+        setSelectedGalleryImages,
+        handleFileUpload,
+        setFloors,
+        setDocuments,
     } = useGlobeResidencyForm();
 
     const dispatch = useDispatch();
@@ -528,7 +647,7 @@ export default function GlobeResidencyForm() {
     // Fetch customers when component mounts
     useEffect(() => {
         if (!customerLoading && customers.length === 0) {
-            (dispatch as any)(fetchCustomers({ page: 1, limit: 10, search: '', status: '' }));
+            (dispatch as any)(fetchCustomers({ page: 1, limit: 50, search: '', status: '' }));
         }
     }, [customerLoading, customers.length, dispatch]);
 
@@ -1172,34 +1291,153 @@ export default function GlobeResidencyForm() {
                         <div className="p-6 space-y-6">
                             <div className="space-y-2">
                                 <label htmlFor="mainImageUrl" className="text-sm font-semibold dark:text-white">
-                                    * Main Image URL
+                                    * Main Image
                                 </label>
-                                <input
-                                    id="mainImageUrl"
-                                    type="url"
-                                    placeholder="https://example.com/main-image.jpg"
-                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.mainImageUrl && validationErrors.mainImageUrl ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-500'}`}
-                                    value={form.mainImageUrl}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                />
+                                <div className="flex flex-col gap-2">
+                                    <input
+                                        id="mainImageUpload"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={async (e) => {
+                                            if (e.target.files && e.target.files[0]) {
+                                                const file = e.target.files[0];
+                                                const uploadedUrl = await handleFileUpload(file, 'main image');
+                                                if (uploadedUrl) {
+                                                    setForm(prev => ({
+                                                        ...prev,
+                                                        mainImageUrl: uploadedUrl
+                                                    }));
+                                                }
+                                            }
+                                        }}
+                                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100"
+                                    />
+                                    {form.mainImageUrl && (
+                                        <div className="relative w-24 h-24 group">
+                                            <img
+                                                src={form.mainImageUrl}
+                                                alt="Main image preview"
+                                                className="w-24 h-24 object-cover rounded"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setForm(prev => ({
+                                                        ...prev,
+                                                        mainImageUrl: ''
+                                                    }));
+                                                }}
+                                                className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                                 {touched.mainImageUrl && validationErrors.mainImageUrl && (
                                     <div className="text-sm text-red-600 mt-1">{validationErrors.mainImageUrl}</div>
                                 )}
                             </div>
                             <div className="space-y-2">
                                 <label htmlFor="galleryImages" className="text-sm font-semibold dark:text-white">
-                                    * Gallery Images (comma separated URLs)
+                                    * Gallery Images
                                 </label>
-                                <textarea
-                                    id="galleryImages"
-                                    placeholder="https://example.com/img1.jpg, https://example.com/img2.jpg, https://example.com/img3.jpg"
-                                    rows={3}
-                                    className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.galleryImages && validationErrors.galleryImages ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-500'}`}
-                                    value={form.galleryImages}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                />
+                                <div className="flex flex-col gap-4">
+                                    <input
+                                        id="galleryImages"
+                                        type="file"
+                                        multiple
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            if (e.target.files && e.target.files.length > 0) {
+                                                const files = Array.from(e.target.files);
+                                                
+                                                // Upload each file as it's selected
+                                                files.forEach(async (file) => {
+                                                    const safeFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+                                                    const sanitized = file.type;
+
+                                                    try {
+                                                        // Get presigned URL
+                                                        const presign = await getRequest(getAxiosInstance('/api'), `/api/upload_images?fileName=${encodeURIComponent(safeFileName)}&contentType=${encodeURIComponent(sanitized)}`);
+                                                        
+                                                        if (!presign || presign.status !== 'success' || !presign.url) {
+                                                            toast.error(`Failed to get upload URL for ${safeFileName}`);
+                                                            return;
+                                                        }
+
+                                                        // Upload the file
+                                                        const uploadResp = await fetch(presign.url, {
+                                                            method: 'PUT',
+                                                            body: file,
+                                                            headers: { 'Content-Type': sanitized },
+                                                        });
+
+                                                        if (!uploadResp.ok) {
+                                                            toast.error(`Failed to upload ${safeFileName}`);
+                                                            return;
+                                                        }
+
+                                                        // Get the public URL
+                                                        const publicUrl = presign.url.split('?')[0];
+                                                        
+                                                        // Add the public URL to the form's gallery images
+                                                        setForm(prev => ({
+                                                            ...prev,
+                                                            galleryImages: prev.galleryImages 
+                                                                ? prev.galleryImages + ',' + publicUrl 
+                                                                : publicUrl
+                                                        }));
+
+                                                        // Also update the preview images
+                                                        const fileWithPreview = file as FileWithPreview;
+                                                        fileWithPreview.preview = publicUrl;
+                                                        setSelectedGalleryImages(prev => [...prev, fileWithPreview]);
+
+                                                        toast.success(`Successfully uploaded ${safeFileName}`);
+                                                    } catch (error) {
+                                                        toast.error(`Error uploading ${safeFileName}: ${error}`);
+                                                    }
+                                                });
+                                            }
+                                        }}
+                                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100"
+                                    />
+                                    {selectedGalleryImages.length > 0 && (
+                                        <div className="flex flex-wrap gap-2">
+                                            {selectedGalleryImages.map((file, index) => (
+                                                <div key={index} className="relative group">
+                                                    <img
+                                                        src={URL.createObjectURL(file)}
+                                                        alt={`Preview ${index + 1}`}
+                                                        className="w-24 h-24 object-cover rounded"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const removedImage = selectedGalleryImages[index];
+                                                            setSelectedGalleryImages(prev => prev.filter((_, i) => i !== index));
+                                                            
+                                                            // Remove the URL from the form's gallery images
+                                                            if (removedImage.preview) {
+                                                                setForm(prev => ({
+                                                                    ...prev,
+                                                                    galleryImages: prev.galleryImages
+                                                                        .split(',')
+                                                                        .filter(url => url.trim() !== removedImage.preview)
+                                                                        .join(',')
+                                                                }));
+                                                            }
+                                                        }}
+                                                        className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                                 {touched.galleryImages && validationErrors.galleryImages && (
                                     <div className="text-sm text-red-600 mt-1">{validationErrors.galleryImages}</div>
                                 )}
@@ -1252,23 +1490,51 @@ export default function GlobeResidencyForm() {
                                             )}
                                         </div>
 
-                                        <div className="space-y-2">
-                                            <label htmlFor={`floor-${idx}-floorPlanUrl`} className="text-sm font-semibold dark:text-white">Floor Plan URL</label>
-                                            <input
-                                                id={`floor-${idx}-floorPlanUrl`}
-                                                data-field="floorPlanUrl"
-                                                placeholder="Floor Plan URL"
-                                                className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched[`floor-${idx}-floorPlanUrl`] && validationErrors[`floor-${idx}-floorPlanUrl`] ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
-                                                value={floor.floorPlanUrl}
-                                                onChange={(e) => handleFloorChange(idx, e)}
-                                                onBlur={() => handleFloorBlur(idx, 'floorPlanUrl')}
-                                            />
+                                            <div className="space-y-2">
+                                            <label htmlFor={`floor-${idx}-floorPlanUrl`} className="text-sm font-semibold dark:text-white">Floor Plan</label>
+                                            <div className="flex flex-col gap-2">
+                                                <input
+                                                    id={`floor-${idx}-floorPlanUpload`}
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={async (e) => {
+                                                        if (e.target.files && e.target.files[0]) {
+                                                            const file = e.target.files[0];
+                                                            const uploadedUrl = await handleFileUpload(file, `floor ${idx + 1} plan`);
+                                                            if (uploadedUrl) {
+                                                                setFloors((prev: Floor[]) => prev.map((f: Floor, i: number) => 
+                                                                    i === idx ? { ...f, floorPlanUrl: uploadedUrl } : f
+                                                                ));
+                                                            }
+                                                        }
+                                                    }}
+                                                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                                />
+                                                {floor.floorPlanUrl && (
+                                                    <div className="relative w-24 h-24 group">
+                                                        <img
+                                                            src={floor.floorPlanUrl}
+                                                            alt={`Floor ${idx + 1} plan preview`}
+                                                            className="w-24 h-24 object-cover rounded"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setFloors(prev => prev.map((f, i) => 
+                                                                    i === idx ? { ...f, floorPlanUrl: '' } : f
+                                                                ));
+                                                            }}
+                                                            className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        >
+                                                            ×
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
                                             {touched[`floor-${idx}-floorPlanUrl`] && validationErrors[`floor-${idx}-floorPlanUrl`] && (
                                                 <div className="text-sm text-red-600 mt-1">{validationErrors[`floor-${idx}-floorPlanUrl`]}</div>
                                             )}
-                                        </div>
-
-                                        <div className="space-y-2">
+                                        </div>                                        <div className="space-y-2">
                                             <label htmlFor={`floor-${idx}-totalUnits`} className="text-sm font-semibold dark:text-white">* Total Units</label>
                                             <input
                                                 id={`floor-${idx}-totalUnits`}
@@ -1674,29 +1940,35 @@ export default function GlobeResidencyForm() {
                             {documents.map((doc, idx) => (
                                 <div key={idx} className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
                                     <div className="flex-1 space-y-2">
-                                        <label className="text-sm font-semibold dark:text-white">* Document URL or Upload</label>
-                                        <input
-                                            type="text"
-                                            placeholder="Enter document URL"
-                                            className="w-full p-2 border border-gray-200 rounded dark:bg-dark  focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
-                                            value={doc}
-                                            onChange={(e) => handleDocumentChange(idx, e.target.value)}
-                                            onBlur={() => handleDocumentBlur(idx)}
-                                        />
-                                        {touched[`document-${idx}`] && validationErrors[`document-${idx}`] && (
-                                            <div className="text-sm text-red-600 mt-1">{validationErrors[`document-${idx}`]}</div>
-                                        )}
-                                        <div className="mt-3">
+                                        <label className="text-sm font-semibold dark:text-white">* Document Upload</label>
+                                        <div className="flex flex-col gap-2">
                                             <input
                                                 type="file"
                                                 className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                                onChange={(e) => {
+                                                onChange={async (e) => {
                                                     if (e.target.files && e.target.files[0]) {
-                                                        handleDocumentFileChange(idx, e.target.files[0]);
+                                                        const file = e.target.files[0];
+                                                        const uploadedUrl = await handleFileUpload(file, `document ${idx + 1}`);
+                                                        if (uploadedUrl) {
+                                                            setDocuments((prev: string[]) => prev.map((d: string, i: number) => 
+                                                                i === idx ? uploadedUrl : d
+                                                            ));
+                                                        }
                                                     }
                                                 }}
                                             />
+                                            {doc && (
+                                                <div className="flex items-center gap-2">
+                                                    <a href={doc} target="_blank" rel="noopener noreferrer" 
+                                                       className="text-blue-600 hover:text-blue-800 truncate">
+                                                        {doc.split('/').pop()}
+                                                    </a>
+                                                </div>
+                                            )}
                                         </div>
+                                        {touched[`document-${idx}`] && validationErrors[`document-${idx}`] && (
+                                            <div className="text-sm text-red-600 mt-1">{validationErrors[`document-${idx}`]}</div>
+                                        )}
                                     </div>
                                     <Button
 

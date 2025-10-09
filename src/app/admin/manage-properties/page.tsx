@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Building2, Edit2 } from 'lucide-react';
 import SearchInput from '@/common/Input';
 import ProjectService, { Project as ApiProject, ApiResponse } from '@/services/project.service';
+import { useRouter } from 'next/navigation';
 
 interface ComponentProject {
     id: number | string;
@@ -12,10 +13,12 @@ interface ComponentProject {
     toUnit: number;
     toSqft: number;
     location: string;
+    status?: 'pending' | 'approved' | 'declined' | string;
 }
 
 const Page = () => {
     const [searchTerm, setSearchTerm] = useState('');
+    const router = useRouter();
     const [projects, setProjects] = useState<ComponentProject[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -47,6 +50,7 @@ const Page = () => {
                 toUnit: project.availableUnits || project.stats?.availableUnits || 0,
                 toSqft: project.totalArea || 0,
                 location: `${project.location?.city || ''}, ${project.location?.state || ''}`.trim() || 'Unknown Location',
+                status: project.status || 'pending',
             }));
 
             setProjects(formattedProjects);
@@ -89,8 +93,7 @@ const Page = () => {
     };
 
     const handleViewDetails = (project: ComponentProject) => {
-        setSelectedProject(project);
-        setIsViewModalOpen(true);
+        router.push(`/admin/project/${project.id}`);
     };
 
     const closeViewModal = () => {
@@ -108,10 +111,13 @@ const Page = () => {
         if (!editForm) return;
 
         try {
+            // ProjectPayload typing doesn't include some fields like totalInvestment/stats used by the API,
+            // cast to any to avoid TS errors and send the minimal update fields the backend expects.
             await ProjectService.updateProject(editForm.id.toString(), {
                 name: editForm.title,
-                totalInvestment: editForm.investment,
+                status: editForm.status || 'pending',
                 totalArea: editForm.toSqft,
+                totalInvestment: editForm.investment,
                 stats: { availableUnits: editForm.toUnit },
                 location: {
                     city: editForm.location.split(', ')[0] || '', state: editForm.location.split(', ')[1] || '',
@@ -122,7 +128,7 @@ const Page = () => {
                         longitude: 0
                     }
                 },
-            });
+            } as any);
             await fetchProjects(); // Refresh projects after update
             closeEditModal();
         } catch (err: any) {
@@ -131,7 +137,7 @@ const Page = () => {
         }
     };
 
-    const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         if (!editForm) return;
         const { name, value } = e.target;
         setEditForm({
@@ -140,6 +146,18 @@ const Page = () => {
                 ? parseFloat(value) || 0
                 : value,
         });
+    };
+
+    // Change status via approve/decline buttons
+    const handleChangeStatus = async (project: ComponentProject, status: 'approved' | 'declined') => {
+        try {
+            await ProjectService.updateProject(project.id.toString(), { status } as any);
+            // Optimistically update list by refetching
+            await fetchProjects();
+        } catch (err: any) {
+            console.error('Error updating project status:', err);
+            setError(err.message || 'Failed to update project status. Please try again.');
+        }
     };
 
     return (
@@ -213,6 +231,9 @@ const Page = () => {
                                             Location
                                         </th>
                                         <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                            Status
+                                        </th>
+                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
                                             Actions
                                         </th>
                                     </tr>
@@ -221,6 +242,7 @@ const Page = () => {
                                     {projects.length > 0 ? (
                                         projects.map((project) => (
                                             <tr
+                                            onClick={() => handleViewDetails(project)}
                                                 key={project.id}
                                                 className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3 transition-colors"
                                             >
@@ -233,6 +255,11 @@ const Page = () => {
                                                     {project.toSqft ? project.toSqft.toLocaleString() : 'N/A'}
                                                 </td>
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{project.location}</td>
+                                                <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">
+                                                    <span className={`px-2 py-1 rounded-full text-sm ${project.status === 'approved' ? 'bg-green-100 text-green-800' : project.status === 'declined' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                                                        {project.status}
+                                                    </span>
+                                                </td>
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">
                                                     <div className="flex space-x-2">
                                                         <button
@@ -247,6 +274,20 @@ const Page = () => {
                                                             className="px-4 py-2 bg-[#3498DB] text-white rounded-md hover:bg-[#2980B9] transition-colors"
                                                         >
                                                             View Details
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleChangeStatus(project, 'approved')}
+                                                            className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+                                                            title="Approve Project"
+                                                        >
+                                                            Approve
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleChangeStatus(project, 'declined')}
+                                                            className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                                                            title="Decline Project"
+                                                        >
+                                                            Decline
                                                         </button>
                                                     </div>
                                                 </td>
@@ -412,6 +453,21 @@ const Page = () => {
                                     className="mt-1 w-full p-2 border border-[#ECF0F1] dark:border-dark-4 rounded-md dark:bg-dark-3 dark:text-gray-2"
                                     required
                                 />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-[#34495E] dark:text-gray-3">
+                                    Status
+                                </label>
+                                <select
+                                    name="status"
+                                    value={editForm.status || 'pending'}
+                                    onChange={handleEditChange}
+                                    className="mt-1 w-full p-2 border border-[#ECF0F1] dark:border-dark-4 rounded-md dark:bg-dark-3 dark:text-gray-2"
+                                >
+                                    <option value="pending">Pending</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="declined">Declined</option>
+                                </select>
                             </div>
                             <div className="mt-6 flex justify-end space-x-2">
                                 <button

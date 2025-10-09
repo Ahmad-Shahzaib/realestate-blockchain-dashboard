@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { Building2, Filter, Search } from 'lucide-react';
+import { Building2, Filter, Search, Eye, Edit2, X } from 'lucide-react';
 import Table from '@/common/Table';
 import SearchInput from '@/common/Input';
 import SupportService, { SupportTicket } from '@/services/support.service';
@@ -18,64 +18,19 @@ interface ComponentSupportTicket {
     updatedAt: string;
 }
 
-const columns = [
-    {
-        key: 'displayId' as keyof ComponentSupportTicket,
-        label: 'Ticket ID',
-        render: (row: any) => row.displayId,
-    },
-    { key: 'title' as keyof ComponentSupportTicket, label: 'Title' },
-    { key: 'description' as keyof ComponentSupportTicket, label: 'Description' },
-    { key: 'userName' as keyof ComponentSupportTicket, label: 'User Name' },
-    { key: 'category' as keyof ComponentSupportTicket, label: 'Category' },
-    {
-        key: 'priority' as keyof ComponentSupportTicket,
-        label: 'Priority',
-        render: (row: ComponentSupportTicket) => (
-            <span
-                className={`px-3 py-1 rounded-full text-xs font-semibold ${row.priority === 'high'
-                    ? 'bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400'
-                    : row.priority === 'medium'
-                        ? 'bg-[#F5F7FA] text-yellow-600 dark:bg-dark-3 dark:text-yellow-400'
-                        : 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
-                    }`}
-            >
-                {row.priority.charAt(0).toUpperCase() + row.priority.slice(1)}
-            </span>
-        ),
-    },
-    {
-        key: 'status' as keyof ComponentSupportTicket,
-        label: 'Status',
-        render: (row: ComponentSupportTicket) => (
-            <span
-                className={`px-3 py-1 rounded-full text-xs font-semibold ${row.status === 'closed'
-                    ? 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
-                    : row.status === 'in-progress'
-                        ? 'bg-[#F5F7FA] text-yellow-600 dark:bg-dark-3 dark:text-yellow-400'
-                        : 'bg-[#F5F7FA] text-[#3498DB] dark:bg-dark-3 dark:text-blue-400'
-                    }`}
-            >
-                {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
-            </span>
-        ),
-    },
-    {
-        key: 'createdAt' as keyof ComponentSupportTicket,
-        label: 'Created At',
-        render: (row: ComponentSupportTicket) => new Date(row.createdAt).toLocaleDateString(),
-    },
-];
 
 const SupportTicketManagement = () => {
-    const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
     const [tickets, setTickets] = useState<ComponentSupportTicket[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedTicket, setSelectedTicket] = useState<ComponentSupportTicket | null>(null);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [showStatusModal, setShowStatusModal] = useState(false);
+    const [newStatus, setNewStatus] = useState('');
     const itemsPerPage = 8;
-
     // Fetch support tickets on component mount
     useEffect(() => {
         const fetchTickets = async () => {
@@ -108,6 +63,107 @@ const SupportTicketManagement = () => {
 
         fetchTickets();
     }, []);
+
+      const handleViewDetails = (ticket: ComponentSupportTicket) => {
+        setSelectedTicket(ticket);
+        setShowDetailsModal(true);
+    };
+
+    const handleStatusUpdate = (ticket: ComponentSupportTicket) => {
+        setSelectedTicket(ticket);
+        setNewStatus(ticket.status);
+        setShowStatusModal(true);
+    };
+
+    const saveStatusUpdate = () => {
+        if (selectedTicket) {
+            setTickets(tickets.map(t => 
+                t.id === selectedTicket.id 
+                    ? { ...t, status: newStatus, updatedAt: new Date().toISOString() }
+                    : t
+            ));
+            setShowStatusModal(false);
+            setSelectedTicket(null);
+        }
+    };
+
+      const columns = [
+        {
+            key: 'displayId' as keyof ComponentSupportTicket,
+            label: 'Ticket ID',
+            render: (row: any) => row.displayId,
+        },
+        { key: 'title' as keyof ComponentSupportTicket, label: 'Title' },
+        { key: 'description' as keyof ComponentSupportTicket, label: 'Description',
+            render: (row: ComponentSupportTicket) => (
+                <span className="truncate max-w-xs block">{row.description}</span>
+            )
+        },
+        { key: 'userName' as keyof ComponentSupportTicket, label: 'User Name' },
+        { key: 'category' as keyof ComponentSupportTicket, label: 'Category' },
+        {
+            key: 'priority' as keyof ComponentSupportTicket,
+            label: 'Priority',
+            render: (row: ComponentSupportTicket) => (
+                <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        row.priority === 'high'
+                            ? 'bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400'
+                            : row.priority === 'medium'
+                            ? 'bg-[#F5F7FA] text-yellow-600 dark:bg-dark-3 dark:text-yellow-400'
+                            : 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
+                    }`}
+                >
+                    {row.priority.charAt(0).toUpperCase() + row.priority.slice(1)}
+                </span>
+            ),
+        },
+        {
+            key: 'status' as keyof ComponentSupportTicket,
+            label: 'Status',
+            render: (row: ComponentSupportTicket) => (
+                <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        row.status === 'closed' || row.status === 'resolved'
+                            ? 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
+                            : row.status === 'in-progress'
+                            ? 'bg-[#F5F7FA] text-yellow-600 dark:bg-dark-3 dark:text-yellow-400'
+                            : 'bg-[#F5F7FA] text-[#3498DB] dark:bg-dark-3 dark:text-blue-400'
+                    }`}
+                >
+                    {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
+                </span>
+            ),
+        },
+        {
+            key: 'createdAt' as keyof ComponentSupportTicket,
+            label: 'Created At',
+            render: (row: ComponentSupportTicket) => new Date(row.createdAt).toLocaleDateString(),
+        },
+        {
+            key: 'actions' as keyof ComponentSupportTicket,
+            label: 'Actions',
+            render: (row: ComponentSupportTicket) => (
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => handleViewDetails(row)}
+                        className="p-2 text-[#3498DB] hover:bg-[#F5F7FA] dark:hover:bg-dark-3 rounded-lg transition-colors"
+                        title="View Details"
+                    >
+                        <Eye className="h-4 w-4" />
+                    </button>
+                    <button
+                        onClick={() => handleStatusUpdate(row)}
+                        className="p-2 text-[#00B894] hover:bg-[#F5F7FA] dark:hover:bg-dark-3 rounded-lg transition-colors"
+                        title="Update Status"
+                    >
+                        <Edit2 className="h-4 w-4" />
+                    </button>
+                </div>
+            ),
+        },
+    ];
+
 
     const filteredTickets = useMemo(() => {
         const term = searchTerm.toLowerCase().trim();
@@ -183,11 +239,11 @@ const SupportTicketManagement = () => {
                         <div className="flex items-center space-x-4">
                             <Filter className="h-5 w-5 text-[#34495E] dark:text-gray-3" />
                             <div className="flex bg-[#ECF0F1] dark:bg-dark-3 rounded-lg p-1">
-                                {['All', 'Open', 'In-progress', 'Closed'].map((status) => (
+                                {['All', 'Open', 'In Progress', 'Resolved', 'Closed'].map((status) => (
                                     <button
                                         key={status}
-                                        onClick={() => setFilterStatus(status.toLowerCase())}
-                                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${filterStatus === status.toLowerCase()
+                                        onClick={() => setFilterStatus(status)}
+                                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${filterStatus === status
                                             ? 'bg-white dark:bg-dark-4 text-[#3498DB] shadow-sm'
                                             : 'text-[#34495E] dark:text-gray-3 hover:text-[#2C3E50] dark:hover:text-gray-2'
                                             }`}
@@ -255,6 +311,149 @@ const SupportTicketManagement = () => {
                     )}
                 </div>
             </div>
+             {/* View Details Modal */}
+            {showDetailsModal && selectedTicket && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white dark:bg-dark-2 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                        <div className="flex items-center justify-between p-6 border-b border-[#ECF0F1] dark:border-dark-4">
+                            <h3 className="text-2xl font-bold text-[#2C3E50] dark:text-gray-2">Ticket Details</h3>
+                            <button
+                                onClick={() => setShowDetailsModal(false)}
+                                className="p-2 hover:bg-[#F5F7FA] dark:hover:bg-dark-3 rounded-lg transition-colors"
+                            >
+                                <X className="h-5 w-5 text-[#34495E] dark:text-gray-3" />
+                            </button>
+                        </div>
+                        <div className="p-6 space-y-4">
+                            <div>
+                                <label className="text-sm font-semibold text-[#34495E] dark:text-gray-3">Ticket ID</label>
+                                <p className="text-[#2C3E50] dark:text-gray-2 mt-1">{selectedTicket.id}</p>
+                            </div>
+                            <div>
+                                <label className="text-sm font-semibold text-[#34495E] dark:text-gray-3">Title</label>
+                                <p className="text-[#2C3E50] dark:text-gray-2 mt-1">{selectedTicket.title}</p>
+                            </div>
+                            <div>
+                                <label className="text-sm font-semibold text-[#34495E] dark:text-gray-3">Description</label>
+                                <p className="text-[#2C3E50] dark:text-gray-2 mt-1">{selectedTicket.description}</p>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-sm font-semibold text-[#34495E] dark:text-gray-3">User Name</label>
+                                    <p className="text-[#2C3E50] dark:text-gray-2 mt-1">{selectedTicket.userName}</p>
+                                </div>
+                                <div>
+                                    <label className="text-sm font-semibold text-[#34495E] dark:text-gray-3">Category</label>
+                                    <p className="text-[#2C3E50] dark:text-gray-2 mt-1">{selectedTicket.category}</p>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-sm font-semibold text-[#34495E] dark:text-gray-3">Priority</label>
+                                    <p className="mt-1">
+                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                            selectedTicket.priority === 'high'
+                                                ? 'bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400'
+                                                : selectedTicket.priority === 'medium'
+                                                ? 'bg-[#F5F7FA] text-yellow-600 dark:bg-dark-3 dark:text-yellow-400'
+                                                : 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
+                                        }`}>
+                                            {selectedTicket.priority.charAt(0).toUpperCase() + selectedTicket.priority.slice(1)}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="text-sm font-semibold text-[#34495E] dark:text-gray-3">Status</label>
+                                    <p className="mt-1">
+                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                            selectedTicket.status === 'closed' || selectedTicket.status === 'resolved'
+                                                ? 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
+                                                : selectedTicket.status === 'in-progress'
+                                                ? 'bg-[#F5F7FA] text-yellow-600 dark:bg-dark-3 dark:text-yellow-400'
+                                                : 'bg-[#F5F7FA] text-[#3498DB] dark:bg-dark-3 dark:text-blue-400'
+                                        }`}>
+                                            {selectedTicket.status.charAt(0).toUpperCase() + selectedTicket.status.slice(1)}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-sm font-semibold text-[#34495E] dark:text-gray-3">Created At</label>
+                                    <p className="text-[#2C3E50] dark:text-gray-2 mt-1">
+                                        {new Date(selectedTicket.createdAt).toLocaleString()}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label className="text-sm font-semibold text-[#34495E] dark:text-gray-3">Updated At</label>
+                                    <p className="text-[#2C3E50] dark:text-gray-2 mt-1">
+                                        {new Date(selectedTicket.updatedAt).toLocaleString()}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex justify-end gap-3 p-6 border-t border-[#ECF0F1] dark:border-dark-4">
+                            <button
+                                onClick={() => setShowDetailsModal(false)}
+                                className="px-4 py-2 border border-[#ECF0F1] dark:border-dark-4 rounded-lg text-[#34495E] dark:text-gray-3 hover:bg-[#F5F7FA] dark:hover:bg-dark-3 transition-colors"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Update Status Modal */}
+            {showStatusModal && selectedTicket && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white dark:bg-dark-2 rounded-2xl shadow-xl max-w-md w-full">
+                        <div className="flex items-center justify-between p-6 border-b border-[#ECF0F1] dark:border-dark-4">
+                            <h3 className="text-xl font-bold text-[#2C3E50] dark:text-gray-2">Update Status</h3>
+                            <button
+                                onClick={() => setShowStatusModal(false)}
+                                className="p-2 hover:bg-[#F5F7FA] dark:hover:bg-dark-3 rounded-lg transition-colors"
+                            >
+                                <X className="h-5 w-5 text-[#34495E] dark:text-gray-3" />
+                            </button>
+                        </div>
+                        <div className="p-6 space-y-4">
+                            <div>
+                                <label className="text-sm font-semibold text-[#34495E] dark:text-gray-3 block mb-2">
+                                    Ticket: {selectedTicket.title}
+                                </label>
+                                <label className="text-sm font-semibold text-[#34495E] dark:text-gray-3 block mb-2">
+                                    Select New Status
+                                </label>
+                                <select
+                                    value={newStatus}
+                                    onChange={(e) => setNewStatus(e.target.value)}
+                                    className="w-full px-4 py-2 border border-[#ECF0F1] dark:border-dark-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00B894] dark:bg-dark-3 dark:text-gray-2"
+                                >
+                                    <option value="Open">Open</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Resolved">Resolved</option>
+                                    <option value="Closed">Closed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="flex justify-end gap-3 p-6 border-t border-[#ECF0F1] dark:border-dark-4">
+                            <button
+                                onClick={() => setShowStatusModal(false)}
+                                className="px-4 py-2 border border-[#ECF0F1] dark:border-dark-4 rounded-lg text-[#34495E] dark:text-gray-3 hover:bg-[#F5F7FA] dark:hover:bg-dark-3 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={saveStatusUpdate}
+                                className="px-4 py-2 bg-[#00B894] text-white rounded-lg hover:bg-[#00A383] transition-colors"
+                            >
+                                Update Status
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

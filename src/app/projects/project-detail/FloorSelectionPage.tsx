@@ -50,16 +50,17 @@ const FloorAreaSelectionPage: NextPage<FloorAreaSelectionPageProps> = ({ project
     };
 
     const handleProceed = async () => {
-        if (!project?._id || totalArea === 0) return; // Safe check
+        if (!project?._id || totalArea === 0 || selectedFloor?._id) return; // Safe check
 
         try {
             // Construct the transaction payload
-            const payload = {
+            const payload: any = {
                 propertyId: project._id,
                 customerId: project.customerId, // Replace with actual customer ID (e.g., from auth context or state)
                 totalPrice: totalInvestment,
                 totalSquareFeet: totalArea,
-                type: "chosen", // Adjust based on your API requirements
+                floorId: currentFloor._id,
+                type: "chosen", 
             };
 
             // Call the TransactionService.createTransaction API
