@@ -171,7 +171,7 @@ function useGlobeResidencyForm() {
 
         try {
             const presign = await getRequest(getAxiosInstance('/api'), `/api/upload_images?fileName=${encodeURIComponent(safeFileName)}&contentType=${encodeURIComponent(sanitized)}`);
-            
+
             if (!presign || presign.status !== 'success' || !presign.url) {
                 toast.error(`Failed to get upload URL for ${safeFileName}`);
                 return null;
@@ -214,7 +214,7 @@ function useGlobeResidencyForm() {
 
                 // Get presigned URL
                 const presign = await getRequest(getAxiosInstance('/api'), `/api/upload_images?fileName=${encodeURIComponent(safeFileName)}&contentType=${encodeURIComponent(sanitized)}`);
-                
+
                 if (!presign || presign.status !== 'success' || !presign.url) {
                     throw new Error(`Failed to get upload URL for ${safeFileName}`);
                 }
@@ -238,7 +238,7 @@ function useGlobeResidencyForm() {
             // Wait for all uploads to complete
             const results = await Promise.all(uploadPromises);
             uploadedUrls.push(...results);
-            
+
             return uploadedUrls;
         } catch (error) {
             console.error('Error uploading gallery images:', error);
@@ -469,7 +469,7 @@ function useGlobeResidencyForm() {
             setLoading(true);
             setError(null);
             setSuccess(false);
-            
+
             if (!isValid) {
                 setError("Please fill all required required fields. See highlighted errors.");
                 setLoading(false);
@@ -1351,7 +1351,7 @@ export default function GlobeResidencyForm() {
                                         onChange={(e) => {
                                             if (e.target.files && e.target.files.length > 0) {
                                                 const files = Array.from(e.target.files);
-                                                
+
                                                 // Upload each file as it's selected
                                                 files.forEach(async (file) => {
                                                     const safeFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
@@ -1360,7 +1360,7 @@ export default function GlobeResidencyForm() {
                                                     try {
                                                         // Get presigned URL
                                                         const presign = await getRequest(getAxiosInstance('/api'), `/api/upload_images?fileName=${encodeURIComponent(safeFileName)}&contentType=${encodeURIComponent(sanitized)}`);
-                                                        
+
                                                         if (!presign || presign.status !== 'success' || !presign.url) {
                                                             toast.error(`Failed to get upload URL for ${safeFileName}`);
                                                             return;
@@ -1380,12 +1380,12 @@ export default function GlobeResidencyForm() {
 
                                                         // Get the public URL
                                                         const publicUrl = presign.url.split('?')[0];
-                                                        
+
                                                         // Add the public URL to the form's gallery images
                                                         setForm(prev => ({
                                                             ...prev,
-                                                            galleryImages: prev.galleryImages 
-                                                                ? prev.galleryImages + ',' + publicUrl 
+                                                            galleryImages: prev.galleryImages
+                                                                ? prev.galleryImages + ',' + publicUrl
                                                                 : publicUrl
                                                         }));
 
@@ -1417,7 +1417,7 @@ export default function GlobeResidencyForm() {
                                                         onClick={() => {
                                                             const removedImage = selectedGalleryImages[index];
                                                             setSelectedGalleryImages(prev => prev.filter((_, i) => i !== index));
-                                                            
+
                                                             // Remove the URL from the form's gallery images
                                                             if (removedImage.preview) {
                                                                 setForm(prev => ({
@@ -1490,7 +1490,7 @@ export default function GlobeResidencyForm() {
                                             )}
                                         </div>
 
-                                            <div className="space-y-2">
+                                        <div className="space-y-2">
                                             <label htmlFor={`floor-${idx}-floorPlanUrl`} className="text-sm font-semibold dark:text-white">Floor Plan</label>
                                             <div className="flex flex-col gap-2">
                                                 <input
@@ -1502,7 +1502,7 @@ export default function GlobeResidencyForm() {
                                                             const file = e.target.files[0];
                                                             const uploadedUrl = await handleFileUpload(file, `floor ${idx + 1} plan`);
                                                             if (uploadedUrl) {
-                                                                setFloors((prev: Floor[]) => prev.map((f: Floor, i: number) => 
+                                                                setFloors((prev: Floor[]) => prev.map((f: Floor, i: number) =>
                                                                     i === idx ? { ...f, floorPlanUrl: uploadedUrl } : f
                                                                 ));
                                                             }
@@ -1520,7 +1520,7 @@ export default function GlobeResidencyForm() {
                                                         <button
                                                             type="button"
                                                             onClick={() => {
-                                                                setFloors(prev => prev.map((f, i) => 
+                                                                setFloors(prev => prev.map((f, i) =>
                                                                     i === idx ? { ...f, floorPlanUrl: '' } : f
                                                                 ));
                                                             }}
@@ -1950,7 +1950,7 @@ export default function GlobeResidencyForm() {
                                                         const file = e.target.files[0];
                                                         const uploadedUrl = await handleFileUpload(file, `document ${idx + 1}`);
                                                         if (uploadedUrl) {
-                                                            setDocuments((prev: string[]) => prev.map((d: string, i: number) => 
+                                                            setDocuments((prev: string[]) => prev.map((d: string, i: number) =>
                                                                 i === idx ? uploadedUrl : d
                                                             ));
                                                         }
@@ -1959,8 +1959,8 @@ export default function GlobeResidencyForm() {
                                             />
                                             {doc && (
                                                 <div className="flex items-center gap-2">
-                                                    <a href={doc} target="_blank" rel="noopener noreferrer" 
-                                                       className="text-blue-600 hover:text-blue-800 truncate">
+                                                    <a href={doc} target="_blank" rel="noopener noreferrer"
+                                                        className="text-blue-600 hover:text-blue-800 truncate">
                                                         {doc.split('/').pop()}
                                                     </a>
                                                 </div>
