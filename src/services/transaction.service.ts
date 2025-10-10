@@ -161,7 +161,7 @@ export const TransactionService = {
      * @param params Query parameters for pagination and filtering
      * @returns Promise with the API response
      */
-    getAllTransactions: async (params: {
+    getAllTransactions: async (currentPage: number, itemsPerPage: number, searchTerm: string, params: {
         page?: number;
         limit?: number;
         status?: string;

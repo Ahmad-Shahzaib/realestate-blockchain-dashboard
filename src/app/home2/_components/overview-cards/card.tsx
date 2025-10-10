@@ -2,14 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, MapPin, Star } from "lucide-react";
-import property1 from "../../../../../public/images/cards/image1.jpg";
-import property2 from "../../../../../public/images/cards/image2.jpg";
-import property3 from "../../../../../public/images/cards/image3.jpg";
-import Veina from "../../../../../public/images/cards/vienna-l.jpg";
-import almadiev from "../../../../../public/images/cards/Al-madev-complex.jpg";
-import boulevard from "../../../../../public/images/cards/boulevard-heights.jpg";
-import fort from "../../../../../public/images/cards/fort-monro-resorts.jpg";
-
 import type { JSX, SVGProps } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -32,7 +24,7 @@ export interface Project {
   category: string;
   status: string;
   mainImageUrl?: string;
-  additionalImageUrls?: string[];
+  galleryImages?: string[]; // Updated to match the API response
   priceRange?: { min: number; max: number };
   location?: { city: string; state: string };
   stats?: { availableUnits: number };
@@ -40,18 +32,49 @@ export interface Project {
   totalArea?: number;
   roi?: any;
   totalInvestment: any;
-  galleryImages?: any[];
 }
 
-const defaultImages = [
-  property1.src,
-  property2.src,
-  property3.src,
-  Veina.src,
-  almadiev.src,
-  boulevard.src,
-  fort.src,
-];
+// Helper function to validate URLs
+const isValidUrl = (url: string): boolean => {
+  try {
+    // Check if it's a relative path (starts with "/")
+    if (url.startsWith("/")) return true;
+
+    // Check if it's a valid absolute URL
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+// Helper function to validate if a string looks like an image URL
+const isValidImageUrl = (url: string): boolean => {
+  if (!url || typeof url !== 'string') return false;
+
+  // Check if it's a valid URL
+  if (!isValidUrl(url)) return false;
+
+  // Check if it has image file extensions
+  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+  const hasImageExtension = imageExtensions.some(ext =>
+    url.toLowerCase().includes(ext)
+  );
+
+  // Also check if it's from a CDN that might not have extensions
+  const cdnPatterns = [
+    's3.amazonaws.com',
+    'cloudfront.net',
+    'imgix.net',
+    'images.unsplash.com'
+  ];
+
+  const hasCdnPattern = cdnPatterns.some(pattern =>
+    url.toLowerCase().includes(pattern)
+  );
+
+  return hasImageExtension || hasCdnPattern;
+};
 
 export function OverviewCard({
   item,
@@ -59,23 +82,30 @@ export function OverviewCard({
   projectId,
 }: PropsType) {
   const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex);
-  // Initialize projectImages to an empty array to avoid undefined
+  // Initialize projectImages to an empty array
   const [projectImages, setProjectImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (item) {
-      const imageArray = [
-        ...(item.galleryImages ? [item.mainImageUrl] : []),
-        ...(item.additionalImageUrls || []), ,
-      ].filter((url, index, self) => url && self.indexOf(url) === index);
+      // Build image array using mainImageUrl and galleryImages from the project data
+      const potentialImages = [
+        ...(item.mainImageUrl ? [item.mainImageUrl] : []),
+        ...(item.galleryImages || []),
+      ];
 
-      setProjectImages(imageArray.length > 1 ? imageArray : defaultImages);
+      // Filter out invalid image URLs
+      const validImages = potentialImages.filter(url =>
+        url && isValidImageUrl(url)
+      );
+
+      // Use only valid images, no fallback to static images
+      setProjectImages(validImages);
       setLoading(false);
     } else {
       setError("No project data provided.");
-      setProjectImages(defaultImages);
+      setProjectImages([]);
       setLoading(false);
     }
   }, [item]);
@@ -166,81 +196,88 @@ export function OverviewCard({
     >
       {/* Image Section */}
       <div className="relative h-48 overflow-hidden">
-        <Image
-          key={projectImages[currentImageIndex]}
-          src={projectImages[currentImageIndex]}
-          alt={`${item?.name || "Property"} view ${currentImageIndex + 1}`}
-          width={400}
-          height={128}
-          className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
-          onError={(e) => {
-            if (e.currentTarget.src !== defaultImages[1]) {
-              e.currentTarget.src = defaultImages[1];
-            }
-          }}
-          // Only call .startsWith if projectImages[currentImageIndex] is defined
-          unoptimized={
-            !!projectImages[currentImageIndex] &&
-            projectImages[currentImageIndex].startsWith("http")
-          }
-          priority
-        />
+        {projectImages.length > 0 ? (
+          <>
+            <Image
+              key={projectImages[currentImageIndex]}
+              src={projectImages[currentImageIndex]}
+              alt={`${item?.name || "Property"} view ${currentImageIndex + 1}`}
+              width={400}
+              height={128}
+              className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+              onError={(e) => {
+                // If image fails to load, remove it from the array
+                setProjectImages(prev => prev.filter((_, idx) => idx !== currentImageIndex));
+              }}
+              unoptimized={true} // Disable optimization for external URLs
+              priority
+            />
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#003049]/20 via-transparent to-transparent" />
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#003049]/20 via-transparent to-transparent" />
 
-        {/* Status */}
-        <div className="absolute top-2 left-2">
-          <span
-            className={`px-2 py-1 rounded-full text-xs font-medium ${statusConfig.color}`}
-          >
-            {statusConfig.label}
-          </span>
-        </div>
-
-        {/* Featured */}
-        {item?.featured && (
-          <div className="absolute top-2 right-2">
-            <div className="bg-[#F5F7FA] dark:bg-dark-1 text-[#00B894] px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-              <Star className="w-3 h-3" />
-              Featured
+            {/* Status */}
+            <div className="absolute top-2 left-2">
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-medium ${statusConfig.color}`}
+              >
+                {statusConfig.label}
+              </span>
             </div>
+
+            {/* Featured */}
+            {item?.featured && (
+              <div className="absolute top-2 right-2">
+                <div className="bg-[#F5F7FA] dark:bg-dark-1 text-[#00B894] px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                  <Star className="w-3 h-3" />
+                  Featured
+                </div>
+              </div>
+            )}
+
+            {/* Navigation - Only show if there are multiple images */}
+            {projectImages.length > 1 && (
+              <div className="absolute bottom-9 right-3 flex gap-1">
+                <button
+                  onClick={handlePrevImage}
+                  type="button"
+                  aria-label="Previous image"
+                  className="w-6 h-6 bg-white/80 dark:bg-dark-3 rounded-full flex items-center justify-center transition-all hover:bg-white dark:hover:bg-dark-2"
+                >
+                  <ChevronLeft className="w-3 h-3 text-gray-700 dark:text-gray-200" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextImage}
+                  aria-label="Next image"
+                  className="w-6 h-6 bg-white/80 dark:bg-dark-3 rounded-full flex items-center justify-center transition-all hover:bg-white dark:hover:bg-dark-2"
+                >
+                  <ChevronRight className="w-3 h-3 text-gray-700 dark:text-gray-200" />
+                </button>
+              </div>
+            )}
+
+            {/* Indicators - Only show if there are multiple images */}
+            {projectImages.length > 1 && (
+              <div className="absolute bottom-2 left-2 flex gap-1">
+                {projectImages.map((_, index) => (
+                  <div
+                    key={index}
+                    className={`w-1.5 h-1.5 rounded-full transition-all ${index === currentImageIndex
+                      ? "bg-[#00B894]"
+                      : "bg-white/50 dark:bg-gray-500"
+                      }`}
+                  />
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          // Empty state when no images are available
+          <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+            <div className="text-gray-400 dark:text-gray-500 text-sm">No image available</div>
           </div>
         )}
-
-        {/* Navigation */}
-        <div className="absolute bottom-9 right-3 flex gap-1">
-          <button
-            onClick={handlePrevImage}
-            type="button"
-            aria-label="Previous image"
-            className="w-6 h-6 bg-white/80 dark:bg-dark-3 rounded-full flex items-center justify-center transition-all hover:bg-white dark:hover:bg-dark-2"
-          >
-            <ChevronLeft className="w-3 h-3 text-gray-700 dark:text-gray-200" />
-          </button>
-          <button
-            type="button"
-            onClick={handleNextImage}
-            aria-label="Next image"
-            className="w-6 h-6 bg-white/80 dark:bg-dark-3 rounded-full flex items-center justify-center transition-all hover:bg-white dark:hover:bg-dark-2"
-          >
-            <ChevronRight className="w-3 h-3 text-gray-700 dark:text-gray-200" />
-          </button>
-
-        </div>
-
-        {/* Indicators */}
-        <div className="absolute bottom-2 left-2 flex gap-1">
-          {projectImages.map((_, index) => (
-            <div
-              key={index}
-              className={`w-1.5 h-1.5 rounded-full transition-all ${index === currentImageIndex
-                ? "bg-[#00B894]"
-                : "bg-white/50 dark:bg-gray-500"
-                }`}
-            />
-          ))}
-        </div>
       </div>
 
       {/* Content */}
@@ -303,14 +340,16 @@ export function OverviewCard({
             <div className="text-gray-700 dark:text-gray-300 text-xs mb-0.5">
               EXPECTED ROI
             </div>
-            <div className="text-[#00B894] font-bold text-xs">{item.roi}%</div>
+            <div className="text-[#00B894] font-bold text-xs">
+              {item?.roi ? `${item.roi}%` : "0"}
+            </div>
           </div>
           <div className="bg-white dark:bg-dark-2 rounded-lg p-1.5">
             <div className="text-gray-700 dark:text-gray-300 text-xs mb-0.5">
               INVESTMENT
             </div>
             <div className="text-[#0277BD] font-bold text-xs">
-              PKR {item.totalInvestment}
+              PKR {item?.totalInvestment ? Number(item.totalInvestment).toLocaleString() : "0"}
             </div>
           </div>
         </div>

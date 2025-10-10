@@ -29,6 +29,8 @@ import {
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { addCustomer } from '@/redux/reducers/customerslice/customerSlice';
 import Button from '@/common/Button';
+import { getRequest } from "@/app/utils/requests";
+import { getAxiosInstance } from "@/lib/axios";
 
 // Define types for FormSection props
 interface FormSectionProps {
@@ -53,31 +55,38 @@ interface InputFieldProps {
   inputRef?: React.RefObject<HTMLInputElement | null>;
   inputMode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
   pattern?: string;
+  previewUrl?: string | null;
+  setPreviewUrl?: (url: string | null) => void;
 }
 
 const FormSection: React.FC<FormSectionProps> = ({ title, icon: Icon, children, className }) => (
-  <div className={`  text-black dark:text-white border-slate-700/50 shadow-md rounded-2xl p-6 ${className}`}>
+  <div className={`text-black dark:text-white border-slate-700/50 shadow-md rounded-2xl p-6 ${className}`}>
     <div className="flex items-center gap-3 mb-6">
-
       <h3 className="text-lg font-semibold">{title}</h3>
     </div>
     {children}
   </div>
 );
 
-const InputFieldInner: React.FC<InputFieldProps> = ({ label, name, type = "text", required = false, placeholder, icon: Icon, value, onChange, options, error, inputRef, inputMode, pattern }) => {
+const InputFieldInner: React.FC<InputFieldProps> = ({
+  label,
+  name,
+  type = "text",
+  required = false,
+  placeholder,
+  icon: Icon,
+  value,
+  onChange,
+  options,
+  error,
+  inputRef,
+  inputMode,
+  pattern,
+  previewUrl,
+  setPreviewUrl
+}) => {
   // local state for preview URL when handling file inputs
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (type === 'file' && value instanceof File) {
-      const url = URL.createObjectURL(value);
-      setPreviewUrl(url);
-      return () => URL.revokeObjectURL(url);
-    }
-    setPreviewUrl(null);
-    return;
-  }, [type, value]);
 
   return (
     <div className="space-y-2">
@@ -214,16 +223,70 @@ const initialFormState = {
   emergencyContactRelation: '',
   notes: '',
   password: '',
-
 };
 
 const SuperAdminAddCustomerFormUI: React.FC = () => {
   const [form, setForm] = useState(initialFormState);
   const [errors, setErrors] = useState<Record<string, string | null>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false); // Local submitting state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector(state => state.customer || { loading: false, error: null });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  // Function to handle file uploads
+  const handleFileUpload = async (file: File, purpose: string): Promise<string | null> => {
+    const safeFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+    const sanitized = file.type;
+
+    try {
+      const presign = await getRequest(getAxiosInstance('/api'), `/api/upload_images?fileName=${encodeURIComponent(safeFileName)}&contentType=${encodeURIComponent(sanitized)}`);
+
+      if (!presign || presign.status !== 'success' || !presign.url) {
+        toast.error(`Failed to get upload URL for ${safeFileName}`);
+        return null;
+      }
+
+      const uploadResp = await fetch(presign.url, {
+        method: 'PUT',
+        body: file,
+        headers: { 'Content-Type': sanitized },
+      });
+
+      if (!uploadResp.ok) {
+        toast.error(`Failed to upload ${safeFileName}`);
+        return null;
+      }
+
+
+      const publicUrl = presign.url.split('?')[0];
+      setPreviewUrl(publicUrl);
+      toast.success(`Successfully uploaded ${purpose}`);
+      return publicUrl;
+    } catch (error) {
+      toast.error(`Error uploading ${purpose}: ${error}`);
+      return null;
+    }
+  };
+
+  // Handle profile picture upload
+  const handleProfilePictureChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setIsUploading(true);
+      try {
+        const url = await handleFileUpload(file, 'profile picture');
+        if (url) {
+          setForm(prev => ({ ...prev, profilePicture: url }));
+          setErrors(prev => ({ ...prev, profilePicture: null }));
+        } else {
+          setErrors(prev => ({ ...prev, profilePicture: 'Failed to upload profile picture' }));
+        }
+      } finally {
+        setIsUploading(false);
+      }
+    }
+  };
 
   // Basic validators
   const validators = useMemo(() => ({
@@ -250,7 +313,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
     },
     password: (v: string) => v && v.length >= 6 ? null : 'Password must be at least 6 characters',
     secondaryAddress: (v: string) => v ? null : 'Secondary address is required',
-    profilePicture: (v: File | null) => v ? null : 'Profile picture is required',
+    profilePicture: (v: string | null) => v ? null : 'Profile picture is required',
     accountStatus: (v: string) => v ? null : 'Account status is required',
     dateOfRegistration: (v: string) => v ? null : 'Registration date is required',
     preferredContactMethod: (v: string) => v ? null : 'Preferred contact method is required',
@@ -275,58 +338,30 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
   }, [validators]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type, files } = e.target as any;
+    const { name, value, type } = e.target as any;
+
     if (type === 'file') {
-      const file = files?.[0] ?? null;
-      setForm(prev => ({ ...prev, [name]: file }));
-      setErrors(prev => ({ ...prev, [name]: file ? null : prev[name] }));
-    } else {
-      setForm(prev => ({ ...prev, [name]: value }));
-      const fieldError = validateField(name, value);
-      setErrors(prev => ({ ...prev, [name]: fieldError }));
+      // File inputs are handled separately
+      return;
     }
+
+    setForm(prev => ({ ...prev, [name]: value }));
+    const fieldError = validateField(name, value);
+    setErrors(prev => ({ ...prev, [name]: fieldError }));
   }, [validateField]);
 
   const resetForm = useCallback(() => {
-    // Create a completely new object to ensure state update
-    setForm({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      dateOfBirth: '',
-      gender: '',
-      nationality: '',
-      primaryAddress: '',
-      secondaryAddress: '',
-      nationalId: '',
-      profilePicture: null,
-      accountStatus: '',
-      dateOfRegistration: '',
-      preferredContactMethod: '',
-      occupation: '',
-      annualIncome: '',
-      investmentExperience: '',
-      riskTolerance: '',
-      kycStatus: '',
-      amlStatus: '',
-      walletAddress: '',
-      referralCode: '',
-      emergencyContactName: '',
-      emergencyContactPhone: '',
-      emergencyContactRelation: '',
-      notes: '',
-      password: '',
-    });
+    setForm(initialFormState);
     setErrors({});
-
-    // Clear file input if present
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   }, []);
 
   const isFormValid = useMemo(() => {
+    // Skip validation if we're uploading
+    if (isUploading) return false;
+
     // run through required validators
     for (const key of Object.keys(validators)) {
       const val = (form as any)[key];
@@ -334,54 +369,49 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
       if (err) return false;
     }
     return true;
-  }, [form, validators]);
+  }, [form, validators, isUploading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true); // Set local submitting state
+    setIsSubmitting(true);
 
     // Build full name from first and last
     const fullName = `${form.firstName || ''} ${form.lastName || ''}`.trim();
 
-    const { profilePicture, ...rest } = form as any;
-
     const payload: any = {
-      firstName: rest.firstName,
-      lastName: rest.lastName,
-      email: rest.email,
-      phoneNumber: rest.phone,
-      dateOfBirth: rest.dateOfBirth,
-      gender: rest.gender,
-      nationality: rest.nationality,
-      primaryAddress: rest.primaryAddress,
-      secondaryAddress: rest.secondaryAddress,
-      nationalId: rest.nationalId,
-      accountStatus: rest.accountStatus,
-      dateOfRegistration: rest.dateOfRegistration,
-      preferredContactMethod: rest.preferredContactMethod,
-      occupation: rest.occupation,
-      annualIncome: rest.annualIncome,
-      investmentExperience: rest.investmentExperience,
-      riskTolerance: rest.riskTolerance,
-      kycStatus: rest.kycStatus,
-      amlStatus: rest.amlStatus,
-      walletAddress: rest.walletAddress,
-      referralCode: rest.referralCode,
-      emergencyContactName: rest.emergencyContactName,
-      emergencyContactPhone: rest.emergencyContactPhone,
-      emergencyContactRelation: rest.emergencyContactRelation,
-      notes: rest.notes,
-      password: rest.password,
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      phoneNumber: form.phone,
+      dateOfBirth: form.dateOfBirth,
+      gender: form.gender,
+      nationality: form.nationality,
+      primaryAddress: form.primaryAddress,
+      secondaryAddress: form.secondaryAddress,
+      nationalId: form.nationalId,
+      accountStatus: form.accountStatus,
+      dateOfRegistration: form.dateOfRegistration,
+      preferredContactMethod: form.preferredContactMethod,
+      occupation: form.occupation,
+      annualIncome: form.annualIncome,
+      investmentExperience: form.investmentExperience,
+      riskTolerance: form.riskTolerance,
+      kycStatus: form.kycStatus,
+      amlStatus: form.amlStatus,
+      walletAddress: form.walletAddress,
+      referralCode: form.referralCode,
+      emergencyContactName: form.emergencyContactName,
+      emergencyContactPhone: form.emergencyContactPhone,
+      emergencyContactRelation: form.emergencyContactRelation,
+      notes: form.notes,
+      password: form.password,
       name: fullName,
       role: 'customer',
-      profilePicture: "https://blog.photofeeler.com/wp-content/uploads/2017/09/instagram-profile-picture-maker.jpg"
+      profilePicture: form.profilePicture || "https://blog.photofeeler.com/wp-content/uploads/2017/09/instagram-profile-picture-maker.jpg"
     };
 
-    let finalPayload: any = payload;
-    console.log("Profile Picture:", finalPayload);
-
     try {
-      // final validation before submit
+      // Final validation before submit
       const newErrors: Record<string, string | null> = {};
       for (const key of Object.keys(validators)) {
         const val = (form as any)[key];
@@ -395,33 +425,28 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
         return;
       }
 
-      // dispatch and unwrap to get thrown error on rejection
-      // @ts-ignore
-      await dispatch(addCustomer(finalPayload)).unwrap();
+      // Dispatch and unwrap to get thrown error on rejection
+      await dispatch(addCustomer(payload)).unwrap();
       toast.success('Customer added successfully');
-      resetForm(); // Reset form after successful submission
+      resetForm();
     } catch (err: any) {
       const msg = err?.message || String(err) || 'Failed to add customer';
       toast.error(msg);
     } finally {
-      setIsSubmitting(false); // Reset local submitting state
+      setIsSubmitting(false);
     }
   };
 
-
   return (
-    <div className="min-h-screen bg-white dark:bg-dark relative overflow-hidden rounded-lg dark:text-white  ">
-
+    <div className="min-h-screen bg-white dark:bg-dark relative overflow-hidden rounded-lg dark:text-white">
       <div className="relative z-10 p-6 lg:p-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className=" mb-8">
+          <div className="mb-8">
             <div className="flex gap-3 mb-4">
-
               <h1 className="text-3xl lg:text-4xl font-extrabold text-black dark:text-white">
                 Add New Customer
               </h1>
-
             </div>
             <p className="text-slate-600 dark:text-gray-4 text-lg">
               Create a new customer profile for the blockchain real estate platform
@@ -434,10 +459,9 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
               {/* Basic Information */}
               <FormSection title="Authorized Representative Details" icon={User}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* <InputField label="Full Name" name="name" required placeholder="Enter full name" icon={User} value={form.name} onChange={handleChange} /> */}
                   <InputField
                     label="First Name"
-                    name="firstName"   // ✅ match state key
+                    name="firstName"
                     required
                     placeholder="Enter first name"
                     icon={User}
@@ -448,7 +472,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
 
                   <InputField
                     label="Last Name"
-                    name="lastName"    // ✅ match state key
+                    name="lastName"
                     required
                     placeholder="Enter last name"
                     icon={User}
@@ -457,7 +481,6 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                     error={errors.lastName}
                   />
 
-                  {/* password  */}
                   <InputField label="Password" name="password" type="password" required placeholder="Enter password" icon={User} value={form.password} onChange={handleChange} error={errors.password} />
 
                   <InputField label="Email Address" name="email" type="email" required placeholder="Enter email address" icon={Mail} value={form.email} onChange={handleChange} error={errors.email} />
@@ -492,7 +515,20 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                   <InputField label="Phone Number" name="phone" type="tel" required placeholder="+1 (555) 123-4567" icon={Phone} value={form.phone} onChange={handleChange} error={errors.phone} inputMode="tel" pattern="[0-9]*" />
 
                   <InputField label="National ID / Passport Number" name="nationalId" required placeholder="Enter ID or passport number" icon={CreditCard} value={form.nationalId} onChange={handleChange} error={errors.nationalId} inputMode="numeric" pattern="[0-9]*" />
-                  <InputField label="Profile Picture" name="profilePicture" type="file" required onChange={handleChange} inputRef={fileInputRef} error={errors.profilePicture} value={form.profilePicture} />
+
+                  <InputField
+                    label="Profile Picture"
+                    name="profilePicture"
+                    type="file"
+                    required
+                    onChange={handleProfilePictureChange}
+                    inputRef={fileInputRef}
+                    error={errors.profilePicture}
+                    value={form.profilePicture}
+                    previewUrl={previewUrl}
+                    setPreviewUrl={setPreviewUrl}
+                  />
+
                   <InputField label="Occupation" name="occupation" required placeholder="Enter occupation" icon={Building2} value={form.occupation} onChange={handleChange} error={errors.occupation} />
                   <InputField label="Annual Income" name="annualIncome" type="select" required value={form.annualIncome} onChange={handleChange} icon={DollarSign} error={errors.annualIncome} options={[
                     { label: '< PKR 50,000', value: '<50000' },
@@ -568,9 +604,11 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                   <X className="w-5 h-5" />
                   Cancel
                 </button>
-                <Button type="submit"
-                  disabled={isSubmitting}>
-                  {isSubmitting ? 'Adding...' : 'Add Customer'}
+                <Button
+                  type="submit"
+                  disabled={isSubmitting || isUploading || !isFormValid}
+                >
+                  {isSubmitting ? 'Adding...' : (isUploading ? 'Uploading image...' : 'Add Customer')}
                 </Button>
               </div>
             </div>
@@ -578,7 +616,6 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
         </div>
       </div>
     </div>
-
   );
 };
 

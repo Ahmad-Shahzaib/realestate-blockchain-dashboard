@@ -4,40 +4,40 @@ import React, { useState, useEffect } from "react";
 import { Building2, Search } from "lucide-react";
 import Table from "@/common/Table";
 import SearchInput from "@/common/Input";
-import TransactionService, { TransactionWithProperty, TransactionResponse } from "@/services/transaction.service";
+import TransactionService, { TransactionResponse } from "@/services/transaction.service";
 
 const columns = [
     {
         key: "name",
         label: "Project Name",
-        render: (row: TransactionWithProperty) =>
+        render: (row: any) =>
             row.propertyId?.name ?? row.propertyId?.location?.address ?? "N/A",
     },
     {
         key: "address",
         label: "Address",
-        render: (row: TransactionWithProperty) =>
+        render: (row: any) =>
             row.propertyId?.address ?? row.propertyId?.location?.address ?? "N/A",
     },
     {
         key: "totalPrice",
         label: "Total Price",
-        render: (row: TransactionWithProperty) => `PKR ${row.totalPrice?.toLocaleString() ?? 0}`,
+        render: (row: any) => `PKR ${row.totalPrice?.toLocaleString() ?? 0}`,
     },
     {
         key: "totalSquareFeet",
         label: "Square Feet",
-        render: (row: TransactionWithProperty) => `${row.totalSquareFeet ?? 0} sq ft`,
+        render: (row: any) => `${row.totalSquareFeet ?? 0} sq ft`,
     },
     {
         key: "type",
         label: "Type",
-        render: (row: TransactionWithProperty) => row.type ?? "N/A",
+        render: (row: any) => row.type ?? "N/A",
     },
     {
         key: "status",
         label: "Status",
-        render: (row: TransactionWithProperty) => (
+        render: (row: any) => (
             <span
                 className={`px-2 py-1 rounded-full text-xs font-medium ${row.status === "pending"
                     ? "bg-yellow-100 text-yellow-800"
@@ -54,7 +54,7 @@ const columns = [
 
 const TransactionManagement = () => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [transactions, setTransactions] = useState<TransactionWithProperty[]>([]);
+    const [transactions, setTransactions] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -77,6 +77,8 @@ const TransactionManagement = () => {
                     itemsPerPage,
                     searchTerm
                 );
+
+
 
                 // Extract transactions and pagination from API response
                 const transactionData = response?.data?.transactions || [];

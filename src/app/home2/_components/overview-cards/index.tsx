@@ -10,13 +10,6 @@ import { MdOutlineSignalCellularAlt2Bar } from "react-icons/md";
 import { FaCalendarAlt } from "react-icons/fa";
 import type { JSX, SVGProps } from "react";
 import ProjectService, { Project } from "@/services/project.service";
-import property1 from "../../../../../public/images/cards/image1.jpg";
-import property3 from "../../../../../public/images/cards/image3.jpg";
-import Veina from "../../../../../public/images/cards/vienna-l.jpg";
-import almadiev from "../../../../../public/images/cards/Al-madev-complex.jpg";
-import boulevard from "../../../../../public/images/cards/boulevard-heights.jpg";
-import fort from "../../../../../public/images/cards/fort-monro-resorts.jpg";
-import property2 from "../../../../../public/images/cards/image2.jpg";
 type PropsType = {
   label?: string;
   data?: {
@@ -28,8 +21,6 @@ type PropsType = {
   projectId?: string;
   item?: Project;
 };
-
-
 
 const tabs = [
   {
@@ -49,7 +40,7 @@ const tabs = [
 export function OverviewCardsGroup() {
   const [activeTab, setActiveTab] = useState("all");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const defaultImages = [property1, property2, property3, Veina, almadiev, boulevard, fort];
+
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -77,12 +68,12 @@ export function OverviewCardsGroup() {
         } else {
           console.warn("No projects found in the API response");
           setError("No projects available. Please check back later.");
-          setProjectImages(defaultImages.map(img => img.src));
+          setProjects([]);
         }
       } catch (err: any) {
         console.error("Failed to fetch projects:", err);
         setError(err.message || "Failed to load projects. Please try again later.");
-        setProjectImages(defaultImages.map(img => img.src));
+        setProjects([]);
       } finally {
         setLoading(false);
       }
@@ -94,15 +85,15 @@ export function OverviewCardsGroup() {
   const renderCards = () => {
     switch (activeTab) {
       case "residential":
-        return projects.map((project, index) => (
+        return projects.filter(project => project.category === "residential").map((project, index) => (
           <OverviewCard key={index} initialImageIndex={index} item={project} />
         ));
       case "commercial":
-        return projects.map((project, index) => (
+        return projects.filter(project => project.category === "commercial").map((project, index) => (
           <OverviewCard key={index} initialImageIndex={index} item={project} />
         ));
       case "plots":
-        return projects.map((project, index) => (
+        return projects.filter(project => project.category === "plots").map((project, index) => (
           <OverviewCard key={index} initialImageIndex={index} item={project} />
         ));
       default:
