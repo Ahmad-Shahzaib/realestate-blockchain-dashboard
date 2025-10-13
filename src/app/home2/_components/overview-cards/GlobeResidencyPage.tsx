@@ -91,7 +91,7 @@ interface FormState {
 }
 
 
-function useGlobeResidencyForm() {
+function useGlobeResidencyForm(project?: any, rawSlug?: string) {
 
 
 const initialFormState: FormState = {
@@ -639,7 +639,7 @@ export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
         handleFileUpload,
         setFloors,
         setDocuments,
-    } = useGlobeResidencyForm();
+    } = useGlobeResidencyForm(project, rawSlug);
 
     const dispatch = useDispatch();
     // Select customers and their status from Redux store
