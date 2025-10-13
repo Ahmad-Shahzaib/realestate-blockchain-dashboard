@@ -7,6 +7,7 @@ import { Providers } from "./providers";
 import { AuthWrapper } from "@/components/Layouts/auth-wrapper";
 import { metadata } from "./metadata";
 import ClientLayout from "./ClientLayout";
+import GlobalLoader from "./loader/GlobalLoader";
 
 export { metadata };
 
@@ -15,7 +16,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-
+       <GlobalLoader />
         <ClientLayout children={children} />
 
       </body>

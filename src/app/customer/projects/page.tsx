@@ -5,6 +5,7 @@ import { Building2, MapPin, Calendar, Filter, Search, ChevronLeft, ChevronRight,
 import SearchInput from '@/common/Input';
 import ProjectService, { Project as ApiProject, ApiResponse } from '@/services/project.service';
 import { getUserProfile } from '@/services/user.services';
+import { useRouter } from 'next/navigation';
 
 type Project = {
   id: number | string;
@@ -27,7 +28,7 @@ const Page = () => {
   const [totalPages, setTotalPages] = useState(1);
   const recordsPerPage = 8;
   const [customerId, setCustomerId] = useState<string | null>(null);
-
+  const router = useRouter();
   const normalizeStatus = (apiStatus: string): string => {
     if (apiStatus.toLowerCase().includes("pending")) return "Pending";
     if (apiStatus.toLowerCase().includes("completed")) return "Completed";
@@ -100,7 +101,7 @@ const Page = () => {
     if (window.confirm("Are you sure you want to delete this project?")) {
       try {
         setLoading(true);
-        await ProjectService.deleteProject(id.toString());
+        // await ProjectService.deleteProject(id.toString());
         setProjects(projects.filter((project) => project.id !== id));
         setSelectedProject(null);
         setError(null);
@@ -114,7 +115,8 @@ const Page = () => {
   };
 
   const handleView = (project: Project) => {
-    setSelectedProject(project);
+    // setSelectedProject(project);
+    router.push(`/customer/projects/${project.id}`);
   };
 
   const filteredProjects = projects.filter(
@@ -238,6 +240,9 @@ const Page = () => {
                   {paginatedProjects.length > 0 ? (
                     paginatedProjects.map((project) => (
                       <tr
+                      onClick={()=>{
+                        handleView(project);
+                      }}
                         key={project.id}
                         className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3 transition-colors"
                       >

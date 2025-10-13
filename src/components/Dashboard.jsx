@@ -6,7 +6,7 @@ import { Search } from 'lucide-react';
 import SearchInput from '../common/Input';  // 🟢 commit: reusable search input
 import StatCard from '../common/Card';      // 🟢 commit: reusable card for stats
 import StatsData from "../utils/statsData"; // 🟢 commit: static stats data
-
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import 'chart.js/auto'; // 🟢 commit: auto-registers all chart.js components
 
 const Dashboard = () => {
@@ -15,6 +15,9 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTimeframe, setActiveTimeframe] = useState('6M');
   const [isLoading, setIsLoading] = useState(true);
+   const { transactions, loading, error, pagination } = useAppSelector((state) => state.leads);
+
+   console.log("transactions", transactions);
 
   // 🟢 commit: toggle dark/light theme
   const toggleTheme = () => {
@@ -261,17 +264,31 @@ const Dashboard = () => {
           </div>
 
           {/* 🟢 commit: recent blockchain activity list */}
-          <div className="border border-[#00B894] rounded-2xl p-6 bg-[#F5F7FA] dark:bg-dark-2">
-            <h2 className="text-xl font-bold text-[#003049] dark:text-gray-2 mb-6">Recent Blockchain Activity</h2>
-            <div className="space-y-4">
-              {recentActivities.map((a, i) => (
-                <div key={i} className="flex items-center justify-between p-4 border border-[#00B894] rounded-xl bg-white/80 dark:bg-dark-3">
-                  <div><p className="font-medium text-[#003049] dark:text-gray-2">{a.activity}</p></div>
-                  <div>{a.amount && <p className="font-semibold text-lg text-[#003049] dark:text-gray-2">{a.amount}</p>}</div>
-                </div>
-              ))}
-            </div>
-          </div>
+    <div className="border border-[#00B894] rounded-2xl p-6 bg-[#F5F7FA] dark:bg-dark-2">
+  <h2 className="text-xl font-bold text-[#003049] dark:text-gray-2 mb-6">
+    Recent Blockchain Activity
+  </h2>
+  <div className="space-y-4">
+    {transactions?.map((a, i) => (
+      <div
+        key={i}
+        className="flex items-center justify-between p-4 border border-[#00B894] rounded-xl bg-white/80 dark:bg-dark-3"
+      >
+        <div>
+          <p className="font-medium text-[#003049] dark:text-gray-2">{a.userId?.firstName + ' ' + a.userId?.lastName} - {a.propertyId?.name}</p>
+        </div>
+        <div>
+          {a.totalPrice && (
+            <p className="font-semibold text-lg text-[#003049] dark:text-gray-2">
+             PKR {a.totalPrice}
+            </p>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
 
         </div>
       </div>
