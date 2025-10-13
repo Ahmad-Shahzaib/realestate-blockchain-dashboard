@@ -90,6 +90,10 @@ interface FormState {
     }
 }
 
+
+function useGlobeResidencyForm() {
+
+
 const initialFormState: FormState = {
     propertyName: "",
     category: "",
@@ -154,7 +158,7 @@ const initialFloor: Floor = {
     maxSqftBuy: "",
 };
 
-function useGlobeResidencyForm() {
+
     const [form, setForm] = useState<FormState>(initialFormState);
     const [floors, setFloors] = useState<Floor[]>([initialFloor]);
     const [loading, setLoading] = useState(false);
@@ -600,7 +604,7 @@ function useGlobeResidencyForm() {
     };
 }
 
-export default function GlobeResidencyForm() {
+export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
     const {
         form,
         setForm,

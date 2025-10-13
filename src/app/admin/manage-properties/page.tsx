@@ -89,8 +89,8 @@ const Page = () => {
     }, [searchTerm]);
 
     const handleEdit = (project: ComponentProject) => {
-        setEditForm({ ...project });
-        setIsEditModalOpen(true);
+         router.push(`/admin/manage-properties/${project.id}`);
+    
     };
 
     const handleViewDetails = (project: ComponentProject) => {
@@ -243,7 +243,7 @@ const Page = () => {
                                     {projects.length > 0 ? (
                                         projects.map((project) => (
                                             <tr
-                                                onClick={() => handleViewDetails(project)}
+                                               
                                                 key={project.id}
                                                 className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3 transition-colors"
                                             >
@@ -275,7 +275,7 @@ const Page = () => {
                                                         >
                                                             <Eye className="h-5 w-5" />
                                                         </Button>
-                                                        <Button
+                                                        {/* <Button
                                                             onClick={() => handleChangeStatus(project, 'approved')}
                                                         >
                                                             Approve
@@ -284,7 +284,7 @@ const Page = () => {
                                                             onClick={() => handleChangeStatus(project, 'declined')}
                                                         >
                                                             Decline
-                                                        </Button>
+                                                        </Button> */}
                                                     </div>
                                                 </td>
                                             </tr>
