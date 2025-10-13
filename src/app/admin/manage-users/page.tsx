@@ -314,9 +314,7 @@ const ManageUsers = () => {
                         {editError && <div className="text-red-600 mb-4">{editError}</div>}
 
                         <div className="space-y-4">
-
                             <div className="grid grid-cols-2 gap-4">
-
                                 <div>
                                     <select
                                         value={editForm.kycStatus}
@@ -324,18 +322,21 @@ const ManageUsers = () => {
                                         className="w-full p-2 border rounded-md"
                                         disabled={editLoading}
                                     >
-                                        <option value="pending">Pending</option>
                                         <option value="approved">Approved</option>
+                                        <option value="pending">Pending</option>
                                         <option value="rejected">Rejected</option>
                                     </select>
                                 </div>
-                                <div>
-                                    <textarea
-                                        placeholder="Reason for KYC status change (optional)"
-                                        className="w-full p-2 border rounded-md"
-
-                                    />
-                                </div>
+                                {editForm.kycStatus === 'rejected' && (
+                                    <div>
+                                        <textarea
+                                            placeholder="Reason for KYC status change (optional)"
+                                            className="w-full p-2 border rounded-md"
+                                            value={editForm.kycReason || ''}
+                                            onChange={(e) => setEditForm({ ...editForm, kycReason: e.target.value })}
+                                        />
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -357,168 +358,138 @@ const ManageUsers = () => {
 
             {/* View User Modal */}
             {viewUser && (
-                <div className="fixed inset-0 top-9 flex items-center justify-center z-50">
-                    <div className="bg-white dark:bg-dark-2 rounded-lg p-6 w-[60%] max-h-[80vh] overflow-scroll">
-                        <h2 className="text-xl font-semibold mb-4">User Details</h2>
-                        {viewError && <div className="text-red-600 mb-4">{viewError}</div>}
+                <div className="fixed inset-0 top-9 flex items-center justify-center z-50 ">
+                    <div className="bg-white dark:bg-dark-2 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-8 w-[60%] max-h-[85vh] overflow-y-auto">
+                        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">User Details</h2>
+
+                        {viewError && (
+                            <div className="text-red-600 mb-4 text-center bg-red-100 dark:bg-red-900/40 py-2 rounded-md">
+                                {viewError}
+                            </div>
+                        )}
+
                         {viewLoading ? (
-                            <div className="text-center text-[#34495E] dark:text-gray-3">
+                            <div className="text-center text-gray-600 dark:text-gray-3 font-medium">
                                 Loading user details...
                             </div>
                         ) : (
-                            <div className="space-y-4">
-                                {/* First Name / Last Name */}
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-[#34495E] dark:text-gray-3">
-                                            First Name
-                                        </label>
-                                        <p className="mt-1 p-2 border rounded-md bg-gray-100 dark:bg-dark-3">
-                                            {viewUser.firstName || "N/A"}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-[#34495E] dark:text-gray-3">
-                                            Last Name
-                                        </label>
-                                        <p className="mt-1 p-2 border rounded-md bg-gray-100 dark:bg-dark-3">
-                                            {viewUser.lastName || "N/A"}
-                                        </p>
-                                    </div>
+                            <div className="grid grid-cols-2 gap-y-6 gap-x-12 text-gray-700 dark:text-gray-3">
+                                {/* First Name */}
+                                <div>
+                                    <p className="text-sm font-semibold">First Name</p>
+                                    <p className="mt-1 text-base">{viewUser.firstName || "N/A"}</p>
                                 </div>
 
-                                {/* Email / KYC */}
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-[#34495E] dark:text-gray-3">
-                                            Email
-                                        </label>
-                                        <p className="mt-1 p-2 border rounded-md bg-gray-100 dark:bg-dark-3">
-                                            {viewUser.email || "N/A"}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-[#34495E] dark:text-gray-3">
-                                            KYC Status
-                                        </label>
-                                        <p className="mt-1 p-2 border rounded-md bg-gray-100 dark:bg-dark-3">
-                                            {viewUser.kycStatus || "N/A"}
-                                        </p>
-                                    </div>
+                                {/* Last Name */}
+                                <div>
+                                    <p className="text-sm font-semibold">Last Name</p>
+                                    <p className="mt-1 text-base">{viewUser.lastName || "N/A"}</p>
                                 </div>
 
-                                {/* Phone / Address */}
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-[#34495E] dark:text-gray-3">
-                                            Phone Number
-                                        </label>
-                                        <p className="mt-1 p-2 border rounded-md bg-gray-100 dark:bg-dark-3">
-                                            {viewUser.phoneNumber || "N/A"}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-[#34495E] dark:text-gray-3">
-                                            Join Date
-                                        </label>
-                                        <p className="mt-1 p-2 border rounded-md bg-gray-100 dark:bg-dark-3">
-                                            {viewUser.createdAt ? formatDate(viewUser.createdAt) : "N/A"}
-                                        </p>
-                                    </div>
+                                {/* Email */}
+                                <div>
+                                    <p className="text-sm font-semibold">Email</p>
+                                    <p className="mt-1 text-base">{viewUser.email || "N/A"}</p>
                                 </div>
 
-                                {/* Wallet / ID Card */}
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-[#34495E] dark:text-gray-3">
-                                            Solana Wallet Address
-                                        </label>
-                                        <p className="mt-1 p-2 border rounded-md bg-gray-100 dark:bg-dark-3">
-                                            {viewUser.solanaWalletAddress || "N/A"}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-[#34495E] dark:text-gray-3">
-                                            ID Card
-                                        </label>
-                                        <p className="mt-1 p-2 border rounded-md bg-gray-100 dark:bg-dark-3">
-                                            {viewUser.nationalId || "N/A"}
-                                        </p>
-                                    </div>
+                                {/* KYC */}
+                                <div>
+                                    <p className="text-sm font-semibold">KYC Status</p>
+                                    <p
+                                        className={`mt-1 text-base font-medium ${viewUser.kycStatus === "Approved"
+                                            ? "text-green-600"
+                                            : viewUser.kycStatus === "Pending"
+                                                ? "text-yellow-600"
+                                                : "text-gray-600"
+                                            }`}
+                                    >
+                                        {viewUser.kycStatus || "N/A"}
+                                    </p>
                                 </div>
 
-                                {/* Nationality / Occupation */}
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-[#34495E] dark:text-gray-3">
-                                            Nationality
-                                        </label>
-                                        <p className="mt-1 p-2 border rounded-md bg-gray-100 dark:bg-dark-3">
-                                            {viewUser.nationality || "N/A"}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-[#34495E] dark:text-gray-3">
-                                            Occupation
-                                        </label>
-                                        <p className="mt-1 p-2 border rounded-md bg-gray-100 dark:bg-dark-3">
-                                            {viewUser.occupation || "N/A"}
-                                        </p>
-                                    </div>
+                                {/* Phone */}
+                                <div>
+                                    <p className="text-sm font-semibold">Phone Number</p>
+                                    <p className="mt-1 text-base">{viewUser.phoneNumber || "N/A"}</p>
+                                </div>
+
+                                {/* Join Date */}
+                                <div>
+                                    <p className="text-sm font-semibold">Join Date</p>
+                                    <p className="mt-1 text-base">
+                                        {viewUser.createdAt ? formatDate(viewUser.createdAt) : "N/A"}
+                                    </p>
+                                </div>
+
+                                {/* Wallet */}
+                                <div>
+                                    <p className="text-sm font-semibold">Solana Wallet Address</p>
+                                    <p className="mt-1 text-base break-all">
+                                        {viewUser.solanaWalletAddress || "N/A"}
+                                    </p>
+                                </div>
+
+                                {/* ID */}
+                                <div>
+                                    <p className="text-sm font-semibold">ID Card</p>
+                                    <p className="mt-1 text-base">{viewUser.nationalId || "N/A"}</p>
+                                </div>
+
+                                {/* Nationality */}
+                                <div>
+                                    <p className="text-sm font-semibold">Nationality</p>
+                                    <p className="mt-1 text-base">{viewUser.nationality || "N/A"}</p>
+                                </div>
+
+                                {/* Occupation */}
+                                <div>
+                                    <p className="text-sm font-semibold">Occupation</p>
+                                    <p className="mt-1 text-base">{viewUser.occupation || "N/A"}</p>
                                 </div>
 
                                 {/* Bank */}
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-[#34495E] dark:text-gray-3">
-                                            Bank Name
-                                        </label>
-                                        <p className="mt-1 p-2 border rounded-md bg-gray-100 dark:bg-dark-3">
-                                            {viewUser.user?.bankDetails || "N/A"}
-                                        </p>
-                                    </div>
+                                <div className="col-span-2">
+                                    <p className="text-sm font-semibold">Bank Name</p>
+                                    <p className="mt-1 text-base">{viewUser.user?.bankDetails || "N/A"}</p>
                                 </div>
 
                                 {/* ID Card Images */}
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-[#34495E] dark:text-gray-3">
-                                            ID Card Front
-                                        </label>
-                                        <div className="mt-1 p-2 border rounded-md bg-gray-100 dark:bg-dark-3 flex items-center justify-center">
-                                            <img
-                                                src={viewUser.idCardFront || "/placeholder-front.png"}
-                                                alt="ID Card Front"
-                                                className="w-full h-40 object-contain rounded-md"
-                                            />
-                                        </div>
+                                <div>
+                                    <p className="text-sm font-semibold">ID Card Front</p>
+                                    <div className="mt-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-dark-3 flex items-center justify-center shadow-md hover:shadow-lg transition-all">
+                                        <img
+                                            src={viewUser.idCardFront || "/placeholder-front.png"}
+                                            alt="ID Card Front"
+                                            className="w-full h-44 object-contain rounded-md"
+                                        />
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-[#34495E] dark:text-gray-3">
-                                            ID Card Back
-                                        </label>
-                                        <div className="mt-1 p-2 border rounded-md bg-gray-100 dark:bg-dark-3 flex items-center justify-center">
-                                            <img
-                                                src={viewUser.idCardBack || "/placeholder-back.png"}
-                                                alt="ID Card Back"
-                                                className="w-full h-40 object-contain rounded-md"
-                                            />
-                                        </div>
+                                </div>
+
+                                <div>
+                                    <p className="text-sm font-semibold">ID Card Back</p>
+                                    <div className="mt-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-dark-3 flex items-center justify-center shadow-md hover:shadow-lg transition-all">
+                                        <img
+                                            src={viewUser.idCardBack || "/placeholder-back.png"}
+                                            alt="ID Card Back"
+                                            className="w-full h-44 object-contain rounded-md"
+                                        />
                                     </div>
                                 </div>
                             </div>
                         )}
 
-                        <div className="mt-6 flex justify-end">
+                        {/* Close Button */}
+                        <div className="mt-8 flex justify-end">
                             <button
                                 onClick={() => setViewUser(null)}
-                                className="px-4 py-2 bg-gray-200 rounded-md"
+                                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#6C63FF] to-[#4F46E5] text-white font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all"
                             >
                                 Close
                             </button>
                         </div>
                     </div>
                 </div>
+
             )}
 
         </div>

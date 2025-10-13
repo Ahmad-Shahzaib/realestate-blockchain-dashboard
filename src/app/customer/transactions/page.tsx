@@ -412,7 +412,9 @@ const Page = () => {
                                                             <li key={payment.paymentId} className="bg-white dark:bg-dark-4 rounded p-3 border border-[#ECF0F1] dark:border-dark-4">
                                                                 <div className="flex justify-between items-center">
                                                                     <span className="font-medium">{payment.paymentType} - {payment.status}</span>
-                                                                    <span className="text-sm">{payment.amount?.toLocaleString?.()} {payment.currency}</span>
+                                                                    <p className="text-2xl font-bold text-[#2C3E50] dark:text-gray-2">
+                                                                        PKR {selectedTransaction.totalPrice?.toLocaleString?.() ?? '-'}
+                                                                    </p>
                                                                 </div>
                                                                 <div className="flex justify-between items-center mt-1">
                                                                     <span className="text-xs text-gray-500">{payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString() : '-'}</span>

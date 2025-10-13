@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Building2, Edit2 } from 'lucide-react';
+import { Building2, Edit2, Eye } from 'lucide-react';
 import SearchInput from '@/common/Input';
 import ProjectService, { Project as ApiProject, ApiResponse } from '@/services/project.service';
 import { useRouter } from 'next/navigation';
+import Button from '@/common/Button';
 
 interface ComponentProject {
     id: number | string;
@@ -242,7 +243,7 @@ const Page = () => {
                                     {projects.length > 0 ? (
                                         projects.map((project) => (
                                             <tr
-                                            onClick={() => handleViewDetails(project)}
+                                                onClick={() => handleViewDetails(project)}
                                                 key={project.id}
                                                 className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3 transition-colors"
                                             >
@@ -262,33 +263,28 @@ const Page = () => {
                                                 </td>
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">
                                                     <div className="flex space-x-2">
-                                                        <button
+                                                        <Button
                                                             onClick={() => handleEdit(project)}
-                                                            className="p-2 hover:bg-[#3498DB] hover:text-white rounded-md transition-colors"
-                                                            title="Edit Project"
+
                                                         >
                                                             <Edit2 className="h-5 w-5" />
-                                                        </button>
-                                                        <button
+                                                        </Button>
+                                                        <Button
                                                             onClick={() => handleViewDetails(project)}
-                                                            className="px-4 py-2 bg-[#3498DB] text-white rounded-md hover:bg-[#2980B9] transition-colors"
+                                                            className=""
                                                         >
-                                                            View Details
-                                                        </button>
-                                                        <button
+                                                            <Eye className="h-5 w-5" />
+                                                        </Button>
+                                                        <Button
                                                             onClick={() => handleChangeStatus(project, 'approved')}
-                                                            className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
-                                                            title="Approve Project"
                                                         >
                                                             Approve
-                                                        </button>
-                                                        <button
+                                                        </Button>
+                                                        <Button
                                                             onClick={() => handleChangeStatus(project, 'declined')}
-                                                            className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
-                                                            title="Decline Project"
                                                         >
                                                             Decline
-                                                        </button>
+                                                        </Button>
                                                     </div>
                                                 </td>
                                             </tr>
