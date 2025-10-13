@@ -15,11 +15,11 @@ const TransactionManagement = () => {
     const [pagination, setPagination] = useState<any>(null);
 
     // ✅ Modal State
-    const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+    const [selectedTransaction, setSelectedTransaction] = useState<any | null>(null);
     const [viewModalOpen, setViewModalOpen] = useState(false);
     const [viewError, setViewError] = useState<string | null>(null);
     const [viewLoading, setViewLoading] = useState(false);
-
+    console.log("Transactions:", transactions);
     const itemsPerPage = 10;
 
     useEffect(() => {
@@ -217,18 +217,156 @@ const TransactionManagement = () => {
                             <p className="text-red-600">Error: {viewError}</p>
                         )}
 
-                        {selectedTransaction && (
-                            <div className="grid grid-cols-2 gap-4 text-sm text-[#34495E] dark:text-gray-3">
-                                <p><strong>ID:</strong> {selectedTransaction._id}</p>
-                                <p><strong>Status:</strong> {selectedTransaction.status}</p>
-                                <p><strong>Total Price:</strong> PKR {selectedTransaction.totalPrice?.toLocaleString()}</p>
-                                <p><strong>Square Feet:</strong> {selectedTransaction.totalSquareFeet} sq ft</p>
-                                <p><strong>Type:</strong> {selectedTransaction.type}</p>
-                                <p><strong>Payment Success:</strong> {selectedTransaction.paymentSuccess ? "Yes" : "No"}</p>
-                                <p><strong>Created At:</strong> {new Date(selectedTransaction.createdAt).toLocaleString()}</p>
-                                <p><strong>Updated At:</strong> {new Date(selectedTransaction.updatedAt).toLocaleString()}</p>
-                            </div>
-                        )}
+                      {selectedTransaction && (
+  <div className="space-y-6">
+    {/* Transaction Details */}
+    <div>
+      <h3 className="text-lg font-semibold mb-3 text-[#34495E] dark:text-gray-3">Transaction Details</h3>
+      <div className="grid grid-cols-2 gap-4 text-sm text-[#34495E] dark:text-gray-3">
+        <p><strong>Transaction ID:</strong> {selectedTransaction._id}</p>
+        <p><strong>Status:</strong> <span className={`px-2 py-1 rounded ${selectedTransaction.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>{selectedTransaction.status}</span></p>
+        <p><strong>Type:</strong> {selectedTransaction.type}</p>
+        <p><strong>Payment Success:</strong> {selectedTransaction.paymentSuccess ? "✓ Yes" : "✗ No"}</p>
+        <p><strong>Total Price:</strong> PKR {selectedTransaction.totalPrice?.toLocaleString()}</p>
+        <p><strong>Square Feet:</strong> {selectedTransaction.totalSquareFeet} sq ft</p>
+        <p><strong>Price per Sq Ft:</strong> PKR {(selectedTransaction.totalPrice / selectedTransaction.totalSquareFeet).toFixed(2)}</p>
+        <p><strong>Floor ID:</strong> {selectedTransaction.floorId}</p>
+        <p><strong>Created:</strong> {new Date(selectedTransaction.createdAt).toLocaleString()}</p>
+        <p><strong>Updated:</strong> {new Date(selectedTransaction.updatedAt).toLocaleString()}</p>
+      </div>
+    </div>
+
+    {/* Property Details */}
+    {selectedTransaction.propertyId && (
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-[#34495E] dark:text-gray-3">Property Information</h3>
+        <div className="grid grid-cols-2 gap-4 text-sm text-[#34495E] dark:text-gray-3">
+          <p><strong>Property Name:</strong> {selectedTransaction.propertyId.name}</p>
+          <p><strong>Category:</strong> {selectedTransaction.propertyId.category}</p>
+          <p><strong>Subcategory:</strong> {selectedTransaction.propertyId.subcategory}</p>
+          <p><strong>Status:</strong> {selectedTransaction.propertyId.status}</p>
+          <p><strong>Featured:</strong> {selectedTransaction.propertyId.featured ? "Yes" : "No"}</p>
+          <p><strong>Total Area:</strong> {selectedTransaction.propertyId.totalArea} sq ft</p>
+          <p><strong>Sellable Area:</strong> {selectedTransaction.propertyId.sellableArea} sq ft</p>
+          <p><strong>Total Units:</strong> {selectedTransaction.propertyId.totalUnits}</p>
+          <p><strong>Available Units:</strong> {selectedTransaction.propertyId.availableUnits}</p>
+          <p><strong>Sold Units:</strong> {selectedTransaction.propertyId.soldUnits}</p>
+          <p><strong>Reserved Units:</strong> {selectedTransaction.propertyId.reservedUnits}</p>
+          <p><strong>Start Date:</strong> {new Date(selectedTransaction.propertyId.startDate).toLocaleDateString()}</p>
+          <p><strong>Completion Date:</strong> {new Date(selectedTransaction.propertyId.completionDate).toLocaleDateString()}</p>
+          <p className="col-span-2"><strong>Description:</strong> {selectedTransaction.propertyId.description}</p>
+        </div>
+      </div>
+    )}
+
+    {/* Location Details */}
+    {selectedTransaction.propertyId?.location && (
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-[#34495E] dark:text-gray-3">Location</h3>
+        <div className="grid grid-cols-2 gap-4 text-sm text-[#34495E] dark:text-gray-3">
+          <p><strong>Address:</strong> {selectedTransaction.propertyId.location.address}</p>
+          <p><strong>City:</strong> {selectedTransaction.propertyId.location.city}</p>
+          <p><strong>State:</strong> {selectedTransaction.propertyId.location.state}</p>
+          <p><strong>Country:</strong> {selectedTransaction.propertyId.location.country}</p>
+          <p><strong>Coordinates:</strong> {selectedTransaction.propertyId.location.coordinates.latitude}, {selectedTransaction.propertyId.location.coordinates.longitude}</p>
+        </div>
+      </div>
+    )}
+
+    {/* Developer Details */}
+    {selectedTransaction.propertyId?.developer && (
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-[#34495E] dark:text-gray-3">Developer</h3>
+        <div className="grid grid-cols-2 gap-4 text-sm text-[#34495E] dark:text-gray-3">
+          <p><strong>Name:</strong> {selectedTransaction.propertyId.developer.name}</p>
+          <p><strong>Website:</strong> <a href={selectedTransaction.propertyId.developer.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{selectedTransaction.propertyId.developer.website}</a></p>
+          <p className="col-span-2"><strong>Description:</strong> {selectedTransaction.propertyId.developer.description}</p>
+        </div>
+      </div>
+    )}
+
+    {/* User Details */}
+    {selectedTransaction.userId && (
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-[#34495E] dark:text-gray-3">User Information</h3>
+        <div className="grid grid-cols-2 gap-4 text-sm text-[#34495E] dark:text-gray-3">
+          <p><strong>Name:</strong> {selectedTransaction.userId.firstName} {selectedTransaction.userId.lastName}</p>
+          <p><strong>Email:</strong> {selectedTransaction.userId.email}</p>
+          <p><strong>Phone:</strong> {selectedTransaction.userId.phoneNumber}</p>
+          <p><strong>Role:</strong> {selectedTransaction.userId.role}</p>
+          <p><strong>Wallet Address:</strong> <span className="text-xs break-all">{selectedTransaction.userId.walletAddress}</span></p>
+          <p><strong>KYC Status:</strong> {selectedTransaction.userId.kycStatus}</p>
+          <p><strong>Account Status:</strong> {selectedTransaction.userId.accountStatus}</p>
+          <p><strong>City:</strong> {selectedTransaction.userId.city}</p>
+          <p><strong>Address:</strong> {selectedTransaction.userId.address}</p>
+          <p><strong>Country:</strong> {selectedTransaction.userId.country}</p>
+        </div>
+      </div>
+    )}
+
+    {/* Customer/Company Details */}
+    {selectedTransaction.customerId && (
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-[#34495E] dark:text-gray-3">Company Information</h3>
+        <div className="grid grid-cols-2 gap-4 text-sm text-[#34495E] dark:text-gray-3">
+          <p><strong>Name:</strong> {selectedTransaction.customerId.firstName} {selectedTransaction.customerId.lastName}</p>
+          <p><strong>Email:</strong> {selectedTransaction.customerId.email}</p>
+          <p><strong>Phone:</strong> {selectedTransaction.customerId.phoneNumber}</p>
+          <p><strong>Wallet Address:</strong> <span className="text-xs break-all">{selectedTransaction.customerId.walletAddress}</span></p>
+          <p><strong>Gender:</strong> {selectedTransaction.customerId.gender}</p>
+          <p><strong>Date of Birth:</strong> {new Date(selectedTransaction.customerId.dateOfBirth).toLocaleDateString()}</p>
+        </div>
+      </div>
+    )}
+
+    {/* Bank Details */}
+    {selectedTransaction.propertyId?.bankDetails && (
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-[#34495E] dark:text-gray-3">Bank Details</h3>
+        <div className="grid grid-cols-2 gap-4 text-sm text-[#34495E] dark:text-gray-3">
+          <p><strong>Bank Name:</strong> {selectedTransaction.propertyId.bankDetails.bankName}</p>
+          <p><strong>Account Number:</strong> {selectedTransaction.propertyId.bankDetails.accountNumber}</p>
+          <p><strong>Account Title:</strong> {selectedTransaction.propertyId.bankDetails.accountTitle}</p>
+          <p><strong>IBAN:</strong> {selectedTransaction.propertyId.bankDetails.iban}</p>
+        </div>
+      </div>
+    )}
+
+    {/* Floor Details */}
+    {selectedTransaction.propertyId?.floors?.[0] && (
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-[#34495E] dark:text-gray-3">Floor Details</h3>
+        <div className="grid grid-cols-2 gap-4 text-sm text-[#34495E] dark:text-gray-3">
+          <p><strong>Floor Name:</strong> {selectedTransaction.propertyId.floors[0].name}</p>
+          <p><strong>Floor Number:</strong> {selectedTransaction.propertyId.floors[0].floorNumber}</p>
+          <p><strong>Total Square Footage:</strong> {selectedTransaction.propertyId.floors[0].totalSquareFootage} sq ft</p>
+          <p><strong>Price per Sq Ft:</strong> PKR {selectedTransaction.propertyId.floors[0].pricePerSqFt}</p>
+          <p><strong>Min Price:</strong> PKR {selectedTransaction.propertyId.floors[0].minPrice}</p>
+          <p><strong>Max Price:</strong> PKR {selectedTransaction.propertyId.floors[0].maxPrice}</p>
+          <p><strong>Total Units:</strong> {selectedTransaction.propertyId.floors[0].totalUnits}</p>
+          <p><strong>Available Units:</strong> {selectedTransaction.propertyId.floors[0].availableUnits}</p>
+          <p className="col-span-2"><strong>Description:</strong> {selectedTransaction.propertyId.floors[0].description}</p>
+        </div>
+      </div>
+    )}
+
+    {/* Token Details */}
+    {selectedTransaction.propertyId?.token && (
+      <div>
+        <h3 className="text-lg font-semibold mb-3 text-[#34495E] dark:text-gray-3">Token Information</h3>
+        <div className="grid grid-cols-2 gap-4 text-sm text-[#34495E] dark:text-gray-3">
+          <p><strong>Token Name:</strong> {selectedTransaction.propertyId.token.name}</p>
+          <p><strong>Symbol:</strong> {selectedTransaction.propertyId.token.symbol}</p>
+          <p><strong>Supply:</strong> {selectedTransaction.propertyId.token.supply}</p>
+          <p><strong>Price per Token:</strong> PKR {selectedTransaction.propertyId.token.pricePerToken}</p>
+          <p><strong>Wallet Address:</strong> {selectedTransaction.propertyId.token.walletAddress}</p>
+          <p><strong>Blockchain:</strong> {selectedTransaction.propertyId.blockchainNetwork}</p>
+          <p><strong>Tokenization Enabled:</strong> {selectedTransaction.propertyId.tokenizationEnabled ? "Yes" : "No"}</p>
+        </div>
+      </div>
+    )}
+  </div>
+)}
                     </div>
                 </div>
             )}

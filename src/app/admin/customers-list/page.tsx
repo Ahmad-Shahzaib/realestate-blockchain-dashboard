@@ -10,6 +10,7 @@ import { updateUserByAdmin } from '@/services/user.services';
 import { getRequest } from "@/app/utils/requests";
 import { getAxiosInstance } from "@/lib/axios";
 import toast, { Toaster } from 'react-hot-toast';
+import CustomerDetailsModal from '@/components/customer/modal';
 
 // Interface for Customer (used in table and view modal)
 interface Customer {
@@ -89,6 +90,8 @@ const CustomerList = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  console.log("selectedCustomer",selectedCustomer)
 
   const dispatch = useAppDispatch();
   const { customers, pagination, loading, error } = useAppSelector((state) => state.customer || {
@@ -594,60 +597,9 @@ const CustomerList = () => {
 
         {/* View Modal for Customer Details */}
         {isViewModalOpen && selectedCustomer && (
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-dark-2 rounded-2xl shadow-lg p-6 w-full max-w-lg relative">
-              <button
-                className="absolute top-4 right-4 text-[#34495E] dark:text-gray-3 hover:text-[#2C3E50] dark:hover:text-gray-2"
-                onClick={closeViewModal}
-              >
-                <X size={20} />
-              </button>
-              <h2 className="text-2xl font-semibold text-[#2C3E50] dark:text-gray-2 mb-6">Customer Details</h2>
-              <div className="flex items-center space-x-4 mb-6">
-                <img
-                  src={selectedCustomer.profilePicture || '/images/user.png'}
-                  alt={`${selectedCustomer.firstName} ${selectedCustomer.lastName} ` || 'User'}
-                  className="w-16 h-16 rounded-full object-cover"
-                />
-                <div>
-                  <p className="text-lg font-semibold text-[#2C3E50] dark:text-gray-2">
-                    {[selectedCustomer.firstName, selectedCustomer.lastName].filter(Boolean).join(' ') || selectedCustomer.email}
-                  </p>
-                  <p className="text-sm text-[#34495E] dark:text-gray-3">{selectedCustomer.email}</p>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-sm text-[#34495E] dark:text-gray-3">
-                  <Mail size={16} className="text-[#34495E] dark:text-gray-3" />
-                  <span>Email: {selectedCustomer.email}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-[#34495E] dark:text-gray-3">
-                  <Phone size={16} className="text-[#34495E] dark:text-gray-3" />
-                  <span>Phone: {selectedCustomer.phoneNumber || '—'}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-[#34495E] dark:text-gray-3">
-                  <MapPin size={16} className="text-[#34495E] dark:text-gray-3" />
-                  <span>Location: {selectedCustomer.address || '—'}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-[#34495E] dark:text-gray-3">
-                  <span className={`px - 3 py - 1 rounded - full text - xs font - semibold ${getStatusColor(selectedCustomer.status)} `}>
-                    Status: {selectedCustomer.status.charAt(0).toUpperCase() + selectedCustomer.status.slice(1)}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-[#34495E] dark:text-gray-3">
-                  <span>Join Date: {selectedCustomer.createdAt ? new Date(selectedCustomer.createdAt).toLocaleDateString() : '—'}</span>
-                </div>
-              </div>
-              <div className="mt-6 flex justify-end">
-                <button
-                  className="px-4 py-2 bg-[#00B894] text-white rounded-lg hover:bg-[#019077] transition-colors"
-                  onClick={closeViewModal}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
+          <CustomerDetailsModal selectedCustomer={selectedCustomer}
+          setSelectedCustomer={setSelectedCustomer}
+          onClose={closeViewModal} />
         )}
 
         {/* Edit Modal for Customer Details */}

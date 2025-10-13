@@ -233,13 +233,18 @@ const ManageUsers = () => {
                                                             <EyeIcon className="w-5 h-5" />
                                                         )}
                                                     </button>
-                                                    <button
+                                                    {
+                                                        user.kycStatus.toLowerCase() !== 'not_submitted' && (
+  <button
                                                         onClick={() => handleEdit(user)}
                                                         className="p-2 text-green-500 hover:text-green-700"
                                                         disabled={deleteLoading === user.id}
                                                     >
                                                         <Pencil className="w-4 h-4" />
                                                     </button>
+                                                        )
+                                                    }
+                                                  
                                                     {/* <button
                                                         onClick={() => handleDelete(user.id)}
                                                         className="p-2 text-red-500 hover:text-red-700"
