@@ -467,12 +467,13 @@ const ManageUsers = () => {
 
                         {/* Close Button */}
                         <div className="mt-8 flex justify-end">
-                            <button
+                            <Button
+
                                 onClick={() => setViewUser(null)}
-                                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#6C63FF] to-[#4F46E5] text-white font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all"
+                                className="px-6 py-2.5 rounded-xltext-white font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all"
                             >
                                 Close
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>
