@@ -119,36 +119,36 @@ type Project = {
 };
 
 const page = () => {
-    // read dynamic route params using useParams
-    const params = useParams();
-    // params.slug may be string | string[] | undefined depending on route
-    const rawSlug = params?.slug;
-    const projectId = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug;
-        const [project, setProject] = useState<Project | null>(null);
-        const [loading, setLoading] = useState(true);
-        const [error, setError] = useState<string | null>(null);
-        const [projects, setProjects] = useState<Project[]>([]);
-        const [userRole, setUserRole] = useState<string | null>(null); // State for user role
-        const [isRedirecting, setIsRedirecting] = useState(false);
-    
-        useEffect(() => {
-            const fetchProjectDetails = async () => {
-                try {
-                    if (!projectId) {
-                        throw new Error('Project id not found in route');
-                    }
-                    const projectData = await ProjectService.getProjectById(projectId);
-                    console.log("Fetched project data:", projectData);
-                    setProject(projectData);
-                    setLoading(false);
-                } catch (err: any) {
-                    setError(err.message || "Failed to fetch project details.");
-                    setLoading(false);
-                }
-            };
-    
-            fetchProjectDetails();
-        }, [projectId]);
+  // read dynamic route params using useParams
+  const params = useParams();
+  // params.slug may be string | string[] | undefined depending on route
+  const rawSlug = params?.slug;
+  const projectId = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug;
+  const [project, setProject] = useState<Project | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [userRole, setUserRole] = useState<string | null>(null); // State for user role
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  useEffect(() => {
+    const fetchProjectDetails = async () => {
+      try {
+        if (!projectId) {
+          throw new Error('Project id not found in route');
+        }
+        const projectData = await ProjectService.getProjectById(projectId);
+        console.log("Fetched project data:", projectData);
+        setProject(projectData);
+        setLoading(false);
+      } catch (err: any) {
+        setError(err.message || "Failed to fetch project details.");
+        setLoading(false);
+      }
+    };
+
+    fetchProjectDetails();
+  }, [projectId]);
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -184,16 +184,15 @@ const page = () => {
             className="w-full h-full object-cover"
           />
           <div className="absolute top-4 right-4">
-            <span className={`px-4 py-2 rounded-full text-sm font-semibold capitalize ${
-              project.status === 'pending_approval' ? 'bg-yellow-100 text-yellow-800' :
+            <span className={`px-4 py-2 rounded-full text-sm font-semibold capitalize ${project.status === 'pending_approval' ? 'bg-yellow-100 text-yellow-800' :
               project.status === 'approved' ? 'bg-green-100 text-green-800' :
-              'bg-gray-100 text-gray-800'
-            }`}>
+                'bg-gray-100 text-gray-800'
+              }`}>
               {project.status.replace('_', ' ')}
             </span>
           </div>
         </div>
-        
+
         <div className="p-8">
           <div className="flex justify-between items-start">
             <div>
@@ -215,7 +214,7 @@ const page = () => {
                 </span>
               </div>
             </div>
-            
+
             <div className="text-right">
               <div className="text-2xl font-bold text-blue-600">
                 {project.totalUnits} Units
@@ -489,11 +488,10 @@ const page = () => {
       <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">Tokenization Details</h2>
-          <div className={`px-4 py-2 rounded-full text-sm font-semibold ${
-            project.tokenizationEnabled 
-              ? 'bg-green-100 text-green-800' 
-              : 'bg-gray-100 text-gray-800'
-          }`}>
+          <div className={`px-4 py-2 rounded-full text-sm font-semibold ${project.tokenizationEnabled
+            ? 'bg-green-100 text-green-800'
+            : 'bg-gray-100 text-gray-800'
+            }`}>
             {project.tokenizationEnabled ? 'Enabled' : 'Disabled'}
           </div>
         </div>
@@ -609,6 +607,34 @@ const page = () => {
           </div>
         </div>
       )}
+
+      {/* Document [] */}
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-8 mt-4" >
+        <h2 className="text-2xl font-bold mb-4">Project Documents</h2>
+        {project.documents.length === 0 ? (
+          <div className="text-gray-500">No documents available.</div>
+        ) : (
+          <ul className="list-disc list-inside space-y-2">
+            {project.documents.map((docUrl, index) => {
+              const fileName = docUrl.split('/').pop();
+              return (
+                <li key={index}>
+                  <a
+                    href={docUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    {fileName || `Document ${index + 1}`}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+
+
     </div>
   )
 }

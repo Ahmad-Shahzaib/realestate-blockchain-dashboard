@@ -46,8 +46,8 @@ const ProjectTable = ({ project }: { project: any }) => {
 
                             <div className="space-y-4">
                                 {/* Area Input */}
-                                <div className="p-4 dark:bg-dark dark:bg-[#0F172A] rounded-lg">
-                                    <label className="block text-sm font-medium dark:text-white dark:text-gray-300 mb-2">
+                                <div className="p-4 dark:bg-dark  rounded-lg">
+                                    <label className="block text-sm font-medium dark:text-white  mb-2">
                                         Area to Own (sq. ft.)
                                     </label>
                                     <input
@@ -60,8 +60,8 @@ const ProjectTable = ({ project }: { project: any }) => {
                                 </div>
 
                                 {/* Price Section */}
-                                <div className="p-4 dark:bg-dark dark:bg-[#0F172A] rounded-lg">
-                                    <div className="text-sm dark:text-white dark:text-gray-300 mb-1">
+                                <div className="p-4 dark:bg-dark  rounded-lg">
+                                    <div className="text-sm dark:text-white   mb-1">
                                         Price per sq. ft.
                                     </div>
                                     <div className="text-xl font-bold text-[#003049] dark:text-white">

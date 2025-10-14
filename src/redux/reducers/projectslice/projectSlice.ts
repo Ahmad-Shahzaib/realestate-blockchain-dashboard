@@ -30,6 +30,24 @@ export const createProject = createAsyncThunk(
     }
   }
 );
+// updateProject
+
+export const updateProject = createAsyncThunk(
+
+  'project/updateProject',
+  async ({ id, payload }: { id: string; payload: Partial<ProjectPayload> }, { rejectWithValue }) => {
+    try {
+      const response = await ProjectService.updateProject(id, payload);
+      if (response) {
+        toast.success('Project updated successfully!');
+      }
+      return response;
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to update project');
+      return rejectWithValue(error.message || 'Failed to update project');
+    }
+  }
+);
 
 const projectSlice = createSlice({
   name: 'project',

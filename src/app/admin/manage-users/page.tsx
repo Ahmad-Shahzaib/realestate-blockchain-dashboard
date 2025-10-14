@@ -12,6 +12,7 @@ import {
 } from '@/services/user.services';
 import { getAxiosInstance } from "@/lib/axios";
 import { getRequest } from "@/app/utils/requests";
+import Button from '@/common/Button';
 
 interface ComponentUser {
     kycStatus: string;
@@ -235,16 +236,16 @@ const ManageUsers = () => {
                                                     </button>
                                                     {
                                                         user.kycStatus.toLowerCase() !== 'not_submitted' && (
-  <button
-                                                        onClick={() => handleEdit(user)}
-                                                        className="p-2 text-green-500 hover:text-green-700"
-                                                        disabled={deleteLoading === user.id}
-                                                    >
-                                                        <Pencil className="w-4 h-4" />
-                                                    </button>
+                                                            <button
+                                                                onClick={() => handleEdit(user)}
+                                                                className="p-2 text-green-500 hover:text-green-700"
+                                                                disabled={deleteLoading === user.id}
+                                                            >
+                                                                <Pencil className="w-4 h-4" />
+                                                            </button>
                                                         )
                                                     }
-                                                  
+
                                                     {/* <button
                                                         onClick={() => handleDelete(user.id)}
                                                         className="p-2 text-red-500 hover:text-red-700"
@@ -349,13 +350,13 @@ const ManageUsers = () => {
                             <button onClick={() => setEditUser(null)} className="px-4 py-2 bg-gray-200 rounded-md">
                                 Cancel
                             </button>
-                            <button
+                            <Button
                                 onClick={handleUpdate}
-                                className="px-4 py-2 bg-blue-600 text-white rounded-md"
+                                className="px-4 py-2  text-white rounded-md"
                                 disabled={editLoading}
                             >
                                 {editLoading ? 'Updating...' : 'Save'}
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -363,7 +364,7 @@ const ManageUsers = () => {
 
             {/* View User Modal */}
             {viewUser && (
-                <div className="fixed inset-0 top-9 flex items-center justify-center z-50 ">
+                <div className="fixed inset-0 top-9 flex items-center justify-center z-50">
                     <div className="bg-white dark:bg-dark-2 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-8 w-[60%] max-h-[85vh] overflow-y-auto">
                         <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">User Details</h2>
 
@@ -379,84 +380,66 @@ const ManageUsers = () => {
                             </div>
                         ) : (
                             <div className="grid grid-cols-2 gap-y-6 gap-x-12 text-gray-700 dark:text-gray-3">
-                                {/* First Name */}
+                                {/* Personal Information Section */}
                                 <div>
-                                    <p className="text-sm font-semibold">First Name</p>
-                                    <p className="mt-1 text-base">{viewUser.firstName || "N/A"}</p>
+                                    <h3 className="text-lg font-semibold text-blue-700 mb-4 flex items-center">
+                                        <span className="mr-2">👤</span> Personal Information
+                                    </h3>
+                                    {/* Date of Birth */}
+                                    <div>
+                                        <p className="text-sm font-semibold">Date of Birth</p>
+                                        <p className="mt-1 text-base">{viewUser.createdAt ? formatDate(viewUser.createdAt) : "N/A"}</p>
+                                    </div>
+                                    {/* Gender */}
+                                    <div>
+                                        <p className="text-sm font-semibold">Gender</p>
+                                        <p className="mt-1 text-base">{viewUser.gender || "N/A"}</p>
+                                    </div>
+                                    {/* Nationality */}
+                                    <div>
+                                        <p className="text-sm font-semibold">Nationality</p>
+                                        <p className="mt-1 text-base">{viewUser.nationality || "N/A"}</p>
+                                    </div>
+                                    {/* National ID */}
+                                    <div>
+                                        <p className="text-sm font-semibold">National ID</p>
+                                        <p className="mt-1 text-base">{viewUser.nationalId || "N/A"}</p>
+                                    </div>
                                 </div>
 
-                                {/* Last Name */}
+                                {/* Contact Information Section */}
                                 <div>
-                                    <p className="text-sm font-semibold">Last Name</p>
-                                    <p className="mt-1 text-base">{viewUser.lastName || "N/A"}</p>
+                                    <h3 className="text-lg font-semibold text-green-700 mb-4 flex items-center">
+                                        <span className="mr-2">📞</span> Contact Information
+                                    </h3>
+                                    {/* Email */}
+                                    <div>
+                                        <p className="text-sm font-semibold">Email</p>
+                                        <p className="mt-1 text-base">{viewUser.email || "N/A"}</p>
+                                    </div>
+                                    {/* Phone Number */}
+                                    <div>
+                                        <p className="text-sm font-semibold">Phone Number</p>
+                                        <p className="mt-1 text-base">{viewUser.phoneNumber || "N/A"}</p>
+                                    </div>
+                                    {/* Preferred Contact */}
+                                    <div>
+                                        <p className="text-sm font-semibold">Preferred Contact</p>
+                                        <p className="mt-1 text-base">{viewUser.preferredContact || "WhatsApp"}</p>
+                                    </div>
+                                    {/* Primary Address */}
+                                    <div>
+                                        <p className="text-sm font-semibold">Primary Address</p>
+                                        <p className="mt-1 text-base">{viewUser.primaryAddress || "Consequatur suscipi"}</p>
+                                    </div>
+                                    {/* Secondary Address */}
+                                    <div>
+                                        <p className="text-sm font-semibold">Secondary Address</p>
+                                        <p className="mt-1 text-base">{viewUser.secondaryAddress || "Labore porro conset"}</p>
+                                    </div>
                                 </div>
 
-                                {/* Email */}
-                                <div>
-                                    <p className="text-sm font-semibold">Email</p>
-                                    <p className="mt-1 text-base">{viewUser.email || "N/A"}</p>
-                                </div>
 
-                                {/* KYC */}
-                                <div>
-                                    <p className="text-sm font-semibold">KYC Status</p>
-                                    <p
-                                        className={`mt-1 text-base font-medium ${viewUser.kycStatus === "Approved"
-                                            ? "text-green-600"
-                                            : viewUser.kycStatus === "Pending"
-                                                ? "text-yellow-600"
-                                                : "text-gray-600"
-                                            }`}
-                                    >
-                                        {viewUser.kycStatus || "N/A"}
-                                    </p>
-                                </div>
-
-                                {/* Phone */}
-                                <div>
-                                    <p className="text-sm font-semibold">Phone Number</p>
-                                    <p className="mt-1 text-base">{viewUser.phoneNumber || "N/A"}</p>
-                                </div>
-
-                                {/* Join Date */}
-                                <div>
-                                    <p className="text-sm font-semibold">Join Date</p>
-                                    <p className="mt-1 text-base">
-                                        {viewUser.createdAt ? formatDate(viewUser.createdAt) : "N/A"}
-                                    </p>
-                                </div>
-
-                                {/* Wallet */}
-                                <div>
-                                    <p className="text-sm font-semibold">Solana Wallet Address</p>
-                                    <p className="mt-1 text-base break-all">
-                                        {viewUser.solanaWalletAddress || "N/A"}
-                                    </p>
-                                </div>
-
-                                {/* ID */}
-                                <div>
-                                    <p className="text-sm font-semibold">ID Card</p>
-                                    <p className="mt-1 text-base">{viewUser.nationalId || "N/A"}</p>
-                                </div>
-
-                                {/* Nationality */}
-                                <div>
-                                    <p className="text-sm font-semibold">Nationality</p>
-                                    <p className="mt-1 text-base">{viewUser.nationality || "N/A"}</p>
-                                </div>
-
-                                {/* Occupation */}
-                                <div>
-                                    <p className="text-sm font-semibold">Occupation</p>
-                                    <p className="mt-1 text-base">{viewUser.occupation || "N/A"}</p>
-                                </div>
-
-                                {/* Bank */}
-                                <div className="col-span-2">
-                                    <p className="text-sm font-semibold">Bank Name</p>
-                                    <p className="mt-1 text-base">{viewUser.user?.bankDetails || "N/A"}</p>
-                                </div>
 
                                 {/* ID Card Images */}
                                 <div>
@@ -469,7 +452,6 @@ const ManageUsers = () => {
                                         />
                                     </div>
                                 </div>
-
                                 <div>
                                     <p className="text-sm font-semibold">ID Card Back</p>
                                     <div className="mt-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-dark-3 flex items-center justify-center shadow-md hover:shadow-lg transition-all">
@@ -494,7 +476,6 @@ const ManageUsers = () => {
                         </div>
                     </div>
                 </div>
-
             )}
 
         </div>

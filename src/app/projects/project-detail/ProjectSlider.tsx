@@ -16,20 +16,14 @@ export default function ProjectSlider({ project }: ProjectSliderProps) {
     const [isFullScreenOpen, setIsFullScreenOpen] = useState(false);
     const [fullScreenImageIndex, setFullScreenImageIndex] = useState(0);
 
-    const propertyImages = [
-        { id: 1, src: "/images/images1.jpg", alt: "Property exterior view", isVideo: false },
-        { id: 2, src: "/images/images4.jpg", alt: "Property front view", isVideo: false },
-        { id: 3, src: "/videos/property-video.mp4", alt: "Property video tour", isVideo: true },
-        { id: 4, src: "/images/images2.jpg", alt: "Property side view", isVideo: false },
-        { id: 5, src: "/images/images3.jpg", alt: "Property aerial view", isVideo: false },
-    ];
+    const galleryImages = project?.galleryImages || ["/placeholder.svg"];
 
     const nextImage = () => {
-        setCurrentImageIndex((prev) => (prev === propertyImages.length - 1 ? 0 : prev + 1));
+        setCurrentImageIndex((prev) => (prev === galleryImages.length - 1 ? 0 : prev + 1));
     };
 
     const prevImage = () => {
-        setCurrentImageIndex((prev) => (prev === 0 ? propertyImages.length - 1 : prev - 1));
+        setCurrentImageIndex((prev) => (prev === 0 ? galleryImages.length - 1 : prev - 1));
     };
 
     const goToImage = (index: number) => {
@@ -49,11 +43,11 @@ export default function ProjectSlider({ project }: ProjectSliderProps) {
     };
 
     const nextFullScreenImage = () => {
-        setFullScreenImageIndex((prev) => (prev === propertyImages.length - 1 ? 0 : prev + 1));
+        setFullScreenImageIndex((prev) => (prev === galleryImages.length - 1 ? 0 : prev + 1));
     };
 
     const prevFullScreenImage = () => {
-        setFullScreenImageIndex((prev) => (prev === 0 ? propertyImages.length - 1 : prev - 1));
+        setFullScreenImageIndex((prev) => (prev === 0 ? galleryImages.length - 1 : prev - 1));
     };
 
     const goToFullScreenImage = (index: number) => {
@@ -71,20 +65,12 @@ export default function ProjectSlider({ project }: ProjectSliderProps) {
             {/* Main Slider */}
             <div className="w-full mx-auto bg-white rounded-lg overflow-hidden">
                 <div className="relative aspect-video bg-gray-100">
-                    {propertyImages[currentImageIndex].isVideo ? (
-                        <video
-                            src={propertyImages[currentImageIndex].src}
-                            className="object-cover w-full h-full"
-                            controls
-                        />
-                    ) : (
-                        <Image
-                            src={propertyImages[currentImageIndex].src || "/placeholder.svg"}
-                            alt={propertyImages[currentImageIndex].alt}
-                            fill
-                            className="object-cover"
-                        />
-                    )}
+                    <Image
+                        src={galleryImages[currentImageIndex]}
+                        alt="Property Image"
+                        fill
+                        className="object-cover"
+                    />
 
                     <button
                         aria-label="Previous image"
@@ -103,28 +89,28 @@ export default function ProjectSlider({ project }: ProjectSliderProps) {
                     </button>
 
                     <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                        {currentImageIndex + 1}/{propertyImages.length}
+                        {currentImageIndex + 1}/{galleryImages.length}
                     </div>
                 </div>
 
                 <div className="p-4 dark:bg-dark ">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-                            {propertyImages.map((image, index) => (
+                            {galleryImages.map((image, index) => (
                                 <button
-                                    key={image.id}
+                                    key={index}
                                     onClick={() => goToImage(index)}
                                     className={`relative flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${index === currentImageIndex
                                         ? "border-blue-500 ring-2 ring-blue-200"
                                         : "border-gray-200 hover:border-gray-300"
                                         }`}
                                 >
-                                    {image.isVideo ? (
-                                        <video src={image.src} className="object-cover w-full h-full" muted />
+                                    {image.includes(".mp4") || image.includes(".webm") ? (
+                                        <video src={image} className="object-cover w-full h-full" muted />
                                     ) : (
-                                        <Image src={image.src} alt={image.alt} fill className="object-cover" />
+                                        <Image src={image} alt={`Gallery image ${index + 1}`} fill className="object-cover" />
                                     )}
-                                    {image.isVideo && (
+                                    {(image.includes(".mp4") || image.includes(".webm")) && (
                                         <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                                             <Play className="w-3 h-3 text-white" fill="currentColor" />
                                         </div>
@@ -167,26 +153,17 @@ export default function ProjectSlider({ project }: ProjectSliderProps) {
 
                         {/* Image Counter */}
                         <div className="absolute top-4 left-4 z-10 bg-black/60 text-white px-4 py-1 rounded-full text-sm">
-                            {fullScreenImageIndex + 1} / {propertyImages.length}
+                            {fullScreenImageIndex + 1} / {galleryImages.length}
                         </div>
 
                         {/* Image/Video */}
-                        {propertyImages[fullScreenImageIndex].isVideo ? (
-                            <video
-                                src={propertyImages[fullScreenImageIndex].src}
-                                className="max-w-full max-h-full object-contain"
-                                controls
-                                autoPlay
-                            />
-                        ) : (
-                            <Image
-                                src={propertyImages[fullScreenImageIndex].src}
-                                alt={propertyImages[fullScreenImageIndex].alt}
-                                width={1280}
-                                height={720}
-                                className="max-w-full max-h-full object-contain"
-                            />
-                        )}
+                        <Image
+                            src={galleryImages[fullScreenImageIndex]}
+                            alt={`Gallery image ${fullScreenImageIndex + 1}`}
+                            width={1280}
+                            height={720}
+                            className="max-w-full max-h-full object-contain"
+                        />
 
                         {/* Navigation */}
                         <button

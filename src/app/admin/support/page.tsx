@@ -20,7 +20,7 @@ interface ComponentSupportTicket {
 
 
 const SupportTicketManagement = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
     const [tickets, setTickets] = useState<ComponentSupportTicket[]>([]);
     const [loading, setLoading] = useState(false);
@@ -64,7 +64,7 @@ const SupportTicketManagement = () => {
         fetchTickets();
     }, []);
 
-      const handleViewDetails = (ticket: ComponentSupportTicket) => {
+    const handleViewDetails = (ticket: ComponentSupportTicket) => {
         setSelectedTicket(ticket);
         setShowDetailsModal(true);
     };
@@ -77,8 +77,8 @@ const SupportTicketManagement = () => {
 
     const saveStatusUpdate = () => {
         if (selectedTicket) {
-            setTickets(tickets.map(t => 
-                t.id === selectedTicket.id 
+            setTickets(tickets.map(t =>
+                t.id === selectedTicket.id
                     ? { ...t, status: newStatus, updatedAt: new Date().toISOString() }
                     : t
             ));
@@ -87,14 +87,15 @@ const SupportTicketManagement = () => {
         }
     };
 
-      const columns = [
+    const columns = [
         {
             key: 'displayId' as keyof ComponentSupportTicket,
             label: 'Ticket ID',
             render: (row: any) => row.displayId,
         },
         { key: 'title' as keyof ComponentSupportTicket, label: 'Title' },
-        { key: 'description' as keyof ComponentSupportTicket, label: 'Description',
+        {
+            key: 'description' as keyof ComponentSupportTicket, label: 'Description',
             render: (row: ComponentSupportTicket) => (
                 <span className="truncate max-w-xs block">{row.description}</span>
             )
@@ -106,13 +107,12 @@ const SupportTicketManagement = () => {
             label: 'Priority',
             render: (row: ComponentSupportTicket) => (
                 <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        row.priority === 'high'
-                            ? 'bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400'
-                            : row.priority === 'medium'
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${row.priority === 'high'
+                        ? 'bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400'
+                        : row.priority === 'medium'
                             ? 'bg-[#F5F7FA] text-yellow-600 dark:bg-dark-3 dark:text-yellow-400'
                             : 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
-                    }`}
+                        }`}
                 >
                     {row.priority.charAt(0).toUpperCase() + row.priority.slice(1)}
                 </span>
@@ -123,13 +123,12 @@ const SupportTicketManagement = () => {
             label: 'Status',
             render: (row: ComponentSupportTicket) => (
                 <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        row.status === 'closed' || row.status === 'resolved'
-                            ? 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
-                            : row.status === 'in-progress'
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${row.status === 'closed' || row.status === 'resolved'
+                        ? 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
+                        : row.status === 'in-progress'
                             ? 'bg-[#F5F7FA] text-yellow-600 dark:bg-dark-3 dark:text-yellow-400'
                             : 'bg-[#F5F7FA] text-[#3498DB] dark:bg-dark-3 dark:text-blue-400'
-                    }`}
+                        }`}
                 >
                     {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
                 </span>
@@ -311,7 +310,7 @@ const SupportTicketManagement = () => {
                     )}
                 </div>
             </div>
-             {/* View Details Modal */}
+            {/* View Details Modal */}
             {showDetailsModal && selectedTicket && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white dark:bg-dark-2 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -351,13 +350,12 @@ const SupportTicketManagement = () => {
                                 <div>
                                     <label className="text-sm font-semibold text-[#34495E] dark:text-gray-3">Priority</label>
                                     <p className="mt-1">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                                            selectedTicket.priority === 'high'
-                                                ? 'bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400'
-                                                : selectedTicket.priority === 'medium'
+                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedTicket.priority === 'high'
+                                            ? 'bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400'
+                                            : selectedTicket.priority === 'medium'
                                                 ? 'bg-[#F5F7FA] text-yellow-600 dark:bg-dark-3 dark:text-yellow-400'
                                                 : 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
-                                        }`}>
+                                            }`}>
                                             {selectedTicket.priority.charAt(0).toUpperCase() + selectedTicket.priority.slice(1)}
                                         </span>
                                     </p>
@@ -365,13 +363,12 @@ const SupportTicketManagement = () => {
                                 <div>
                                     <label className="text-sm font-semibold text-[#34495E] dark:text-gray-3">Status</label>
                                     <p className="mt-1">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                                            selectedTicket.status === 'closed' || selectedTicket.status === 'resolved'
-                                                ? 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
-                                                : selectedTicket.status === 'in-progress'
+                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedTicket.status === 'closed' || selectedTicket.status === 'resolved'
+                                            ? 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
+                                            : selectedTicket.status === 'in-progress'
                                                 ? 'bg-[#F5F7FA] text-yellow-600 dark:bg-dark-3 dark:text-yellow-400'
                                                 : 'bg-[#F5F7FA] text-[#3498DB] dark:bg-dark-3 dark:text-blue-400'
-                                        }`}>
+                                            }`}>
                                             {selectedTicket.status.charAt(0).toUpperCase() + selectedTicket.status.slice(1)}
                                         </span>
                                     </p>
@@ -406,7 +403,7 @@ const SupportTicketManagement = () => {
 
             {/* Update Status Modal */}
             {showStatusModal && selectedTicket && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
                     <div className="bg-white dark:bg-dark-2 rounded-2xl shadow-xl max-w-md w-full">
                         <div className="flex items-center justify-between p-6 border-b border-[#ECF0F1] dark:border-dark-4">
                             <h3 className="text-xl font-bold text-[#2C3E50] dark:text-gray-2">Update Status</h3>
