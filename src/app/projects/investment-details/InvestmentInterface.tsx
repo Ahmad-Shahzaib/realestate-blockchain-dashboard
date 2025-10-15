@@ -36,13 +36,14 @@ interface TransactionPageProps {
         totalSquareFeet: number;
         type: string;
     };
+    onNextClick?: () => void; // Added prop
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_MIME = new Set(["image/png", "image/jpeg", "application/pdf"]);
 const ALLOWED_EXT = new Set(["png", "jpg", "jpeg", "pdf"]);
 
-export default function TransactionPage({ project }: TransactionPageProps) {
+export default function TransactionPage({ project, onNextClick }: TransactionPageProps) {
     const steps = ["guide", "invoice", "payment-method", "payment-details", "completed"] as const;
     type Step = typeof steps[number];
     const [activeStep, setActiveStep] = useState<Step>("guide");
@@ -59,9 +60,8 @@ export default function TransactionPage({ project }: TransactionPageProps) {
 
     // Read query params
     const transactionId = searchParams.get("_id");
-    const projectId = project._id; // Get project ID from props
+    const projectId = project._id;
 
-    // Helper to get displayPrice
     const getDisplayPrice = () => {
         if (transaction && transaction.totalPrice) {
             return Number(transaction.totalPrice).toLocaleString();
@@ -69,10 +69,8 @@ export default function TransactionPage({ project }: TransactionPageProps) {
         return "";
     };
 
-    // Fetch transaction data by ID
     useEffect(() => {
         const fetchTransaction = async () => {
-            // If we have a transaction ID, fetch it directly
             if (transactionId) {
                 try {
                     setLoading(true);
@@ -90,13 +88,11 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                 }
             }
 
-            // If we have a project ID but no transaction ID, try to get transaction by project
             if (projectId && !transactionId) {
                 try {
                     setLoading(true);
                     const response = await TransactionService.getTransactionsByPropertyId(projectId);
                     if (response.data.transactions && response.data.transactions.length > 0) {
-                        // Get the first transaction for this project
                         const projectTransaction = response.data.transactions[0];
                         setTransaction(projectTransaction);
                         setError(null);
@@ -122,12 +118,10 @@ export default function TransactionPage({ project }: TransactionPageProps) {
         fetchTransaction();
     }, [transactionId, projectId]);
 
-    // File upload handler
     const handleFileSelect = useCallback(async (file: File | null) => {
         setUploadError(null);
         if (!file) return;
 
-        // Basic validations
         if (file.size > MAX_FILE_SIZE) {
             setUploadError("File size exceeds 5MB.");
             toast.error("File size exceeds 5MB");
@@ -151,7 +145,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
 
         setIsUploadingFile(true);
         try {
-            // Sanitize contentType
             const sanitizeType = (t: string | undefined) => {
                 if (!t) return '';
                 let s = t;
@@ -165,7 +158,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
 
             const sanitized = sanitizeType(mime) || (ext === 'pdf' ? 'application/pdf' : ext === 'png' ? 'image/png' : 'image/jpeg');
 
-            // Build a safe filename
             const originalExt = (file.name.split('.').pop() || '').toLowerCase();
             const useExt = ALLOWED_EXT.has(originalExt) ? originalExt : (sanitized.includes('pdf') ? 'pdf' : sanitized.includes('png') ? 'png' : 'jpg');
             const baseName = (file.name.replace(/\.[^/.]+$/, '') || 'upload')
@@ -173,7 +165,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                 .substring(0, 50);
             const safeFileName = `${baseName}-${Date.now()}.${useExt}`;
 
-            // Request presigned URL
             const presign = await getRequest(getAxiosInstance('/api'), `/api/upload_images?fileName=${encodeURIComponent(safeFileName)}&contentType=${encodeURIComponent(sanitized)}`);
             if (!presign || presign.status !== 'success' || !presign.url) {
                 throw new Error('Failed to get upload URL from server.');
@@ -198,7 +189,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
         }
     }, []);
 
-    // Input onChange wrapper for file input
     const onFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
         void handleFileSelect(file);
@@ -210,6 +200,7 @@ export default function TransactionPage({ project }: TransactionPageProps) {
     const handleNext = () => {
         if (currentStepIndex < steps.length - 1) {
             setActiveStep(steps[currentStepIndex + 1]);
+            onNextClick?.(); // Call the onNextClick callback
         }
     };
 
@@ -234,7 +225,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
             return;
         }
 
-        // Get the transaction ID - use transaction object if available, otherwise use URL param
         const idToUse = transaction?._id || transactionId;
         if (!idToUse) {
             toast.error("Transaction ID is missing. Please refresh the page and try again.");
@@ -273,7 +263,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
             return;
         }
 
-        // Get the transaction ID - use transaction object if available, otherwise use URL param
         const idToUse = transaction?._id || transactionId;
         if (!idToUse) {
             toast.error("Transaction ID is missing. Please refresh the page and try again.");
@@ -313,7 +302,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
             return;
         }
 
-        // Get the transaction ID - use transaction object if available, otherwise use URL param
         const idToUse = transaction?._id || transactionId;
         if (!idToUse) {
             toast.error("Transaction ID is missing. Please refresh the page and try again.");
@@ -391,7 +379,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                     </div>
                 )}
 
-                {/* STEP 1: Payment Guide */}
                 {activeStep === "guide" && (
                     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
                         <DocumentsSummary transaction={transaction} loading={loading} error={error} />
@@ -407,7 +394,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                     </div>
                 )}
 
-                {/* STEP 2: Invoice */}
                 {activeStep === "invoice" && (
                     <div className="w-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-10 mx-auto ">
                         <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-6 mb-6">
@@ -476,7 +462,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                     </div>
                 )}
 
-                {/* STEP 3: Payment Method */}
                 {activeStep === "payment-method" && (
                     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
                         <h2 className="font-bold text-2xl text-gray-800 dark:text-white mb-6 text-center">Select Payment Method</h2>
@@ -547,14 +532,12 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                     </div>
                 )}
 
-                {/* STEP 4: Payment Details */}
                 {activeStep === "payment-details" && (
                     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
                         <h2 className="font-bold text-2xl text-gray-800 dark:text-white mb-8 text-center">
                             Enter Payment Details
                         </h2>
 
-                        {/* Tabs */}
                         <div className="flex gap-4 mb-8 justify-center">
                             {["crypto", "cash", "bank"].map((tab) => (
                                 <button
@@ -570,7 +553,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                             ))}
                         </div>
 
-                        {/* CRYPTO */}
                         {subTab === "crypto" && (
                             <form onSubmit={handleCryptoSubmit} className="space-y-6">
                                 <input
@@ -580,7 +562,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                                     className="w-full px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#19D6BD] shadow-sm transition"
                                 />
 
-                                {/* Upload Proof */}
                                 <div
                                     onClick={() => {
                                         setUploadError(null);
@@ -631,7 +612,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                                     />
                                 </div>
 
-                                {/* Buttons */}
                                 <div className="flex justify-between mt-8">
                                     <Button
                                         onClick={handleBack}
@@ -650,7 +630,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                             </form>
                         )}
 
-                        {/* CASH */}
                         {subTab === "cash" && (
                             <form onSubmit={handleCashSubmit} className="space-y-6">
                                 <input
@@ -660,7 +639,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                                     className="w-full px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#19D6BD] shadow-sm transition"
                                 />
 
-                                {/* Upload Proof */}
                                 <div
                                     onClick={() => {
                                         setUploadError(null);
@@ -711,7 +689,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                                     />
                                 </div>
 
-                                {/* Buttons */}
                                 <div className="flex justify-between mt-8">
                                     <Button
                                         onClick={handleBack}
@@ -730,7 +707,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                             </form>
                         )}
 
-                        {/* BANK */}
                         {subTab === "bank" && (
                             <form onSubmit={handleBankSubmit} className="space-y-6">
                                 <input
@@ -746,7 +722,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                                     className="w-full px-4 py-3 text-sm rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#19D6BD] shadow-sm transition"
                                 />
 
-                                {/* Upload Proof */}
                                 <div
                                     onClick={() => {
                                         setUploadError(null);
@@ -797,7 +772,6 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                                     />
                                 </div>
 
-                                {/* Buttons */}
                                 <div className="flex justify-between mt-8">
                                     <Button
                                         onClick={handleBack}
@@ -816,10 +790,8 @@ export default function TransactionPage({ project }: TransactionPageProps) {
                             </form>
                         )}
                     </div>
-
                 )}
 
-                {/* STEP 5: Completed */}
                 {activeStep === "completed" && (
                     <div className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 p-8 rounded-2xl shadow-md text-center">
                         <h2 className="text-2xl font-bold">🎉 Transaction Completed!</h2>

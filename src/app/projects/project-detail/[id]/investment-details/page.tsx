@@ -10,6 +10,7 @@ const Page = ({ params }: { params: { id: string } }) => {
     const [project, setProject] = useState<Project | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isInvestmentVisible, setIsInvestmentVisible] = useState(true);
 
     useEffect(() => {
         const fetchProject = async () => {
@@ -25,14 +26,17 @@ const Page = ({ params }: { params: { id: string } }) => {
         fetchProject();
     }, [id]);
 
+    const handleNextClick = () => {
+        setIsInvestmentVisible(false);
+    };
+
     if (loading) return <p className="p-6">Loading...</p>;
     if (error) return <p className="p-6 text-red-500">{error}</p>;
 
     return (
         <div className="space-y-3">
-            {/* Pass project to your components if they need it */}
-            <InvestmentInterface project={project} />
-            <TransactionPage project={project} />
+            {isInvestmentVisible && <InvestmentInterface project={project} />}
+            <TransactionPage project={project} onNextClick={handleNextClick} />
         </div>
     );
 };

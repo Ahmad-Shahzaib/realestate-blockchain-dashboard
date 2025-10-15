@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Building2, Filter, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Building2, Filter, Search, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 import SearchInput from '@/common/Input';
 import { TransactionService } from '@/services/transaction.service';
 
@@ -56,6 +56,8 @@ const TransactionDetailPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedTransaction, setSelectedTransaction] = useState<TransactionDetail | null>(null);
     const recordsPerPage = 8;
 
     // Map API Transaction to TransactionDetail for UI compatibility
@@ -212,6 +214,9 @@ const TransactionDetailPage = () => {
                                         <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
                                             Date
                                         </th>
+                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                            Actions
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-[#ECF0F1] dark:divide-dark-4">
@@ -250,11 +255,22 @@ const TransactionDetailPage = () => {
                                                     </span>
                                                 </td>
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{transaction.date}</td>
+                                                <td className="py-4 px-2">
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedTransaction(transaction);
+                                                            setIsModalOpen(true);
+                                                        }}
+                                                        className="text-[#3498DB] hover:text-[#2980B9]"
+                                                    >
+                                                        <Eye className="h-5 w-5" />
+                                                    </button>
+                                                </td>
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan={7} className="py-4 px-2 text-center text-[#34495E] dark:text-gray-4">
+                                            <td colSpan={8} className="py-4 px-2 text-center text-[#34495E] dark:text-gray-4">
                                                 No transactions found matching your search.
                                             </td>
                                         </tr>
@@ -308,6 +324,31 @@ const TransactionDetailPage = () => {
                     )}
                 </div>
             </div>
+
+            {/* Modal for Transaction Details */}
+            {isModalOpen && selectedTransaction && (
+                <div className="fixed inset-0   flex items-center justify-center z-50">
+                    <div className="bg-white dark:bg-dark-2 p-6 rounded-lg max-w-md w-full">
+                        <h2 className="text-xl font-bold mb-4 text-[#2C3E50] dark:text-gray-2">Transaction Details</h2>
+                        <div className="space-y-2 text-[#34495E] dark:text-gray-3">
+                            <p><strong>ID:</strong> {selectedTransaction.id}</p>
+                            <p><strong>Property Name:</strong> {selectedTransaction.propertyName}</p>
+                            <p><strong>Address:</strong> {selectedTransaction.address}</p>
+                            <p><strong>Price:</strong> PKR {selectedTransaction.price.toLocaleString()}</p>
+                            <p><strong>Buyer:</strong> {selectedTransaction.buyer}</p>
+                            <p><strong>Seller:</strong> {selectedTransaction.seller}</p>
+                            <p><strong>Status:</strong> {selectedTransaction.status.charAt(0).toUpperCase() + selectedTransaction.status.slice(1)}</p>
+                            <p><strong>Date:</strong> {selectedTransaction.date}</p>
+                        </div>
+                        <button
+                            onClick={() => setIsModalOpen(false)}
+                            className="mt-4 bg-[#3498DB] text-white px-4 py-2 rounded-lg"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
