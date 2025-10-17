@@ -12,7 +12,7 @@ const page = () => {
     const dispatch = useAppDispatch();
     const params = useParams();
     // params.slug may be string | string[] | undefined depending on route
-    const rawSlug:any = params?.slug;
+    const rawSlug: any = params?.slug;
     const [project, setProject] = React.useState<any>(null);
     const [loading, setLoading] = React.useState<boolean>(true);
     const [error, setError] = React.useState<string | null>(null);
@@ -42,10 +42,17 @@ const page = () => {
     }, [rawSlug]);
     return (
         <div>
-            <GlobeResidencyPage project={project}
-            rawSlug={rawSlug}
-            
-            />
+            {
+                loading && (<p>Loading project details...</p>)
+            }
+            {
+                !loading && (
+                    <GlobeResidencyPage project={project}
+                        rawSlug={rawSlug}
+                    />
+                )
+            }
+
         </div>
     )
 }
