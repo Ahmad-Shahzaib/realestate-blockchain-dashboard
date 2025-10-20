@@ -8,7 +8,6 @@ import { MdOutlineSignalCellularAlt2Bar } from "react-icons/md";
 import { FaCalendarAlt } from "react-icons/fa";
 import ProjectService, { Project } from "@/services/project.service";
 
-// Constants moved outside component to prevent recreation
 const TABS = [
     { id: "all" as const, label: "All", icon: IoHome },
     { id: "residential" as const, label: "Residential", icon: FaConnectdevelop },
@@ -16,10 +15,9 @@ const TABS = [
     { id: "plots" as const, label: "Up Coming", icon: FaCalendarAlt },
 ] as const;
 
-const PROJECTS_PER_PAGE = 6;
 const SCROLL_THRESHOLD = 12;
 
-type TabId = typeof TABS[number]['id'];
+type TabId = typeof TABS[number]["id"];
 
 interface ProjectsState {
     data: Project[];
@@ -31,7 +29,7 @@ interface ProjectsState {
     totalPages: number;
 }
 
-// Custom hook for projects data management
+// Custom hook for fetching projects
 function useProjectsData() {
     const [state, setState] = useState<ProjectsState>({
         data: [],
@@ -46,16 +44,12 @@ function useProjectsData() {
     const abortControllerRef = useRef<AbortController | null>(null);
 
     const fetchProjects = useCallback(async (pageNum = 1, reset = false) => {
-        // Cancel previous request
-        if (abortControllerRef.current) {
-            abortControllerRef.current.abort();
-        }
-
-        const abortController = new AbortController();
-        abortControllerRef.current = abortController;
+        if (abortControllerRef.current) abortControllerRef.current.abort();
+        const controller = new AbortController();
+        abortControllerRef.current = controller;
 
         try {
-            setState(prev => ({
+            setState((prev) => ({
                 ...prev,
                 loading: pageNum === 1,
                 loadingMore: pageNum > 1,
@@ -64,10 +58,10 @@ function useProjectsData() {
 
             const response = await ProjectService.getAllProjects(pageNum);
 
-            if (abortController.signal.aborted) return;
+            if (controller.signal.aborted) return;
 
             if (response?.data?.length > 0) {
-                setState(prev => ({
+                setState((prev) => ({
                     ...prev,
                     data: reset ? response.data : [...prev.data, ...response.data],
                     totalPages: response.pagination?.pages || 1,
@@ -76,28 +70,21 @@ function useProjectsData() {
                     loading: false,
                     loadingMore: false,
                 }));
-            } else if (pageNum === 1) {
-                setState(prev => ({
+            } else {
+                setState((prev) => ({
                     ...prev,
                     data: [],
                     hasMore: false,
                     loading: false,
                     loadingMore: false,
-                    error: "No projects available. Please check back later.",
-                }));
-            } else {
-                setState(prev => ({
-                    ...prev,
-                    hasMore: false,
-                    loadingMore: false,
+                    error: "No projects available.",
                 }));
             }
         } catch (error: any) {
-            if (error.name === 'AbortError') return;
-
-            setState(prev => ({
+            if (error.name === "AbortError") return;
+            setState((prev) => ({
                 ...prev,
-                error: error.message || "Failed to load projects. Please try again later.",
+                error: error.message || "Failed to load projects.",
                 hasMore: false,
                 loading: false,
                 loadingMore: false,
@@ -106,202 +93,139 @@ function useProjectsData() {
     }, []);
 
     const resetAndFetch = useCallback(() => {
-        setState(prev => ({
-            ...prev,
-            data: [],
-            page: 1,
-            hasMore: true,
-            error: null,
-        }));
+        setState((prev) => ({ ...prev, data: [], page: 1, hasMore: true, error: null }));
         fetchProjects(1, true);
     }, [fetchProjects]);
 
     const loadMore = useCallback(() => {
-        if (!state.loadingMore && state.hasMore) {
-            fetchProjects(state.page + 1);
-        }
+        if (!state.loadingMore && state.hasMore) fetchProjects(state.page + 1);
     }, [fetchProjects, state.loadingMore, state.hasMore, state.page]);
 
-    // Cleanup on unmount
     useEffect(() => {
         return () => {
-            if (abortControllerRef.current) {
-                abortControllerRef.current.abort();
-            }
+            if (abortControllerRef.current) abortControllerRef.current.abort();
         };
     }, []);
 
-    return {
-        ...state,
-        fetchProjects,
-        resetAndFetch,
-        loadMore,
-    };
+    return { ...state, fetchProjects, resetAndFetch, loadMore };
 }
 
-// Custom hook for infinite scroll
-function useInfiniteScroll(loadMore: () => void, canLoadMore: boolean) {
-    const handleScroll = useCallback(() => {
-        if (!canLoadMore) return;
-
-        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-
-        if (scrollTop + clientHeight >= scrollHeight - SCROLL_THRESHOLD) {
-            loadMore();
-        }
-    }, [loadMore, canLoadMore]);
-
-    useEffect(() => {
-        const throttledHandler = throttle(handleScroll, 100);
-        window.addEventListener('scroll', throttledHandler, { passive: true });
-        return () => window.removeEventListener('scroll', throttledHandler);
-    }, [handleScroll]);
-}
-
-// Utility function for throttling
-function throttle<T extends (...args: any[]) => void>(func: T, delay: number): T {
-    let timeoutId: NodeJS.Timeout | null = null;
-    let lastExecTime = 0;
-
+// Throttle helper
+function throttle<T extends (...args: any[]) => void>(fn: T, delay: number): T {
+    let lastExec = 0;
+    let timeout: NodeJS.Timeout | null = null;
     return ((...args: Parameters<T>) => {
-        const currentTime = Date.now();
-
-        if (currentTime - lastExecTime > delay) {
-            func(...args);
-            lastExecTime = currentTime;
+        const now = Date.now();
+        if (now - lastExec >= delay) {
+            fn(...args);
+            lastExec = now;
         } else {
-            if (timeoutId) clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-                func(...args);
-                lastExecTime = Date.now();
-            }, delay - (currentTime - lastExecTime));
+            if (timeout) clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                fn(...args);
+                lastExec = Date.now();
+            }, delay - (now - lastExec));
         }
     }) as T;
 }
 
-// Memoized loading skeleton component
-const LoadingSkeleton = ({ count = 6 }: { count?: number }) => (
-    <>
-        {Array.from({ length: count }, (_, index) => (
-            <div key={index} className="bg-gray-200 dark:bg-dark-2 animate-pulse rounded-lg h-64">
-                <div className="p-4 space-y-3">
-                    <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded" />
-                    <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded" />
-                    <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-2/3" />
-                </div>
-            </div>
-        ))}
-    </>
-);
+function useInfiniteScroll(loadMore: () => void, canLoadMore: boolean) {
+    const handleScroll = useCallback(() => {
+        if (!canLoadMore) return;
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+        if (scrollTop + clientHeight >= scrollHeight - SCROLL_THRESHOLD) loadMore();
+    }, [loadMore, canLoadMore]);
+
+    useEffect(() => {
+        const throttled = throttle(handleScroll, 200);
+        window.addEventListener("scroll", throttled, { passive: true });
+        return () => window.removeEventListener("scroll", throttled);
+    }, [handleScroll]);
+}
 
 export function OverviewCards() {
     const [activeTab, setActiveTab] = useState<TabId>("all");
+    const [searchTerm, setSearchTerm] = useState("");
     const projectsData = useProjectsData();
 
-    // Filter projects based on active tab
+    // Filter logic for search + category
     const filteredProjects = useMemo(() => {
-        if (activeTab === "all") return projectsData.data;
-        return projectsData.data.filter(project => project.category === activeTab);
-    }, [projectsData.data, activeTab]);
+        const term = searchTerm.toLowerCase().trim();
 
-    // Setup infinite scroll
-    useInfiniteScroll(
-        projectsData.loadMore,
-        !projectsData.loadingMore && projectsData.hasMore
-    );
+        return projectsData.data.filter((project) => {
+            const matchesTab = activeTab === "all" || project.category === activeTab;
+            const matchesSearch =
+                !term ||
+                project.name?.toLowerCase().includes(term) ||
+                project.category?.toLowerCase().includes(term) ||
+                project.location?.city?.toLowerCase().includes(term) ||
+                project.location?.state?.toLowerCase().includes(term);
 
-    // Handle tab change
-    const handleTabChange = useCallback((tabId: TabId) => {
-        setActiveTab(tabId);
-        projectsData.resetAndFetch();
-    }, [projectsData]);
+            return matchesTab && matchesSearch;
+        });
+    }, [projectsData.data, activeTab, searchTerm]);
 
-    // Initial data fetch
+    useInfiniteScroll(projectsData.loadMore, !projectsData.loadingMore && projectsData.hasMore);
+
     useEffect(() => {
         projectsData.resetAndFetch();
-    }, []); // Empty dependency array is intentional
-
-    // Memoized tab buttons
-    const tabButtons = useMemo(() =>
-        TABS.map((tab) => (
-            <button
-                key={tab.id}
-                onClick={() => handleTabChange(tab.id)}
-                className={`flex items-center px-4 py-2 text-lg font-medium rounded-lg whitespace-nowrap transition-colors duration-200 ${activeTab === tab.id
-                    ? "bg-[#00D2B6] dark:bg-[#0971a8] text-white"
-                    : "bg-white text-[#003049] dark:text-white dark:bg-[#003049] hover:bg-gray-100 dark:hover:bg-dark-3"
-                    }`}
-                aria-pressed={activeTab === tab.id}
-            >
-                <tab.icon className="w-6 h-6 mr-2" aria-hidden="true" />
-                {tab.label}
-            </button>
-        )),
-        [activeTab, handleTabChange]);
-
-    // Memoized project cards
-    const projectCards = useMemo(() =>
-        filteredProjects.map((project, index) => (
-            <OverviewCard
-                key={project._id || `project-${index}`}
-                initialImageIndex={index}
-                item={project}
-            />
-        )),
-        [filteredProjects]);
+    }, []);
 
     return (
         <>
-            {/* Header */}
             <header className="w-full px-10 mb-6 mt-3 border-b pb-2">
-                <h1 className="text-2xl font-bold text-[#003049] dark:text-gray-2">
-                    All Projects
-                </h1>
+                <h1 className="text-2xl font-bold text-[#003049] dark:text-gray-2">All Projects</h1>
             </header>
 
             <div className="w-full px-10">
-                {/* Navigation Tabs */}
-                <nav className="flex space-x-4 mb-6 overflow-x-auto" role="tablist">
-                    {tabButtons}
-                    <div className="w-1/2 float-end ">
-                        <input type="search" placeholder="Search..." className="w-1/2 dark:bg-dark-2 float-end p-2 border border-gray-300 rounded-md  " />
+                <nav className="flex items-center justify-between mb-6 flex-wrap gap-3">
+                    {/* Tabs */}
+                    <div className="flex space-x-4 overflow-x-auto">
+                        {TABS.map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap ${activeTab === tab.id
+                                    ? "bg-[#00D2B6] dark:bg-[#0971a8] text-white"
+                                    : "bg-white text-[#003049] dark:text-white dark:bg-[#003049] hover:bg-gray-100 dark:hover:bg-dark-3"
+                                    }`}
+                            >
+                                <tab.icon className="w-5 h-5 mr-2" />
+                                {tab.label}
+                            </button>
+                        ))}
                     </div>
+
+                    {/* Search Input */}
+                    <input
+                        type="search"
+                        placeholder="Search projects..."
+                        className="w-64 md:w-80 px-3 py-2 border border-gray-300 rounded-md dark:bg-dark-2 dark:text-white"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                 </nav>
 
-                {/* Project Grid */}
-                <div className="grid gap-2 sm:gap-6 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                {/* Project Cards Grid */}
+                <div className="grid gap-4 sm:gap-6 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                     {projectsData.loading ? (
-                        <LoadingSkeleton />
-                    ) : projectsData.error ? (
-                        <div className="col-span-full text-center text-red-600 dark:text-red-400 py-8">
-                            <p>{projectsData.error}</p>
-                            <button
-                                onClick={projectsData.resetAndFetch}
-                                className="mt-4 px-4 py-2 bg-[#00D2B6] text-white rounded-lg hover:bg-[#00B5A0] transition-colors"
-                            >
-                                Try Again
-                            </button>
-                        </div>
+                        <p className="text-center text-gray-500 dark:text-gray-400 col-span-full">
+                            Loading projects...
+                        </p>
+                    ) : filteredProjects.length === 0 ? (
+                        <p className="text-center text-gray-500 dark:text-gray-400 col-span-full">
+                            No matching projects found.
+                        </p>
                     ) : (
-                        projectCards
+                        filteredProjects.map((project, index) => (
+                            <OverviewCard key={project._id || index} item={project} />
+                        ))
                     )}
                 </div>
 
-                {/* Loading More Indicator */}
                 {projectsData.loadingMore && (
-                    <div className="flex justify-center items-center py-8" role="status" aria-live="polite">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00D2B6]" aria-hidden="true" />
-                        <span className="ml-3 text-gray-600 dark:text-gray-400">Loading more projects...</span>
-                    </div>
-                )}
-
-                {/* End of Results Indicator */}
-                {!projectsData.loading && !projectsData.loadingMore && !projectsData.hasMore && filteredProjects.length > 0 && (
-                    <div className="flex justify-center py-8">
-                        <div className="text-gray-500 dark:text-gray-400 text-center">
-                            <div className="h-px bg-gray-300 dark:bg-gray-600 w-24 mx-auto mb-4" />
-                            <p>You've reached the end of the projects</p>
-                        </div>
+                    <div className="flex justify-center py-8 text-gray-600 dark:text-gray-400">
+                        Loading more projects...
                     </div>
                 )}
             </div>
