@@ -16,8 +16,8 @@ export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-       <GlobalLoader />
-        <ClientLayout children={children} />
+       {/* <GlobalLoader /> */}
+        {/* <ClientLayout children={children} /> */}
 
       </body>
     </html>
