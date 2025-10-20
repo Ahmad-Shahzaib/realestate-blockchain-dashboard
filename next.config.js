@@ -8,6 +8,11 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    outputFileTracingExcludes: {
+      '*': ['./node_modules/**/*'],
+    },
+  },
   images: {
     remotePatterns: [
       {
