@@ -281,8 +281,15 @@ function useGlobeResidencyForm(project?: any, rawSlug?: string) {
         const safeFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
         const sanitized = file.type;
 
+        console.log("Uploading file:", safeFileName, "of type:", sanitized, "for purpose:", purpose);
+
         try {
-            const presign = await getRequest(getAxiosInstance('/api'), `/api/upload_images?fileName=${encodeURIComponent(safeFileName)}&contentType=${encodeURIComponent(sanitized)}`);
+                const presign = await getRequest(
+                getAxiosInstance('/api'),
+                `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
+                );
+
+
 
             if (!presign || presign.status !== 'success' || !presign.url) {
                 toast.error(`Failed to get upload URL for ${safeFileName}`);
@@ -325,7 +332,10 @@ function useGlobeResidencyForm(project?: any, rawSlug?: string) {
                 const sanitized = file.type;
 
                 // Get presigned URL
-                const presign = await getRequest(getAxiosInstance('/api'), `/api/upload_images?fileName=${encodeURIComponent(safeFileName)}&contentType=${encodeURIComponent(sanitized)}`);
+               const presign = await getRequest(
+                getAxiosInstance('/api'),
+                `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
+                );
 
                 if (!presign || presign.status !== 'success' || !presign.url) {
                     throw new Error(`Failed to get upload URL for ${safeFileName}`);
