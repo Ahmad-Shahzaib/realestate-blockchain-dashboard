@@ -21,6 +21,7 @@ interface ComponentUser {
     email: string;
     joinDate: string;
     bankDetails?: string;
+    notes?: string;
 }
 
 const ManageUsers = () => {
@@ -30,7 +31,7 @@ const ManageUsers = () => {
     const [error, setError] = useState<string | null>(null);
 
     const [editUser, setEditUser] = useState<ComponentUser | null>(null);
-    const [editForm, setEditForm] = useState({ firstName: '', lastName: '', email: '', kycStatus: '' });
+    const [editForm, setEditForm] = useState({ firstName: '', lastName: '', email: '', kycStatus: '', notes: '' });
     const [editLoading, setEditLoading] = useState(false);
     const [editError, setEditError] = useState<string | null>(null);
 
@@ -56,6 +57,7 @@ const ManageUsers = () => {
                 email: user.email || 'N/A',
                 joinDate: user.createdAt || new Date().toISOString(),
                 kycStatus: user.kycStatus || 'N/A',
+                notes: user.notes || '',
             }));
 
             setUsers(formattedUsers);
@@ -99,6 +101,7 @@ const ManageUsers = () => {
             lastName: lastNameParts.join(' ') || '',
             email: user.email || '',
             kycStatus: user.kycStatus || '',
+            notes: user.notes || '',
         });
     };
 
@@ -114,13 +117,14 @@ const ManageUsers = () => {
                 lastName: editForm.lastName,
                 email: editForm.email,
                 kycStatus: editForm.kycStatus,
+                notes: editForm.notes,
             };
 
             await updateUserByAdmin(editUser.id.toString(), userData);
 
             setUsers(users.map(u =>
                 u.id === editUser.id
-                    ? { ...u, name: `${editForm.firstName} ${editForm.lastName}`.trim(), email: editForm.email, kycStatus: editForm.kycStatus }
+                    ? { ...u, name: `${editForm.firstName} ${editForm.lastName}`.trim(), email: editForm.email, kycStatus: editForm.kycStatus, notes: editForm.notes }
                     : u
             ));
 
@@ -338,8 +342,11 @@ const ManageUsers = () => {
                                         <textarea
                                             placeholder="Reason for KYC status change (optional)"
                                             className="w-full p-2 border rounded-md"
-                                            value={editForm.kycReason || ''}
-                                            onChange={(e) => setEditForm({ ...editForm, kycReason: e.target.value })}
+                                            disabled={editLoading}
+                                            onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
+                                            value={editForm.notes || ''}
+
+
                                         />
                                     </div>
                                 )}

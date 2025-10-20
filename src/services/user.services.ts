@@ -31,6 +31,7 @@ export interface UserProfile {
     solanaWalletAddress?: string;
     isVerified?: boolean;
     role?: string;
+    notes?: string;
     kycStatus?: string;
     notificationPreferences?: {
         email?: boolean;

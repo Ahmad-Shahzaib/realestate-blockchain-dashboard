@@ -91,7 +91,7 @@ const CustomerList = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  console.log("selectedCustomer",selectedCustomer)
+  console.log("selectedCustomer", selectedCustomer)
 
   const dispatch = useAppDispatch();
   const { customers, pagination, loading, error } = useAppSelector((state) => state.customer || {
@@ -598,14 +598,14 @@ const CustomerList = () => {
         {/* View Modal for Customer Details */}
         {isViewModalOpen && selectedCustomer && (
           <CustomerDetailsModal selectedCustomer={selectedCustomer}
-          setSelectedCustomer={setSelectedCustomer}
-          onClose={closeViewModal} />
+            setSelectedCustomer={setSelectedCustomer}
+            onClose={closeViewModal} />
         )}
 
         {/* Edit Modal for Customer Details */}
         {isEditModalOpen && selectedCustomer && (
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-dark-2 rounded-2xl shadow-lg p-6 w-full max-w-2xl relative h-[80vh] overflow-y-auto">
+          <div className="fixed inset-0  flex items-center justify-center z-50">
+            <div className="bg-white  dark:bg-dark-2 rounded-2xl shadow-lg p-6  relative h-[80vh] overflow-y-auto">
               <button
                 className="absolute top-4 right-4 text-[#34495E] dark:text-gray-3 hover:text-[#2C3E50] dark:hover:text-gray-2"
                 onClick={closeEditModal}

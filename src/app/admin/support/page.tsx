@@ -18,7 +18,6 @@ interface ComponentSupportTicket {
     updatedAt: string;
 }
 
-
 const SupportTicketManagement = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
@@ -31,6 +30,7 @@ const SupportTicketManagement = () => {
     const [showStatusModal, setShowStatusModal] = useState(false);
     const [newStatus, setNewStatus] = useState('');
     const itemsPerPage = 8;
+
     // Fetch support tickets on component mount
     useEffect(() => {
         const fetchTickets = async () => {
@@ -75,15 +75,32 @@ const SupportTicketManagement = () => {
         setShowStatusModal(true);
     };
 
-    const saveStatusUpdate = () => {
+    const saveStatusUpdate = async () => {
         if (selectedTicket) {
-            setTickets(tickets.map(t =>
-                t.id === selectedTicket.id
-                    ? { ...t, status: newStatus, updatedAt: new Date().toISOString() }
-                    : t
-            ));
-            setShowStatusModal(false);
-            setSelectedTicket(null);
+            try {
+                // Call the updateSupportTicket API to update the status
+                const updatedTicket = await SupportService.updateSupportTicket(selectedTicket.id, {
+                    status: newStatus,
+                });
+
+                // Update the local state with the updated ticket
+                setTickets(tickets.map(t =>
+                    t.id === selectedTicket.id
+                        ? {
+                            ...t,
+                            status: updatedTicket.status,
+                            updatedAt: updatedTicket.updatedAt,
+                        }
+                        : t
+                ));
+
+                setShowStatusModal(false);
+                setSelectedTicket(null);
+                setError(null);
+            } catch (err: any) {
+                setError('Failed to update ticket status. Please try again later.');
+                console.error('Error updating ticket status:', err);
+            }
         }
     };
 
@@ -162,7 +179,6 @@ const SupportTicketManagement = () => {
             ),
         },
     ];
-
 
     const filteredTickets = useMemo(() => {
         const term = searchTerm.toLowerCase().trim();
@@ -312,7 +328,7 @@ const SupportTicketManagement = () => {
             </div>
             {/* View Details Modal */}
             {showDetailsModal && selectedTicket && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="fixed inset-0 top-9 flex items-center justify-center z-50 p-4">
                     <div className="bg-white dark:bg-dark-2 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between p-6 border-b border-[#ECF0F1] dark:border-dark-4">
                             <h3 className="text-2xl font-bold text-[#2C3E50] dark:text-gray-2">Ticket Details</h3>

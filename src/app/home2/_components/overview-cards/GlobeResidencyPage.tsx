@@ -94,7 +94,7 @@ interface FormState {
 function useGlobeResidencyForm(project?: any, rawSlug?: string) {
     console.log("Initializing GlobeResidencyForm with project:", project, "and rawSlug:", rawSlug);
 
-       const initialFormState: FormState = {
+    const initialFormState: FormState = {
         propertyName: "",
         category: "",
         subcategory: "",
@@ -168,112 +168,112 @@ function useGlobeResidencyForm(project?: any, rawSlug?: string) {
     const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
     const [selectedGalleryImages, setSelectedGalleryImages] = useState<FileWithPreview[]>([]);
 
-function mapProjectToFloors(project: any): Floor[] {
-    if (!project.floors || !Array.isArray(project.floors)) {
-      return [initialFloor];
+    function mapProjectToFloors(project: any): Floor[] {
+        if (!project.floors || !Array.isArray(project.floors)) {
+            return [initialFloor];
+        }
+        return project.floors.map((floor: any) => ({
+            ...initialFloor,
+            name: floor.name || initialFloor.name,
+            description: floor.description || initialFloor.description,
+            floorNumber: floor.floorNumber?.toString() || initialFloor.floorNumber,
+            floorPlanUrl: floor.floorPlanUrl || initialFloor.floorPlanUrl,
+            totalUnits: floor.totalUnits?.toString() || initialFloor.totalUnits,
+            pricePerSqFt: floor.pricePerSqFt?.toString() || initialFloor.pricePerSqFt,
+            minPrice: floor.minPrice?.toString() || initialFloor.minPrice,
+            maxPrice: floor.maxPrice?.toString() || initialFloor.maxPrice,
+            totalSquareFootage: floor.totalSquareFootage?.toString() || initialFloor.totalSquareFootage,
+            specifications: floor.specifications?.join(", ") || initialFloor.specifications,
+            features: floor.features?.join(", ") || initialFloor.features,
+        }));
     }
-    return project.floors.map((floor: any) => ({
-      ...initialFloor,
-      name: floor.name || initialFloor.name,
-      description: floor.description || initialFloor.description,
-      floorNumber: floor.floorNumber?.toString() || initialFloor.floorNumber,
-      floorPlanUrl: floor.floorPlanUrl || initialFloor.floorPlanUrl,
-      totalUnits: floor.totalUnits?.toString() || initialFloor.totalUnits,
-      pricePerSqFt: floor.pricePerSqFt?.toString() || initialFloor.pricePerSqFt,
-      minPrice: floor.minPrice?.toString() || initialFloor.minPrice,
-      maxPrice: floor.maxPrice?.toString() || initialFloor.maxPrice,
-      totalSquareFootage: floor.totalSquareFootage?.toString() || initialFloor.totalSquareFootage,
-      specifications: floor.specifications?.join(", ") || initialFloor.specifications,
-      features: floor.features?.join(", ") || initialFloor.features,
-    }));
-  }
 
 
- function mapProjectToFormState(project: any): FormState {
-    console.log("Mapping project to form state:", project);
-    return {
-      ...initialFormState,
-      propertyName: project?.name || initialFormState.propertyName,
-      description: project.description || initialFormState.description,
-      address: project.location?.address || initialFormState.address,
-      city: project.location?.city || initialFormState.city,
-      state: project.location?.state || initialFormState.state,
-      country: project.location?.country || initialFormState.country,
-      latitude: project.location?.coordinates?.latitude?.toString() || initialFormState.latitude,
-      longitude: project.location?.coordinates?.longitude?.toString() || initialFormState.longitude,
-      roi: project.roi ?? initialFormState.roi, // note: project.roi might be 0, so we use nullish coalescing
-      developerName: project.developer?.name || initialFormState.developerName,
-      developerWebsite: project.developer?.website || initialFormState.developerWebsite,
-      developerDescription: project.developer?.description || initialFormState.developerDescription,
-      developerLogo: project.developer?.logoUrl || initialFormState.developerLogo,
-      projectStatus: project.status || initialFormState.projectStatus,
-      category: project.category || initialFormState.category,
-      subcategory: project.subcategory || initialFormState.subcategory,
-      featured: project.featured || initialFormState.featured,
-      startDate: project.startDate ? new Date(project.startDate).toISOString().split('T')[0] : initialFormState.startDate,
-      completionDate: project.completionDate ? new Date(project.completionDate).toISOString().split('T')[0] : initialFormState.completionDate,
-      totalArea: project.totalArea?.toString() || initialFormState.totalArea,
-      sellableArea: project.sellableArea?.toString() || initialFormState.sellableArea,
-      priceMin: project.priceRange?.min?.toString() || initialFormState.priceMin,
-      priceMax: project.priceRange?.max?.toString() || initialFormState.priceMax,
-      totalUnits: project.totalUnits?.toString() || initialFormState.totalUnits,
-      soldUnits: project.soldUnits?.toString() || initialFormState.soldUnits,
-      reservedUnits: project.reservedUnits?.toString() || initialFormState.reservedUnits,
-      availableUnits: project.availableUnits?.toString() || initialFormState.availableUnits,
-      views: project.views?.toString() || initialFormState.views,
-      inquiries: project.inquiries?.toString() || initialFormState.inquiries,
-      mainImageUrl: project.mainImageUrl || initialFormState.mainImageUrl,
-      galleryImages: "", // we are not using this field for now
-      amenities: project.amenities?.join(", ") || initialFormState.amenities,
-      tokenName: project.token?.name || initialFormState.tokenName,
-      tokenSymbol: project.token?.symbol || initialFormState.tokenSymbol,
-      tokenSupply: project.token?.supply?.toString() || initialFormState.tokenSupply,
-      pricePerToken: project.token?.pricePerToken?.toString() || initialFormState.pricePerToken,
-      walletAddress: project.token?.walletAddress || initialFormState.walletAddress,
-      customer: project.customerId || initialFormState.customer,
-      bankDetails: {
-        bankName: project.bankDetails?.bankName || initialFormState?.bankDetails.bankName,
-        accountNumber: project.bankDetails?.accountNumber || initialFormState?.bankDetails.accountNumber,
-        accountTitle: project.bankDetails?.accountTitle || initialFormState?.bankDetails.accountTitle,
-        iban: project.bankDetails?.iban || initialFormState?.bankDetails.iban,
-      }
-    };
-  }
+    function mapProjectToFormState(project: any): FormState {
+        console.log("Mapping project to form state:", project);
+        return {
+            ...initialFormState,
+            propertyName: project?.name || initialFormState.propertyName,
+            description: project.description || initialFormState.description,
+            address: project.location?.address || initialFormState.address,
+            city: project.location?.city || initialFormState.city,
+            state: project.location?.state || initialFormState.state,
+            country: project.location?.country || initialFormState.country,
+            latitude: project.location?.coordinates?.latitude?.toString() || initialFormState.latitude,
+            longitude: project.location?.coordinates?.longitude?.toString() || initialFormState.longitude,
+            roi: project.roi ?? initialFormState.roi, // note: project.roi might be 0, so we use nullish coalescing
+            developerName: project.developer?.name || initialFormState.developerName,
+            developerWebsite: project.developer?.website || initialFormState.developerWebsite,
+            developerDescription: project.developer?.description || initialFormState.developerDescription,
+            developerLogo: project.developer?.logoUrl || initialFormState.developerLogo,
+            projectStatus: project.status || initialFormState.projectStatus,
+            category: project.category || initialFormState.category,
+            subcategory: project.subcategory || initialFormState.subcategory,
+            featured: project.featured || initialFormState.featured,
+            startDate: project.startDate ? new Date(project.startDate).toISOString().split('T')[0] : initialFormState.startDate,
+            completionDate: project.completionDate ? new Date(project.completionDate).toISOString().split('T')[0] : initialFormState.completionDate,
+            totalArea: project.totalArea?.toString() || initialFormState.totalArea,
+            sellableArea: project.sellableArea?.toString() || initialFormState.sellableArea,
+            priceMin: project.priceRange?.min?.toString() || initialFormState.priceMin,
+            priceMax: project.priceRange?.max?.toString() || initialFormState.priceMax,
+            totalUnits: project.totalUnits?.toString() || initialFormState.totalUnits,
+            soldUnits: project.soldUnits?.toString() || initialFormState.soldUnits,
+            reservedUnits: project.reservedUnits?.toString() || initialFormState.reservedUnits,
+            availableUnits: project.availableUnits?.toString() || initialFormState.availableUnits,
+            views: project.views?.toString() || initialFormState.views,
+            inquiries: project.inquiries?.toString() || initialFormState.inquiries,
+            mainImageUrl: project.mainImageUrl || initialFormState.mainImageUrl,
+            galleryImages: "", // we are not using this field for now
+            amenities: project.amenities?.join(", ") || initialFormState.amenities,
+            tokenName: project.token?.name || initialFormState.tokenName,
+            tokenSymbol: project.token?.symbol || initialFormState.tokenSymbol,
+            tokenSupply: project.token?.supply?.toString() || initialFormState.tokenSupply,
+            pricePerToken: project.token?.pricePerToken?.toString() || initialFormState.pricePerToken,
+            walletAddress: project.token?.walletAddress || initialFormState.walletAddress,
+            customer: project.customerId || initialFormState.customer,
+            bankDetails: {
+                bankName: project.bankDetails?.bankName || initialFormState?.bankDetails?.bankName,
+                accountNumber: project.bankDetails?.accountNumber || initialFormState?.bankDetails?.accountNumber,
+                accountTitle: project.bankDetails?.accountTitle || initialFormState?.bankDetails?.accountTitle,
+                iban: project.bankDetails?.iban || initialFormState?.bankDetails?.iban,
+            }
+        };
+    }
 
 
     function mapProjectToFaqs(project: any): { question: string; answer: string }[] {
-    if (!project.faqs || !Array.isArray(project.faqs)) {
-      return [{ question: "", answer: "" }];
+        if (!project.faqs || !Array.isArray(project.faqs)) {
+            return [{ question: "", answer: "" }];
+        }
+        return project.faqs.map((faq: any) => ({
+            question: faq.question || "",
+            answer: faq.answer || "",
+        }));
     }
-    return project.faqs.map((faq: any) => ({
-      question: faq.question || "",
-      answer: faq.answer || "",
-    }));
-  }
 
     function mapProjectToDocuments(project: any): string[] {
-    if (!project.documents || !Array.isArray(project.documents)) {
-      return [""];
+        if (!project.documents || !Array.isArray(project.documents)) {
+            return [""];
+        }
+        return project.documents;
     }
-    return project.documents;
-  }
 
 
-  useEffect(() => {
-    console.log("useEffect triggered with project:", project,project?.rawSlug);
-       if (project?.rawSlug) {
-     console.log("Mapping project data to form state for slug:", project?.rawSlug);
-      setForm(mapProjectToFormState(project?.project));
-      setFloors(mapProjectToFloors(project?.project));
-      setFaqs(mapProjectToFaqs(project?.project));
-      setDocuments(mapProjectToDocuments(project?.project));
-      // Reset other states
-      setError(null);
-      setSuccess(false);
-      setTouched({});
-      setValidationErrors({});
-    }
-  }, [project, rawSlug]);
+    useEffect(() => {
+        console.log("useEffect triggered with project:", project, project?.rawSlug);
+        if (project?.rawSlug) {
+            console.log("Mapping project data to form state for slug:", project?.rawSlug);
+            setForm(mapProjectToFormState(project?.project));
+            setFloors(mapProjectToFloors(project?.project));
+            setFaqs(mapProjectToFaqs(project?.project));
+            setDocuments(mapProjectToDocuments(project?.project));
+            // Reset other states
+            setError(null);
+            setSuccess(false);
+            setTouched({});
+            setValidationErrors({});
+        }
+    }, [project, rawSlug]);
 
 
     // Shared function to handle file uploads
