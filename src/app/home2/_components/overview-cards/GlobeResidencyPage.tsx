@@ -316,9 +316,6 @@ function useGlobeResidencyForm(project?: any, rawSlug?: string) {
         }
     };
 
-    // const setFloors = React.useState<Floor[]>([initialFloor])[1];
-    // const [documents, setDocuments] = useState<string[]>([""]);
-
     const uploadGalleryImages = async () => {
         if (!selectedGalleryImages.length) return [];
 
@@ -1481,7 +1478,10 @@ export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
 
                                                     try {
                                                         // Get presigned URL
-                                                        const presign = await getRequest(getAxiosInstance('/api'), `/api/upload_images?fileName=${encodeURIComponent(safeFileName)}&contentType=${encodeURIComponent(sanitized)}`);
+   const presign = await getRequest(
+                getAxiosInstance('/api'),
+                `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
+                );
 
                                                         if (!presign || presign.status !== 'success' || !presign.url) {
                                                             toast.error(`Failed to get upload URL for ${safeFileName}`);
