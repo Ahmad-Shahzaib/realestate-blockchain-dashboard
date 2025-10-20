@@ -180,9 +180,9 @@ const ReferralManagement = () => {
                                         <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
                                             Description
                                         </th>
-                                        <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
+                                        {/* <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
                                             Status
-                                        </th>
+                                        </th> */}
                                         <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
                                             Actions
                                         </th>
@@ -198,7 +198,7 @@ const ReferralManagement = () => {
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{ref.level}</td>
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{ref.percentage}%</td>
                                                 <td className="py-4 px-2 text-[#34495E] dark:text-gray-3">{ref.description}</td>
-                                                <td className="py-4 px-2">
+                                                {/* <td className="py-4 px-2">
                                                     <span
                                                         className={`px - 3 py - 1 rounded - full text - xs font - semibold ${ref.status
                                                             ? 'bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400'
@@ -207,7 +207,7 @@ const ReferralManagement = () => {
                                                     >
                                                         {ref.status ? 'Active' : 'Inactive'}
                                                     </span>
-                                                </td>
+                                                </td> */}
                                                 <td className="py-4 px-2">
                                                     <div className="flex items-center gap-2">
                                                         <button

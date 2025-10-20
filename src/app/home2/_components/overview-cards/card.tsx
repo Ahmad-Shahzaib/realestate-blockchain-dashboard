@@ -200,7 +200,12 @@ export function OverviewCard({
           <>
             <Image
               key={projectImages[currentImageIndex]}
-              src={projectImages[currentImageIndex]}
+              src={
+                projectImages[currentImageIndex] &&
+                  projectImages[currentImageIndex].startsWith("http")
+                  ? projectImages[currentImageIndex]
+                  : "https://placehold.co/400x200?text=No+Image"
+              }
               alt={`${item?.name || "Property"} view ${currentImageIndex + 1}`}
               width={400}
               height={128}

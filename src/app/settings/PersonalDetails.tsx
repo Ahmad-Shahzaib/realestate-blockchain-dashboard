@@ -219,7 +219,10 @@ export default function PersonalDetails() {
             const safeFileName = `${baseName}-${Date.now()}.${useExt}`;
 
             // request presigned URL (use the safe filename)
-            const presign = await getRequest(getAxiosInstance('/api'), `/api/upload_images?fileName=${encodeURIComponent(safeFileName)}&contentType=${encodeURIComponent(sanitized)}`);
+            const presign = await getRequest(
+                getAxiosInstance('/api'),
+                `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
+            );
             if (!presign || presign.status !== 'success' || !presign.url) {
                 throw new Error('Failed to get upload URL from server.');
             }

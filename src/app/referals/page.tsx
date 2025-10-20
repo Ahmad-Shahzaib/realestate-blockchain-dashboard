@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Copy, Mail, Users, Gift, CheckCircle, Facebook, Twitter, Linkedin } from "lucide-react";
+import { Copy, Mail, Users, Gift, CheckCircle, Facebook, Twitter, Linkedin, Search } from "lucide-react";
 import { toast } from "react-hot-toast";
 import ReferralService from "@/services/referal.service";
 import { useAppSelector } from "@/redux/hooks";
@@ -73,16 +73,7 @@ export default function ReferralPage() {
             <div className="max-w-7xl mx-auto px-6 py-8">
                 {/* Stats and Search */}
                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 dark:bg-dark-2">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <div className="flex-1 max-w-md">
-                            <SearchInput
-                                placeholder="Search by email..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                icon={<Mail className="h-5 w-5 text-[#34495E] dark:text-gray-3" />}
-                            />
-                        </div>
-                    </div>
+
 
                     {/* Referral Stats */}
                     <div className="grid gap-4 sm:grid-cols-3 mt-6">
@@ -188,13 +179,24 @@ export default function ReferralPage() {
                     </div>
                 </div>
 
+
                 {/* Referral List Table */}
                 <div className="bg-white rounded-2xl shadow-lg p-6 dark:bg-dark-2">
+
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-xl font-semibold text-[#2C3E50] dark:text-gray-2">
                             Referrals ({filteredReferrals.length})
                         </h2>
+                        <div className="flex-1 max-w-md">
+                            <SearchInput
+                                placeholder="Search by email..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                icon={<Search className="h-5 w-5 text-[#34495E] dark:text-gray-3" />}
+                            />
+                        </div>
                     </div>
+
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>

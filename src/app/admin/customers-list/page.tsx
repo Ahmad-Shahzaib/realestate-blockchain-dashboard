@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
@@ -78,6 +77,7 @@ interface UserProfile {
 
 const CustomerList = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
@@ -202,14 +202,23 @@ const CustomerList = () => {
     }));
   }, [customers]);
 
+  // Debounce the search term
   useEffect(() => {
-    dispatch(fetchCustomers({ page: currentPage, limit: itemsPerPage, search: searchTerm, status: filterStatus }));
-  }, [dispatch, currentPage, searchTerm, filterStatus]);
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    dispatch(fetchCustomers({ page: currentPage, limit: itemsPerPage, search: debouncedSearchTerm, status: filterStatus }));
+  }, [dispatch, currentPage, debouncedSearchTerm, filterStatus]);
 
   useEffect(() => {
     dispatch(resetPage());
     setCurrentPage(1);
-  }, [searchTerm, filterStatus, dispatch]);
+  }, [debouncedSearchTerm, filterStatus, dispatch]);
 
   useEffect(() => {
     if (pagination && currentPage > pagination.pages && pagination.pages > 0) {
@@ -247,7 +256,10 @@ const CustomerList = () => {
     const sanitized = file.type;
 
     try {
-      const presign = await getRequest(getAxiosInstance('/api'), `/api/upload_images?fileName=${encodeURIComponent(safeFileName)}&contentType=${encodeURIComponent(sanitized)}`);
+      const presign = await getRequest(
+        getAxiosInstance('/api'),
+        `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
+      );
 
 
       if (!presign || presign.status !== 'success' || !presign.url) {
@@ -437,9 +449,6 @@ const CustomerList = () => {
     }
   };
 
-  if (loading) return <div className="p-6 text-[#34495E] dark:text-gray-4">Loading...</div>;
-  if (error) return <div className="p-6 text-red-600 dark:text-red-400">{error}</div>;
-
   return (
     <div className="min-h-screen bg-[#F5F7FA] dark:bg-dark">
       <Toaster position="top-right" />
@@ -519,7 +528,19 @@ const CustomerList = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#ECF0F1] dark:divide-dark-4">
-                {normalizedCustomers.length > 0 ? (
+                {loading ? (
+                  <tr>
+                    <td colSpan={6} className="py-4 px-2 text-center text-[#34495E] dark:text-gray-4">
+                      Loading...
+                    </td>
+                  </tr>
+                ) : error ? (
+                  <tr>
+                    <td colSpan={6} className="py-4 px-2 text-center text-red-600 dark:text-red-400">
+                      {error}
+                    </td>
+                  </tr>
+                ) : normalizedCustomers.length > 0 ? (
                   normalizedCustomers.map((customer: Customer) => (
                     <tr key={customer.id} className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3 transition-colors">
                       <td className="py-4 px-2">
@@ -556,7 +577,7 @@ const CustomerList = () => {
                         </div>
                       </td>
                       <td className="py-4 px-2">
-                        <span className={`px - 3 py - 1 rounded - full text - xs font - semibold ${getStatusColor(customer.status)} `}>
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(customer.status)}`}>
                           {customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
                         </span>
                       </td>
@@ -604,8 +625,8 @@ const CustomerList = () => {
 
         {/* Edit Modal for Customer Details */}
         {isEditModalOpen && selectedCustomer && (
-          <div className="fixed inset-0  flex items-center justify-center z-50">
-            <div className="bg-white  dark:bg-dark-2 rounded-2xl shadow-lg p-6  relative h-[80vh] overflow-y-auto">
+          <div className="fixed inset-0  flex items-center justify-center z-50 ">
+            <div className="bg-white  dark:bg-dark-2 rounded-2xl shadow-lg p-6  relative h-[80vh] w-full max-w-4xl overflow-y-auto">
               <button
                 className="absolute top-4 right-4 text-[#34495E] dark:text-gray-3 hover:text-[#2C3E50] dark:hover:text-gray-2"
                 onClick={closeEditModal}

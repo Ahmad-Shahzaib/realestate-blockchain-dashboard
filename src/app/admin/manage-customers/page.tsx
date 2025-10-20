@@ -240,7 +240,10 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
     const sanitized = file.type;
 
     try {
-      const presign = await getRequest(getAxiosInstance('/api'), `/api/upload_images?fileName=${encodeURIComponent(safeFileName)}&contentType=${encodeURIComponent(sanitized)}`);
+      const presign = await getRequest(
+        getAxiosInstance('/api'),
+        `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
+      );
 
       if (!presign || presign.status !== 'success' || !presign.url) {
         toast.error(`Failed to get upload URL for ${safeFileName}`);

@@ -1,10 +1,11 @@
 import React from 'react';
 import { X, Mail, Phone, MapPin, Calendar, User, Briefcase, DollarSign, Shield, Wallet, AlertCircle } from 'lucide-react';
+import Button from '@/common/Button';
 
-const CustomerDetailsModal = ({selectedCustomer,setSelectedCustomer,onClose}:any) => {
-    console.log('Selected Customer:', selectedCustomer);
-  
-  const getStatusColor = (statu:any) => {
+const CustomerDetailsModal = ({ selectedCustomer, setSelectedCustomer, onClose }: any) => {
+  console.log('Selected Customer:', selectedCustomer);
+
+  const getStatusColor = (statu: any) => {
     switch (status?.toLowerCase()) {
       case 'approved':
       case 'active':
@@ -18,14 +19,14 @@ const CustomerDetailsModal = ({selectedCustomer,setSelectedCustomer,onClose}:any
     }
   };
 
-  const formatIncome = (income:any) => {
+  const formatIncome = (income: any) => {
     if (!income) return '—';
     return `$${income.replace('-', ' - $')}`;
   };
 
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 flex items-center justify-center top-12 z-50 p-4">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
         <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between z-10">
           <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">Customer Details</h2>
@@ -287,12 +288,12 @@ const CustomerDetailsModal = ({selectedCustomer,setSelectedCustomer,onClose}:any
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Customer ID: <span className="font-mono">{selectedCustomer.id}</span>
             </p>
-            <button
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            <Button
+              className="px-6 py-2 transition-colors font-medium"
               onClick={onClose}
             >
               Close
-            </button>
+            </Button>
           </div>
         </div>
       </div>

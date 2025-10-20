@@ -147,18 +147,18 @@ const Page = () => {
                 );
             },
         },
-        {
-            key: 'status',
-            label: 'Status',
-            render: (tx: Transaction) => {
-                const status = tx.status || "-";
-                return (
-                    <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(status)}`}>
-                        {status}
-                    </span>
-                );
-            },
-        },
+        // {
+        //     key: 'status',
+        //     label: 'Status',
+        //     render: (tx: Transaction) => {
+        //         const status = tx.status || "-";
+        //         return (
+        //             <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(status)}`}>
+        //                 {status}
+        //             </span>
+        //         );
+        //     },
+        // },
         {
             key: 'actions',
             label: 'Actions',
@@ -391,12 +391,12 @@ const Page = () => {
                                                 <p className="text-sm text-gray-500 dark:text-gray-400">Join Date</p>
                                                 <p className="font-medium text-gray-900 dark:text-white">{selectedLead.createdAt ? new Date(selectedLead.createdAt).toLocaleDateString() : '-'}</p>
                                             </div>
-                                            <div>
+                                            {/* <div>
                                                 <p className="text-sm text-gray-500 dark:text-gray-400">Status</p>
                                                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedLead.status)}`}>
                                                     {selectedLead.status || '-'}
                                                 </span>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                 </div>

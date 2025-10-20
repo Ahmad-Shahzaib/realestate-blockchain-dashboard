@@ -348,13 +348,13 @@ const page = () => {
       <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
         <h2 className="text-2xl font-bold mb-6">Developer Information</h2>
         <div className="flex items-start gap-6">
-          <div className="w-32 h-32 flex-shrink-0">
+          {/* <div className="w-32 h-32 flex-shrink-0">
             <img
               src={project.developer.logoUrl}
               alt={project.developer.name}
               className="w-full h-full object-contain rounded-lg bg-gray-50 p-2"
             />
-          </div>
+          </div> */}
           <div className="flex-grow">
             <h3 className="text-xl font-semibold mb-2">{project.developer.name}</h3>
             <p className="text-gray-600 mb-4">{project.developer.description}</p>

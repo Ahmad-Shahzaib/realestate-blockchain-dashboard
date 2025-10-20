@@ -165,7 +165,10 @@ export default function TransactionPage({ project, onNextClick }: TransactionPag
                 .substring(0, 50);
             const safeFileName = `${baseName}-${Date.now()}.${useExt}`;
 
-            const presign = await getRequest(getAxiosInstance('/api'), `/api/upload_images?fileName=${encodeURIComponent(safeFileName)}&contentType=${encodeURIComponent(sanitized)}`);
+            const presign = await getRequest(
+                getAxiosInstance('/api'),
+                `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
+            );
             if (!presign || presign.status !== 'success' || !presign.url) {
                 throw new Error('Failed to get upload URL from server.');
             }

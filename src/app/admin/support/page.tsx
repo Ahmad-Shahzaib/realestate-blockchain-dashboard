@@ -117,7 +117,7 @@ const SupportTicketManagement = () => {
                 <span className="truncate max-w-xs block">{row.description}</span>
             )
         },
-        { key: 'userName' as keyof ComponentSupportTicket, label: 'User Name' },
+        // { key: 'userName' as keyof ComponentSupportTicket, label: 'User Name' },
         { key: 'category' as keyof ComponentSupportTicket, label: 'Category' },
         {
             key: 'priority' as keyof ComponentSupportTicket,
@@ -181,16 +181,32 @@ const SupportTicketManagement = () => {
     ];
 
     const filteredTickets = useMemo(() => {
-        const term = searchTerm.toLowerCase().trim();
+        const query = searchTerm.trim().toLowerCase();
+
         return tickets.filter((ticket) => {
+            // Normalize all fields safely
+            const title = ticket?.title?.toLowerCase() || '';
+            const desc = ticket?.description?.toLowerCase() || '';
+            const user = ticket?.userName?.toLowerCase() || '';
+            const id = ticket?.id?.toLowerCase() || '';
+            const category = ticket?.category?.toLowerCase() || '';
+            const status = ticket?.status?.toLowerCase() || '';
+
+            // ✅ Search: checks multiple fields
             const matchesSearch =
-                ticket.title.toLowerCase().includes(term) ||
-                ticket.description.toLowerCase().includes(term) ||
-                ticket.userName.toLowerCase().includes(term) ||
-                ticket.id.toLowerCase().includes(term) ||
-                ticket.category.toLowerCase().includes(term);
+                query === '' ||
+                title.includes(query) ||
+                desc.includes(query) ||
+                user.includes(query) ||
+                id.includes(query) ||
+                category.includes(query) ||
+                status.includes(query);
+
+            // ✅ Filter: matches by status button
             const matchesFilter =
-                filterStatus === 'all' || ticket.status.toLowerCase() === filterStatus.toLowerCase();
+                filterStatus === 'all' ||
+                status === filterStatus.toLowerCase();
+
             return matchesSearch && matchesFilter;
         });
     }, [searchTerm, filterStatus, tickets]);
@@ -353,10 +369,10 @@ const SupportTicketManagement = () => {
                                 <p className="text-[#2C3E50] dark:text-gray-2 mt-1">{selectedTicket.description}</p>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
-                                <div>
+                                {/* <div>
                                     <label className="text-sm font-semibold text-[#34495E] dark:text-gray-3">User Name</label>
                                     <p className="text-[#2C3E50] dark:text-gray-2 mt-1">{selectedTicket.userName}</p>
-                                </div>
+                                </div> */}
                                 <div>
                                     <label className="text-sm font-semibold text-[#34495E] dark:text-gray-3">Category</label>
                                     <p className="text-[#2C3E50] dark:text-gray-2 mt-1">{selectedTicket.category}</p>

@@ -37,14 +37,27 @@ const Page = () => {
 
     const itemsPerPage = 10; // Matches API's default limit
 
+    // ✅ Search logic (fixed)
     const fetchProjects = async () => {
         try {
             setLoading(true);
-            const response: ApiResponse = await ProjectService.getAllProjects(currentPage, itemsPerPage, searchTerm);
+
+            // ✅ Pass searchTerm correctly to API
+            const response: ApiResponse = await ProjectService.getAllProjects(currentPage, itemsPerPage, searchTerm.trim());
 
             const projectData = Array.isArray(response.data) ? response.data : [response.data];
 
-            const formattedProjects: ComponentProject[] = projectData.map((project: ApiProject, index: number) => ({
+            // ✅ Apply local filtering as a fallback in case API search doesn't handle it
+            const filteredProjects = projectData.filter((project: ApiProject) => {
+                const title = project.name?.toLowerCase() || '';
+                const city = project.location?.city?.toLowerCase() || '';
+                const state = project.location?.state?.toLowerCase() || '';
+                const query = searchTerm.toLowerCase();
+
+                return title.includes(query) || city.includes(query) || state.includes(query);
+            });
+
+            const formattedProjects: ComponentProject[] = filteredProjects.map((project: ApiProject, index: number) => ({
                 id: project._id || `project-${index}`,
                 title: project.name || 'Unknown Project',
                 investment: project.totalInvestment || 0,
@@ -56,21 +69,29 @@ const Page = () => {
 
             setProjects(formattedProjects);
             setPagination(response.pagination || {
-                total: projectData.length,
+                total: formattedProjects.length,
                 page: 1,
                 limit: itemsPerPage,
-                pages: Math.ceil(projectData.length / itemsPerPage),
+                pages: Math.ceil(formattedProjects.length / itemsPerPage),
             });
             setError(null);
         } catch (err: any) {
             setError(err.message || 'Failed to fetch projects. Please try again later.');
-            console.error('Error fetching projects:', err);
             setProjects([]);
             setPagination(null);
         } finally {
             setLoading(false);
         }
     };
+
+    // ✅ Re-fetch projects when search term changes (with debounce)
+    useEffect(() => {
+        const delayDebounce = setTimeout(() => {
+            fetchProjects();
+        }, 400); // wait 400ms after user stops typing
+        return () => clearTimeout(delayDebounce);
+    }, [searchTerm, currentPage]);
+
 
     useEffect(() => {
         fetchProjects();
@@ -89,8 +110,8 @@ const Page = () => {
     }, [searchTerm]);
 
     const handleEdit = (project: ComponentProject) => {
-         router.push(`/admin/manage-properties/${project.id}`);
-    
+        router.push(`/admin/manage-properties/${project.id}`);
+
     };
 
     const handleViewDetails = (project: ComponentProject) => {
@@ -243,7 +264,7 @@ const Page = () => {
                                     {projects.length > 0 ? (
                                         projects.map((project) => (
                                             <tr
-                                               
+
                                                 key={project.id}
                                                 className="hover:bg-[#ECF0F1] dark:hover:bg-dark-3 transition-colors"
                                             >

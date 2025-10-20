@@ -4,6 +4,8 @@ import React, { useCallback, useRef, useState, useEffect } from "react";
 import { Upload, FileText, CheckCircle, XCircle, Clock } from "lucide-react";
 import Image from "next/image";
 import kycService from "@/services/kycService";
+import { getRequest } from "../utils/requests";
+import { getAxiosInstance } from "@/lib/axios";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_MIME = new Set(["image/png", "image/jpeg", "application/pdf"]);
@@ -126,7 +128,10 @@ export default function LegalInformation() {
                 const safeFileName = `${baseName}-${Date.now()}.${useExt}`;
 
                 // Get presigned URL from KYC service
-                const presign = await kycService.getKycUploadPresignedUrl(safeFileName, sanitized);
+                const presign = await getRequest(
+                    getAxiosInstance('/api'),
+                    `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
+                );
 
                 if (!presign || !presign.url) {
                     throw new Error("Failed to get upload URL from server.");
