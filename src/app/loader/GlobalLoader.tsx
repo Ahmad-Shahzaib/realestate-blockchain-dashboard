@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
-import { usePathname,useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function GlobalLoader() {
   const pathname = usePathname();
   const [loading, setLoading] = useState(false);
-   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    console.log("Pathname changed, showing loader:", pathname,isPending);
     setLoading(true);
     const timer = setTimeout(() => setLoading(false), 2000);
     return () => clearTimeout(timer);
