@@ -16,7 +16,8 @@ import { toast } from 'react-toastify'; // Optional: for notifications; replace 
 const Page = () => {
     const searchParams = useSearchParams();
     const userInfo: any = useSelector((state: RootState) => state.userInfo);
-    const customerId = userInfo?.user?._id || searchParams.get("customerId") || "";
+    console.log("UserInfo in Transactions Page:", userInfo);
+    const customerId = userInfo?.user?.id || searchParams.get("customerId") || "";
 
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");

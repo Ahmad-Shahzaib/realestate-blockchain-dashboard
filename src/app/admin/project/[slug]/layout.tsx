@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: PropsWithChildren) {
-    return children;
+     return <>{children}</>;
 }
