@@ -15,7 +15,7 @@ import { useAppSelector } from "@/redux/hooks";
 
 export function UserInfo() {
   const [isOpen, setIsOpen] = useState(false);
-  const userProfile = useAppSelector(state => state.userInfo.user);
+  const userProfile = useAppSelector((state) => state.userInfo.user);
   console.log("User profile from Redux:", userProfile);
 
   useEffect(() => {
@@ -34,7 +34,13 @@ export function UserInfo() {
     userProfile &&
     `${userProfile.firstName || ""} ${userProfile.lastName || ""}`.trim();
   const userEmail = userProfile?.email || defaultUser.email;
-  const userImage = defaultUser.img;
+
+  // ✅ Get profile image from Redux user object or fallback
+  const userImage =
+    userProfile?.profileImage ||
+    userProfile?.avatar ||
+    userProfile?.imageUrl ||
+    defaultUser.img;
 
   return (
     <Dropdown isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -44,8 +50,8 @@ export function UserInfo() {
         <figure className="flex items-center gap-3">
           <Image
             src={userImage}
-            className="size-12"
-            alt={`Avatar of ${displayName}`}
+            className="size-12 rounded-full object-cover"
+            alt={`Avatar of ${displayName || "User"}`}
             role="presentation"
             width={200}
             height={200}
@@ -72,8 +78,8 @@ export function UserInfo() {
         <figure className="flex items-center gap-2.5 px-5 py-3.5">
           <Image
             src={userImage}
-            className="size-12"
-            alt={`Avatar for ${displayName}`}
+            className="size-12 rounded-full object-cover"
+            alt={`Avatar for ${displayName || "User"}`}
             role="presentation"
             width={200}
             height={200}
@@ -84,47 +90,25 @@ export function UserInfo() {
               {displayName}
             </div>
 
-            <div className="leading-none text-gray-6">
-              {userEmail}
-            </div>
+            <div className="leading-none text-gray-6">{userEmail}</div>
           </figcaption>
         </figure>
 
         <hr className="border-[#E8E8E8] dark:border-dark-3" />
 
         <div className="p-2 text-base text-[#4B5563] dark:text-dark-6 [&>*]:cursor-pointer">
-         {/* {
-          userProfile?.role === "user" && (
-   <Link
-            href={"/profile"}
-            onClick={() => setIsOpen(false)}
-            className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
-          >
-            <UserIcon />
-
-            <span className="mr-auto text-base font-medium">
-              Active Investments
-            </span>
-          </Link>
-          )
-         } */}
-       
-          {
-          userProfile?.role !== "admin" && (
-   <Link
-            href={"/settings"}
-            onClick={() => setIsOpen(false)}
-            className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
-          >
-            <SettingsIcon />
-
-            <span className="mr-auto text-base font-medium">
-              Account Settings
-            </span>
-          </Link>
-          )
-          }
-       
+          {userProfile?.role !== "admin" && (
+            <Link
+              href={"/settings"}
+              onClick={() => setIsOpen(false)}
+              className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
+            >
+              <SettingsIcon />
+              <span className="mr-auto text-base font-medium">
+                Account Settings
+              </span>
+            </Link>
+          )}
         </div>
 
         <hr className="border-[#E8E8E8] dark:border-dark-3" />
