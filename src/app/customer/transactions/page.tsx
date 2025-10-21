@@ -1,5 +1,5 @@
 "use client";
-
+  import { ObjectId } from 'mongodb';
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Building2, MapPin, Calendar, Filter, Search, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
@@ -17,7 +17,7 @@ const Page = () => {
     const searchParams = useSearchParams();
     const userInfo: any = useSelector((state: RootState) => state.userInfo);
     console.log("UserInfo in Transactions Page:", userInfo);
-    const customerId = userInfo?.user?._id || searchParams.get("customerId") || userInfo?.user?.id;
+    const customerId = ObjectId.createFromHexString(userInfo?.user?._id || searchParams.get("customerId") || userInfo?.user?.id);
 
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
