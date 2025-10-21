@@ -6,6 +6,8 @@ import Image from "next/image";
 import kycService from "@/services/kycService";
 import { getRequest } from "../utils/requests";
 import { getAxiosInstance } from "@/lib/axios";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_MIME = new Set(["image/png", "image/jpeg", "application/pdf"]);
@@ -33,6 +35,11 @@ interface KycRecord {
 export default function LegalInformation() {
     const [kycRecord, setKycRecord] = useState<KycRecord | null>(null);
     const [uploadError, setUploadError] = useState<string | null>(null);
+    
+    const userInfo = useSelector((state: RootState) => state.userInfo);
+
+    const folderPath = `user/${userInfo.user?.id}/kyc`;
+
     const [isUploading, setIsUploading] = useState({
         passport: false,
         cnicFront: false,
@@ -128,10 +135,10 @@ export default function LegalInformation() {
                 const safeFileName = `${baseName}-${Date.now()}.${useExt}`;
 
                 // Get presigned URL from KYC service
-                const presign = await getRequest(
-                    getAxiosInstance('/api'),
-                    `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
-                );
+            const presign = await getRequest(
+             getAxiosInstance('/api'),
+             `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}&folder=${encodeURIComponent(folderPath)}`
+           );
 
                 if (!presign || !presign.url) {
                     throw new Error("Failed to get upload URL from server.");

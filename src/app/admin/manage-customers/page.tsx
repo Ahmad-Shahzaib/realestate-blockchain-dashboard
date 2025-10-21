@@ -231,12 +231,14 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
   const handleFileUpload = async (file: File, purpose: string): Promise<string | null> => {
     const safeFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
     const sanitized = file.type;
+    const folderPath = `developer/customers/profile_pictures`;
+
 
     try {
-      const presign = await getRequest(
-        getAxiosInstance('/api'),
-        `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
-      );
+         const presign = await getRequest(
+             getAxiosInstance('/api'),
+             `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}&folder=${encodeURIComponent(folderPath)}`
+           );
 
       if (!presign || presign.status !== 'success' || !presign.url) {
         toast.error(`Failed to get upload URL for ${safeFileName}`);

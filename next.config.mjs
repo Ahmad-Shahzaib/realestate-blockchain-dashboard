@@ -1,40 +1,36 @@
-/** @type {import("next").NextConfig} */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Disable TypeScript type checking
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-   experimental: {
-    appDir: true
-  },
-  // Disable ESLint
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  typescript: { ignoreBuildErrors: true },
+  eslint: { ignoreDuringBuilds: true },
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "cdn.sanity.io",
-        port: ""
+        protocol: 'https',
+        hostname: 'cdn.sanity.io',
+        pathname: '**',
       },
       {
-        protocol: "https",
-        hostname: "lh3.googleusercontent.com",
-        port: ""
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        pathname: '**',
       },
       {
-        protocol: "https",
-        hostname: "avatars.githubusercontent.com",
-        port: ""
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+        pathname: '**',
       },
       {
-        protocol: "https",
-        hostname: "pub-b7fd9c30cdbf439183b75041f5f71b92.r2.dev",
-        port: ""
-      }
-    ]
-  }
+        protocol: 'https',
+        hostname: 'pub-b7fd9c30cdbf439183b75041f5f71b92.r2.dev',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'fractprop.s3.eu-north-1.amazonaws.com',
+        pathname: '**',
+      },
+    ],
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

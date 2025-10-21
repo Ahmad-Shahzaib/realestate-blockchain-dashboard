@@ -90,6 +90,8 @@ interface FormState {
     }
 }
 
+const folderPath = `projects/globe_residency`;
+
 
 function useGlobeResidencyForm(project?: any, rawSlug?: string) {
     console.log("Initializing GlobeResidencyForm with project:", project, "and rawSlug:", rawSlug);
@@ -286,8 +288,9 @@ function useGlobeResidencyForm(project?: any, rawSlug?: string) {
         try {
             const presign = await getRequest(
                 getAxiosInstance('/api'),
-                `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
+                `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}&folder=${encodeURIComponent(folderPath)}`
             );
+
 
 
 
@@ -331,8 +334,9 @@ function useGlobeResidencyForm(project?: any, rawSlug?: string) {
                 // Get presigned URL
                 const presign = await getRequest(
                     getAxiosInstance('/api'),
-                    `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
+                    `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}&folder=${encodeURIComponent(folderPath)}`
                 );
+
 
                 if (!presign || presign.status !== 'success' || !presign.url) {
                     throw new Error(`Failed to get upload URL for ${safeFileName}`);
@@ -1487,8 +1491,9 @@ export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
                                                         // Get presigned URL
                                                         const presign = await getRequest(
                                                             getAxiosInstance('/api'),
-                                                            `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
+                                                            `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}&folder=${encodeURIComponent(folderPath)}`
                                                         );
+
 
                                                         if (!presign || presign.status !== 'success' || !presign.url) {
                                                             toast.error(`Failed to get upload URL for ${safeFileName}`);

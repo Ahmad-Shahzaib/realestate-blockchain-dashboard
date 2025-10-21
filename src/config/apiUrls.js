@@ -1,7 +1,7 @@
 // config/apiUrls.js
 // config/apiUrls.js
-export const BASE_URL = "https://api.fractprop.com/api";
-export const BASE_URL_NO_API = "https://api.fractprop.com";
+export const BASE_URL = "http://localhost:5000/api";
+export const BASE_URL_NO_API = "http://localhost:5000";
 
 export const API_URLS = {
     CUSTOMER: `${BASE_URL}/register`,

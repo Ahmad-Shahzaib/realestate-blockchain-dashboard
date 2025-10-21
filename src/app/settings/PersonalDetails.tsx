@@ -32,7 +32,7 @@ const ALLOWED_EXT = new Set(["png", "jpg", "jpeg"]);
 export default function PersonalDetails() {
     const dispatch = useDispatch();
     const userInfo = useSelector((state: RootState) => state.userInfo);
-
+    console.log("user_info:", userInfo);
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState(() => ({
         name: "",
@@ -166,6 +166,7 @@ export default function PersonalDetails() {
 
     // File upload handler separated for readability and testability
     const handleFileSelect = useCallback(async (file: File | null) => {
+        const folderPath = `user/${userInfo.user?.id}`;
         setUploadError(null);
         if (!file) return;
 
@@ -219,10 +220,10 @@ export default function PersonalDetails() {
             const safeFileName = `${baseName}-${Date.now()}.${useExt}`;
 
             // request presigned URL (use the safe filename)
-            const presign = await getRequest(
-                getAxiosInstance('/api'),
-                `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
-            );
+          const presign = await getRequest(
+  getAxiosInstance('/api'),
+  `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}&folder=${encodeURIComponent(folderPath)}`
+);
             if (!presign || presign.status !== 'success' || !presign.url) {
                 throw new Error('Failed to get upload URL from server.');
             }
@@ -321,7 +322,7 @@ export default function PersonalDetails() {
                             <label className="block text-sm font-semibold mb-1 text-[#003049] dark:text-gray-200">Photo</label>
                             <div className="flex items-center gap-3">
                                 <div className="relative">
-                                    <Image src={
+                                    <Image unoptimized src={
                                         formData.imageUrl || '/images/user.png'} alt="Profile" width={40} height={40} className="rounded-full" />
                                     {isUploadingImage && (
                                         <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-full">

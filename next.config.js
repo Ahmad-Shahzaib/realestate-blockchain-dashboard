@@ -26,10 +26,11 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'pub-b7fd9c30cdbf439183b75041f5f71b92.r2.dev',
       },
-        {
-          protocol: 'https',
-          hostname: 'fractprop.s3.eu-north-1.amazonaws.com',
-        },
+       {
+        protocol: 'https',
+        hostname: 'fractprop.s3.eu-north-1.amazonaws.com',
+        pathname: '**',
+      },
     ],
   },
 };

@@ -10,6 +10,8 @@ import { getRequest } from "@/app/utils/requests";
 import { getAxiosInstance } from "@/lib/axios";
 import Image from "next/image";
 import { createPayment, Payment } from "@/services/payment.service";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 interface BankDetails {
     accountTitle: string;
@@ -57,6 +59,7 @@ export default function TransactionPage({ project, onNextClick }: TransactionPag
     const [uploadedFileUrl, setUploadedFileUrl] = useState<string>("");
     const searchParams = useSearchParams();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const userInfo = useSelector((state: RootState) => state.userInfo);
 
     // Read query params
     const transactionId = searchParams.get("_id");
@@ -119,6 +122,7 @@ export default function TransactionPage({ project, onNextClick }: TransactionPag
     }, [transactionId, projectId]);
 
     const handleFileSelect = useCallback(async (file: File | null) => {
+         const folderPath = `user/${userInfo.user?._id}/payment`;
         setUploadError(null);
         if (!file) return;
 
@@ -143,6 +147,7 @@ export default function TransactionPage({ project, onNextClick }: TransactionPag
             return;
         }
 
+
         setIsUploadingFile(true);
         try {
             const sanitizeType = (t: string | undefined) => {
@@ -165,10 +170,10 @@ export default function TransactionPage({ project, onNextClick }: TransactionPag
                 .substring(0, 50);
             const safeFileName = `${baseName}-${Date.now()}.${useExt}`;
 
-            const presign = await getRequest(
-                getAxiosInstance('/api'),
-                `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
-            );
+                    const presign = await getRequest(
+             getAxiosInstance('/api'),
+             `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}&folder=${encodeURIComponent(folderPath)}`
+           );
             if (!presign || presign.status !== 'success' || !presign.url) {
                 throw new Error('Failed to get upload URL from server.');
             }
