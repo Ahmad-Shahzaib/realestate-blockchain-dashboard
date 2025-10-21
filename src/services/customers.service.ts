@@ -1,10 +1,10 @@
-const API_BASE = process.env.API_BASE_URL || "https://api.fractprop.com/api";
+import { BASE_URL } from "@/config/apiUrls";
 
 export async function apiRequest(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<any> {
-  const base = API_BASE.replace(/\/$/, "");
+  const base = BASE_URL.replace(/\/$/, "");
   const url = `${base}${endpoint}`;
 
   // Get token (adjust according to your auth storage strategy)

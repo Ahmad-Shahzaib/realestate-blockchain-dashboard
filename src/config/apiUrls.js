@@ -1,7 +1,6 @@
 // config/apiUrls.js
-// const BASE_URL = process.env.API_BASE_URL || "https://api.fractprop.com/api";
 // config/apiUrls.js
-export const BASE_URL = process.env.API_BASE_URL || "https://api.fractprop.com/api";
+export const BASE_URL = "https://api.fractprop.com/api";
 
 export const API_URLS = {
     CUSTOMER: `${BASE_URL}/register`,

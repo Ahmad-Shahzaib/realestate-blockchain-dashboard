@@ -755,3 +755,5 @@ const ApiProjects = [
     }
 ];
 export default ApiProjects;
+
+export const BASE_URL = "https://api.fractprop.com";
