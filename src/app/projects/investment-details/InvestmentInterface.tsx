@@ -315,7 +315,7 @@ export default function TransactionPage({ project, onNextClick }: TransactionPag
         try {
             const paymentData: Partial<Payment> = {
                 transactionId: idToUse,
-                paymentType: "bank",
+                paymentType: "online",
                 paymentSlip: uploadedFileUrl,
                 amount: transaction?.totalPrice || 0,
                 bankName,
