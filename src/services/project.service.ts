@@ -127,6 +127,17 @@ api.interceptors.request.use(
       config.headers['Authorization'] = `Bearer ${token}`;
     }
     console.log('Request sent:', (config.method ?? 'GET').toUpperCase(), config.url, config);
+      const fullUrl = `${config.baseURL || ''}${config.url || ''}`;
+
+    console.log(
+      '🔹 [REQUEST]',
+      (config.method ?? 'GET').toUpperCase(),
+      fullUrl,
+      '\nHeaders:',
+      config.headers,
+      '\nData:',
+      config.data ?? '(no body)'
+    );
     return config;
   },
   (error: AxiosError) => {
