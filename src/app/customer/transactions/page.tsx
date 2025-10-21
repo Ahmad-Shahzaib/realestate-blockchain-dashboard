@@ -17,7 +17,7 @@ const Page = () => {
     const searchParams = useSearchParams();
     const userInfo: any = useSelector((state: RootState) => state.userInfo);
     console.log("UserInfo in Transactions Page:", userInfo);
-    const customerId = userInfo?.user?.id || searchParams.get("customerId") || "";
+    const customerId = userInfo?.user?._id || searchParams.get("customerId") || userInfo?.user?.id;
 
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
