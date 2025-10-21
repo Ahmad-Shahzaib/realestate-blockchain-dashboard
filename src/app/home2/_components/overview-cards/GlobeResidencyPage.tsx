@@ -58,7 +58,7 @@ interface FormState {
     developerName: string;
     developerWebsite: string;
     developerDescription: string;
-    developerLogo: string;
+    // developerLogo: string;
     projectStatus: string;
     startDate: string;
     completionDate: string;
@@ -110,7 +110,7 @@ function useGlobeResidencyForm(project?: any, rawSlug?: string) {
         developerName: "",
         developerWebsite: "",
         developerDescription: "",
-        developerLogo: "",
+        // developerLogo: "",
         projectStatus: "",
         startDate: "",
         completionDate: "",
@@ -205,7 +205,7 @@ function useGlobeResidencyForm(project?: any, rawSlug?: string) {
             developerName: project.developer?.name || initialFormState.developerName,
             developerWebsite: project.developer?.website || initialFormState.developerWebsite,
             developerDescription: project.developer?.description || initialFormState.developerDescription,
-            developerLogo: project.developer?.logoUrl || initialFormState.developerLogo,
+            // developerLogo: project.developer?.logoUrl || initialFormState.developerLogo,
             projectStatus: project.status || initialFormState.projectStatus,
             category: project.category || initialFormState.category,
             subcategory: project.subcategory || initialFormState.subcategory,
@@ -284,10 +284,10 @@ function useGlobeResidencyForm(project?: any, rawSlug?: string) {
         console.log("Uploading file:", safeFileName, "of type:", sanitized, "for purpose:", purpose);
 
         try {
-                const presign = await getRequest(
+            const presign = await getRequest(
                 getAxiosInstance('/api'),
                 `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
-                );
+            );
 
 
 
@@ -329,9 +329,9 @@ function useGlobeResidencyForm(project?: any, rawSlug?: string) {
                 const sanitized = file.type;
 
                 // Get presigned URL
-               const presign = await getRequest(
-                getAxiosInstance('/api'),
-                `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
+                const presign = await getRequest(
+                    getAxiosInstance('/api'),
+                    `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
                 );
 
                 if (!presign || presign.status !== 'success' || !presign.url) {
@@ -393,7 +393,7 @@ function useGlobeResidencyForm(project?: any, rawSlug?: string) {
         if (!form.developerName) errs.developerName = "Developer name is required.";
         if (!form.developerWebsite) errs.developerWebsite = "Developer website is required.";
         if (!form.developerDescription) errs.developerDescription = "Developer description is required.";
-        if (!form.developerLogo) errs.developerLogo = "Developer logo URL is required.";
+        // if (!form.developerLogo) errs.developerLogo = "Developer logo URL is required.";
 
         // timeline
         if (!form.projectStatus) errs.projectStatus = "Project status is required.";
@@ -445,10 +445,15 @@ function useGlobeResidencyForm(project?: any, rawSlug?: string) {
             if (!q.answer) errs[`faq-${idx}-answer`] = "FAQ answer is required.";
         });
 
-        // documents
+        // documents should be optional, no validation
         documents.forEach((d, idx) => {
-            if (!d) errs[`document-${idx}`] = "Document URL or file is required.";
+
+            if (d && typeof d !== "string") {
+                errs[`document-${idx}`] = "Invalid document format.";
+            }
         });
+
+
 
         setValidationErrors(errs);
     }, [
@@ -570,6 +575,8 @@ function useGlobeResidencyForm(project?: any, rawSlug?: string) {
         setForm(initialFormState);
         setFloors([initialFloor]);
         setFaqs([{ question: "", answer: "" }]);
+        // image uploads shuold reset
+        setSelectedGalleryImages([]);
         setDocuments([""]);
         setError(null);
         setLoading(false);
@@ -624,7 +631,7 @@ function useGlobeResidencyForm(project?: any, rawSlug?: string) {
                         // totalInvestment: Number(form.totalInvestment) || 0,
                         coordinates: { latitude: Number(form.latitude) || 0, longitude: Number(form.longitude) || 0 },
                     },
-                    developer: { name: form.developerName, description: form.developerDescription, logoUrl: form.developerLogo, website: form.developerWebsite },
+                    developer: { name: form.developerName, description: form.developerDescription, website: form.developerWebsite },
                     status: form.projectStatus || "planning",
                     category: form.category || "residential",
                     subcategory: form.subcategory,
@@ -788,7 +795,7 @@ export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
             <div className="max-w-6xl mx-auto">
                 <div className="text-left mb-8">
                     <div className="gap-3 mb-4">
-                        <h1 className="text-4xl font-bold text-left text-black dark:text-white">{rawSlug ? "Add Project" : "Edit Project"}</h1>
+                        <h1 className="text-4xl font-bold text-left text-black dark:text-white">{rawSlug ? "Edit Project" : "Add Project"}</h1>
                     </div>
                 </div>
                 <form className="space-y-8" onSubmit={handleSubmit} autoComplete="off" noValidate>
@@ -808,7 +815,7 @@ export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
                                 </label>
                                 <input
                                     id="propertyName"
-                                    placeholder="Luxury Towers"
+                                    placeholder=""
                                     className={`w-full p-2 border rounded outline-none  dark:bg-dark ${touched.propertyName && validationErrors.propertyName ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
                                     value={form.propertyName}
                                     onChange={handleChange}
@@ -929,7 +936,7 @@ export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
                                 </label>
                                 <textarea
                                     id="description"
-                                    placeholder="Premium residential towers with world-class amenities..."
+                                    placeholder=" "
                                     rows={3}
                                     className={`w-full p-2 border rounded outline-none dark:bg-dark  ${touched.description && validationErrors.description ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500'}`}
                                     value={form.description}
@@ -974,7 +981,7 @@ export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
                                 </label>
                                 <input
                                     id="city"
-                                    placeholder="New York"
+                                    placeholder="Lahore"
                                     className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.city && validationErrors.city ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500'}`}
                                     value={form.city}
                                     onChange={handleChange}
@@ -990,7 +997,7 @@ export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
                                 </label>
                                 <input
                                     id="state"
-                                    placeholder="NY"
+                                    placeholder=""
                                     className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.state && validationErrors.state ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500'}`}
                                     value={form.state}
                                     onChange={handleChange}
@@ -1006,7 +1013,7 @@ export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
                                 </label>
                                 <input
                                     id="country"
-                                    placeholder="USA"
+                                    placeholder="Pakistan"
                                     className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.country && validationErrors.country ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500'}`}
                                     value={form.country}
                                     onChange={handleChange}
@@ -1070,7 +1077,7 @@ export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
                                 </label>
                                 <input
                                     id="developerName"
-                                    placeholder="Prestige Developers"
+                                    placeholder=" "
                                     className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.developerName && validationErrors.developerName ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500'}`}
                                     value={form.developerName}
                                     onChange={handleChange}
@@ -1103,7 +1110,7 @@ export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
                                 </label>
                                 <textarea
                                     id="developerDescription"
-                                    placeholder="Leading luxury real estate developer..."
+                                    placeholder=" "
                                     rows={3}
                                     className={`w-full p-2 border rounded outline-none dark:bg-dark   ${touched.developerDescription && validationErrors.developerDescription ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500'}`}
                                     value={form.developerDescription}
@@ -1114,7 +1121,7 @@ export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
                                     <div className="text-sm text-red-600 mt-1">{validationErrors.developerDescription}</div>
                                 )}
                             </div>
-                            <div className="space-y-2">
+                            {/* <div className="space-y-2">
                                 <label htmlFor="developerLogo" className="text-sm font-semibold dark:text-white">
                                     * Logo URL
                                 </label>
@@ -1130,7 +1137,7 @@ export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
                                 {touched.developerLogo && validationErrors.developerLogo && (
                                     <div className="text-sm text-red-600 mt-1">{validationErrors.developerLogo}</div>
                                 )}
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
@@ -1478,10 +1485,10 @@ export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
 
                                                     try {
                                                         // Get presigned URL
-   const presign = await getRequest(
-                getAxiosInstance('/api'),
-                `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
-                );
+                                                        const presign = await getRequest(
+                                                            getAxiosInstance('/api'),
+                                                            `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
+                                                        );
 
                                                         if (!presign || presign.status !== 'success' || !presign.url) {
                                                             toast.error(`Failed to get upload URL for ${safeFileName}`);
@@ -2055,14 +2062,14 @@ export default function GlobeResidencyForm(project?: any, rawSlug?: string) {
                     <div className="backdrop-blur-sm rounded-lg shadow-lg border mt-8">
                         <div className="dark:text-white rounded-t-lg p-4">
                             <h2 className="flex items-center gap-2 text-lg font-semibold">
-                                * Documents
+                                Documents
                             </h2>
                         </div>
                         <div className="p-6 space-y-6">
                             {documents.map((doc, idx) => (
                                 <div key={idx} className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
                                     <div className="flex-1 space-y-2">
-                                        <label className="text-sm font-semibold dark:text-white">* Document Upload</label>
+                                        <label className="text-sm font-semibold dark:text-white"> Document Upload</label>
                                         <div className="flex flex-col gap-2">
                                             <input
                                                 type="file"

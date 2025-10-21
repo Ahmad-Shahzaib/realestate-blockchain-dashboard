@@ -169,14 +169,7 @@ const Dashboard = () => {
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#003049] dark:text-gray-2">FractProp Dashboard</h1>
               <p className="mt-2 text-lg text-gray-700 dark:text-gray-4">Manage your tokenized real estate investments</p>
             </div>
-            <div className="relative ">
-              <SearchInput
-                placeholder="Search by property name or location"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                icon={<Search className="h-5 w-5 text-[#34495E] dark:text-gray-3" />}
-              />
-            </div>
+
           </div>
 
           {/* 🟢 commit: statistic cards grid */}

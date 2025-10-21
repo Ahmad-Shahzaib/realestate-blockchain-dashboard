@@ -1,5 +1,5 @@
 "use client";
-  import { ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Building2, MapPin, Calendar, Filter, Search, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
@@ -47,12 +47,14 @@ const Page = () => {
     const filteredTransactions = useMemo(() => {
         const search = searchQuery.trim().toLowerCase();
         return safeTransactions.filter((transaction) => {
-            const propertyName = transaction?.propertyName || "";
-            const status = transaction?.status || "";
+            const propertyName = (transaction?.propertyName || "").toLowerCase();
+            const status = (transaction?.status || "").toLowerCase();
             const matchesSearch =
-                propertyName.toLowerCase().includes(search) ||
-                status.toLowerCase().includes(search);
-            const matchesStatus = statusFilter === "All" || status === statusFilter;
+                propertyName.includes(search) ||
+                status.includes(search);
+            const matchesStatus =
+                statusFilter.toLowerCase() === "all" ||
+                status === statusFilter.toLowerCase();
             return matchesSearch && matchesStatus;
         });
     }, [safeTransactions, searchQuery, statusFilter]);
@@ -230,16 +232,16 @@ const Page = () => {
                                     label: 'Status',
                                     render: (row: any) => (
                                         <span
-                                            className={`px-3 py-1 rounded-full text-xs font-semibold ${row.status === "Completed"
+                                            className={`px-3 py-1 rounded-full text-xs font-semibold ${row.status === "completed"
                                                 ? "bg-[#E8F8F5] text-[#27AE60] dark:bg-green-600/20 dark:text-green-400"
-                                                : row.status === "Pending"
-                                                    ? "bg-[#E8F8F5] text-[#3498DB] dark:bg-blue-600/20 dark:text-blue-400"
+                                                : row.status === "pending"
+                                                    ? "bg-[#E8F8F5] text-red dark:bg-blue-600/20 dark:text-blue-400"
                                                     : "bg-[#F5F7FA] text-red-600 dark:bg-dark-3 dark:text-red-400"
                                                 }`}
                                         >
                                             {row.status}
                                         </span>
-                                    ),
+                                    )
                                 },
                                 {
                                     key: 'createdAt',

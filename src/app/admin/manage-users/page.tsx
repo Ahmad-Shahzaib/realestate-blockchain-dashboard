@@ -213,7 +213,7 @@ const ManageUsers = () => {
                                         <th className="text-left py-4 px-2">Name</th>
                                         <th className="text-left py-4 px-2">Email</th>
                                         <th className="text-left py-4 px-2">Join Date</th>
-                                        <th className="text-left py-4 px-2">Kyc</th>
+                                        <th className="text-left py-4 px-2">Kyc Status </th>
                                         <th className="text-left py-4 px-2">Actions</th>
                                     </tr>
                                 </thead>

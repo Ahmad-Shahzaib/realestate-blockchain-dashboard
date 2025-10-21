@@ -91,8 +91,6 @@ const CustomerList = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  console.log("selectedCustomer", selectedCustomer)
-
   const dispatch = useAppDispatch();
   const { customers, pagination, loading, error } = useAppSelector((state) => state.customer || {
     customers: [],
@@ -137,7 +135,6 @@ const CustomerList = () => {
       riskTolerance: (v: string | undefined) => (v ? null : 'Risk tolerance is required'),
       kycStatus: (v: string | undefined) => (v ? null : 'KYC status is required'),
       amlStatus: (v: string | undefined) => (v ? null : 'AML status is required'),
-
       referralCode: (v: string | undefined) => null, // Optional
       emergencyContactName: (v: string | undefined) => (v && v.trim() ? null : 'Emergency contact name is required'),
       emergencyContactPhone: (v: string | undefined) => (v && v.trim() ? null : 'Emergency contact phone is required'),
@@ -166,10 +163,10 @@ const CustomerList = () => {
     return true;
   }, [editFormData, isUploading]);
 
-  // Normalize customer data
+  // Normalize and filter customer data
   const normalizedCustomers = useMemo(() => {
     const safeCustomers = Array.isArray(customers) ? customers : [];
-    return safeCustomers.map((c: any) => ({
+    const normalized = safeCustomers.map((c: any) => ({
       id: c._id || c.id,
       firstName: c.firstName || '',
       lastName: c.lastName || '',
@@ -200,7 +197,13 @@ const CustomerList = () => {
       emergencyContactRelation: c.emergencyContactRelation || null,
       notes: c.notes || null,
     }));
-  }, [customers]);
+
+    // Apply status filter
+    return normalized.filter((customer: Customer) => {
+      if (filterStatus === 'all') return true;
+      return customer.status?.toLowerCase() === filterStatus;
+    });
+  }, [customers, filterStatus]);
 
   // Debounce the search term
   useEffect(() => {
@@ -261,7 +264,6 @@ const CustomerList = () => {
         `/api/upload_images?filename=${encodeURIComponent(safeFileName)}&mimetype=${encodeURIComponent(sanitized)}`
       );
 
-
       if (!presign || presign.status !== 'success' || !presign.url) {
         toast.error(`Failed to get upload URL for ${safeFileName}`);
         return null;
@@ -321,7 +323,6 @@ const CustomerList = () => {
       email: customer.email || '',
       phoneNumber: customer.phoneNumber || '',
       address: customer.address || '',
-      // status: customer.status || 'pending',
       dateOfBirth: customer.dateOfBirth || '',
       gender: customer.gender || '',
       nationality: customer.nationality || '',
@@ -395,6 +396,7 @@ const CustomerList = () => {
       // Build full name for payload
       const fullName = `${editFormData.firstName || ''} ${editFormData.lastName || ''} `.trim();
 
+      // Create the payload with the profile picture
       const payload: Partial<UserProfile> & { name?: string; role?: string } = {
         firstName: editFormData.firstName,
         lastName: editFormData.lastName,
@@ -422,28 +424,34 @@ const CustomerList = () => {
         emergencyContactPhone: editFormData.emergencyContactPhone,
         emergencyContactRelation: editFormData.emergencyContactRelation,
         notes: editFormData.notes,
-        profilePicture: editFormData.profilePicture || selectedCustomer.profilePicture || 'https://blog.photofeeler.com/wp-content/uploads/2017/09/instagram-profile-picture-maker.jpg',
         name: fullName,
         role: 'customer',
       };
 
+      // Add profile picture to payload if it exists
+      if (editFormData.profilePicture) {
+        payload.profilePicture = editFormData.profilePicture;
+      }
+
       await updateUserByAdmin(selectedCustomer.id, payload);
-      // Update the local customer list to reflect changes immediately
-      const updatedCustomer = {
-        ...selectedCustomer,
-        ...payload,
-        phoneNumber: payload.phoneNumber || selectedCustomer.phoneNumber,
-        address: payload.address || selectedCustomer.address,
-        profilePicture: payload.profilePicture || selectedCustomer.profilePicture,
-      };
-      // Dispatch action to refresh the customer list
+
+      // Refresh the customer list
       dispatch(fetchCustomers({ page: currentPage, limit: itemsPerPage, search: searchTerm, status: filterStatus }));
-      setSelectedCustomer(updatedCustomer); // Update selected customer for view modal
+
       toast.success('Customer updated successfully');
       closeEditModal();
-    } catch (error) {
+    } catch (error: any) {
       setSubmitError('Failed to update customer. Please try again.');
       console.error('Update error:', error);
+
+      // Show more detailed error message if available
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else if (error.message) {
+        toast.error(error.message);
+      } else {
+        toast.error('Failed to update customer. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -480,7 +488,7 @@ const CustomerList = () => {
             <div className="flex items-center space-x-4">
               <Filter className="h-5 w-5 text-[#34495E] dark:text-gray-3" />
               <div className="flex bg-[#ECF0F1] dark:bg-dark-3 rounded-lg p-1">
-                {['All', 'Active', 'Pending', 'Inactive'].map((status) => (
+                {['All', 'Pending', 'Approved', 'Rejected'].map((status) => (
                   <button
                     key={status}
                     onClick={() => setFilterStatus(status.toLowerCase())}
@@ -500,7 +508,7 @@ const CustomerList = () => {
         <div className="bg-white rounded-2xl shadow-lg p-6 dark:bg-dark-2">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-[#2C3E50] dark:text-gray-2">
-              Customers ({pagination?.total || 0})
+              Customers ({pagination?.total || normalizedCustomers.length})
             </h2>
           </div>
           <div className="overflow-x-auto">
@@ -517,7 +525,7 @@ const CustomerList = () => {
                     Address
                   </th>
                   <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
-                    Status
+                    KYC Status
                   </th>
                   <th className="text-left py-4 px-2 text-sm font-semibold text-[#34495E] dark:text-gray-3 uppercase tracking-wide">
                     Join Date
@@ -884,7 +892,6 @@ const CustomerList = () => {
                     </select>
                     {errors.riskTolerance && <p className="text-red-600 dark:text-red-400 text-sm mt-1">{errors.riskTolerance}</p>}
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-[#34495E] dark:text-gray-3">Referral Code</label>
                     <input
@@ -1038,7 +1045,7 @@ const CustomerList = () => {
           </div>
         )}
 
-        {pagination && pagination.total > 0 && (
+        {pagination && normalizedCustomers.length > 0 && (
           <div className="flex items-center justify-between mt-6">
             <p className="text-sm text-[#34495E] dark:text-gray-3">
               Showing <span className="font-medium">{(pagination.page - 1) * pagination.limit + 1}</span> to{' '}

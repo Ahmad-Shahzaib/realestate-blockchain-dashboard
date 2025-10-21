@@ -44,7 +44,7 @@ interface FormSectionProps {
 interface InputFieldProps {
   label: string;
   name: string;
-  type?: 'text' | 'email' | 'tel' | 'date' | 'select' | 'textarea' | 'file' | 'password';
+  type?: 'text' | 'email' | 'tel' | 'date' | 'select' | 'textarea' | 'file' | 'password' | 'number';
   required?: boolean;
   placeholder?: string;
   icon?: typeof LucideIcon;
@@ -85,9 +85,6 @@ const InputFieldInner: React.FC<InputFieldProps> = ({
   previewUrl,
   setPreviewUrl
 }) => {
-  // local state for preview URL when handling file inputs
-
-
   return (
     <div className="space-y-2">
       <label className="text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2">
@@ -155,15 +152,12 @@ const InputFieldInner: React.FC<InputFieldProps> = ({
             <Camera className="w-5 h-5" />
             Choose profile picture...
           </label>
-
-          {/* image preview + inline error below preview */}
           <div className="mt-3 flex items-center gap-4">
             {previewUrl ? (
               <img src={previewUrl} alt="preview" className="w-20 h-20 object-cover rounded-full border" />
             ) : (
               <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800/40 border flex items-center justify-center text-slate-400">No image</div>
             )}
-            {/* keep space for error message under image */}
           </div>
           {error && <p id={`${name}-error`} className="text-sm text-red-500 mt-2">{error}</p>}
         </div>
@@ -192,7 +186,6 @@ const InputFieldInner: React.FC<InputFieldProps> = ({
   );
 };
 
-// memoized wrapper to avoid unnecessary re-renders
 const InputField = React.memo(InputFieldInner);
 
 const initialFormState = {
@@ -234,7 +227,7 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
   const { loading, error } = useAppSelector(state => state.customer || { loading: false, error: null });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  // Function to handle file uploads
+
   const handleFileUpload = async (file: File, purpose: string): Promise<string | null> => {
     const safeFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
     const sanitized = file.type;
@@ -261,7 +254,6 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
         return null;
       }
 
-
       const publicUrl = presign.url.split('?')[0];
       setPreviewUrl(publicUrl);
       toast.success(`Successfully uploaded ${purpose}`);
@@ -272,7 +264,6 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
     }
   };
 
-  // Handle profile picture upload
   const handleProfilePictureChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -291,7 +282,6 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
     }
   };
 
-  // Basic validators
   const validators = useMemo(() => ({
     firstName: (v: string) => v.trim() ? null : 'First name is required',
     lastName: (v: string) => v.trim() ? null : 'Last name is required',
@@ -299,39 +289,45 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
     phone: (v: string) => {
       if (!v || !String(v).trim()) return 'Phone number is required';
       const digits = String(v).replace(/\D/g, '');
-      if (digits.length < 10) return 'Enter a valid phone number (at least 10 digits)';
       if (!/^\d+$/.test(digits)) return 'Phone number must contain only digits';
+      if (digits.length < 10 || digits.length > 15) return 'Phone number must be 10-15 digits';
       return null;
     },
     dateOfBirth: (v: string) => v ? null : 'Date of birth is required',
     gender: (v: string) => v ? null : 'Gender is required',
-    nationality: (v: string) => v ? null : 'Nationality is required',
-    primaryAddress: (v: string) => v ? null : 'Primary address is required',
+    nationality: (v: string) => v.trim() ? null : 'Nationality is required',
+    primaryAddress: (v: string) => v.trim() ? null : 'Primary address is required',
+    secondaryAddress: (v: string) => v.trim() ? null : 'Secondary address is required',
     nationalId: (v: string) => {
       if (!v || !String(v).trim()) return 'National ID or Passport number is required';
       const digits = String(v).replace(/\D/g, '');
-      if (!digits) return 'National ID must contain digits';
       if (!/^\d+$/.test(digits)) return 'National ID must contain only digits';
+      if (digits.length < 5 || digits.length > 20) return 'National ID must be 5-20 digits';
       return null;
     },
     password: (v: string) => v && v.length >= 6 ? null : 'Password must be at least 6 characters',
-    secondaryAddress: (v: string) => v ? null : 'Secondary address is required',
     profilePicture: (v: string | null) => v ? null : 'Profile picture is required',
     accountStatus: (v: string) => v ? null : 'Account status is required',
     dateOfRegistration: (v: string) => v ? null : 'Registration date is required',
     preferredContactMethod: (v: string) => v ? null : 'Preferred contact method is required',
-    occupation: (v: string) => v ? null : 'Occupation is required',
+    occupation: (v: string) => v.trim() ? null : 'Occupation is required',
     annualIncome: (v: string) => v ? null : 'Annual income is required',
     investmentExperience: (v: string) => v ? null : 'Investment experience is required',
     riskTolerance: (v: string) => v ? null : 'Risk tolerance is required',
     kycStatus: (v: string) => v ? null : 'KYC status is required',
     amlStatus: (v: string) => v ? null : 'AML status is required',
-    walletAddress: (v: string) => v ? null : 'Wallet address is required',
-    referralCode: (v: string) => v ? null : 'Referral code is required',
-    emergencyContactName: (v: string) => v ? null : 'Emergency contact name is required',
-    emergencyContactPhone: (v: string) => v ? null : 'Emergency contact phone is required',
-    emergencyContactRelation: (v: string) => v ? null : 'Emergency contact relation is required',
-    notes: (v: string) => v ? null : 'Notes are required',
+    walletAddress: (v: string) => v.trim() ? null : 'Wallet address is required',
+    referralCode: (v: string) => v.trim() ? null : 'Referral code is required',
+    emergencyContactName: (v: string) => v.trim() ? null : 'Emergency contact name is required',
+    emergencyContactPhone: (v: string) => {
+      if (!v || !String(v).trim()) return 'Emergency contact phone is required';
+      const digits = String(v).replace(/\D/g, '');
+      if (!/^\d+$/.test(digits)) return 'Emergency contact phone must contain only digits';
+      if (digits.length < 10 || digits.length > 15) return 'Emergency contact phone must be 10-15 digits';
+      return null;
+    },
+    emergencyContactRelation: (v: string) => v.trim() ? null : 'Emergency contact relation is required',
+    notes: (v: string) => v.trim() ? null : 'Notes are required',
   }), []);
 
   const validateField = useCallback((name: string, value: any) => {
@@ -344,28 +340,28 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
     const { name, value, type } = e.target as any;
 
     if (type === 'file') {
-      // File inputs are handled separately
       return;
     }
 
-    setForm(prev => ({ ...prev, [name]: value }));
-    const fieldError = validateField(name, value);
+    // Convert numeric inputs to string to ensure consistent validation
+    const newValue = type === 'number' ? String(value) : value;
+    setForm(prev => ({ ...prev, [name]: newValue }));
+    const fieldError = validateField(name, newValue);
     setErrors(prev => ({ ...prev, [name]: fieldError }));
   }, [validateField]);
 
   const resetForm = useCallback(() => {
     setForm(initialFormState);
     setErrors({});
+    setPreviewUrl(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   }, []);
 
   const isFormValid = useMemo(() => {
-    // Skip validation if we're uploading
     if (isUploading) return false;
 
-    // run through required validators
     for (const key of Object.keys(validators)) {
       const val = (form as any)[key];
       const err = (validators as any)[key](val);
@@ -378,7 +374,6 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Build full name from first and last
     const fullName = `${form.firstName || ''} ${form.lastName || ''}`.trim();
 
     const payload: any = {
@@ -414,7 +409,6 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
     };
 
     try {
-      // Final validation before submit
       const newErrors: Record<string, string | null> = {};
       for (const key of Object.keys(validators)) {
         const val = (form as any)[key];
@@ -428,7 +422,6 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
         return;
       }
 
-      // Dispatch and unwrap to get thrown error on rejection
       await dispatch(addCustomer(payload)).unwrap();
       toast.success('Customer added successfully');
       resetForm();
@@ -444,7 +437,6 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
     <div className="min-h-screen bg-white dark:bg-dark relative overflow-hidden rounded-lg dark:text-white">
       <div className="relative z-10 p-6 lg:p-8">
         <div className="max-w-6xl mx-auto">
-          {/* Header */}
           <div className="mb-8">
             <div className="flex gap-3 mb-4">
               <h1 className="text-3xl lg:text-4xl font-extrabold text-black dark:text-white">
@@ -459,7 +451,6 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
           <form onSubmit={handleSubmit}>
             <Toaster position="top-right" />
             <div className="space-y-8">
-              {/* Basic Information */}
               <FormSection title="Authorized Representative Details" icon={User}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <InputField
@@ -472,7 +463,6 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                     onChange={handleChange}
                     error={errors.firstName}
                   />
-
                   <InputField
                     label="Last Name"
                     name="lastName"
@@ -483,42 +473,136 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                     onChange={handleChange}
                     error={errors.lastName}
                   />
-
-                  <InputField label="Password" name="password" type="password" required placeholder="Enter password" icon={User} value={form.password} onChange={handleChange} error={errors.password} />
-
-                  <InputField label="Email Address" name="email" type="email" required placeholder="Enter email address" icon={Mail} value={form.email} onChange={handleChange} error={errors.email} />
-                  <InputField label="Date of Birth" name="dateOfBirth" type="date" required icon={Calendar} value={form.dateOfBirth} onChange={handleChange} error={errors.dateOfBirth} />
-                  <InputField label="Gender" name="gender" type="select" required value={form.gender} onChange={handleChange} error={errors.gender} options={[
-                    { label: 'Male', value: 'Male' },
-                    { label: 'Female', value: 'Female' },
-                    { label: 'Other', value: 'Other' },
-                  ]} />
-                  <InputField label="Nationality" name="nationality" required placeholder="Enter nationality" icon={Globe} value={form.nationality} onChange={handleChange} error={errors.nationality} />
+                  <InputField
+                    label="Password"
+                    name="password"
+                    type="password"
+                    required
+                    placeholder="Enter password"
+                    icon={User}
+                    value={form.password}
+                    onChange={handleChange}
+                    error={errors.password}
+                  />
+                  <InputField
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    required
+                    placeholder="Enter email address"
+                    icon={Mail}
+                    value={form.email}
+                    onChange={handleChange}
+                    error={errors.email}
+                  />
+                  <InputField
+                    label="Date of Birth"
+                    name="dateOfBirth"
+                    type="date"
+                    required
+                    icon={Calendar}
+                    value={form.dateOfBirth}
+                    onChange={handleChange}
+                    error={errors.dateOfBirth}
+                  />
+                  <InputField
+                    label="Gender"
+                    name="gender"
+                    type="select"
+                    required
+                    value={form.gender}
+                    onChange={handleChange}
+                    error={errors.gender}
+                    options={[
+                      { label: 'Male', value: 'Male' },
+                      { label: 'Female', value: 'Female' },
+                      { label: 'Other', value: 'Other' },
+                    ]}
+                  />
+                  <InputField
+                    label="Nationality"
+                    name="nationality"
+                    required
+                    placeholder="Enter nationality"
+                    icon={Globe}
+                    value={form.nationality}
+                    onChange={handleChange}
+                    error={errors.nationality}
+                  />
                 </div>
               </FormSection>
 
-              {/* Contact & Address Information */}
               <FormSection title="Contact & Address Information" icon={MapPin}>
                 <div className="grid grid-cols-1 gap-6">
-                  <InputField label="Primary Address" name="primaryAddress" type="textarea" required placeholder="Enter complete primary address" icon={MapPin} value={form.primaryAddress} onChange={handleChange} error={errors.primaryAddress} />
-                  <InputField label="Secondary Address" name="secondaryAddress" type="textarea" required placeholder="Enter secondary address if applicable" icon={MapPin} value={form.secondaryAddress} onChange={handleChange} error={errors.secondaryAddress} />
+                  <InputField
+                    label="Primary Address"
+                    name="primaryAddress"
+                    type="textarea"
+                    required
+                    placeholder="Enter complete primary address"
+                    icon={MapPin}
+                    value={form.primaryAddress}
+                    onChange={handleChange}
+                    error={errors.primaryAddress}
+                  />
+                  <InputField
+                    label="Secondary Address"
+                    name="secondaryAddress"
+                    type="textarea"
+                    required
+                    placeholder="Enter secondary address if applicable"
+                    icon={MapPin}
+                    value={form.secondaryAddress}
+                    onChange={handleChange}
+                    error={errors.secondaryAddress}
+                  />
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <InputField label="Preferred Contact Method" name="preferredContactMethod" type="select" required value={form.preferredContactMethod} onChange={handleChange} error={errors.preferredContactMethod} options={[
-                      { label: 'Email', value: 'Email' },
-                      { label: 'Phone', value: 'Phone' },
-                      { label: 'WhatsApp', value: 'WhatsApp' },
-                    ]} />
+                    <InputField
+                      label="Preferred Contact Method"
+                      name="preferredContactMethod"
+                      type="select"
+                      required
+                      value={form.preferredContactMethod}
+                      onChange={handleChange}
+                      error={errors.preferredContactMethod}
+                      options={[
+                        { label: 'Email', value: 'Email' },
+                        { label: 'Phone', value: 'Phone' },
+                        { label: 'WhatsApp', value: 'WhatsApp' },
+                      ]}
+                    />
                   </div>
                 </div>
               </FormSection>
 
-              {/* Identity & Documentation */}
               <FormSection title="Identity & Documentation" icon={CreditCard}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <InputField label="Phone Number" name="phone" type="tel" required placeholder="+1 (555) 123-4567" icon={Phone} value={form.phone} onChange={handleChange} error={errors.phone} inputMode="tel" pattern="[0-9]*" />
-
-                  <InputField label="National ID / Passport Number" name="nationalId" required placeholder="Enter ID or passport number" icon={CreditCard} value={form.nationalId} onChange={handleChange} error={errors.nationalId} inputMode="numeric" pattern="[0-9]*" />
-
+                  <InputField
+                    label="Phone Number"
+                    name="phone"
+                    type="number"
+                    required
+                    placeholder="Enter phone number"
+                    icon={Phone}
+                    value={form.phone}
+                    onChange={handleChange}
+                    error={errors.phone}
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                  />
+                  <InputField
+                    label="National ID / Passport Number"
+                    name="nationalId"
+                    type="number"
+                    required
+                    placeholder="Enter ID or passport number"
+                    icon={CreditCard}
+                    value={form.nationalId}
+                    onChange={handleChange}
+                    error={errors.nationalId}
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                  />
                   <InputField
                     label="Profile Picture"
                     name="profilePicture"
@@ -531,72 +615,195 @@ const SuperAdminAddCustomerFormUI: React.FC = () => {
                     previewUrl={previewUrl}
                     setPreviewUrl={setPreviewUrl}
                   />
-
-                  <InputField label="Occupation" name="occupation" required placeholder="Enter occupation" icon={Building2} value={form.occupation} onChange={handleChange} error={errors.occupation} />
-                  <InputField label="Annual Income" name="annualIncome" type="select" required value={form.annualIncome} onChange={handleChange} icon={DollarSign} error={errors.annualIncome} options={[
-                    { label: '< PKR 50,000', value: '<50000' },
-                    { label: 'PKR 50,000 - PKR 100,000', value: '50000-100000' },
-                    { label: 'PKR 100,000 - PKR 250,000', value: '100000-250000' },
-                    { label: '> PKR 250,000', value: '>250000' },
-                  ]} />
+                  <InputField
+                    label="Occupation"
+                    name="occupation"
+                    required
+                    placeholder="Enter occupation"
+                    icon={Building2}
+                    value={form.occupation}
+                    onChange={handleChange}
+                    error={errors.occupation}
+                  />
+                  <InputField
+                    label="Annual Income"
+                    name="annualIncome"
+                    type="select"
+                    required
+                    value={form.annualIncome}
+                    onChange={handleChange}
+                    icon={DollarSign}
+                    error={errors.annualIncome}
+                    options={[
+                      { label: '< PKR 50,000', value: '<50000' },
+                      { label: 'PKR 50,000 - PKR 100,000', value: '50000-100000' },
+                      { label: 'PKR 100,000 - PKR 250,000', value: '100000-250000' },
+                      { label: '> PKR 250,000', value: '>250000' },
+                    ]}
+                  />
                 </div>
               </FormSection>
 
-              {/* Investment Profile */}
               <FormSection title="Investment Profile" icon={TrendingUp}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <InputField label="Investment Experience" name="investmentExperience" type="select" required value={form.investmentExperience} onChange={handleChange} error={errors.investmentExperience} options={[
-                    { label: 'None', value: 'none' },
-                    { label: 'Beginner', value: 'beginner' },
-                    { label: 'Intermediate', value: 'intermediate' },
-                    { label: 'Expert', value: 'expert' },
-                  ]} />
-                  <InputField label="Risk Tolerance" name="riskTolerance" type="select" required value={form.riskTolerance} onChange={handleChange} error={errors.riskTolerance} options={[
-                    { label: 'Low', value: 'low' },
-                    { label: 'Medium', value: 'medium' },
-                    { label: 'High', value: 'high' },
-                  ]} />
-                  <InputField label="Wallet Address" name="walletAddress" required placeholder="Enter blockchain wallet address" icon={Wallet} value={form.walletAddress} onChange={handleChange} error={errors.walletAddress} />
-                  <InputField label="Referral Code" name="referralCode" required placeholder="Enter referral code if any" value={form.referralCode} onChange={handleChange} error={errors.referralCode} />
+                  <InputField
+                    label="Investment Experience"
+                    name="investmentExperience"
+                    type="select"
+                    required
+                    value={form.investmentExperience}
+                    onChange={handleChange}
+                    error={errors.investmentExperience}
+                    options={[
+                      { label: 'None', value: 'none' },
+                      { label: 'Beginner', value: 'beginner' },
+                      { label: 'Intermediate', value: 'intermediate' },
+                      { label: 'Expert', value: 'expert' },
+                    ]}
+                  />
+                  <InputField
+                    label="Risk Tolerance"
+                    name="riskTolerance"
+                    type="select"
+                    required
+                    value={form.riskTolerance}
+                    onChange={handleChange}
+                    error={errors.riskTolerance}
+                    options={[
+                      { label: 'Low', value: 'low' },
+                      { label: 'Medium', value: 'medium' },
+                      { label: 'High', value: 'high' },
+                    ]}
+                  />
+                  <InputField
+                    label="Wallet Address"
+                    name="walletAddress"
+                    required
+                    placeholder="Enter blockchain wallet address"
+                    icon={Wallet}
+                    value={form.walletAddress}
+                    onChange={handleChange}
+                    error={errors.walletAddress}
+                  />
+                  <InputField
+                    label="Referral Code"
+                    name="referralCode"
+                    required
+                    placeholder="Enter referral code if any"
+                    value={form.referralCode}
+                    onChange={handleChange}
+                    error={errors.referralCode}
+                  />
                 </div>
               </FormSection>
 
-              {/* Emergency Contact */}
               <FormSection title="Emergency Contact" icon={Users}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <InputField label="Emergency Contact Name" name="emergencyContactName" required placeholder="Enter emergency contact name" icon={User} value={form.emergencyContactName} onChange={handleChange} error={errors.emergencyContactName} />
-                  <InputField label="Emergency Contact Phone" name="emergencyContactPhone" type="tel" required placeholder="Enter emergency contact phone" icon={Phone} value={form.emergencyContactPhone} onChange={handleChange} error={errors.emergencyContactPhone} />
-                  <InputField label="Relationship" name="emergencyContactRelation" required placeholder="e.g., Spouse, Parent, Sibling" value={form.emergencyContactRelation} onChange={handleChange} error={errors.emergencyContactRelation} />
+                  <InputField
+                    label="Emergency Contact Name"
+                    name="emergencyContactName"
+                    required
+                    placeholder="Enter emergency contact name"
+                    icon={User}
+                    value={form.emergencyContactName}
+                    onChange={handleChange}
+                    error={errors.emergencyContactName}
+                  />
+                  <InputField
+                    label="Emergency Contact Phone"
+                    name="emergencyContactPhone"
+                    type="number"
+                    required
+                    placeholder="Enter emergency contact phone"
+                    icon={Phone}
+                    value={form.emergencyContactPhone}
+                    onChange={handleChange}
+                    error={errors.emergencyContactPhone}
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                  />
+                  <InputField
+                    label="Relationship"
+                    name="emergencyContactRelation"
+                    required
+                    placeholder="e.g., Spouse, Parent, Sibling"
+                    value={form.emergencyContactRelation}
+                    onChange={handleChange}
+                    error={errors.emergencyContactRelation}
+                  />
                 </div>
               </FormSection>
 
-              {/* Account Settings */}
               <FormSection title="Account Settings" icon={Shield}>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <InputField label="Account Status" name="accountStatus" type="select" required value={form.accountStatus} onChange={handleChange} error={errors.accountStatus} options={[
-                    { label: 'Active', value: 'Active' },
-                    { label: 'Inactive', value: 'Inactive' },
-                  ]} />
-                  <InputField label="KYC Status" name="kycStatus" type="select" required value={form.kycStatus} onChange={handleChange} error={errors.kycStatus} options={[
-                    { label: 'Pending', value: 'pending' },
-                    { label: 'Approved', value: 'approved' },
-                    { label: 'Rejected', value: 'rejected' },
-                  ]} />
-                  <InputField label="AML Status" name="amlStatus" type="select" required value={form.amlStatus} onChange={handleChange} error={errors.amlStatus} options={[
-                    { label: 'Pending', value: 'pending' },
-                    { label: 'Cleared', value: 'cleared' },
-                    { label: 'Flagged', value: 'flagged' },
-                  ]} />
-                  <InputField label="Registration Date" name="dateOfRegistration" type="date" required icon={Calendar} value={form.dateOfRegistration} onChange={handleChange} error={errors.dateOfRegistration} />
+                  <InputField
+                    label="Account Status"
+                    name="accountStatus"
+                    type="select"
+                    required
+                    value={form.accountStatus}
+                    onChange={handleChange}
+                    error={errors.accountStatus}
+                    options={[
+                      { label: 'Active', value: 'Active' },
+                      { label: 'Inactive', value: 'Inactive' },
+                    ]}
+                  />
+                  <InputField
+                    label="KYC Status"
+                    name="kycStatus"
+                    type="select"
+                    required
+                    value={form.kycStatus}
+                    onChange={handleChange}
+                    error={errors.kycStatus}
+                    options={[
+                      { label: 'Pending', value: 'pending' },
+                      { label: 'Approved', value: 'approved' },
+                      { label: 'Rejected', value: 'rejected' },
+                    ]}
+                  />
+                  <InputField
+                    label="AML Status"
+                    name="amlStatus"
+                    type="select"
+                    required
+                    value={form.amlStatus}
+                    onChange={handleChange}
+                    error={errors.amlStatus}
+                    options={[
+                      { label: 'Pending', value: 'pending' },
+                      { label: 'Cleared', value: 'cleared' },
+                      { label: 'Flagged', value: 'flagged' },
+                    ]}
+                  />
+                  <InputField
+                    label="Registration Date"
+                    name="dateOfRegistration"
+                    type="date"
+                    required
+                    icon={Calendar}
+                    value={form.dateOfRegistration}
+                    onChange={handleChange}
+                    error={errors.dateOfRegistration}
+                  />
                 </div>
               </FormSection>
 
-              {/* Additional Information */}
               <FormSection title="Additional Information" icon={FileText}>
-                <InputField label="Notes" name="notes" type="textarea" required placeholder="Enter any additional notes or comments about the customer" icon={FileText} value={form.notes} onChange={handleChange} error={errors.notes} />
+                <InputField
+                  label="Notes"
+                  name="notes"
+                  type="textarea"
+                  required
+                  placeholder="Enter any additional notes or comments about the customer"
+                  icon={FileText}
+                  value={form.notes}
+                  onChange={handleChange}
+                  error={errors.notes}
+                />
               </FormSection>
 
-              {/* Submit Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-end pt-6">
                 <button
                   type="button"

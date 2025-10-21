@@ -28,7 +28,7 @@ const Page = () => {
         if (userInfo?.user?._id) {
             dispatch(fetchLeads({ customerId: userInfo.user._id, page: pagination?.page || 1 }));
         }
-        if(userInfo?.user?.id){
+        if (userInfo?.user?.id) {
             dispatch(fetchLeads({ customerId: userInfo.user.id, page: pagination?.page || 1 }));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -213,7 +213,7 @@ const Page = () => {
 
                             </div>
                         </div>
-                        <div className="flex items-center space-x-4">
+                        {/* <div className="flex items-center space-x-4">
                             <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
                                 <Filter className="h-5 w-5" />
                                 <span className="font-medium">Filter:</span>
@@ -232,7 +232,7 @@ const Page = () => {
                                     </button>
                                 ))}
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 

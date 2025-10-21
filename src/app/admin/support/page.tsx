@@ -192,7 +192,7 @@ const SupportTicketManagement = () => {
             const category = ticket?.category?.toLowerCase() || '';
             const status = ticket?.status?.toLowerCase() || '';
 
-            // ✅ Search: checks multiple fields
+            // Search: checks multiple fields
             const matchesSearch =
                 query === '' ||
                 title.includes(query) ||
@@ -202,15 +202,14 @@ const SupportTicketManagement = () => {
                 category.includes(query) ||
                 status.includes(query);
 
-            // ✅ Filter: matches by status button
+            // Filter: matches by status button
             const matchesFilter =
-                filterStatus === 'all' ||
-                status === filterStatus.toLowerCase();
+                filterStatus.toLowerCase() === 'all' || // Show all tickets if "All" is selected
+                status === filterStatus.toLowerCase().replace(' ', '-'); // Handle multi-word statuses like "In Progress"
 
             return matchesSearch && matchesFilter;
         });
     }, [searchTerm, filterStatus, tickets]);
-
     // Pagination logic
     const totalPages = Math.ceil(filteredTickets.length / itemsPerPage);
     const startIndex = filteredTickets.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
