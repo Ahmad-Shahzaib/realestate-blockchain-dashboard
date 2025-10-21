@@ -2,13 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface UserState {
     isAuthenticated: boolean;
-    user: {
-        firstName?: string;
-        lastName?: string;
-        email?: string;
-        password?: string;
-        role?: 'user' | 'admin' | 'superadmin';
-    } | null;
+    user: any | null;
 }
 
 const initialState: UserState = {

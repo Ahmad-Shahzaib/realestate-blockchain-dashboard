@@ -28,8 +28,11 @@ const Page = () => {
         if (userInfo?.user?._id) {
             dispatch(fetchLeads({ customerId: userInfo.user._id, page: pagination?.page || 1 }));
         }
+        if(userInfo?.user?.id){
+            dispatch(fetchLeads({ customerId: userInfo.user.id, page: pagination?.page || 1 }));
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch, userInfo?.user?._id, pagination?.page]);
+    }, [dispatch, userInfo?.user?._id, pagination?.page, userInfo?.user?.id]);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
