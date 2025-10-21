@@ -21,7 +21,7 @@ const Page = () => {
     const dispatch = useAppDispatch();
     const userInfo: any = useSelector((state: RootState) => state.userInfo);
 
-    console.log("Transactions from Redux:", transactions);
+    console.log("Transactions from Redux:", userInfo);
 
     // Fetch leads with pagination
     useEffect(() => {
