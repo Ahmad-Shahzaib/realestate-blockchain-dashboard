@@ -1,3 +1,4 @@
+import { BASE_URL } from '@/config/apiUrls';
 import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 
 // Define interfaces for the API response data
@@ -106,11 +107,9 @@ export interface ProjectPayload {
 }
 
 
-const API_BASE_URL = 'http://localhost:5000/api';
-
 // Create Axios instance
 const api: AxiosInstance = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: BASE_URL,
   timeout: 10000, // 10 second timeout
   headers: {
     'Content-Type': 'application/json',

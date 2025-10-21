@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/config/apiUrls";
+import { BASE_URL, BASE_URL_NO_API } from "@/config/apiUrls";
 import axios from "axios";
 import type { AxiosInstance } from "axios";
 import { getCookie, deleteCookie } from "cookies-next";
@@ -14,7 +14,7 @@ export function getAxiosInstance(serviceName: string, version = "1.0.0") {
 
     const instance = axios.create({
         baseURL: serviceName.startsWith("/api")
-            ? BASE_URL
+            ? BASE_URL_NO_API
             : `${BASE_URL}/service/${serviceName}/${version}`,
         timeout: 10000,
         headers: {
