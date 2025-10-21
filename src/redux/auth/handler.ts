@@ -2,6 +2,7 @@
 
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { getAxiosInstance } from "@/lib/axios";
+import store from "../store";
 
 export const handleLogin = async (credentials: {
     email: string;
@@ -70,6 +71,9 @@ export const handleLogout = () => {
     deleteCookie("token");
     deleteCookie("refreshToken");
     deleteCookie("user");
+    store.dispatch({ type: 'RESET_ALL' });
+    // empty all the store 
+    
     // Dispatch a custom event before redirecting
     window.dispatchEvent(new Event('storage'));
     window.location.href = "/auth/sign-in";
