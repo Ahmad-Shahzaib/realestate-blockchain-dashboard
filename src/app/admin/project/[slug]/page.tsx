@@ -119,9 +119,7 @@ type Project = {
 };
 
 const page = () => {
-  // read dynamic route params using useParams
   const params = useParams();
-  // params.slug may be string | string[] | undefined depending on route
   const rawSlug = params?.slug;
   const projectId = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug;
   const [project, setProject] = useState<Project | null>(null);
@@ -130,6 +128,9 @@ const page = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [userRole, setUserRole] = useState<string | null>(null); // State for user role
   const [isRedirecting, setIsRedirecting] = useState(false);
+
+
+  console.log("projectIdprojectIdprojectIdprojectIdprojectId",projectId)
 
   useEffect(() => {
     const fetchProjectDetails = async () => {
