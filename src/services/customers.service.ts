@@ -1,4 +1,4 @@
-const API_BASE = process.env.API_BASE_URL || "http://localhost:5000/api";
+const API_BASE = process.env.API_BASE_URL || "https://api.fractprop.com/api";
 
 export async function apiRequest(
   endpoint: string,
