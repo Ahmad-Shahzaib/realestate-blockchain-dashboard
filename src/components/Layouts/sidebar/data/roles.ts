@@ -33,7 +33,7 @@ export const USER_NAV_DATA = [
         items: [],
       },
       {
-        title: "My DAO",
+        title: "My Wallet",
         icon: FaDashcube,
         items: [
           { title: "Portfolio", url: "/portfolio" },
